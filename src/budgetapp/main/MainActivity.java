@@ -46,9 +46,9 @@ public class MainActivity extends Activity {
               	resultText.requestFocus();
               	newBudget.setText(""+currentBudget);
               	if(currentBudget<0)
-            		newBudget.setTextColor(Color.rgb(min(255,80+Math.abs(currentBudget/5)),80,80));
+            		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
             	else
-            		newBudget.setTextColor(Color.rgb(80,min(255,80+currentBudget/5),80));
+            		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
         	  }
 		        catch(NumberFormatException e)
 		    	{
@@ -79,10 +79,10 @@ public class MainActivity extends Activity {
         	newBudget.setText(""+currentBudget);
         	//Set color
         	if(currentBudget<0)
-        		{newBudget.setTextColor(Color.rgb(min(255,80+Math.abs(currentBudget/5)),80,80));
-        		System.out.println(80+Math.abs(currentBudget/5));}
+        		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
         	else
-        		newBudget.setTextColor(Color.rgb(80,min(255,80+currentBudget/5),80));
+        		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
+    	  
         	
         		  // Create file 
         		  FileWriter fstream = new FileWriter("/mnt/sdcard/budget/budget.txt");
