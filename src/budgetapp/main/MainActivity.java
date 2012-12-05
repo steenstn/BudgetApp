@@ -12,11 +12,13 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.content.ClipData.Item;
 import android.content.Context;
 import android.database.sqlite.*;
 
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
 	private BudgetDataSource datasource;
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
+	private boolean logData = true; // If transactions should be logged
 	int min(int a,int b)
 	{
 		if(a<b)
@@ -112,11 +115,13 @@ public class MainActivity extends Activity {
         	currentBudget-=resultInt;
         	newBudget.setText(""+currentBudget);
         	
-        	// Add to database
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        	Calendar cal = Calendar.getInstance();
-        	BudgetEntry entry = datasource.createEntry(resultInt*-1, dateFormat.format(cal.getTime()));
-        	
+        	// Add to database if logging is set
+        	if(logData)
+        	{
+	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	        	Calendar cal = Calendar.getInstance();
+	        	BudgetEntry entry = datasource.createEntry(resultInt*-1, dateFormat.format(cal.getTime()));
+        	}
         	//Set color
         	if(currentBudget<0)
         		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
@@ -136,4 +141,17 @@ public class MainActivity extends Activity {
     	
     		
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_logdata:
+                logData=!logData;
+                item.setChecked(logData);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
 }
