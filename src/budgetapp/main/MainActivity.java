@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 
 	private BudgetDataSource datasource;
 	int currentBudget = 0;
-	
+	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	int min(int a,int b)
 	{
 		if(a<b)
@@ -36,36 +36,42 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        try{
-        	  // Open the file that is the first 
-        	  // command line parameter
-        	  FileInputStream fstream = new FileInputStream("/mnt/sdcard/budget/budget.txt");
-        	  // Get the object of DataInputStream
-        	  DataInputStream in = new DataInputStream(fstream);
-        	  BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        	  String strLine = br.readLine();
-        	  currentBudget = Integer.parseInt(strLine);
-        	  //Read File Line By Line
-        	  
-        	  //Close the input stream
-        	  in.close();
-        	  
-              	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-              	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
-              	//	resultText.requestFocus();
-              	newBudget.setText(""+currentBudget);
-              	if(currentBudget<0)
-            		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
-            	else
-            		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
-        	  }
-    	catch(NumberFormatException e)
-    	{
-    		currentBudget=0;
-    	}
-		catch (Exception e){//Catch exception if any
-			System.err.println("Error: " + e.getMessage());
-		}
+         try
+        {
+        	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
+             try
+             {
+            	 String strLine = in.readUTF();
+            	 currentBudget = Integer.parseInt(strLine);
+           	
+           	  //Close the input stream
+           	  in.close();
+           	  
+             	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+             	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
+             	//	resultText.requestFocus();
+             	newBudget.setText(""+currentBudget);
+             	if(currentBudget<0)
+               		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
+               	else
+               		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
+           	  
+            	 
+             }
+             catch(IOException e)
+             {
+            	 currentBudget=0;
+             }
+        }
+        catch(NumberFormatException e)
+        {
+        	currentBudget=0;
+        }
+        catch(FileNotFoundException e)
+        {
+        	currentBudget=0;
+        }
+      
         	  
         datasource = new BudgetDataSource(this);
         datasource.open();
@@ -98,9 +104,10 @@ public class MainActivity extends Activity {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
+    	
     	try
     	{
-        	int resultInt = Integer.parseInt(result);
+    		int resultInt = Integer.parseInt(result);
         	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
         	currentBudget-=resultInt;
         	newBudget.setText(""+currentBudget);
@@ -116,23 +123,17 @@ public class MainActivity extends Activity {
         	else
         		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
     	  
-        	
-        		  // Create file 
-        		  FileWriter fstream = new FileWriter("/mnt/sdcard/budget/budget.txt");
-        		  BufferedWriter out = new BufferedWriter(fstream);
-        		  out.write(""+currentBudget);
-        		  //Close the output stream
-        		  out.close();
-        		  resultText.setText("");
-        		  updateLog();
+        	resultText.setText("");
+        	updateLog();
+    		DataOutputStream out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
+    		out.writeUTF(""+currentBudget);
+    		
     	}
-    	catch(NumberFormatException e)
+    	catch(IOException e)
     	{
-    		System.out.println(e);
+    		System.out.println("Error: "+e);
     	}
-    	catch (Exception e){//Catch exception if any
-  		  System.err.println("Error: " + e.getMessage());
-  		}
+    	
     		
     }
 }
