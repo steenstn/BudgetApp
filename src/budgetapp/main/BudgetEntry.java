@@ -1,5 +1,8 @@
 package budgetapp.main;
 
+/*
+ * Class for a budget entry. Used to keep track of transactions.
+ */
 public class BudgetEntry {
 	private long id;
 	private int value;
@@ -37,6 +40,6 @@ public class BudgetEntry {
 	@Override
 	public String toString()
 	{
-		return ""+value;
+		return date + ": " + value;
 	}
 }

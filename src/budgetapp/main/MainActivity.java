@@ -13,9 +13,11 @@ import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.content.Context;
 import android.database.sqlite.*;
 
 public class MainActivity extends Activity {
@@ -50,7 +52,7 @@ public class MainActivity extends Activity {
         	  
               	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
               	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
-              	resultText.requestFocus();
+              	//	resultText.requestFocus();
               	newBudget.setText(""+currentBudget);
               	if(currentBudget<0)
             		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
@@ -94,11 +96,6 @@ public class MainActivity extends Activity {
     
     public void subtractFromBudget(View view) {
        
-      // BudgetEntry entry = datasource.createEntry(100, "yeah");
-    	
-    	
-    	
-    	
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
     	try

@@ -7,10 +7,12 @@ import android.util.Log;
 
 public class BudgetDatabase extends SQLiteOpenHelper{
 
+	// The table for cash flow
 	public static final String TABLE_CASHFLOW = "cashflow";
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_VALUE = "value";
 	public static final String COLUMN_DATE = "date";
+	
 	
 	private static final String DATABASE_NAME = "budget.db";
 	private static final int DATABASE_VERSION = 1;

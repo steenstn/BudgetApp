@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    >
 
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,7 +18,7 @@
 	        android:layout_marginTop="30dip"
 	        android:layout_marginLeft="30dip"
 	       
-	        android:text="Medium Text"
+	        android:text="Current Budget"
 	        android:textAppearance="?android:attr/textAppearanceLarge" />
 	    
 
@@ -29,7 +30,7 @@
 	        android:layout_marginTop="30dip"
 	        android:onClick="subtractFromBudget"
 	        android:text="Minus" />
-	    
+	   
     </LinearLayout>
      
       <EditText
@@ -37,16 +38,16 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ems="10"
-          android:inputType="numberSigned" >
-
-          <requestFocus />
+          android:inputType="numberSigned" 
+          >
+			
       </EditText>
 
       <TextView
           android:id="@+id/textViewLog"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="TextView" />
+          android:text="Log" />
 
 </LinearLayout>
 
