@@ -3,17 +3,24 @@ package budgetapp.main;
 
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.database.sqlite.*;
 
 public class MainActivity extends Activity {
 
+	private BudgetDataSource datasource;
 	int currentBudget = 0;
 	
 	int min(int a,int b)
@@ -50,15 +57,20 @@ public class MainActivity extends Activity {
             	else
             		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
         	  }
-		        catch(NumberFormatException e)
-		    	{
-		    		currentBudget=0;
-		    	}
-		        catch (Exception e){//Catch exception if any
-        	    	System.err.println("Error: " + e.getMessage());
-        	  }
+    	catch(NumberFormatException e)
+    	{
+    		currentBudget=0;
+    	}
+		catch (Exception e){//Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
         	  
+        datasource = new BudgetDataSource(this);
+        datasource.open();
         
+        //List all budget entries
+        updateLog();
+       
     }
 
     @Override
@@ -67,8 +79,26 @@ public class MainActivity extends Activity {
         return true;
     }
     
+    public void updateLog()
+    {
+    	List<BudgetEntry> entries = datasource.getAllEntries();
+        TextView temp = (TextView)findViewById(R.id.textViewLog);
+        temp.setText("");
+        for(int i=entries.size()-1;i>=entries.size()-10;i--)
+        {	
+        	if(i>=0)
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
+        }
+    	
+    }
+    
     public void subtractFromBudget(View view) {
        
+      // BudgetEntry entry = datasource.createEntry(100, "yeah");
+    	
+    	
+    	
+    	
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
     	try
@@ -77,6 +107,12 @@ public class MainActivity extends Activity {
         	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
         	currentBudget-=resultInt;
         	newBudget.setText(""+currentBudget);
+        	
+        	// Add to database
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        	Calendar cal = Calendar.getInstance();
+        	BudgetEntry entry = datasource.createEntry(resultInt*-1, dateFormat.format(cal.getTime()));
+        	
         	//Set color
         	if(currentBudget<0)
         		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
@@ -91,6 +127,7 @@ public class MainActivity extends Activity {
         		  //Close the output stream
         		  out.close();
         		  resultText.setText("");
+        		  updateLog();
     	}
     	catch(NumberFormatException e)
     	{
@@ -98,7 +135,7 @@ public class MainActivity extends Activity {
     	}
     	catch (Exception e){//Catch exception if any
   		  System.err.println("Error: " + e.getMessage());
-  		  }
+  		}
     		
     }
 }
