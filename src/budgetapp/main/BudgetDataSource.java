@@ -71,6 +71,22 @@ public class BudgetDataSource {
 		return entries;
 	}
 	
+	public List<BudgetEntry> getSomeEntries(int n)
+	{
+		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+		String fixedInt = ""+n;
+		Cursor cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, allColumns, null, null, null, null, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			BudgetEntry entry = cursorToBudgetEntry(cursor);
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
 	
 	private BudgetEntry cursorToBudgetEntry(Cursor cursor)
 	{
