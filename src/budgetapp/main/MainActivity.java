@@ -101,7 +101,7 @@ public class MainActivity extends Activity {
         for(int i=entries.size()-1;i>=0;i--)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() +"  " + entries.get(i).getCategory()+ "\n");
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
         }
         /*List<CategoryEntry> entries2 = datasource.getAllCategories();
         for(int i=0;i<entries2.size();i++)
