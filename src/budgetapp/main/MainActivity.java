@@ -28,12 +28,14 @@ public class MainActivity extends Activity {
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	private boolean logData = true; // If transactions should be logged
-	int min(int a,int b)
+	int min(int a,int b) 
 	{
 		if(a<b)
 			return a;
 		return b;
 	}
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,7 @@ public class MainActivity extends Activity {
            	  in.close();
            	  
              	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-             	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
+             	//EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
              	//	resultText.requestFocus();
              	newBudget.setText(""+currentBudget);
              	if(currentBudget<0)
@@ -81,6 +83,7 @@ public class MainActivity extends Activity {
         
         //List all budget entries
         updateLog();
+      
        
     }
 
@@ -92,14 +95,19 @@ public class MainActivity extends Activity {
     
     public void updateLog()
     {
-    	List<BudgetEntry> entries = datasource.getAllEntries();
+    	List<BudgetEntry> entries = datasource.getSomeTransactions(10);
         TextView temp = (TextView)findViewById(R.id.textViewLog);
         temp.setText("");
-        for(int i=entries.size()-1;i>=entries.size()-10;i--)
+        for(int i=entries.size()-1;i>=0;i--)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() +"  " + entries.get(i).getCategory()+ "\n");
         }
+        /*List<CategoryEntry> entries2 = datasource.getAllCategories();
+        for(int i=0;i<entries2.size();i++)
+        {	
+        		temp.append(entries2.get(i).getCategory()+ "\n");
+        }*/
     	
     }
     
@@ -120,7 +128,9 @@ public class MainActivity extends Activity {
         	{
 	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	        	Calendar cal = Calendar.getInstance();
-	        	BudgetEntry entry = datasource.createEntry(resultInt*-1, dateFormat.format(cal.getTime()));
+	        	
+	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),"Cataegory");
+	        	datasource.createTransactionEntry(entry);
         	}
         	//Set color
         	if(currentBudget<0)

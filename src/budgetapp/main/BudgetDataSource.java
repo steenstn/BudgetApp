@@ -15,9 +15,11 @@ public class BudgetDataSource {
 	// Database fields
 	private SQLiteDatabase database;
 	private BudgetDatabase dbHelper;
+	private DatabaseAccess dbAccess;
 	
-	private String[] allColumns = {BudgetDatabase.COLUMN_ID,
-			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE};
+	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
+			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY};
+	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY};
 	
 	public BudgetDataSource(Context context)
 	{
@@ -27,6 +29,7 @@ public class BudgetDataSource {
 	public void open() throws SQLException
 	{
 		database = dbHelper.getWritableDatabase();
+		dbAccess = new DatabaseAccess(database);
 	}
 	
 	public void close()
@@ -34,43 +37,54 @@ public class BudgetDataSource {
 		dbHelper.close();
 	}
 	
-	public BudgetEntry createEntry(int theValue, String theDate)
+	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
-		ContentValues values = new ContentValues();
-		
-		values.put(BudgetDatabase.COLUMN_VALUE, theValue);
-
-		values.put(BudgetDatabase.COLUMN_DATE,theDate);
-		long insertId = database.insert(BudgetDatabase.TABLE_CASHFLOW, null,values);
-		
-		Cursor cursor = database.query(BudgetDatabase.TABLE_CASHFLOW,
-				allColumns,BudgetDatabase.COLUMN_ID + " = " + insertId, null,
-				null, null, null);
-		cursor.moveToFirst();
-		BudgetEntry newEntry = cursorToBudgetEntry(cursor);
-		cursor.close();
-		return newEntry;
+		return dbAccess.addEntry(theEntry);
+	}
+	
+	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
+	{
+		return dbAccess.addEntry(theEntry);
+	}
+	
+	
+	public void dropTables()
+	{
+		database.execSQL("DROP TABLE IF EXISTS " + "cashflow");
+		database.execSQL("DROP TABLE IF EXISTS " + "categories");
 		
 		
 	}
-	
-	public List<BudgetEntry> getAllEntries()
+	public List<BudgetEntry> getAllTransactions()
 	{
-		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+		return dbAccess.getTransactions(0);
+	}
+	
+	public List<BudgetEntry> getSomeTransactions(int n)
+	{
+		return dbAccess.getTransactions(n);
+	}
+	
+	public List<CategoryEntry> getAllCategories()
+	{
+		
+		List<CategoryEntry> entries = new ArrayList<CategoryEntry>();
+		
 
-		Cursor cursor = database.query(BudgetDatabase.TABLE_CASHFLOW,allColumns,null,null,null,null,null);
+		Cursor cursor = database.query(BudgetDatabase.TABLE_CATEGORIES,allColumnsCategories,null,null,null,null,null);
 		
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			BudgetEntry entry = cursorToBudgetEntry(cursor);
+			
+			CategoryEntry entry = new CategoryEntry(cursor.getLong(0),cursor.getString(1));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
 		cursor.close();
 		return entries;
 	}
-	
+	/*
 	public List<BudgetEntry> getSomeEntries(int n)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
@@ -86,14 +100,12 @@ public class BudgetDataSource {
 		cursor.close();
 		return entries;
 	}
-	
+	*/
 	
 	private BudgetEntry cursorToBudgetEntry(Cursor cursor)
 	{
-		BudgetEntry entry = new BudgetEntry();
-		entry.setId(cursor.getLong(0));
-		entry.setValue(cursor.getInt(1));
-		entry.setDate(cursor.getString(2));
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
+
 		return entry;
 	}
 	

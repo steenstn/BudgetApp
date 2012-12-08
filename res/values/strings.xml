@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">BudgetApp</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_logdata">Log transactions</string>
+    <string name="menu_addcategory">Add Category</string>
 
 </resources>
