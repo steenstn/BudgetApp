@@ -17,7 +17,7 @@ public class DatabaseAccess {
 	private SQLiteDatabase database;
 	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
 			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY};
-	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY};
+	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_TOTAL};
 	
 	public DatabaseAccess(SQLiteDatabase theDatabase)
 	{
@@ -25,6 +25,16 @@ public class DatabaseAccess {
 	}
 	
 	
+	public boolean addCategory(String theCategory)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
+		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		if(insertID==-1)
+			return false;
+		else
+			return true;
+	}
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
 		ContentValues values = new ContentValues();
@@ -74,6 +84,21 @@ public class DatabaseAccess {
 			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
 
 			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	public List<CategoryEntry> getCategories()
+	{
+		List<CategoryEntry> entries = new ArrayList<CategoryEntry>();
+		
+		Cursor cursor;
+		cursor = database.query(BudgetDatabase.TABLE_CATEGORIES,allColumnsCategories,null,null,null,null,null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getLong(3)));
 			cursor.moveToNext();
 		}
 		cursor.close();

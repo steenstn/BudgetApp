@@ -4,30 +4,37 @@ package budgetapp.main;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.database.sqlite.*;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemSelectedListener{
 
-	private BudgetDataSource datasource;
+	public BudgetDataSource datasource;
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	private boolean logData = true; // If transactions should be logged
+	public ArrayList<String> allCategories = new ArrayList<String>();
 	int min(int a,int b) 
 	{
 		if(a<b)
@@ -81,9 +88,26 @@ public class MainActivity extends Activity {
         datasource = new BudgetDataSource(this);
         datasource.open();
         
+        // Get the categories for the Spinner
+        List<CategoryEntry> categories = datasource.getAllCategories();
+        // Put the category names in an ArrayList to get them into the spinner
+        for(int i=0;i<categories.size();i++)
+        {
+        	allCategories.add(categories.get(i).getCategory());
+        }
+        
+        
+        Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
+     // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
+     //ArrayAdapter.createFromResource(this,allCategories, android.R.layout.simple_spinner_item);
+     // Specify the layout to use when the list of choices appears
+     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+     // Apply the adapter to the spinner
+     spinner.setAdapter(adapter);
+     spinner.setOnItemSelectedListener(this);
         //List all budget entries
         updateLog();
-      
        
     }
 
@@ -101,23 +125,25 @@ public class MainActivity extends Activity {
         for(int i=entries.size()-1;i>=0;i--)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t" + entries.get(i).getCategory() +  "\n");
         }
-        /*List<CategoryEntry> entries2 = datasource.getAllCategories();
-        for(int i=0;i<entries2.size();i++)
+        /*
+        for(int i=0;i<allCategories.size();i++)
         {	
-        		temp.append(entries2.get(i).getCategory()+ "\n");
-        }*/
-    	
+        		temp.append(allCategories.get(i)+ "\n");
+        }
+    	*/
     }
     
-    public void subtractFromBudget(View view) {
+    
+    public void subtractFromBudget(View view,String theCategory) {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
     	
     	try
     	{
+    		 
     		int resultInt = Integer.parseInt(result);
         	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
         	currentBudget-=resultInt;
@@ -129,7 +155,7 @@ public class MainActivity extends Activity {
 	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	        	Calendar cal = Calendar.getInstance();
 	        	
-	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),"Cataegory");
+	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
 	        	datasource.createTransactionEntry(entry);
         	}
         	//Set color
@@ -148,6 +174,10 @@ public class MainActivity extends Activity {
     	{
     		System.out.println("Error: "+e);
     	}
+    	catch(NumberFormatException e)
+    	{
+    		System.out.println("Error: "+e);
+    	}
     	
     		
     }
@@ -155,13 +185,39 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.menu_logdata:
+            case R.id.menu_logdata: // Change logging data status
                 logData=!logData;
                 item.setChecked(logData);
                 return true;
+           // case R.id.menu_addcategory:
+           // 	DialogFragment newFragment = new CategoryDialogFragment();
+           //     newFragment.show(getFragmentManager(), "add_category");
+            //    return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+	{
+		//Toast.makeText(parent.getContext(), "The planet is " +parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+		String theCategory = parent.getItemAtPosition(pos).toString();
+		if(pos!=0)
+		{
+			subtractFromBudget(parent,theCategory);
+		}
+		parent.setSelection(0);
+		
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		
+		
+	
+	}
     
 }

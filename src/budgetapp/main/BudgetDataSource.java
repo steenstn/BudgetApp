@@ -68,21 +68,11 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getAllCategories()
 	{
 		
-		List<CategoryEntry> entries = new ArrayList<CategoryEntry>();
-		
-
-		Cursor cursor = database.query(BudgetDatabase.TABLE_CATEGORIES,allColumnsCategories,null,null,null,null,null);
-		
-		cursor.moveToFirst();
-		while(!cursor.isAfterLast())
-		{
-			
-			CategoryEntry entry = new CategoryEntry(cursor.getLong(0),cursor.getString(1));
-			entries.add(entry);
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return entries;
+		return dbAccess.getCategories();
+	}
+	public boolean addCategory(String theCategory)
+	{
+		return dbAccess.addCategory(theCategory);
 	}
 	/*
 	public List<BudgetEntry> getSomeEntries(int n)

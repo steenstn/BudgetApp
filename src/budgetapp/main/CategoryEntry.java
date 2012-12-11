@@ -7,10 +7,20 @@ package budgetapp.main;
 public class CategoryEntry extends DatabaseEntry {
 	
 	private String category;
+	private int num;
+	private long total;
 	
+	public CategoryEntry(long id, String category,int num,long total){
+		this.id = id;
+		this.category = category;
+		this.num=num;
+		this.total=total;
+	}
 	public CategoryEntry(long id, String category){
 		this.id = id;
 		this.category = category;
+		this.num=0;
+		this.total=0;
 	}
 	
 	public CategoryEntry(String category){
@@ -23,6 +33,24 @@ public class CategoryEntry extends DatabaseEntry {
 	public String getCategory(){
 		return category;
 	}
+	
+	public void setNum(int n){
+		num=n;
+	}
+	public int getNum(){
+		return num;
+	}
+	
+	public void setTotal(long n)
+	{
+		total = n;
+	}
+	
+	public long getTotal()
+	{
+		return total;
+	}
+	
 	
 	@Override
 	public String toString(){

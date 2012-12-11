@@ -22,7 +22,16 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	
 	// The table for cataegories
 	public static final String TABLE_CATEGORIES = "categories";
+	//COLUMN_ID
+	//COLUMN_CATEGORY
+	public static final String COLUMN_NUM = "num"; // Number of times this has been bought
+	public static final String COLUMN_TOTAL = "total"; // Total sum of money spent on this category
 	
+	// The table for total sum in a day
+	public static final String TABLE_DAYSUM = "daysum";
+	//COLUMN_ID
+	//COLUMN_DATE
+	//COLUMN_TOTAL
 
 	private static final String DATABASE_NAME = "budget.db";
 	private static final int DATABASE_VERSION = 1;
@@ -35,7 +44,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	private static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY +
-			" text);";
+			" text, "+ COLUMN_NUM + " integer, " + COLUMN_TOTAL + " long integer);";
+	
+	private static final String DATABASE_CREATE_TABLE_DAYSUM = "create table "
+			+ TABLE_DAYSUM + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, " + COLUMN_DATE
+			+ " text, " + COLUMN_TOTAL + " long integer);";
 
 	public BudgetDatabase(Context context)
 	{
@@ -47,15 +61,22 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	{
 		database.execSQL(DATABASE_CREATE_TABLE_CASHFLOW);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORIES);
+		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
 		// Put in initial categories
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Drugs");
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Ravioli");
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Coffee");
+		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
+		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Drugs");
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Hoes");
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Misc");
+		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		
 	}
 	
 	@Override

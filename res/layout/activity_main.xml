@@ -10,44 +10,46 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-	    <TextView
-	        android:id="@+id/textViewCurrentBudget"
-	        android:layout_width="200dip"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="30dip"
-	        android:layout_marginLeft="30dip"
-	       
-	        android:text="Current Budget"
-	        android:textAppearance="?android:attr/textAppearanceLarge" />
-	    
-
-	    <Button
-	        android:id="@+id/buttonSubtract"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginRight="1dip"
-	        android:layout_marginTop="30dip"
-	        android:onClick="subtractFromBudget"
-	        android:text="Minus" />
-	   
+        <TextView
+            android:id="@+id/textViewCurrentBudget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dip"
+            android:text="Current Budget"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+       
     </LinearLayout>
-     
-      <EditText
-          android:id="@+id/editTextSubtract"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:inputType="numberSigned" 
-          >
-			
-      </EditText>
+    
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
+	      <EditText
+	          android:id="@+id/editTextSubtract"
+	          android:layout_width="180dip"
+	          android:layout_height="wrap_content"
+	          android:ems="10"
+	          android:inputType="numberSigned" >
+				
+	      </EditText>
+	      <Spinner
+            android:id="@+id/categories_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:spinnerMode="dialog" />
+	</LinearLayout>
       <TextView
           android:id="@+id/textViewLog"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="20dip"
           android:text="Log" />
 
+      
 
 </LinearLayout>
 

@@ -4,5 +4,9 @@
     <string name="app_name">BudgetApp</string>
     <string name="menu_logdata">Log transactions</string>
     <string name="menu_addcategory">Add Category</string>
-
+	<string-array name = "categories_array">
+	    <item>Food</item>
+	    <item>Drugs \'n Hoes</item>
+	    <item>Coffee</item>
+	</string-array>
 </resources>
