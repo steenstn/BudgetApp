@@ -46,7 +46,10 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	
+	public void updateCategory(String theCategory,int value)
+	{
+		dbAccess.updateCategory(theCategory,value);
+	}
 	
 	public void dropTables()
 	{

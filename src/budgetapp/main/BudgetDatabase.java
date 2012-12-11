@@ -44,12 +44,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	private static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY +
-			" text, "+ COLUMN_NUM + " integer, " + COLUMN_TOTAL + " long integer);";
+			" text, "+ COLUMN_NUM + " integer not null, " + COLUMN_TOTAL + " long integer not null);";
 	
 	private static final String DATABASE_CREATE_TABLE_DAYSUM = "create table "
 			+ TABLE_DAYSUM + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_DATE
-			+ " text, " + COLUMN_TOTAL + " long integer);";
+			+ " text, " + COLUMN_TOTAL + " long integer not null);";
 
 	public BudgetDatabase(Context context)
 	{
@@ -65,16 +65,29 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		// Put in initial categories
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
+		
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Coffee");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Drugs");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Hoes");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Misc");
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		
 	}

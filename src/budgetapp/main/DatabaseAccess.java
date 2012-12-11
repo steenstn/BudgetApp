@@ -28,8 +28,9 @@ public class DatabaseAccess {
 	public boolean addCategory(String theCategory)
 	{
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
+		values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
 		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		
 		if(insertID==-1)
 			return false;
 		else
@@ -54,6 +55,20 @@ public class DatabaseAccess {
 		return entry;
 	}
 	
+	public void updateCategory(String theCategory,long value)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor.moveToFirst();
+		int num = cursor.getInt(0)+1; // Number of transactions of this category 
+		long newTotal = cursor.getLong(1)+value;
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_NUM,num);
+		values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+		cursor.close();
+	}
+	
 	public CategoryEntry addEntry(CategoryEntry theEntry)
 	{
 		ContentValues values = new ContentValues();
@@ -68,7 +83,7 @@ public class DatabaseAccess {
 		cursor.close();
 		return entry;
 	}
-	
+	// Get n number of transactions
 	public List<BudgetEntry> getTransactions(int n)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
@@ -89,6 +104,7 @@ public class DatabaseAccess {
 		cursor.close();
 		return entries;
 	}
+	// Gets all the categories in the database
 	public List<CategoryEntry> getCategories()
 	{
 		List<CategoryEntry> entries = new ArrayList<CategoryEntry>();

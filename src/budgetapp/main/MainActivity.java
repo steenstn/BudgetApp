@@ -125,7 +125,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         for(int i=entries.size()-1;i>=0;i--)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t" + entries.get(i).getCategory() +  "\n");
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
         }
         /*
         for(int i=0;i<allCategories.size();i++)
@@ -133,6 +133,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         		temp.append(allCategories.get(i)+ "\n");
         }
     	*/
+        List<CategoryEntry> categories = datasource.getAllCategories();
+        temp.append("\n\n");
+        for(int i=1;i<categories.size();i++)
+        {	
+        //	if(categories.get(i).getNum()>0)
+        		temp.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\t\t\t\t");
+        		temp.append("Sum: "+categories.get(i).getTotal()+"\n");
+        }
     }
     
     
@@ -157,6 +165,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	        	
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
 	        	datasource.createTransactionEntry(entry);
+	        	datasource.updateCategory(theCategory,resultInt*-1);
         	}
         	//Set color
         	if(currentBudget<0)
