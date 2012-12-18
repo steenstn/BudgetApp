@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     	List<BudgetEntry> entries = datasource.getSomeTransactions(10);
         TextView temp = (TextView)findViewById(R.id.textViewLog);
         temp.setText("");
-        for(int i=entries.size()-1;i>=0;i--)
+        for(int i=0;i<entries.size();i++)
         {	
         	if(i>=0)
         		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");

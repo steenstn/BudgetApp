@@ -87,12 +87,14 @@ public class DatabaseAccess {
 	public List<BudgetEntry> getTransactions(int n)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
-		
+		//database.
 		Cursor cursor;
 		if(n<=0) // Get all entries
-			 cursor = database.query(BudgetDatabase.TABLE_CASHFLOW,allColumnsTransactions,null,null,null,null,null);
-		else
-			 cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, null, ""+n);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc",null);// database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", null, null);
+			 //cursor = database.query(BudgetDatabase.TABLE_CASHFLOW,allColumnsTransactions,null,null,null,null,null);
+		else 
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc limit 0,9",null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
+			// cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, null, ""+n);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
