@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class CategoryDialogFragment extends DialogFragment {
+public class AddCategoryDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -25,7 +25,7 @@ public class CategoryDialogFragment extends DialogFragment {
 //category.setText("heeyeye");
 
 	    // Add action buttons
-	           builder.setPositiveButton("ADD YO", new DialogInterface.OnClickListener() {
+	           builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
 	        	   
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
@@ -37,9 +37,9 @@ public class CategoryDialogFragment extends DialogFragment {
 	            	  // Toast.makeText(getContext(), "The planet is", Toast.LENGTH_LONG).show();   
 	               }
 	           })
-	           .setNegativeButton("CANCEL THIS SHIT", new DialogInterface.OnClickListener() {
+	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
-	                   CategoryDialogFragment.this.getDialog().cancel();
+	                   AddCategoryDialogFragment.this.getDialog().cancel();
 	               }
 	           });   
 	          // System.out.println("itdd is_ " + category.getText().toString());

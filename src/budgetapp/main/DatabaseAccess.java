@@ -38,6 +38,11 @@ public class DatabaseAccess {
 		else
 			return true;
 	}
+
+	public boolean removeCategory(String theCategory)
+	{
+		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
+	}
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
 		ContentValues values = new ContentValues();

@@ -193,15 +193,21 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+
+    	DialogFragment newFragment;
         switch (item.getItemId()) {
             case R.id.menu_logdata: // Change logging data status
                 logData=!logData;
                 item.setChecked(logData);
                 return true;
             case R.id.menu_addcategory:
-            	DialogFragment newFragment = new CategoryDialogFragment();
+            	newFragment = new AddCategoryDialogFragment();
                 newFragment.show(getFragmentManager(), "add_category");
                 return true;
+            case R.id.menu_removecategory:
+            	newFragment = new RemoveCategoryDialogFragment();
+            	newFragment.show(getFragmentManager(), "remove_category");
+            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

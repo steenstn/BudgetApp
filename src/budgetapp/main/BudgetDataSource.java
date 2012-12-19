@@ -77,6 +77,11 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addCategory(theCategory);
 	}
+
+	public boolean removeCategory(String theCategory)
+	{
+		return dbAccess.removeCategory(theCategory);
+	}
 	/*
 	public List<BudgetEntry> getSomeEntries(int n)
 	{
