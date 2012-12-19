@@ -18,12 +18,12 @@ public final class R {
     }
     public static final class id {
         public static final int categories_spinner=0x7f080002;
+        public static final int dialog_category_name=0x7f080004;
         public static final int editTextSubtract=0x7f080001;
         public static final int menu_addcategory=0x7f080006;
         public static final int menu_logdata=0x7f080005;
         public static final int textViewCurrentBudget=0x7f080000;
         public static final int textViewLog=0x7f080003;
-        public static final int username=0x7f080004;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

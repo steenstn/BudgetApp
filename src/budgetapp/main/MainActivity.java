@@ -30,7 +30,7 @@ import android.database.sqlite.*;
 
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
-	public BudgetDataSource datasource;
+	public static BudgetDataSource datasource;
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	private boolean logData = true; // If transactions should be logged
@@ -198,10 +198,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
                 logData=!logData;
                 item.setChecked(logData);
                 return true;
-           // case R.id.menu_addcategory:
-           // 	DialogFragment newFragment = new CategoryDialogFragment();
-           //     newFragment.show(getFragmentManager(), "add_category");
-            //    return true;
+            case R.id.menu_addcategory:
+            	DialogFragment newFragment = new CategoryDialogFragment();
+                newFragment.show(getFragmentManager(), "add_category");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

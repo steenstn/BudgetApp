@@ -29,6 +29,8 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
+		values.put(BudgetDatabase.COLUMN_NUM, 0);
+		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		
 		if(insertID==-1)
@@ -90,11 +92,9 @@ public class DatabaseAccess {
 		//database.
 		Cursor cursor;
 		if(n<=0) // Get all entries
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc",null);// database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", null, null);
-			 //cursor = database.query(BudgetDatabase.TABLE_CASHFLOW,allColumnsTransactions,null,null,null,null,null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc",null);
 		else 
 			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc limit 0,9",null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
-			// cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, null, ""+n);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
