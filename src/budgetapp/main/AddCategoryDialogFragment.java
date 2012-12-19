@@ -16,25 +16,22 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    final View view = inflater.inflate(R.layout.dialog_add_category, null);
 	    // Inflate and set the layout for the dialog
-	    // Pass null as the parent view because its going in the dialog layout
+	    final View view = inflater.inflate(R.layout.dialog_add_category, null);
+	 
 	    builder.setView(view);
-	   // final EditText category=(EditText)inflater.inflate(R.layout.dialog_add_category, null).findViewById(R.id.dialog_category_name);
-
-//category.setText("heeyeye");
-
+	 
 	    // Add action buttons
 	           builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
 	        	   
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
-	            	   //MainActivity.datasource.addCategory(category.toString());
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	            	 // System.out.println("it is_ " + category.getText().toString());
-	            	  MainActivity.datasource.addCategory(category.getText().toString());
-	            	   //String new_category = (String)findViewById(R.id.dialog_category_name);
-	            	  // Toast.makeText(getContext(), "The planet is", Toast.LENGTH_LONG).show();   
+	            	   if(MainActivity.datasource.addCategory(category.getText().toString())==true)
+	            		   Toast.makeText(view.getContext(), "Successfully added "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+	            	   else
+	            		   Toast.makeText(view.getContext(), "Failed to add "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+	            	      
 	               }
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

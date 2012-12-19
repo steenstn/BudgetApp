@@ -41,8 +41,11 @@ public class DatabaseAccess {
 
 	public boolean removeCategory(String theCategory)
 	{
-		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
-	}
+		if(theCategory.equalsIgnoreCase("Choose category")) // Can't remove first category
+			return false; 
+		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'"+ " and _id>0", null) > 0;
+	
+	} 
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
 		ContentValues values = new ContentValues();

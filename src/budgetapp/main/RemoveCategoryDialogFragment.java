@@ -16,7 +16,7 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    final View view = inflater.inflate(R.layout.dialog_add_category, null);
+	    final View view = inflater.inflate(R.layout.dialog_remove_category, null);
 	    // Inflate and set the layout for the dialog
 	    // Pass null as the parent view because its going in the dialog layout
 	    builder.setView(view);
@@ -27,8 +27,10 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	            	   MainActivity.datasource.removeCategory(category.getText().toString());
-	            	   // Toast.makeText(getContext(), "The planet is", Toast.LENGTH_LONG).show();   
+	            	   if(MainActivity.datasource.removeCategory(category.getText().toString())==true)
+	            		   Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+	            	   else
+	            		   Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();
 	               }
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

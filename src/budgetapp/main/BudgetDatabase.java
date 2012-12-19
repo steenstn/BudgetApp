@@ -14,6 +14,7 @@ import android.util.Log;
 public class BudgetDatabase extends SQLiteOpenHelper{
 
 	// The table for cash flow
+	// Basically a log for the transactions
 	public static final String TABLE_CASHFLOW = "cashflow";
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_VALUE = "value";
@@ -21,6 +22,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_CATEGORY = "category";
 	
 	// The table for cataegories
+	// Keeps track of total number of transactions of a category
+	// and the total money spent on a category
 	public static final String TABLE_CATEGORIES = "categories";
 	//COLUMN_ID
 	//COLUMN_CATEGORY
@@ -84,12 +87,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Drugs");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Hoes");
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);

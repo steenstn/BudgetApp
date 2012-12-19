@@ -1,7 +1,5 @@
 package budgetapp.main;
 
-
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.database.sqlite.*;
-
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	public static BudgetDataSource datasource;
@@ -48,7 +45,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-         try
+        try
         {
         	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
              try
@@ -88,7 +85,15 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         datasource = new BudgetDataSource(this);
         datasource.open();
         
-        // Get the categories for the Spinner
+        updateSpinner();
+        //List all budget entries
+        updateLog();
+       
+    }
+    
+    public void updateSpinner()
+    {
+    	// Get the categories for the Spinner
         List<CategoryEntry> categories = datasource.getAllCategories();
         // Put the category names in an ArrayList to get them into the spinner
         for(int i=0;i<categories.size();i++)
@@ -106,9 +111,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
      // Apply the adapter to the spinner
      spinner.setAdapter(adapter);
      spinner.setOnItemSelectedListener(this);
-        //List all budget entries
-        updateLog();
-       
+    	
     }
 
     @Override
@@ -207,7 +210,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
             case R.id.menu_removecategory:
             	newFragment = new RemoveCategoryDialogFragment();
             	newFragment.show(getFragmentManager(), "remove_category");
-            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -223,7 +225,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		{
 			subtractFromBudget(parent,theCategory);
 		}
-		parent.setSelection(0);
+		parent.setSelection(0); // Reset to "Choose category"
 		
 	}
 
