@@ -50,6 +50,10 @@ public class BudgetDataSource {
 	{
 		dbAccess.updateCategory(theCategory,value);
 	}
+	public void updateDaySum(BudgetEntry theEntry)
+	{
+		dbAccess.updateDaySum(theEntry);
+	}
 	
 	public void dropTables()
 	{
@@ -63,6 +67,14 @@ public class BudgetDataSource {
 		return dbAccess.getTransactions(0);
 	}
 	
+	public List<DayEntry> getAllDays()
+	{
+		return dbAccess.getDaySum(0);
+	}
+	public List<DayEntry> getSomeDays(int n)
+	{
+		return dbAccess.getDaySum(n);
+	}
 	public List<BudgetEntry> getSomeTransactions(int n)
 	{
 		return dbAccess.getTransactions(n);
@@ -70,9 +82,9 @@ public class BudgetDataSource {
 	
 	public List<CategoryEntry> getAllCategories()
 	{
-		
 		return dbAccess.getCategories();
 	}
+	
 	public boolean addCategory(String theCategory)
 	{
 		return dbAccess.addCategory(theCategory);
@@ -81,30 +93,6 @@ public class BudgetDataSource {
 	public boolean removeCategory(String theCategory)
 	{
 		return dbAccess.removeCategory(theCategory);
-	}
-	/*
-	public List<BudgetEntry> getSomeEntries(int n)
-	{
-		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
-		String fixedInt = ""+n;
-		Cursor cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, allColumns, null, null, null, null, null);
-		cursor.moveToFirst();
-		while(!cursor.isAfterLast())
-		{
-			BudgetEntry entry = cursorToBudgetEntry(cursor);
-			entries.add(entry);
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return entries;
-	}
-	*/
-	
-	private BudgetEntry cursorToBudgetEntry(Cursor cursor)
-	{
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
-
-		return entry;
 	}
 	
 }

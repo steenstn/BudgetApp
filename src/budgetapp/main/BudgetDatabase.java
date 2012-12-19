@@ -77,11 +77,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
 		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Coffee");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-		
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);

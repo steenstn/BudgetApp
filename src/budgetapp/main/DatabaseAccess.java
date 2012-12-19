@@ -65,6 +65,36 @@ public class DatabaseAccess {
 		return entry;
 	}
 	
+	public boolean updateDaySum(BudgetEntry theEntry)
+	{
+		//COLUMN_DATE
+		//COLUMN_TOTAL
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate()+"'",null);
+		
+		if(cursor.getCount()<=0) // No entry yet this day
+		{
+			ContentValues values = new ContentValues();
+			// Put in the values
+			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
+			values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
+			
+			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);
+			cursor.close();
+			return true;
+		}
+		cursor.moveToFirst();
+		long total = cursor.getLong(0);
+		total += theEntry.getValue();
+		//System.out.println
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_TOTAL, total);
+		
+		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate() + "'", null);
+		cursor.close();
+		return true;
+	}
+	
 	public void updateCategory(String theCategory,long value)
 	{
 		Cursor cursor;
@@ -102,12 +132,30 @@ public class DatabaseAccess {
 		if(n<=0) // Get all entries
 			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc",null);
 		else 
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc limit 0,9",null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc limit 0,"+n,null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
 			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
-
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	public List<DayEntry> getDaySum(int n)
+	{
+		List<DayEntry> entries = new ArrayList<DayEntry>();
+		//database.
+		Cursor cursor;
+		if(n<=0) // Get all entries
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id desc",null);
+		else 
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id desc limit 0,"+n,null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2));
 			entries.add(entry);
 			cursor.moveToNext();
 		}

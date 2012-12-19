@@ -105,7 +105,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
      // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
-     //ArrayAdapter.createFromResource(this,allCategories, android.R.layout.simple_spinner_item);
+   
      // Specify the layout to use when the list of choices appears
      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
      // Apply the adapter to the spinner
@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     
     public void updateLog()
     {
-    	List<BudgetEntry> entries = datasource.getSomeTransactions(10);
+    	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
         TextView temp = (TextView)findViewById(R.id.textViewLog);
         temp.setText("");
         for(int i=0;i<entries.size();i++)
@@ -130,19 +130,20 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         	if(i>=0)
         		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
         }
-        /*
-        for(int i=0;i<allCategories.size();i++)
-        {	
-        		temp.append(allCategories.get(i)+ "\n");
-        }
-    	*/
+       
         List<CategoryEntry> categories = datasource.getAllCategories();
         temp.append("\n\n");
-        for(int i=1;i<categories.size();i++)
+        for(int i=1;i<categories.size();i++) // Don't print out "Choose category"
         {	
-        //	if(categories.get(i).getNum()>0)
         		temp.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\t\t\t\t");
         		temp.append("Sum: "+categories.get(i).getTotal()+"\n");
+        }
+        List<DayEntry> days = datasource.getAllDays();
+        temp.append("\n\n");
+        for(int i=0;i<days.size();i++) 
+        {	
+        		temp.append(days.get(i).getDate()+ ": ");
+        		temp.append(days.get(i).getTotal()+"\n");
         }
     }
     
@@ -169,6 +170,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
 	        	datasource.createTransactionEntry(entry);
 	        	datasource.updateCategory(theCategory,resultInt*-1);
+	        	datasource.updateDaySum(entry);
         	}
         	//Set color
         	if(currentBudget<0)
