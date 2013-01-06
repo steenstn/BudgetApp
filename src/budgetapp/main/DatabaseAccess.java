@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 /***
  * DatabaseAccess. The class responsible for communicating with the database. Used by DatabaseSource
  * 
@@ -46,6 +47,7 @@ public class DatabaseAccess {
 		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'"+ " and _id>0", null) > 0;
 	
 	} 
+	
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
 		ContentValues values = new ContentValues();
@@ -65,6 +67,15 @@ public class DatabaseAccess {
 		return entry;
 	}
 	
+	public boolean removeEntry(BudgetEntry theEntry)
+	{
+		System.out.println("Id of entry: "+theEntry.getId());
+		int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
+		System.out.println("\nid: "+res);
+		if(res!=0)
+			return true;
+		return false;
+	}
 	public boolean updateDaySum(BudgetEntry theEntry)
 	{
 		//COLUMN_DATE

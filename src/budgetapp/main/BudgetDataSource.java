@@ -41,6 +41,10 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
+	public boolean removeTransactionEntry(BudgetEntry theEntry)
+	{
+		return dbAccess.removeEntry(theEntry);
+	}
 	
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{

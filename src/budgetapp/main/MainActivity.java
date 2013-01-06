@@ -27,6 +27,8 @@ import android.content.Context;
 import android.database.sqlite.*;
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
+	
+	TransactionCommand tempCom;
 	public static BudgetDataSource datasource;
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
@@ -60,11 +62,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
              	//EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
              	//	resultText.requestFocus();
              	newBudget.setText(""+currentBudget);
-             	if(currentBudget<0)
-               		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
-               	else
-               		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
-           	  
+             	updateColor();
             	 
              }
              catch(IOException e)
@@ -91,6 +89,15 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
        
     }
     
+    public void updateColor()
+    {
+    	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+    	if(currentBudget<0)
+    		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
+    	else
+    		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
+	  
+    }
     public void updateSpinner()
     {
     	// Get the categories for the Spinner
@@ -101,17 +108,16 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         	allCategories.add(categories.get(i).getCategory());
         }
         
-        
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
-     // Create an ArrayAdapter using the string array and a default spinner layout
+		 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
-   
-     // Specify the layout to use when the list of choices appears
-     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-     // Apply the adapter to the spinner
-     spinner.setAdapter(adapter);
-     spinner.setOnItemSelectedListener(this);
-    	
+	   
+	     // Specify the layout to use when the list of choices appears
+		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		 // Apply the adapter to the spinner
+		 spinner.setAdapter(adapter);
+		 spinner.setOnItemSelectedListener(this);
+			
     }
 
     @Override
@@ -168,16 +174,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	        	Calendar cal = Calendar.getInstance();
 	        	
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
-	        	datasource.createTransactionEntry(entry);
+	        	tempCom = new TransactionCommand(datasource,entry);
+	        	tempCom.execute();
+	        	/*datasource.createTransactionEntry(entry);
 	        	datasource.updateCategory(theCategory,resultInt*-1);
-	        	datasource.updateDaySum(entry);
+	        	datasource.updateDaySum(entry);*/
         	}
         	//Set color
-        	if(currentBudget<0)
-        		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
-        	else
-        		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
-    	  
+        	updateColor();
         	resultText.setText("");
         	updateLog();
     		DataOutputStream out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
@@ -195,12 +199,34 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     	
     		
     }
+    
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
 
     	DialogFragment newFragment;
         switch (item.getItemId()) {
+	        case R.id.menu_undo:
+	        	if(tempCom!=null && tempCom.unexecute()==true)
+	        	{
+		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+		        	currentBudget-=tempCom.getEntry().getValue();
+		        	newBudget.setText(""+currentBudget);
+		        	try
+		        	{
+			        	DataOutputStream out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
+			    		out.writeUTF(""+currentBudget);
+		        	}
+		        	catch(IOException e)
+		        	{
+		        		System.out.println("Error: "+e);
+		        	}
+		        	updateLog();
+		        	updateColor();
+	        	}
+	        	return true;
+	        	
             case R.id.menu_logdata: // Change logging data status
                 logData=!logData;
                 item.setChecked(logData);

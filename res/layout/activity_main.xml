@@ -14,10 +14,11 @@
             android:id="@+id/textViewCurrentBudget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dip"
+            android:layout_marginTop="20dip"
             android:text="Current Budget"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+
        
     </LinearLayout>
     
@@ -25,6 +26,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
         android:orientation="horizontal" >
 
 	      <EditText
@@ -46,7 +48,7 @@
           android:id="@+id/textViewLog"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="20dip"
+          android:layout_marginTop="10dip"
           android:text="Log" />
 
       
