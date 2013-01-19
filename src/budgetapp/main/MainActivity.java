@@ -202,11 +202,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     // Adds the daily plus sum for all days missing since the last time the program was run
     public void addToBudget()
     {
+    	
     	List<DayEntry> lastDay = datasource.getSomeDays(1);
     //	datasource.database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = 79", null);
    
     	
-    	if(lastDay!=null)
+    	if(!lastDay.isEmpty())
     	{
     		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	    	
