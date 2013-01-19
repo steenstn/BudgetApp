@@ -6,5 +6,8 @@
     <string name="menu_addcategory">Add category</string>
     <string name="menu_removecategory">Remove category</string>
     <string name="menu_undo">Undo transaction</string>
-	
+    <string name="dummy_content">Heeyeeayea\nyeayea</string>
+    <string name="dummy_button">What\'s going on?</string>
+    <string name="title_activity_graph">GraphActivity</string>
+
 </resources>

@@ -1,6 +1,6 @@
-package budgetapp.main;
+package budgetapp.util;
 /**
- * The abstract class for all database entries in the tables
+ * The abstract class for all database entries in the tables. Just has an ID
  * @author Steen
  *
  */

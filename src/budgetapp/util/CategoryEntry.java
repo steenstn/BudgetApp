@@ -1,14 +1,16 @@
-package budgetapp.main;
+package budgetapp.util;
+
+
 /**
- *  The class for a cataegory.
+ *  The class for a cataegoree.
  * @author Steen
  *
  */
 public class CategoryEntry extends DatabaseEntry {
 	
-	private String category;
-	private int num;
-	private long total;
+	private String category; // Name of the category
+	private int num; // How many transactions within this category
+	private long total; // Total money spent/earned within this category
 	
 	public CategoryEntry(long id, String category,int num,long total){
 		this.id = id;

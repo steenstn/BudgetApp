@@ -1,4 +1,10 @@
-package budgetapp.main;
+package budgetapp.util;
+/**
+ * The class for storing the total money spent/earned for a day.
+ * 
+ * @author Steen
+ *
+ */
 
 public class DayEntry extends DatabaseEntry{
 	private long total;

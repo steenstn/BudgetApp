@@ -1,4 +1,5 @@
-package budgetapp.main;
+package budgetapp.util;
+
 
 /**
  * Class for a budget entry. Used to keep track of transactions.
@@ -8,9 +9,9 @@ package budgetapp.main;
  */
 public class BudgetEntry extends DatabaseEntry{
 
-	private int value;
-	private String date;
-	private String category;
+	private int value; // How large the transaction was
+	private String date; // The date it was done
+	private String category; // What category the transaction had
 	
 	public BudgetEntry(int value,String date,String category)
 	{

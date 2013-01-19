@@ -1,4 +1,10 @@
-package budgetapp.main;
+package budgetapp.util;
+/**
+ * The class for executing a transaction. Uses the Command design pattern
+ * to enable undo.
+ * @author Steen
+ *
+ */
 
 public class TransactionCommand {
 
@@ -26,7 +32,7 @@ public class TransactionCommand {
 	
 	public boolean unexecute()
 	{
-		if(!unexecuted)
+		if(!unexecuted) // Only enable one unexecute()
 		{
 			//Remove transactionEntry
 			_datasource.removeTransactionEntry(_entry);

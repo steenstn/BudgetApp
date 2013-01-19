@@ -1,4 +1,4 @@
-package budgetapp.main;
+package budgetapp.util;
 /**
  * The database containing all the tables used by the application
  * 

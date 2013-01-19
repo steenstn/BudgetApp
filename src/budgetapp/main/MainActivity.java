@@ -6,25 +6,28 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import budgetapp.graph.GraphActivity;
+import budgetapp.util.BudgetDataSource;
+import budgetapp.util.BudgetEntry;
+import budgetapp.util.CategoryEntry;
+import budgetapp.util.DayEntry;
+import budgetapp.util.TransactionCommand;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.graphics.Color;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.content.ClipData.Item;
 import android.content.Context;
-import android.database.sqlite.*;
+import android.content.Intent;
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	
@@ -33,6 +36,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	private boolean logData = true; // If transactions should be logged
+	private int dailyBudget = 200; // The daily plus
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	int min(int a,int b) 
 	{
@@ -84,6 +88,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         datasource.open();
         
         updateSpinner();
+        // Add daily budget for all days since last run
+        addToBudget();
         //List all budget entries
         updateLog();
        
@@ -134,7 +140,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         for(int i=0;i<entries.size();i++)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
+        		temp.append(entries.get(i).getId() + " " + entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
         }
        
         List<CategoryEntry> categories = datasource.getAllCategories();
@@ -148,7 +154,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         temp.append("\n\n");
         for(int i=0;i<days.size();i++) 
         {	
-        		temp.append(days.get(i).getDate()+ ": ");
+        		temp.append(days.get(i).getId() + " " + days.get(i).getDate()+ ": ");
         		temp.append(days.get(i).getTotal()+"\n");
         }
     }
@@ -176,21 +182,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
 	        	tempCom = new TransactionCommand(datasource,entry);
 	        	tempCom.execute();
-	        	/*datasource.createTransactionEntry(entry);
-	        	datasource.updateCategory(theCategory,resultInt*-1);
-	        	datasource.updateDaySum(entry);*/
+	        	
         	}
         	//Set color
         	updateColor();
         	resultText.setText("");
         	updateLog();
-    		DataOutputStream out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-    		out.writeUTF(""+currentBudget);
+    		saveToFile(); // Save budget to file
     		
-    	}
-    	catch(IOException e)
-    	{
-    		System.out.println("Error: "+e);
     	}
     	catch(NumberFormatException e)
     	{
@@ -200,6 +199,67 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     		
     }
     
+    // Adds the daily plus sum for all days missing since the last time the program was run
+    public void addToBudget()
+    {
+    	List<DayEntry> lastDay = datasource.getSomeDays(1);
+    //	datasource.database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = 79", null);
+   
+    	
+    	if(lastDay!=null)
+    	{
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	    	
+	    	String lastDayString = lastDay.get(0).getDate();
+	    	Calendar lastDayCalendar = Calendar.getInstance();
+	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)));
+	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
+	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
+
+	    	// Step up to the day before tomorrow
+	    	Calendar nextDay = Calendar.getInstance();
+	    	nextDay.roll(Calendar.DAY_OF_MONTH,1);
+	    	
+	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
+	    	while(tempDate.before(nextDay))
+	    	{
+	    		if(!dateFormat.format(tempDate.getTime()).equalsIgnoreCase(dateFormat.format(nextDay.getTime())))
+	    		{
+	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
+	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
+		        	tempCom = new TransactionCommand(datasource,entry);
+		        	tempCom.execute();
+		        	currentBudget+=dailyBudget;
+		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+		        	newBudget.setText(""+currentBudget);
+	    		}
+	    		
+	    		tempDate.roll(Calendar.DAY_OF_MONTH,1);	
+	    	}
+	    	saveToFile();
+    		
+    	}
+    	
+    	
+    }
+    
+    // Saves the current budget to file
+    public void saveToFile()
+    {
+    	DataOutputStream out;
+		try {
+			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
+			out.writeUTF(""+currentBudget);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -238,6 +298,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
             case R.id.menu_removecategory:
             	newFragment = new RemoveCategoryDialogFragment();
             	newFragment.show(getFragmentManager(), "remove_category");
+            	return true;
+            case R.id.menu_showgraph:
+            	Intent intent = new Intent(this,GraphActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,11 +1,16 @@
-package budgetapp.main;
+package budgetapp.util;
+/**
+ * The class used to access the database. It itself uses the DatabaseAccess class to
+ * query the database.
+ * 
+ * @author Steen
+ * 
+ */
 
-import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentValues;
+
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -63,8 +68,7 @@ public class BudgetDataSource {
 	{
 		database.execSQL("DROP TABLE IF EXISTS " + "cashflow");
 		database.execSQL("DROP TABLE IF EXISTS " + "categories");
-		
-		
+	
 	}
 	public List<BudgetEntry> getAllTransactions()
 	{

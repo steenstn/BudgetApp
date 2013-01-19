@@ -1,7 +1,8 @@
-package budgetapp.main;
+package budgetapp.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -83,7 +84,7 @@ public class DatabaseAccess {
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate()+"'",null);
 		
-		if(cursor.getCount()<=0) // No entry yet this day
+		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
 			ContentValues values = new ContentValues();
 			// Put in the values
@@ -94,10 +95,10 @@ public class DatabaseAccess {
 			cursor.close();
 			return true;
 		}
+		// There exists an entry for this day, update it.
 		cursor.moveToFirst();
 		long total = cursor.getLong(0);
 		total += theEntry.getValue();
-		//System.out.println
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_TOTAL, total);
 		
@@ -119,7 +120,7 @@ public class DatabaseAccess {
 		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
 		cursor.close();
 	}
-	
+	// Add a CategoryEntry to the database.
 	public CategoryEntry addEntry(CategoryEntry theEntry)
 	{
 		ContentValues values = new ContentValues();
@@ -157,7 +158,7 @@ public class DatabaseAccess {
 	public List<DayEntry> getDaySum(int n)
 	{
 		List<DayEntry> entries = new ArrayList<DayEntry>();
-		//database.
+	
 		Cursor cursor;
 		if(n<=0) // Get all entries
 			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id desc",null);
