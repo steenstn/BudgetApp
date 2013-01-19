@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         for(int i=0;i<entries.size();i++)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getId() + " " + entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
+        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
         }
        
         List<CategoryEntry> categories = datasource.getAllCategories();
@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         temp.append("\n\n");
         for(int i=0;i<days.size();i++) 
         {	
-        		temp.append(days.get(i).getId() + " " + days.get(i).getDate()+ ": ");
+        		temp.append(days.get(i).getDate()+ ": ");
         		temp.append(days.get(i).getTotal()+"\n");
         }
     }
@@ -253,10 +253,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
 			out.writeUTF(""+currentBudget);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
