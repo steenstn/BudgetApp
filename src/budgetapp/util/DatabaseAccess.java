@@ -43,7 +43,7 @@ public class DatabaseAccess {
 
 	public boolean removeCategory(String theCategory)
 	{
-		if(theCategory.equalsIgnoreCase("Choose category")) // Can't remove first category
+		if(theCategory.equalsIgnoreCase("Choose category") || theCategory.equalsIgnoreCase("Misc")) // Can't remove first category or the special category
 			return false; 
 		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'"+ " and _id>0", null) > 0;
 	

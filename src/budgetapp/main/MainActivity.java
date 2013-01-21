@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
 public class MainActivity extends Activity implements OnItemSelectedListener{
@@ -224,6 +225,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	    	
 	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
+	    	int numDays = 0;
+	    	int totalMoney = 0;
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!dateFormat.format(tempDate.getTime()).equalsIgnoreCase(dateFormat.format(nextDay.getTime())))
@@ -233,6 +236,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		        	tempCom = new TransactionCommand(datasource,entry);
 		        	tempCom.execute();
 		        	currentBudget+=dailyBudget;
+		        	totalMoney+=dailyBudget;
+		        	numDays++;
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	newBudget.setText(""+currentBudget);
 	    		}
@@ -240,7 +245,11 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	    		tempDate.roll(Calendar.DAY_OF_MONTH,1);	
 	    	}
 	    	saveToFile();
-    		
+	    	if(numDays==1)
+	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " day)" , Toast.LENGTH_LONG).show();
+	    	else if(numDays>1)
+	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " days)" , Toast.LENGTH_LONG).show();
+    	
     	}
     	
     	
