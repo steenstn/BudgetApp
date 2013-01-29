@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
 	private boolean logData = true; // If transactions should be logged
-	private int dailyBudget = 200; // The daily plus
+	private int dailyBudget = 250; // The daily plus
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	int min(int a,int b) 
 	{
@@ -89,11 +89,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         datasource.open();
         
         updateSpinner();
-        // Add daily budget for all days since last run
+         //Add daily budget for all days since last run
         addToBudget();
         //List all budget entries
+
+     //   datasource.database.delete("daysum", "_id = 50", null);
         updateLog();
-       
     }
     
     public void updateColor()

@@ -88,7 +88,7 @@ public class DatabaseAccess {
 		{
 			ContentValues values = new ContentValues();
 			// Put in the values
-			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
+			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10));
 			values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
 			
 			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);
@@ -102,7 +102,7 @@ public class DatabaseAccess {
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_TOTAL, total);
 		
-		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate() + "'", null);
+		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 		cursor.close();
 		return true;
 	}
