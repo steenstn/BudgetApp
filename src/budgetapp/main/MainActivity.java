@@ -177,7 +177,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         	// Add to database if logging is set
         	if(logData)
         	{
-	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	        	Calendar cal = Calendar.getInstance();
 	        	
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
@@ -205,17 +205,19 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     {
     	
     	List<DayEntry> lastDay = datasource.getSomeDays(1);
-    //	datasource.database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = 79", null);
    
     	
     	if(!lastDay.isEmpty())
     	{
-    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-	    	
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    		
+    		// For comparing dates we just want to compare the strings based on days
+	    	SimpleDateFormat compareFormat = new SimpleDateFormat("yy/MM/dd"); 
 	    	String lastDayString = lastDay.get(0).getDate();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
 	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
-	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)));
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
+	    	
 	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
 
@@ -229,7 +231,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	    	int totalMoney = 0;
 	    	while(tempDate.before(nextDay))
 	    	{
-	    		if(!dateFormat.format(tempDate.getTime()).equalsIgnoreCase(dateFormat.format(nextDay.getTime())))
+	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
