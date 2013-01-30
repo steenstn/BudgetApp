@@ -67,10 +67,10 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
 		// Put in initial categories
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
+		/*values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);*/
 		
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);

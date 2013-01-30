@@ -39,7 +39,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
-	                  // AddCategoryDialogFragment.this.getDialog().cancel();
+	                   AddCategoryDialogFragment.this.getDialog().cancel();
 	               }
 	           });   
 	          // System.out.println("itdd is_ " + category.getText().toString());

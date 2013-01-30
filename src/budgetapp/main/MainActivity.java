@@ -114,6 +114,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	// Get the categories for the Spinner
         List<CategoryEntry> categories = datasource.getAllCategories();
         // Put the category names in an ArrayList to get them into the spinner
+        allCategories.add("Choose category");
         for(int i=0;i<categories.size();i++)
         {
         	allCategories.add(categories.get(i).getCategory());
@@ -151,7 +152,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
        
         List<CategoryEntry> categories = datasource.getAllCategories();
         temp.append("\n\n");
-        for(int i=1;i<categories.size();i++) // Don't print out "Choose category"
+        for(int i=0;i<categories.size();i++) 
         {	
         		temp.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\t\t\t\t");
         		temp.append("Sum: "+categories.get(i).getTotal()+"\n");
