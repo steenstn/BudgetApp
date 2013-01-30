@@ -15,8 +15,9 @@ import budgetapp.util.TransactionCommand;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.DialogFragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-public class MainActivity extends Activity implements OnItemSelectedListener{
+public class MainActivity extends FragmentActivity implements OnItemSelectedListener{
 
 	
 	TransactionCommand tempCom; // A TransactionCommand enabling Undo
@@ -299,11 +300,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
                 return true;
             case R.id.menu_addcategory:
             	newFragment = new AddCategoryDialogFragment();
-                newFragment.show(getFragmentManager(), "add_category");
+                newFragment.show(getSupportFragmentManager(), "add_category");
+              
                 return true;
             case R.id.menu_removecategory:
             	newFragment = new RemoveCategoryDialogFragment();
-            	newFragment.show(getFragmentManager(), "remove_category");
+            	newFragment.show(getSupportFragmentManager(), "remove_category");
             	return true;
             case R.id.menu_showgraph:
             	Intent intent = new Intent(this,GraphActivity.class);

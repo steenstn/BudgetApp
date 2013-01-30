@@ -4,16 +4,16 @@ package budgetapp.main;
  */
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class RemoveCategoryDialogFragment extends DialogFragment {
-	@Override
+	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    // Get the layout inflater
@@ -37,7 +37,8 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
-	                   RemoveCategoryDialogFragment.this.getDialog().cancel();
+	                   //RemoveCategoryDialogFragment.this.getDialog().cancel();
+	                   //RemoveCategoryDialogFragment.this.
 	               }
 	           });   
 	          // System.out.println("itdd is_ " + category.getText().toString());
