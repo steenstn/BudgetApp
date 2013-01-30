@@ -32,13 +32,14 @@ import android.content.Intent;
 public class MainActivity extends Activity implements OnItemSelectedListener{
 
 	
-	TransactionCommand tempCom;
-	public static BudgetDataSource datasource;
+	TransactionCommand tempCom; // A TransactionCommand enabling Undo
+	public static BudgetDataSource datasource; // The connection to the database
 	int currentBudget = 0;
-	private String currentBudgetFileName = "current_budget"; // Internal file for current budget
+	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
 	private boolean logData = true; // If transactions should be logged
 	private int dailyBudget = 250; // The daily plus
 	public ArrayList<String> allCategories = new ArrayList<String>();
+	
 	int min(int a,int b) 
 	{
 		if(a<b)
@@ -60,12 +61,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
             	 String strLine = in.readUTF();
             	 currentBudget = Integer.parseInt(strLine);
            	
-           	  //Close the input stream
-           	  in.close();
+	           	//Close the input stream
+	           	in.close();
            	  
              	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-             	//EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
-             	//	resultText.requestFocus();
              	newBudget.setText(""+currentBudget);
              	updateColor();
             	 
@@ -97,6 +96,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         updateLog();
     }
     
+    // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
@@ -106,6 +106,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
 	  
     }
+    
+    // Updates the spinner with all available categories
     public void updateSpinner()
     {
     	// Get the categories for the Spinner
@@ -134,6 +136,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
         return true;
     }
     
+    // Updates the log of transactions, categories and daysums
     public void updateLog()
     {
     	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
@@ -210,21 +213,21 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     	
     	if(!lastDay.isEmpty())
     	{
-    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
     		
-    		// For comparing dates we just want to compare the strings based on days
-	    	SimpleDateFormat compareFormat = new SimpleDateFormat("yy/MM/dd"); 
+    		
 	    	String lastDayString = lastDay.get(0).getDate();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
 	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
-	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
+	    	// Set HH:mm to 00:00
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)));
 	    	
 	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
 
 	    	// Step up to the day before tomorrow
 	    	Calendar nextDay = Calendar.getInstance();
-	    	nextDay.roll(Calendar.DAY_OF_MONTH,1);
+	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
 	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
@@ -232,7 +235,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 	    	int totalMoney = 0;
 	    	while(tempDate.before(nextDay))
 	    	{
-	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
+	    		if(!dateFormat.format(tempDate.getTime()).equalsIgnoreCase(dateFormat.format(nextDay.getTime())))
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
@@ -245,7 +248,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		        	newBudget.setText(""+currentBudget);
 	    		}
 	    		
-	    		tempDate.roll(Calendar.DAY_OF_MONTH,1);	
+	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
 	    	saveToFile();
 	    	if(numDays==1)
@@ -258,7 +261,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
     	
     }
     
-    // Saves the current budget to file
+    // Saves the current budget to the internal file
     public void saveToFile()
     {
     	DataOutputStream out;
@@ -284,15 +287,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener{
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	currentBudget-=tempCom.getEntry().getValue();
 		        	newBudget.setText(""+currentBudget);
-		        	try
-		        	{
-			        	DataOutputStream out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-			    		out.writeUTF(""+currentBudget);
-		        	}
-		        	catch(IOException e)
-		        	{
-		        		System.out.println("Error: "+e);
-		        	}
+		        	saveToFile();
 		        	updateLog();
 		        	updateColor();
 	        	}

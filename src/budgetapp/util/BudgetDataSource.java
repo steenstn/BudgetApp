@@ -18,8 +18,8 @@ public class BudgetDataSource {
 
 	
 	// Database fields
-	public SQLiteDatabase database;
-	public BudgetDatabase dbHelper;
+	private SQLiteDatabase database;
+	private BudgetDatabase dbHelper;
 	private DatabaseAccess dbAccess;
 	
 	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,

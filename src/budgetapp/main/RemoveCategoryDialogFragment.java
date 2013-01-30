@@ -1,5 +1,7 @@
 package budgetapp.main;
-
+/**
+ * Dialog fragment for removing a category
+ */
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;

@@ -88,7 +88,7 @@ public class DatabaseAccess {
 		{
 			ContentValues values = new ContentValues();
 			// Put in the values
-			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10));
+			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
 			values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
 			
 			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);

@@ -2,7 +2,7 @@ package budgetapp.util;
 
 
 /**
- *  The class for a cataegoree.
+ *  The class for a cataegoree. Has number of entries and total money spent on it
  * @author Steen
  *
  */

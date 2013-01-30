@@ -1,5 +1,8 @@
 package budgetapp.main;
-
+/**
+ * Dialog Fragment for adding a new category
+ * 
+ */
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
