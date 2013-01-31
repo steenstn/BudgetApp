@@ -2,34 +2,39 @@
 
     <item
         android:id="@+id/menu_undo"
-        android:orderInCategory="97"
+        android:orderInCategory="50"
         android:showAsAction="never"
         android:title="@string/menu_undo"
         />
     <item 
         android:id="@+id/menu_addcategory"
-        android:orderInCategory="98"
+        android:orderInCategory="60"
         android:showAsAction="never"
         android:title="@string/menu_addcategory"
         
         />
     <item 
         android:id="@+id/menu_removecategory"
-        android:orderInCategory="99"
+        android:orderInCategory="70"
         android:showAsAction="never"
         android:title="@string/menu_removecategory"
-        
         />
     <item
         android:id="@+id/menu_logdata"
-        android:orderInCategory="100"
+        android:orderInCategory="80"
         android:showAsAction="never"
         android:title="@string/menu_logdata" android:checkable="true"
         android:checked="true"
         />
+    <item 
+        android:id="@+id/menu_setdailybudget"
+        android:orderInCategory="90"
+        android:showAsAction="never"
+        android:title="@string/menu_setdailybudget"
+        />
     <item
         android:id="@+id/menu_showgraph"
-        android:orderInCategory="101"
+        android:orderInCategory="100"
         android:showAsAction="never"
         android:title="And I said..."
         />

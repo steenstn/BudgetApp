@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BudgetApp</string>
+    <string name="app_name">MrCashManager</string>
     <string name="menu_logdata">Log transactions</string>
     <string name="menu_addcategory">Add category</string>
     <string name="menu_removecategory">Remove category</string>
     <string name="menu_undo">Undo transaction</string>
+    <string name="menu_setdailybudget">Set daily budget</string>
     <string name="dummy_content">Heeyeeayea\nyeayea</string>
     <string name="dummy_button">What\'s going on?</string>
     <string name="title_activity_graph">GraphActivity</string>

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:text="Current Budget"
+            android:text="0"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -39,7 +39,7 @@
 	      </EditText>
 	      <Spinner
             android:id="@+id/categories_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:spinnerMode="dialog" />

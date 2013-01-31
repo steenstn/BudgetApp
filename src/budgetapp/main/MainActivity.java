@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
 	private boolean logData = true; // If transactions should be logged
-	private int dailyBudget = 250; // The daily plus
+	private int dailyBudget = 0; // The daily plus, set to zero until value is read/written in internal file
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	
 	int min(int a,int b) 
@@ -48,12 +48,31 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		return b;
 	}
 	
+	public void setDailyBudget(int budget)
+	{
+		dailyBudget = budget;
+	}
+	
+	public int getDailyBudget()
+	{
+		return dailyBudget;
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+        datasource = new BudgetDataSource(this);
+        datasource.open();
+
+        updateSpinner();
+        updateLog();
+    }
+    
+    @Override
+    public void onResume()
+    {
+    	super.onResume();
         try
         {
         	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
@@ -61,6 +80,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
              {
             	 String strLine = in.readUTF();
             	 currentBudget = Integer.parseInt(strLine);
+            	 try
+            	 {
+            		 strLine = in.readUTF();
+            		 dailyBudget = Integer.parseInt(strLine);
+            	 }
+            	 catch(IOException e)
+            	 {
+            		 Toast.makeText(this.getBaseContext(),"Daily budget set to 0. Change in menu", Toast.LENGTH_LONG).show();
+            	 }
            	
 	           	//Close the input stream
 	           	in.close();
@@ -84,17 +112,10 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         	currentBudget=0;
         }
       
-        	  
-        datasource = new BudgetDataSource(this);
-        datasource.open();
-        
-        updateSpinner();
          //Add daily budget for all days since last run
         addToBudget();
-        //List all budget entries
-
-     //   datasource.database.delete("daysum", "_id = 50", null);
-        updateLog();
+        
+        
     }
     
     // Colors the currentBudget text depending on the size of the current budget
@@ -113,6 +134,9 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     {
     	// Get the categories for the Spinner
         List<CategoryEntry> categories = datasource.getAllCategories();
+        
+        //Clear allCategories if there is anything in it
+        allCategories.clear();
         // Put the category names in an ArrayList to get them into the spinner
         allCategories.add("Choose category");
         for(int i=0;i<categories.size();i++)
@@ -211,18 +235,20 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     {
     	
     	List<DayEntry> lastDay = datasource.getSomeDays(1);
-   
+    	
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+		
     	
     	if(!lastDay.isEmpty())
     	{
-    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+    		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
     		
     		
 	    	String lastDayString = lastDay.get(0).getDate();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
 	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
 	    	// Set HH:mm to 00:00
-	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)));
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
 	    	
 	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
@@ -237,7 +263,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	    	int totalMoney = 0;
 	    	while(tempDate.before(nextDay))
 	    	{
-	    		if(!dateFormat.format(tempDate.getTime()).equalsIgnoreCase(dateFormat.format(nextDay.getTime())))
+	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
@@ -253,13 +279,21 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
 	    	saveToFile();
-	    	if(numDays==1)
-	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " day)" , Toast.LENGTH_LONG).show();
-	    	else if(numDays>1)
-	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " days)" , Toast.LENGTH_LONG).show();
-    	
+	    	if(numDays>0)
+	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " day"+((numDays>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();
+	    	
+	    	updateLog();
     	}
-    	
+    	else // Add a transaction of 0
+    	{
+    		Calendar tempDate = Calendar.getInstance();
+    		BudgetEntry entry = new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income");
+        	
+        	datasource.updateDaySum(new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income"));
+        
+
+        	updateLog();
+    	}
     	
     }
     
@@ -270,6 +304,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		try {
 			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
 			out.writeUTF(""+currentBudget);
+			out.writeUTF(""+dailyBudget);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -302,12 +337,16 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
             case R.id.menu_addcategory:
             	newFragment = new AddCategoryDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "add_category");
-              
                 return true;
             case R.id.menu_removecategory:
             	newFragment = new RemoveCategoryDialogFragment();
             	newFragment.show(getSupportFragmentManager(), "remove_category");
             	return true;
+            case R.id.menu_setdailybudget:
+            	newFragment = new DailyBudgetFragment();
+            	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
+            	return true;
+            	
             case R.id.menu_showgraph:
             	Intent intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
