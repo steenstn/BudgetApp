@@ -1,4 +1,4 @@
-BudgetApp
+MrCashManager
 =========
 The recognised world leading budget application paradigm
 
