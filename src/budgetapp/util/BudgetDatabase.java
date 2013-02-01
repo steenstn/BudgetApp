@@ -106,6 +106,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
 		}
 		System.out.println("Updated database");
-	    //onCreate(db);
+	    
 	}
 }
