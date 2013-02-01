@@ -166,27 +166,34 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void updateLog()
     {
     	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
-        TextView temp = (TextView)findViewById(R.id.textViewLog);
-        temp.setText("");
+        TextView left = (TextView)findViewById(R.id.textViewLogLeft);
+        TextView right = (TextView)findViewById(R.id.textViewLogRight);
+        left.setText("");
+        right.setText("");
         for(int i=0;i<entries.size();i++)
         {	
         	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
+        	{
+        		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
+        		right.append(entries.get(i).getCategory() + "\n");
+        	}	
         }
        
         List<CategoryEntry> categories = datasource.getAllCategories();
-        temp.append("\n\n");
+        left.append("\n\n");
+        right.append("\n\n");
+        
         for(int i=0;i<categories.size();i++) 
         {	
-        		temp.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\t\t\t\t");
-        		temp.append("Sum: "+categories.get(i).getTotal()+"\n");
+        	left.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\n");
+        	right.append("Sum: "+categories.get(i).getTotal()+"\n");
         }
         List<DayEntry> days = datasource.getAllDays();
-        temp.append("\n\n");
+        left.append("\n\n");
         for(int i=0;i<days.size();i++) 
         {	
-        		temp.append(days.get(i).getDate()+ ": ");
-        		temp.append(days.get(i).getTotal()+"\n");
+        	left.append(days.get(i).getDate()+ ": ");
+        		left.append(days.get(i).getTotal()+"\n");
         }
         
     }
