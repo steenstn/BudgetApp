@@ -82,8 +82,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Other");
-		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		/*
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
@@ -116,7 +114,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_DAYSUM + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
-		case 2:
+		case 2:// Intermediate version 2.0.whatever. Create the new database storing category names
 			db.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
@@ -124,8 +122,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
-			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
-			values.put(BudgetDatabase.COLUMN_CATEGORY, "Other");
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		}
 		System.out.println("Updated database");

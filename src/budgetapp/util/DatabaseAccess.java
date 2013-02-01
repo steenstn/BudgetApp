@@ -41,10 +41,7 @@ public class DatabaseAccess {
 
 	public boolean removeCategory(String theCategory)
 	{
-		if(theCategory.equalsIgnoreCase("Other")) // Can't remove the special category
-			return false; 
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
-	
 	} 
 	
 	public BudgetEntry addEntry(BudgetEntry theEntry)
@@ -141,15 +138,26 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
-		cursor.moveToFirst();
-		int num = cursor.getInt(0)-1; // Number of transactions of this category 
-		long newTotal = cursor.getLong(1)+value;
-		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_NUM,num);
-		values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
-		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+		if(cursor.getCount()!=0)
+		{
+			cursor.moveToFirst();
+			int num = cursor.getInt(0)-1; // Number of transactions of this category 
+			long newTotal = cursor.getLong(1)+value;
+			
+			if(num==0 && newTotal==0) // No transactions left here, remove
+			{
+				database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = '" + theCategory + "'", null);
+			}
+			else // Update the transaction entry
+			{
+				ContentValues values = new ContentValues();
+				values.put(BudgetDatabase.COLUMN_NUM,num);
+				values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+				database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+			}
+			
+		}
 		cursor.close();
-		
 			
 	}
 	// Add a CategoryEntry to the database.

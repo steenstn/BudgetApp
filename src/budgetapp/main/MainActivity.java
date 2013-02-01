@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         {
         	allCategories.add(categories.get(i));
         }
-        
+        allCategories.add("Other...");
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
 		 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
@@ -377,9 +377,14 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	{
 		//Toast.makeText(parent.getContext(), "The planet is " +parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
 		String theCategory = parent.getItemAtPosition(pos).toString();
-		if(pos!=0)
+		if(pos!=0 && pos!=parent.getCount()-1) // Don't add "Choose category" or "Other..."
 		{
 			subtractFromBudget(parent,theCategory);
+		}
+		if(pos==parent.getCount()-1)
+		{
+			DialogFragment newFragment = new OtherCategoryDialogFragment();
+        	newFragment.show(getSupportFragmentManager(), "other_category");
 		}
 		parent.setSelection(0); // Reset to "Choose category"
 		
