@@ -44,7 +44,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	//COLUMN_TOTAL
 
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 2;
 	
 	private static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
