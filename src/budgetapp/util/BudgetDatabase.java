@@ -5,8 +5,11 @@ package budgetapp.util;
  * @author Steen
  * 
  */
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -116,14 +119,28 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
 		case 2:// Intermediate version 2.0.whatever. Create the new database storing category names
 			db.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
+			ArrayList<String> tempNames = new ArrayList<String>();
+			Cursor cursor = db.rawQuery("SELECT "+BudgetDatabase.COLUMN_CATEGORY+" FROM "+BudgetDatabase.TABLE_CATEGORIES, null);
+			if(cursor.getCount()!=0)
+			{
+				cursor.moveToFirst();
+				while(!cursor.isAfterLast())
+				{
+					tempNames.add(cursor.getString(0));
+					cursor.moveToNext();
+				}
+				
+			}
 			ContentValues values = new ContentValues();
-			values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
+			for(int i=0;i<tempNames.size();i++)
+				values.put(BudgetDatabase.COLUMN_CATEGORY, tempNames.get(i));
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
-			values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
+			/*values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
-			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);*/
 		}
+		
 		System.out.println("Updated database");
 	    
 	}
