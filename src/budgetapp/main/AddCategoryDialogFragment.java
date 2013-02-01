@@ -31,8 +31,11 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
 	            	   if(MainActivity.datasource.addCategory(category.getText().toString())==true)
+	            	   {
 	            		   Toast.makeText(view.getContext(), "Successfully added "+ category.getText().toString() , Toast.LENGTH_LONG).show();
-	            	   else
+	            		   ((MainActivity) getActivity()).updateSpinner();
+	            	   }
+	            		   else
 	            		   Toast.makeText(view.getContext(), "Failed to add "+ category.getText().toString() , Toast.LENGTH_LONG).show();
 	            	      
 	               }
