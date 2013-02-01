@@ -31,9 +31,7 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		
 		if(insertID==-1)
 			return false;
@@ -43,9 +41,9 @@ public class DatabaseAccess {
 
 	public boolean removeCategory(String theCategory)
 	{
-		if(theCategory.equalsIgnoreCase("Misc")) // Can't remove the special category
+		if(theCategory.equalsIgnoreCase("Other")) // Can't remove the special category
 			return false; 
-		return database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
+		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
 	
 	} 
 	
@@ -203,6 +201,21 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getLong(3),cursor.getInt(4)));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	public List<String> getCategoryNames()
+	{
+		List<String> entries = new ArrayList<String>();
+		
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_CATEGORY + " from " + BudgetDatabase.TABLE_CATEGORY_NAMES,null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			entries.add(cursor.getString(0));
 			cursor.moveToNext();
 		}
 		cursor.close();

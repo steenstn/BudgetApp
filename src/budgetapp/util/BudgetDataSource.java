@@ -103,7 +103,10 @@ public class BudgetDataSource {
 	{
 		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
 	}
-	
+	public List<String> getCategoryNames()
+	{
+		return dbAccess.getCategoryNames();
+	}
 	public boolean addCategory(String theCategory)
 	{
 		return dbAccess.addCategory(theCategory);

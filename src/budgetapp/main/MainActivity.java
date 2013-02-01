@@ -134,7 +134,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void updateSpinner()
     {
     	// Get the categories for the Spinner
-        List<CategoryEntry> categories = datasource.getAllCategories();
+        List<String> categories = datasource.getCategoryNames();
         
         //Clear allCategories if there is anything in it
         allCategories.clear();
@@ -142,7 +142,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         allCategories.add("Choose category");
         for(int i=0;i<categories.size();i++)
         {
-        	allCategories.add(categories.get(i).getCategory());
+        	allCategories.add(categories.get(i));
         }
         
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
@@ -177,7 +177,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		right.append(entries.get(i).getCategory() + "\n");
         		
         }
-       
+        
+        
         List<CategoryEntry> categories = datasource.getCategoriesSorted();
         left.append("\n\n");
         right.append("\n\n");
@@ -187,7 +188,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         {	
         	if(i>4) // Only show top 5
         		break;
-        	if(categories.get(i).getTotal()<0)
+        	if(categories.get(i).getTotal()!=0)
         	{
 	        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
 	        	right.append(categories.get(i).getNum()+"\n");

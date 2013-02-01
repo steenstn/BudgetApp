@@ -23,7 +23,9 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_CATEGORY = "category";
 	public static final String COLUMN_FLAGS = "flags";
 	
-	// The table for cataegories
+	//The table with the different names for categories, used by the Spinner to select categories
+	public static final String TABLE_CATEGORY_NAMES = "categorynames";
+	// The table for transactions for cataegories
 	// Keeps track of total number of transactions of a category
 	// and the total money spent on a category
 	public static final String TABLE_CATEGORIES = "categories";
@@ -39,8 +41,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	//COLUMN_TOTAL
 
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	
+	private static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
+			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, " + COLUMN_CATEGORY
+			+ " text);";
 	private static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
 			+ TABLE_CASHFLOW + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " +COLUMN_VALUE +
@@ -67,13 +73,18 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_CASHFLOW);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORIES);
 		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
+		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 		// Put in initial categories
 		ContentValues values = new ContentValues();
-		/*values.put(BudgetDatabase.COLUMN_CATEGORY, "Choose category");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);*/
-		
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
+		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
+		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
+		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Other");
+		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+		/*
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
@@ -92,18 +103,30 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Misc");
 		values.put(BudgetDatabase.COLUMN_NUM, 0);
 		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);*/
 		
 	}
 	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		if(oldVersion==1) // Database from app version 2.0. Add the flags-column 
+		switch(oldVersion)  
 		{
+		case 1:// Database from app version 2.0. Add the flags-column
 			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_DAYSUM + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
+		case 2:
+			db.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
+			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+			values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
+			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+			values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
+			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+			values.put(BudgetDatabase.COLUMN_CATEGORY, "Other");
+			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		}
 		System.out.println("Updated database");
 	    
