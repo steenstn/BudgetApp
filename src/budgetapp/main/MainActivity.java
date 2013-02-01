@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         {	
         	if(i>4) // Only show top 5
         		break;
-        	if(categories.get(i).getTotal()!=0)
+        	//if(categories.get(i).getTotal()!=0)
         	{
 	        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
 	        	right.append(categories.get(i).getNum()+"\n");

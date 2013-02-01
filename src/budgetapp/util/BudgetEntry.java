@@ -65,6 +65,6 @@ public class BudgetEntry extends DatabaseEntry{
 	}
 	@Override
 	public String toString(){
-		return date + ": " + value;
+		return "ID: " + id + " val: "+ value + " date: " + date + " cat: " + category + " flags: " +flags;
 	}
 }

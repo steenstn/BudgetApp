@@ -28,6 +28,7 @@ public class TransactionCommand {
 	{
 		BudgetEntry temp = _datasource.createTransactionEntry(_entry);
 		_entry.setId(temp.getId());
+		
     	_datasource.addToCategory(_entry.getCategory(),_entry.getValue());
     	_datasource.updateDaySum(_entry);
 	}

@@ -49,6 +49,7 @@ public class DatabaseAccess {
 	
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
+		
 		ContentValues values = new ContentValues();
 		// Put in the values
 		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
@@ -107,15 +108,31 @@ public class DatabaseAccess {
 	
 	public void addToCategory(String theCategory,long value)
 	{
+		
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
-		cursor.moveToFirst();
-		int num = cursor.getInt(0)+1; // Number of transactions of this category 
-		long newTotal = cursor.getLong(1)+value;
-		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_NUM,num);
-		values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
-		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+		
+		if(cursor.getCount()!=0) // The category already has transactions
+		{
+			cursor.moveToFirst();
+			int num = cursor.getInt(0)+1; // Number of transactions of this category 
+			long newTotal = cursor.getLong(1)+value;
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_NUM,num);
+			values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+			database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+			
+		}
+		else // Insert a new row
+		{
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
+			values.put(BudgetDatabase.COLUMN_NUM,1);
+			values.put(BudgetDatabase.COLUMN_TOTAL,value);
+			
+			database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
+			
+		}
 		cursor.close();
 	}
 	
