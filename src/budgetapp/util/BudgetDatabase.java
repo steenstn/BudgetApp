@@ -126,6 +126,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 				cursor.moveToFirst();
 				while(!cursor.isAfterLast())
 				{
+					System.out.println(cursor.getString(0));
 					tempNames.add(cursor.getString(0));
 					cursor.moveToNext();
 				}
@@ -133,8 +134,10 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			}
 			ContentValues values = new ContentValues();
 			for(int i=0;i<tempNames.size();i++)
+			{	
 				values.put(BudgetDatabase.COLUMN_CATEGORY, tempNames.get(i));
-			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+				db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+			}
 			/*values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
