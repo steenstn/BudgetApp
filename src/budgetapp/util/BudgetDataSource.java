@@ -55,9 +55,9 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	public void updateCategory(String theCategory,int value)
+	public void updateCategory(String theCategory,int value,int n)
 	{
-		dbAccess.updateCategory(theCategory,value);
+		dbAccess.updateCategory(theCategory,value,n);
 	}
 	public void updateDaySum(BudgetEntry theEntry)
 	{

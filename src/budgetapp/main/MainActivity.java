@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -168,28 +169,28 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
         TextView right = (TextView)findViewById(R.id.textViewLogRight);
-        left.setText("");
-        right.setText("");
+        left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
+        right.setText(Html.fromHtml("<b>Category</><br />"));
         for(int i=0;i<entries.size();i++)
         {	
-        	if(i>=0)
-        	{
         		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
         		right.append(entries.get(i).getCategory() + "\n");
-        	}	
+        		
         }
        
         List<CategoryEntry> categories = datasource.getAllCategories();
         left.append("\n\n");
         right.append("\n\n");
-        
+        left.append(Html.fromHtml("<b>Total transactions</b><br />"));
+        right.append(Html.fromHtml("<b>Sum</b><br />"));
         for(int i=0;i<categories.size();i++) 
         {	
         	left.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\n");
-        	right.append("Sum: "+categories.get(i).getTotal()+"\n");
+        	right.append(categories.get(i).getTotal()+"\n");
         }
         List<DayEntry> days = datasource.getAllDays();
         left.append("\n\n");
+        left.append(Html.fromHtml("<b>Daily total</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");

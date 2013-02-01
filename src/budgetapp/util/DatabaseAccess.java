@@ -107,12 +107,12 @@ public class DatabaseAccess {
 		return true;
 	}
 	
-	public void updateCategory(String theCategory,long value)
+	public void updateCategory(String theCategory,long value,int n)
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
 		cursor.moveToFirst();
-		int num = cursor.getInt(0)+1; // Number of transactions of this category 
+		int num = cursor.getInt(0)+n; // Number of transactions of this category 
 		long newTotal = cursor.getLong(1)+value;
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_NUM,num);
