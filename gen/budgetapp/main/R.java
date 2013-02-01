@@ -35,10 +35,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int fullscreen_content=0x7f080000;
         public static final int fullscreen_content_controls=0x7f080001;
         public static final int menu_addcategory=0x7f08000d;
-        public static final int menu_logdata=0x7f08000f;
         public static final int menu_removecategory=0x7f08000e;
-        public static final int menu_setdailybudget=0x7f080010;
-        public static final int menu_showgraph=0x7f080011;
+        public static final int menu_setdailybudget=0x7f08000f;
+        public static final int menu_statistics=0x7f080010;
         public static final int menu_undo=0x7f08000c;
         public static final int textViewCurrentBudget=0x7f080003;
         public static final int textViewLogLeft=0x7f080006;
@@ -47,10 +46,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class layout {
         public static final int activity_graph=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int dialog_add_category=0x7f030002;
-        public static final int dialog_other_category=0x7f030003;
-        public static final int dialog_remove_category=0x7f030004;
-        public static final int dialog_set_dailybudget=0x7f030005;
+        public static final int activity_stats=0x7f030002;
+        public static final int dialog_add_category=0x7f030003;
+        public static final int dialog_other_category=0x7f030004;
+        public static final int dialog_remove_category=0x7f030005;
+        public static final int dialog_set_dailybudget=0x7f030006;
     }
     public static final class menu {
         public static final int activity_main=0x7f070000;
@@ -63,6 +63,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int menu_logdata=0x7f050001;
         public static final int menu_removecategory=0x7f050003;
         public static final int menu_setdailybudget=0x7f050005;
+        public static final int menu_statistics=0x7f050009;
         public static final int menu_undo=0x7f050004;
         public static final int title_activity_graph=0x7f050008;
     }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import budgetapp.graph.GraphActivity;
 import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -14,7 +13,6 @@ import budgetapp.util.DayEntry;
 import budgetapp.util.TransactionCommand;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
@@ -302,8 +300,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	else // Add a transaction of 0
     	{
     		Calendar tempDate = Calendar.getInstance();
-    		BudgetEntry entry = new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income");
-        	
+    		
         	datasource.updateDaySum(new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income"));
         
 
@@ -344,11 +341,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		        	updateColor();
 	        	}
 	        	return true;
-	        	
-            case R.id.menu_logdata: // Change logging data status
+	        
+	        /*
+            case R.id.menu_logdata: // Change logging data status (Not visible as standard
                 logData=!logData;
                 item.setChecked(logData);
-                return true;
+                return true;*/
             case R.id.menu_addcategory:
             	newFragment = new AddCategoryDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "add_category");
@@ -361,11 +359,14 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
             	newFragment = new DailyBudgetFragment();
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
             	return true;
-            	
-            case R.id.menu_showgraph:
-            	Intent intent = new Intent(this,GraphActivity.class);
+            case R.id.menu_statistics:
+            	Intent intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
+           /* case R.id.menu_showgraph: // Wait for it!
+            	Intent intent = new Intent(this,GraphActivity.class);
+                startActivity(intent);
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

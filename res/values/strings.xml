@@ -10,5 +10,7 @@
     <string name="dummy_content">Heeyeeayea\nyeayea</string>
     <string name="dummy_button">What\'s going on?</string>
     <string name="title_activity_graph">GraphActivity</string>
+    <string name="menu_statistics">Show statistics</string>
+    
 
 </resources>
