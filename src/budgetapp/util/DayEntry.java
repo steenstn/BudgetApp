@@ -21,6 +21,13 @@ public class DayEntry extends DatabaseEntry{
 		this.total=total;
 		this.date=date;
 	}
+	public DayEntry(long id,String date,long total,int flags)
+	{
+		this.id=id;
+		this.total=total;
+		this.date=date;
+		this.flags=flags;
+	}
 	
 	public void setId(long id){
 		this.id = id;

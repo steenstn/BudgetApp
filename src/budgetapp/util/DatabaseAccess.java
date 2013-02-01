@@ -18,8 +18,8 @@ public class DatabaseAccess {
 
 	private SQLiteDatabase database;
 	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
-			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY};
-	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_TOTAL};
+			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_FLAGS};
+	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_TOTAL,BudgetDatabase.COLUMN_FLAGS};
 	
 	public DatabaseAccess(SQLiteDatabase theDatabase)
 	{
@@ -63,7 +63,7 @@ public class DatabaseAccess {
 				allColumnsTransactions,BudgetDatabase.COLUMN_ID + " = " + insertId, null,
 				null, null, null);
 		cursor.moveToFirst();
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 		cursor.close();
 		return entry;
 	}
@@ -107,18 +107,35 @@ public class DatabaseAccess {
 		return true;
 	}
 	
-	public void updateCategory(String theCategory,long value,int n)
+	public void addToCategory(String theCategory,long value)
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
 		cursor.moveToFirst();
-		int num = cursor.getInt(0)+n; // Number of transactions of this category 
+		int num = cursor.getInt(0)+1; // Number of transactions of this category 
 		long newTotal = cursor.getLong(1)+value;
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_NUM,num);
 		values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
 		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
 		cursor.close();
+	}
+	
+	// Remove a value from the category table, also decreases the number of transactions by 1
+	public void removeFromCategory(String theCategory,long value)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor.moveToFirst();
+		int num = cursor.getInt(0)-1; // Number of transactions of this category 
+		long newTotal = cursor.getLong(1)+value;
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_NUM,num);
+		values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+		database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
+		cursor.close();
+		
+			
 	}
 	// Add a CategoryEntry to the database.
 	public CategoryEntry addEntry(CategoryEntry theEntry)
@@ -148,7 +165,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -167,24 +184,25 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
 		cursor.close();
 		return entries;
 	}
+	
 	// Gets all the categories in the database
-	public List<CategoryEntry> getCategories()
+	public List<CategoryEntry> getCategories(String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
 	{
 		List<CategoryEntry> entries = new ArrayList<CategoryEntry>();
 		
 		Cursor cursor;
-		cursor = database.query(BudgetDatabase.TABLE_CATEGORIES,allColumnsCategories,null,null,null,null,null);
+		cursor = database.query(BudgetDatabase.TABLE_CATEGORIES,allColumnsCategories,selection, selectionArgs, groupBy, having, orderBy);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getLong(3)));
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getLong(3),cursor.getInt(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();

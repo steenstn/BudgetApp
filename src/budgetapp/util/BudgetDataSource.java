@@ -55,9 +55,13 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	public void updateCategory(String theCategory,int value,int n)
+	public void addToCategory(String theCategory,int value)
 	{
-		dbAccess.updateCategory(theCategory,value,n);
+		dbAccess.addToCategory(theCategory,value);
+	}
+	public void removeFromCategory(String theCategory,long value)
+	{
+		dbAccess.removeFromCategory(theCategory,value);
 	}
 	public void updateDaySum(BudgetEntry theEntry)
 	{
@@ -88,9 +92,16 @@ public class BudgetDataSource {
 		return dbAccess.getTransactions(n);
 	}
 	
+	// Returns all categories in the category table
 	public List<CategoryEntry> getAllCategories()
 	{
-		return dbAccess.getCategories();
+		return dbAccess.getCategories(null, null, null, null, null);
+	}
+	
+	// Returns all categories in the category table sorted by total
+	public List<CategoryEntry> getCategoriesSorted()
+	{
+		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
 	}
 	
 	public boolean addCategory(String theCategory)

@@ -12,6 +12,13 @@ public class CategoryEntry extends DatabaseEntry {
 	private int num; // How many transactions within this category
 	private long total; // Total money spent/earned within this category
 	
+	public CategoryEntry(long id, String category,int num,long total,int flags){
+		this.id = id;
+		this.category = category;
+		this.num=num;
+		this.total=total;
+		this.flags=flags;
+	}
 	public CategoryEntry(long id, String category,int num,long total){
 		this.id = id;
 		this.category = category;

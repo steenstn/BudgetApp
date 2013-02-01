@@ -12,7 +12,7 @@ public class BudgetEntry extends DatabaseEntry{
 	private int value; // How large the transaction was
 	private String date; // The date it was done
 	private String category; // What category the transaction had
-	
+	private int flags;
 	public BudgetEntry(int value,String date,String category)
 	{
 		this.value=value;
@@ -25,6 +25,14 @@ public class BudgetEntry extends DatabaseEntry{
 		this.value=value;
 		this.date=date;
 		this.category=category;
+	}
+	public BudgetEntry(long id,int value,String date,String category,int flags)
+	{
+		this.id=id;
+		this.value=value;
+		this.date=date;
+		this.category=category;
+		this.flags=flags;
 	}
 	
 	

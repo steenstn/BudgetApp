@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class BudgetDatabase extends SQLiteOpenHelper{
 
@@ -20,6 +21,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_VALUE = "value";
 	public static final String COLUMN_DATE = "date";
 	public static final String COLUMN_CATEGORY = "category";
+	public static final String COLUMN_FLAGS = "flags";
 	
 	// The table for cataegories
 	// Keeps track of total number of transactions of a category
@@ -37,22 +39,22 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	//COLUMN_TOTAL
 
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	private static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
 			+ TABLE_CASHFLOW + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " +COLUMN_VALUE +
-			" integer, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text);";
+			" integer, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer);";
 	
 	private static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY +
-			" text, "+ COLUMN_NUM + " integer not null, " + COLUMN_TOTAL + " long integer not null);";
+			" text, "+ COLUMN_NUM + " integer not null, " + COLUMN_TOTAL + " long integer not null, " + COLUMN_FLAGS + " integer);";
 	
 	private static final String DATABASE_CREATE_TABLE_DAYSUM = "create table "
 			+ TABLE_DAYSUM + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_DATE
-			+ " text, " + COLUMN_TOTAL + " long integer not null);";
+			+ " text, " + COLUMN_TOTAL + " long integer not null, " + COLUMN_FLAGS + " integer);";
 
 	public BudgetDatabase(Context context)
 	{
@@ -97,10 +99,13 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		Log.w(BudgetDatabase.class.getName(),
-	        "Upgrading database from version " + oldVersion + " to "
-	            + newVersion + ", which will destroy all old data");
-	    db.execSQL("DROP TABLE IF EXISTS " + TABLE_CASHFLOW);
-	    onCreate(db);
+		if(oldVersion==1) // Database from app version 2.0. Add the flags-column 
+		{
+			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_FLAGS);
+			db.execSQL("ALTER TABLE " + TABLE_DAYSUM + " ADD COLUMN " + COLUMN_FLAGS);
+			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
+		}
+		System.out.println("Updated database");
+	    //onCreate(db);
 	}
 }

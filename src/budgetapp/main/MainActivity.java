@@ -178,15 +178,17 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		
         }
        
-        List<CategoryEntry> categories = datasource.getAllCategories();
+        List<CategoryEntry> categories = datasource.getCategoriesSorted();
         left.append("\n\n");
         right.append("\n\n");
-        left.append(Html.fromHtml("<b>Total transactions</b><br />"));
-        right.append(Html.fromHtml("<b>Sum</b><br />"));
+        left.append(Html.fromHtml("<b>Top categories</b><br />"));
+        right.append(Html.fromHtml("<b>Transactions</b><br />"));
         for(int i=0;i<categories.size();i++) 
         {	
-        	left.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\n");
-        	right.append(categories.get(i).getTotal()+"\n");
+        	if(i>5) // Only show top 5
+        		break;
+        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
+        	right.append(categories.get(i).getNum()+"\n");
         }
         List<DayEntry> days = datasource.getAllDays();
         left.append("\n\n");
