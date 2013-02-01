@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		temp.append(days.get(i).getDate()+ ": ");
         		temp.append(days.get(i).getTotal()+"\n");
         }
-        temp.append("heeyeyea");
+        
     }
     
     
