@@ -152,7 +152,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		case 6:
 			db.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
 			ArrayList<DayEntry> tempDays = new ArrayList<DayEntry>();
-			cursor = db.rawQuery("SELECT " + COLUMN_DATE + "," + COLUMN_TOTAL + "," + " FROM "+BudgetDatabase.TABLE_DAYSUM + "ORDER BY _id ASC", null);
+			cursor = db.rawQuery("SELECT " + COLUMN_DATE + "," + COLUMN_TOTAL + " FROM "+BudgetDatabase.TABLE_DAYSUM + " ORDER BY '_id' ASC", null);
 			
 			if(cursor.getCount()!=0)
 			{
