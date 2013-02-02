@@ -194,7 +194,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         }
         List<DayEntry> days = datasource.getSomeDays(5);
         left.append("\n\n");
-        left.append(Html.fromHtml("<b>Daily total</b><br />"));
+        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");
@@ -213,7 +213,11 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	{
     		 
     		int resultInt = Integer.parseInt(result);
-        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+        	if(resultInt==0)
+        		throw new NumberFormatException();
+        
+    		TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+        	
         	currentBudget-=resultInt;
         	newBudget.setText(""+currentBudget);
         	
@@ -237,6 +241,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	}
     	catch(NumberFormatException e)
     	{
+    		resultText.setText("");
     		System.out.println("Error: "+e);
     	}
     	
