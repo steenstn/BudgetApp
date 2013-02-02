@@ -15,6 +15,11 @@ public class DayEntry extends DatabaseEntry{
 		this.total=total;
 		this.date=date;
 	}
+	public DayEntry(String date,long total)
+	{
+		this.total=total;
+		this.date=date;
+	}
 	public DayEntry(long id,String date,long total)
 	{
 		this.id=id;
