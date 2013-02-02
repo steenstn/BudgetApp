@@ -8,6 +8,7 @@ import java.util.List;
 
 import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.TransactionCommand;
@@ -113,18 +114,21 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
       
          //Add daily budget for all days since last run
         addToBudget();
-        
+        updateColor();
         
     }
     
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
+    	List<BudgetEntry> days = datasource.getSomeTransactions(5);
+    	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,5));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	if(currentBudget<0)
-    		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
+    	int coloringFactor = min(255,Math.abs(derivative/2));
+    	if(derivative<0)
+    		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
     	else
-    		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
+    		newBudget.setTextColor(Color.rgb(255-coloringFactor,255,255-coloringFactor));
 	  
     }
     

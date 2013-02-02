@@ -67,13 +67,12 @@ public class BudgetDataSource {
 	{
 		dbAccess.updateDaySum(theEntry);
 	}
-	
-	public void dropTables()
+	public void updateDayTotal(BudgetEntry theEntry)
 	{
-		database.execSQL("DROP TABLE IF EXISTS " + "cashflow");
-		database.execSQL("DROP TABLE IF EXISTS " + "categories");
-	
+		dbAccess.updateDayTotal(theEntry);
 	}
+	
+	
 	public List<BudgetEntry> getAllTransactions()
 	{
 		return dbAccess.getTransactions(0);

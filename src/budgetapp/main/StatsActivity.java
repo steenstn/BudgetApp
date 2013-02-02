@@ -5,14 +5,12 @@ import java.util.List;
 import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
-import budgetapp.util.DatabaseEntry;
 import budgetapp.util.DayEntry;
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
-
+import budgetapp.util.BudgetFunctions;
 public class StatsActivity extends Activity{
 	
 	BudgetDataSource datasource = MainActivity.datasource;
@@ -34,7 +32,7 @@ public class StatsActivity extends Activity{
         
         // Read in all the data
         entries = datasource.getAllTransactions();
-        days = datasource.getAllDays();
+        days = datasource.getAllDaysTotal();
         categories = datasource.getCategoriesSorted();
         updateStats();
         updateLog();
@@ -51,7 +49,7 @@ public class StatsActivity extends Activity{
 		else
 		{
 			stats.setText("Mean derivative (" + min(numDaysForDerivative,days.size()) + ") days: ");
-			long dayDerivative = getMeanDerivative(days,numDaysForDerivative);
+			long dayDerivative = BudgetFunctions.getMeanDerivative(days,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
 		if(entries.size()<2)
@@ -61,40 +59,14 @@ public class StatsActivity extends Activity{
 		else
 		{
 			stats.append("Mean derivative (" + min(numTransactionsForDerivative,entries.size()) + ") transactions: ");
-			long transactionDerivative = getMeanDerivative(entries,numDaysForDerivative);
+			long transactionDerivative = BudgetFunctions.getMeanDerivative(entries,numDaysForDerivative);
 			stats.append(""+transactionDerivative + "\n");
 		}
 		
 		
 	}
 	
-	// Returns the mean cash flow for n time steps or as many as are available if less
-	long getMeanDerivative(List<?> theEntries, int n)
-	{
-		
-		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
-			return 0;
-		int i=0;
-		
-		long sum = 0;
-		long result = 0;
-		
-			// Step through days, break if i reaches size or n
-			while(i<theEntries.size() && i<n) 
-			{
-				//Get the value depending on the class
-				if(theEntries.get(i) instanceof DayEntry)
-					sum+=((DayEntry) theEntries.get(i)).getTotal();
-				if(theEntries.get(i) instanceof BudgetEntry)
-					sum+=((BudgetEntry) theEntries.get(i)).getValue();
-				
-				i++;
-			}
-			result = sum/i;
-		
-		return result;
-		
-	}
+	
 	public void updateLog()
 	{
 		

@@ -31,6 +31,7 @@ public class TransactionCommand {
 		
     	_datasource.addToCategory(_entry.getCategory(),_entry.getValue());
     	_datasource.updateDaySum(_entry);
+    	_datasource.updateDayTotal(_entry);
 	}
 	
 	public boolean unexecute()
@@ -41,10 +42,13 @@ public class TransactionCommand {
 			_datasource.removeTransactionEntry(_entry);
 			//Update category by adding the negative value that was added
 			_datasource.removeFromCategory(_entry.getCategory(),_entry.getValue()*-1);
-			//Update daysum by adding the negative value that was added
+			//Update daysum and daytotal by adding the negative value that was added
 			_entry.setValue(_entry.getValue()*-1);
 			_datasource.updateDaySum(_entry);
+			_datasource.updateDayTotal(_entry);
 			_entry.setValue(_entry.getValue()*-1);
+			
+			
 			unexecuted=true;
 			return true;
 		}

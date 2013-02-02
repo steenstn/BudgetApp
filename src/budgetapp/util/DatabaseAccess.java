@@ -79,7 +79,7 @@ public class DatabaseAccess {
 		//COLUMN_TOTAL
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
-		System.out.println("substring: "+ theEntry.getDate().substring(0, 10));
+		//System.out.println("substring: "+ theEntry.getDate().substring(0, 10));
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
 			ContentValues values = new ContentValues();
@@ -101,6 +101,47 @@ public class DatabaseAccess {
 		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 		cursor.close();
 		return true;
+	}
+	public boolean updateDayTotal(BudgetEntry theEntry)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		//om den itne finns, ta från igår
+		//OM igår itne finns, skapa ny
+		if(cursor.getCount()<=0) // No entry for today, search for last entry
+		{
+			ContentValues values = new ContentValues();
+			Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_TOTAL + " from " + BudgetDatabase.TABLE_DAYTOTAL+ " order by _id desc limit 1", null);
+			if(yesterdayCursor.getCount()<=0) // No yesterday, create new entry from incoming entry
+			{
+				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
+				values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
+				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
+				cursor.close();
+			}
+			else // Yesterday exists, create new entry with yesterdays total + new total
+			{
+				yesterdayCursor.moveToFirst();
+				long yesterdayValue = yesterdayCursor.getLong(0);
+				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
+				values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue()+yesterdayValue);
+				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
+				cursor.close();
+			}
+			return true;
+		}
+		else // There is an entry for today, add to it
+		{
+			cursor.moveToFirst();
+			long total = cursor.getLong(0);
+			total += theEntry.getValue();
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_TOTAL, total);
+			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
+			cursor.close();
+			return true;
+		}
+		
 	}
 	
 	public void addToCategory(String theCategory,long value)
