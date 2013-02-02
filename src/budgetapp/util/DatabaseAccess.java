@@ -215,6 +215,27 @@ public class DatabaseAccess {
 		return entries;
 	}
 	
+	public List<DayEntry> getDayTotal(int n)
+	{
+		List<DayEntry> entries = new ArrayList<DayEntry>();
+		
+		Cursor cursor;
+		if(n<=0)
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc",null);
+		else
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc limit 0,"+n,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2),cursor.getInt(3));
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
 	// Gets all the categories in the database
 	public List<CategoryEntry> getCategories(String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
 	{

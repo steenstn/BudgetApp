@@ -87,6 +87,14 @@ public class BudgetDataSource {
 	{
 		return dbAccess.getDaySum(n);
 	}
+	public List<DayEntry> getAllDaysTotal()
+	{
+		return dbAccess.getDayTotal(0);
+	}
+	public List<DayEntry> getSomeDaysTotal(int n)
+	{
+		return dbAccess.getDayTotal(n);
+	}
 	public List<BudgetEntry> getSomeTransactions(int n)
 	{
 		return dbAccess.getTransactions(n);
