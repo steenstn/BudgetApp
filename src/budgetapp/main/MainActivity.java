@@ -192,7 +192,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	right.append(categories.get(i).getNum()+"\n");
         	}
         }
-        List<DayEntry> days = datasource.getAllDays();
+        List<DayEntry> days = datasource.getSomeDays(5);
         left.append("\n\n");
         left.append(Html.fromHtml("<b>Daily total</b><br />"));
         for(int i=0;i<days.size();i++) 
