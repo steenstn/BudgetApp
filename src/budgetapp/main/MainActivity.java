@@ -121,10 +121,10 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
-    	List<BudgetEntry> days = datasource.getSomeTransactions(5);
-    	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,5));
+    	List<DayEntry> days = datasource.getSomeDays(7);
+    	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	int coloringFactor = min(255,Math.abs(derivative/2));
+    	int coloringFactor = min(255,Math.abs(derivative));
     	if(derivative<0)
     		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
     	else
@@ -215,7 +215,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     	try
     	{
-    		 
+    		addToBudget(); // Check so that all dailies has come in
     		int resultInt = Integer.parseInt(result);
         	if(resultInt==0)
         		throw new NumberFormatException();
