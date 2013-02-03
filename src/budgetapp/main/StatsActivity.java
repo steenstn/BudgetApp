@@ -15,6 +15,7 @@ public class StatsActivity extends Activity{
 	
 	BudgetDataSource datasource = MainActivity.datasource;
 	List<DayEntry> days;
+	List<DayEntry> dayFlow;
 	List<BudgetEntry> entries;
 	List<CategoryEntry> categories;
 	int numDaysForDerivative = 7;
@@ -33,6 +34,7 @@ public class StatsActivity extends Activity{
         // Read in all the data
         entries = datasource.getAllTransactions();
         days = datasource.getAllDaysTotal();
+        dayFlow = datasource.getAllDays();
         categories = datasource.getCategoriesSorted();
         updateStats();
         updateLog();
@@ -48,8 +50,8 @@ public class StatsActivity extends Activity{
 		}
 		else
 		{
-			stats.setText("Mean derivative (" + min(numDaysForDerivative,days.size()) + ") days: ");
-			long dayDerivative = BudgetFunctions.getMeanDerivative(days,numDaysForDerivative);
+			stats.setText("Mean derivative (" + min(numDaysForDerivative,dayFlow.size()) + ") days: ");
+			long dayDerivative = BudgetFunctions.getMeanDerivative(dayFlow,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
 		if(entries.size()<2)
