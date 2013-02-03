@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import budgetapp.graph.GraphActivity;
 import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.TransactionCommand;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,18 +114,21 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
       
          //Add daily budget for all days since last run
         addToBudget();
-        
+        updateColor();
         
     }
     
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
+    	List<DayEntry> days = datasource.getSomeDays(7);
+    	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	if(currentBudget<0)
-    		newBudget.setTextColor(Color.rgb(255,255-min(255,Math.abs(currentBudget/5)),255-min(255,Math.abs(currentBudget/5))));
+    	int coloringFactor = min(255,Math.abs(derivative));
+    	if(derivative<0)
+    		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
     	else
-    		newBudget.setTextColor(Color.rgb(255-min(255,Math.abs(currentBudget/5)),255,255-min(255,Math.abs(currentBudget/5))));
+    		newBudget.setTextColor(Color.rgb(255-coloringFactor,255,255-coloringFactor));
 	  
     }
     
@@ -133,7 +136,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void updateSpinner()
     {
     	// Get the categories for the Spinner
-        List<CategoryEntry> categories = datasource.getAllCategories();
+        List<String> categories = datasource.getCategoryNames();
         
         //Clear allCategories if there is anything in it
         allCategories.clear();
@@ -141,9 +144,9 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         allCategories.add("Choose category");
         for(int i=0;i<categories.size();i++)
         {
-        	allCategories.add(categories.get(i).getCategory());
+        	allCategories.add(categories.get(i));
         }
-        
+        allCategories.add("Other...");
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
 		 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
@@ -166,28 +169,42 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void updateLog()
     {
     	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
-        TextView temp = (TextView)findViewById(R.id.textViewLog);
-        temp.setText("");
+        TextView left = (TextView)findViewById(R.id.textViewLogLeft);
+        TextView right = (TextView)findViewById(R.id.textViewLogRight);
+        left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
+        right.setText(Html.fromHtml("<b>Category</><br />"));
         for(int i=0;i<entries.size();i++)
         {	
-        	if(i>=0)
-        		temp.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\t\t\t" + entries.get(i).getCategory() +  "\n");
+        		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
+        		right.append(entries.get(i).getCategory() + "\n");
+        		
         }
-       
-        List<CategoryEntry> categories = datasource.getAllCategories();
-        temp.append("\n\n");
+        
+        
+        List<CategoryEntry> categories = datasource.getCategoriesSorted();
+        left.append("\n\n");
+        right.append("\n\n");
+        left.append(Html.fromHtml("<b>Top categories</b><br />"));
+        right.append(Html.fromHtml("<b>Transactions</b><br />"));
         for(int i=0;i<categories.size();i++) 
         {	
-        		temp.append(categories.get(i)+ ": "+ categories.get(i).getNum() + "\t\t\t\t");
-        		temp.append("Sum: "+categories.get(i).getTotal()+"\n");
+        	if(i>4) // Only show top 5
+        		break;
+        	//if(categories.get(i).getTotal()!=0)
+        	{
+	        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
+	        	right.append(categories.get(i).getNum()+"\n");
+        	}
         }
-        List<DayEntry> days = datasource.getAllDays();
-        temp.append("\n\n");
+        List<DayEntry> days = datasource.getSomeDays(5);
+        left.append("\n\n");
+        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
-        		temp.append(days.get(i).getDate()+ ": ");
-        		temp.append(days.get(i).getTotal()+"\n");
+        	left.append(days.get(i).getDate()+ ": ");
+        		left.append(days.get(i).getTotal()+"\n");
         }
+        
     }
     
     
@@ -198,9 +215,13 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     	try
     	{
-    		 
+    		addToBudget(); // Check so that all dailies has come in
     		int resultInt = Integer.parseInt(result);
-        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+        	if(resultInt==0)
+        		throw new NumberFormatException();
+        
+    		TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+        	
         	currentBudget-=resultInt;
         	newBudget.setText(""+currentBudget);
         	
@@ -224,6 +245,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	}
     	catch(NumberFormatException e)
     	{
+    		resultText.setText("");
     		System.out.println("Error: "+e);
     	}
     	
@@ -287,8 +309,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	else // Add a transaction of 0
     	{
     		Calendar tempDate = Calendar.getInstance();
-    		BudgetEntry entry = new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income");
-        	
+    		
         	datasource.updateDaySum(new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income"));
         
 
@@ -329,11 +350,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		        	updateColor();
 	        	}
 	        	return true;
-	        	
-            case R.id.menu_logdata: // Change logging data status
+	        
+	        /*
+            case R.id.menu_logdata: // Change logging data status (Not visible as standard
                 logData=!logData;
                 item.setChecked(logData);
-                return true;
+                return true;*/
             case R.id.menu_addcategory:
             	newFragment = new AddCategoryDialogFragment();
                 newFragment.show(getSupportFragmentManager(), "add_category");
@@ -346,11 +368,14 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
             	newFragment = new DailyBudgetFragment();
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
             	return true;
-            	
-            case R.id.menu_showgraph:
-            	Intent intent = new Intent(this,GraphActivity.class);
+            case R.id.menu_statistics:
+            	Intent intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
+           /* case R.id.menu_showgraph: // Wait for it!
+            	Intent intent = new Intent(this,GraphActivity.class);
+                startActivity(intent);
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -362,9 +387,14 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	{
 		//Toast.makeText(parent.getContext(), "The planet is " +parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
 		String theCategory = parent.getItemAtPosition(pos).toString();
-		if(pos!=0)
+		if(pos!=0 && pos!=parent.getCount()-1) // Don't add "Choose category" or "Other..."
 		{
 			subtractFromBudget(parent,theCategory);
+		}
+		if(pos==parent.getCount()-1)
+		{
+			DialogFragment newFragment = new OtherCategoryDialogFragment();
+        	newFragment.show(getSupportFragmentManager(), "other_category");
 		}
 		parent.setSelection(0); // Reset to "Choose category"
 		

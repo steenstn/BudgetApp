@@ -19,25 +19,33 @@
         android:showAsAction="never"
         android:title="@string/menu_removecategory"
         />
-    <item
+    <!--  <item
         android:id="@+id/menu_logdata"
         android:orderInCategory="80"
         android:showAsAction="never"
         android:title="@string/menu_logdata" android:checkable="true"
         android:checked="true"
         />
+    -->
     <item 
         android:id="@+id/menu_setdailybudget"
         android:orderInCategory="90"
         android:showAsAction="never"
         android:title="@string/menu_setdailybudget"
         />
-    <item
+    <item 
+        android:id="@+id/menu_statistics"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_statistics"
+        />
+    
+    <!--  item
         android:id="@+id/menu_showgraph"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="And I said..."
         />
-    
+    -->
 
 </menu>

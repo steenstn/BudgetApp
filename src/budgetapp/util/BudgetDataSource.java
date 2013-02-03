@@ -55,21 +55,24 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	public void updateCategory(String theCategory,int value)
+	public void addToCategory(String theCategory,int value)
 	{
-		dbAccess.updateCategory(theCategory,value);
+		dbAccess.addToCategory(theCategory,value);
+	}
+	public void removeFromCategory(String theCategory,long value)
+	{
+		dbAccess.removeFromCategory(theCategory,value);
 	}
 	public void updateDaySum(BudgetEntry theEntry)
 	{
 		dbAccess.updateDaySum(theEntry);
 	}
-	
-	public void dropTables()
+	public void updateDayTotal(BudgetEntry theEntry)
 	{
-		database.execSQL("DROP TABLE IF EXISTS " + "cashflow");
-		database.execSQL("DROP TABLE IF EXISTS " + "categories");
-	
+		dbAccess.updateDayTotal(theEntry);
 	}
+	
+	
 	public List<BudgetEntry> getAllTransactions()
 	{
 		return dbAccess.getTransactions(0);
@@ -83,16 +86,34 @@ public class BudgetDataSource {
 	{
 		return dbAccess.getDaySum(n);
 	}
+	public List<DayEntry> getAllDaysTotal()
+	{
+		return dbAccess.getDayTotal(0);
+	}
+	public List<DayEntry> getSomeDaysTotal(int n)
+	{
+		return dbAccess.getDayTotal(n);
+	}
 	public List<BudgetEntry> getSomeTransactions(int n)
 	{
 		return dbAccess.getTransactions(n);
 	}
 	
+	// Returns all categories in the category table
 	public List<CategoryEntry> getAllCategories()
 	{
-		return dbAccess.getCategories();
+		return dbAccess.getCategories(null, null, null, null, null);
 	}
 	
+	// Returns all categories in the category table sorted by total
+	public List<CategoryEntry> getCategoriesSorted()
+	{
+		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
+	}
+	public List<String> getCategoryNames()
+	{
+		return dbAccess.getCategoryNames();
+	}
 	public boolean addCategory(String theCategory)
 	{
 		return dbAccess.addCategory(theCategory);

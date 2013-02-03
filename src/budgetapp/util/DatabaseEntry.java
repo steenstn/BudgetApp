@@ -7,10 +7,17 @@ package budgetapp.util;
 public abstract class DatabaseEntry {
 	
 	protected long id;
+	protected int flags;
+	
+	
 	public long getId(){
 		return id;
 	}
 	
+	public int getFlags()
+	{
+		return flags;
+	}
 	@Override
 	public String toString(){
 		return "DatabaseEntry";
