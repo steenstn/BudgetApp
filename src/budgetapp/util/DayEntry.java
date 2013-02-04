@@ -1,6 +1,6 @@
 package budgetapp.util;
 /**
- * The class for storing the total money spent/earned for a day.
+ * The class for storing the total money spent/earned for a day. heeyeeayea
  * 
  * @author Steen
  *
