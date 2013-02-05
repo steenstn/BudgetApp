@@ -220,14 +220,21 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	int i;
 		for(i=0;i<categories.size();i++)
 		{
+			System.out.println("Checking "+categories.get(i).getCategory());
 			if(categories.get(i).getTotal()>0)
+			{	
+				System.out.println("Removing "+categories.get(i).getCategory());
 				categories.remove(i);
+				i--;
+			}
 		}
+		System.out.println("size "+categories.size());
     	int index = categories.size()-1; // Start at the last entry
     	
     	for(i = 0;i<min(numButtons,categories.size());i++)
     	{
     		theButtons.get(i).setText(categories.get(index).getCategory());
+    		theButtons.get(i).setVisibility(View.VISIBLE);
     		index--;
     	}
     	
@@ -267,12 +274,9 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	tempCom.execute();
 	        	
         	}
-        	//Set color
-        	updateColor();
         	resultText.setText("");
-        	updateLog();
-        	updateButtons();
-    		saveToFile(); // Save budget to file
+        	//Set color
+        	updateAll();
     		
     	}
     	catch(NumberFormatException e)
@@ -383,9 +387,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	currentBudget-=tempCom.getEntry().getValue();
 		        	newBudget.setText(""+currentBudget);
-		        	saveToFile();
-		        	updateLog();
-		        	updateColor();
+		        	updateAll();
 	        	}
 	        	return true;
 	        
@@ -437,7 +439,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		parent.setSelection(0); // Reset to "Choose category"
 		
 	}
-
+	
+	public void updateAll()
+	{
+		updateLog();
+		updateSpinner();
+		updateButtons();
+		updateColor();
+		saveToFile();
+	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
