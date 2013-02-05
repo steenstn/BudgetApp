@@ -44,6 +44,43 @@
             android:layout_weight="1"
             android:spinnerMode="dialog" />
 	</LinearLayout>
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dip"
+	    >
+	    <Button
+	        android:id="@+id/topCategoryButton2"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="3"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="1dip"
+	        android:layout_marginRight="1dip"
+	        android:text="Top 1"
+	        android:onClick="buttonPressed" />
+	    <Button
+	        android:id="@+id/topCategoryButton1"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="3"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="1dip"
+	        android:layout_marginRight="1dip"
+	        android:text="Top 2"
+	        android:onClick="buttonPressed" />
+	    <Button
+	        android:id="@+id/topCategoryButton3"
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="3"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="1dip"
+	        android:layout_marginRight="1dip"
+	        android:text="Top 3"
+	        android:onClick="buttonPressed" />
+	
+	</LinearLayout>
 	<LinearLayout 
 	    android:layout_width="match_parent"
         android:layout_height="wrap_content"

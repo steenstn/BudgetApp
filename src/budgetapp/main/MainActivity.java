@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -115,6 +116,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
          //Add daily budget for all days since last run
         addToBudget();
         updateColor();
+        updateButtons();
         
     }
     
@@ -182,9 +184,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         
         
         List<CategoryEntry> categories = datasource.getCategoriesSorted();
-        left.append("\n\n");
-        right.append("\n\n");
-        left.append(Html.fromHtml("<b>Top categories</b><br />"));
+        
+        /*left.append(Html.fromHtml("<b>Top categories</b><br />"));
         right.append(Html.fromHtml("<b>Transactions</b><br />"));
         for(int i=0;i<categories.size();i++) 
         {	
@@ -195,7 +196,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
 	        	right.append(categories.get(i).getNum()+"\n");
         	}
-        }
+        }*/
         List<DayEntry> days = datasource.getSomeDays(5);
         left.append("\n\n");
         left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
@@ -205,6 +206,36 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		left.append(days.get(i).getTotal()+"\n");
         }
         
+    }
+    
+    void updateButtons()
+    {
+    	int numButtons = 3;
+    	ArrayList<Button> theButtons = new ArrayList<Button>();
+    	theButtons.add((Button)findViewById(R.id.topCategoryButton1));
+    	theButtons.add((Button)findViewById(R.id.topCategoryButton2));
+    	theButtons.add((Button)findViewById(R.id.topCategoryButton3));
+    	List<CategoryEntry> categories = datasource.getCategoriesSortedByNum();
+    	//Remove categories with positive total
+    	int i;
+		for(i=0;i<categories.size();i++)
+		{
+			if(categories.get(i).getTotal()>0)
+				categories.remove(i);
+		}
+    	int index = categories.size()-1; // Start at the last entry
+    	
+    	for(i = 0;i<min(numButtons,categories.size());i++)
+    	{
+    		theButtons.get(i).setText(categories.get(index).getCategory());
+    		index--;
+    	}
+    	
+    	for(;i<numButtons;i++)
+    	{
+    		theButtons.get(i).setVisibility(View.GONE);
+    	}
+    	
     }
     
     
@@ -240,6 +271,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         	updateColor();
         	resultText.setText("");
         	updateLog();
+        	updateButtons();
     		saveToFile(); // Save budget to file
     		
     	}
@@ -250,6 +282,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	}
     	
     		
+    }
+    
+    public void buttonPressed(View v)
+    {
+    	Button pressedButton = (Button)v;
+    	subtractFromBudget(v,pressedButton.getText().toString());
     }
     
     // Adds the daily plus sum for all days missing since the last time the program was run

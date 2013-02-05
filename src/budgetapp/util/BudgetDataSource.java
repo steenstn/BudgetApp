@@ -110,6 +110,10 @@ public class BudgetDataSource {
 	{
 		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
 	}
+	public List<CategoryEntry> getCategoriesSortedByNum()
+	{
+		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
+	}
 	public List<String> getCategoryNames()
 	{
 		return dbAccess.getCategoryNames();
