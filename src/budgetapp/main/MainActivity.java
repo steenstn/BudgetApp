@@ -126,7 +126,18 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	List<DayEntry> days = datasource.getSomeDays(7);
     	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	int coloringFactor = min(255,Math.abs(derivative));
+    	
+    	
+    	float maxValue =  0.75f * (float)dailyBudget;
+    	float floatDerivative = (float)derivative / maxValue;
+    	System.out.println("floatD före: " + floatDerivative);
+    	
+    	floatDerivative = floatDerivative * 255;
+    	System.out.println("floatD efter: " + floatDerivative);
+    	
+    	
+    	
+    	int coloringFactor = min(255,Math.abs((int)floatDerivative));
     	if(derivative<0)
     		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
     	else
