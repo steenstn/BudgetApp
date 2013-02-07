@@ -221,7 +221,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		for(i=0;i<categories.size();i++)
 		{
 			System.out.println("Checking "+categories.get(i).getCategory());
-			if(categories.get(i).getTotal()>0)
+			if(categories.get(i).getTotal()>0 || categories.get(i).getNum()<2)
 			{	
 				System.out.println("Removing "+categories.get(i).getCategory());
 				categories.remove(i);
