@@ -32,9 +32,9 @@ public class StatsActivity extends Activity{
         setContentView(R.layout.activity_stats);
         
         // Read in all the data
-        entries = datasource.getAllTransactions();
-        days = datasource.getAllDaysTotal();
-        dayFlow = datasource.getAllDays();
+        entries = datasource.getAllTransactions(datasource.DESCENDING);
+        days = datasource.getAllDaysTotal(datasource.DESCENDING);
+        dayFlow = datasource.getAllDays(datasource.DESCENDING);
         categories = datasource.getCategoriesSorted();
         updateStats();
         updateLog();

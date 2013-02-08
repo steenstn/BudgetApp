@@ -21,6 +21,8 @@ public class BudgetDataSource {
 	private SQLiteDatabase database;
 	private BudgetDatabase dbHelper;
 	private DatabaseAccess dbAccess;
+	public static final String ASCENDING = "asc";
+	public static final String DESCENDING = "desc";
 	
 	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
 			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY};
@@ -73,34 +75,34 @@ public class BudgetDataSource {
 	}
 	
 	
-	public List<BudgetEntry> getAllTransactions()
+	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
-		return dbAccess.getTransactions(0);
+		return dbAccess.getTransactions(0,orderBy);
 	}
 	
-	public List<DayEntry> getAllDays()
+	public List<DayEntry> getAllDays(String orderBy)
 	{
-		return dbAccess.getDaySum(0);
+		return dbAccess.getDaySum(0,orderBy);
 	}
-	public List<DayEntry> getSomeDays(int n)
+	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
-		return dbAccess.getDaySum(n);
+		return dbAccess.getDaySum(n, orderBy);
 	}
-	public List<DayEntry> getAllDaysTotal()
+	public List<DayEntry> getAllDaysTotal(String orderBy)
 	{
-		return dbAccess.getDayTotal(0);
+		return dbAccess.getDayTotal(0,orderBy);
 	}
-	public List<DayEntry> getSomeDaysTotal(int n)
+	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
-		return dbAccess.getDayTotal(n);
+		return dbAccess.getDayTotal(n, orderBy);
 	}
-	public List<BudgetEntry> getSomeTransactions(int n)
+	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
-		return dbAccess.getTransactions(n);
+		return dbAccess.getTransactions(n,orderBy);
 	}
 	
 	// Returns all categories in the category table
-	public List<CategoryEntry> getAllCategories()
+	public List<CategoryEntry> getAllCategories(int mode)
 	{
 		return dbAccess.getCategories(null, null, null, null, null);
 	}

@@ -1,45 +1,63 @@
 package budgetapp.graph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import budgetapp.main.R;
 import budgetapp.util.*;
 
 public class GraphActivity extends Activity
 {
-	BudgetDataSource datasource;
-	List<DayEntry> days;
 	
-    LineGraphRenderer drawView;
-    float[] x;// = {0, 30, 60, 90};
+	GraphView view;
+	public List<DayEntry> entries;
+	public String[] values;
+	float[] x;// = {0, 30, 60, 90};
     float[] y;// = {200, 100, 350, 100};
+    float offsetX = 0;
+    float offsetY = 0;
+    public BudgetDataSource datasource;
+    
+    LineGraphRenderer lineGraph;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      //  days = new List<DayEntry>();
+       
+        entries = new ArrayList<DayEntry>();
+        
+        view = new GraphView(this);
+
+        
         datasource = new BudgetDataSource(this);
         datasource.open();
-        days = datasource.getAllDaysTotal();
-        x = new float[days.size()];
-        y = new float[days.size()];
-    	float xScale = 40.0f;
-    	float yScale = 0.10f;
+        
+        entries = datasource.getAllDaysTotal(datasource.ASCENDING);
+        x = new float[entries.size()];
+        y = new float[entries.size()];
+        values = new String[entries.size()];
         
     	
-        for(int i=days.size()-1;i>=0;i--)
+        for(int i=0;i<entries.size();i++)
         {
-        	
-        	x[i] = i*xScale;
-        	y[i] = days.get(i).getValue()*yScale;
-        	
+        	x[i] = i;
+        	y[i] = entries.get(i).getValue();
+        	values[i] = ""+entries.get(i).getValue();
+        	//System.out.println("x["+i+"]: " + x[i] + "y["+i+"]: " + days.get(i).getValue());
         }
-        drawView = new LineGraphRenderer(this,x,y);
-        drawView.setBackgroundColor(Color.BLACK);
-        setContentView(drawView);
-        drawView.drawGraph(0,0,0,0);
-
+        lineGraph = new LineGraphRenderer(x,y,values);
+        setContentView(view);
     }
+    
 };

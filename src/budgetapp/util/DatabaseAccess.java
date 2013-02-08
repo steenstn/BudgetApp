@@ -21,6 +21,10 @@ public class DatabaseAccess {
 			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_FLAGS};
 	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_TOTAL,BudgetDatabase.COLUMN_FLAGS};
 	
+	public static final String ASCENDING = "asc";
+	public static final String DESCENDING = "desc";
+	
+	
 	public DatabaseAccess(SQLiteDatabase theDatabase)
 	{
 		database = theDatabase;
@@ -217,15 +221,15 @@ public class DatabaseAccess {
 		return entry;
 	}
 	// Get n number of transactions
-	public List<BudgetEntry> getTransactions(int n)
+	public List<BudgetEntry> getTransactions(int n,String mode)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
 		//database.
 		Cursor cursor;
 		if(n<=0) // Get all entries
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc",null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode,null);
 		else 
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id desc limit 0,"+n,null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode + " limit 0,"+n,null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
@@ -236,15 +240,15 @@ public class DatabaseAccess {
 		cursor.close();
 		return entries;
 	}
-	public List<DayEntry> getDaySum(int n)
+	public List<DayEntry> getDaySum(int n,String mode)
 	{
 		List<DayEntry> entries = new ArrayList<DayEntry>();
 	
 		Cursor cursor;
 		if(n<=0) // Get all entries
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id desc",null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id "+mode,null);
 		else 
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id desc limit 0,"+n,null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id " + mode + " limit 0,"+n,null);//database.query(false, BudgetDatabase.TABLE_CASHFLOW, allColumnsTransactions, null, null, null, null, "desc", ""+n, null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
@@ -256,15 +260,15 @@ public class DatabaseAccess {
 		return entries;
 	}
 	
-	public List<DayEntry> getDayTotal(int n)
+	public List<DayEntry> getDayTotal(int n, String mode)
 	{
 		List<DayEntry> entries = new ArrayList<DayEntry>();
 		
 		Cursor cursor;
 		if(n<=0)
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc",null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id " + mode,null);
 		else
-			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc limit 0,"+n,null);
+			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id " + mode + " limit 0,"+n,null);
 		
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())

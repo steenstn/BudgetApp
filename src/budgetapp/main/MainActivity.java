@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
-    	List<DayEntry> days = datasource.getSomeDays(7);
+    	List<DayEntry> days = datasource.getSomeDays(7,datasource.DESCENDING);
     	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
@@ -182,7 +182,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     // Updates the log of transactions, categories and daysums
     public void updateLog()
     {
-    	List<BudgetEntry> entries = datasource.getSomeTransactions(5);
+    	List<BudgetEntry> entries = datasource.getSomeTransactions(5,datasource.DESCENDING);
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
         TextView right = (TextView)findViewById(R.id.textViewLogRight);
         left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
@@ -209,7 +209,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	right.append(categories.get(i).getNum()+"\n");
         	}
         }*/
-        List<DayEntry> days = datasource.getSomeDays(5);
+        List<DayEntry> days = datasource.getSomeDays(5,datasource.DESCENDING);
         left.append("\n\n");
         left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
@@ -310,7 +310,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void addToBudget()
     {
     	
-    	List<DayEntry> lastDay = datasource.getSomeDays(1);
+    	List<DayEntry> lastDay = datasource.getSomeDays(1,datasource.DESCENDING);
     	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		
