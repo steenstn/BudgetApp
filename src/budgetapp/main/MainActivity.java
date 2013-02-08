@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import budgetapp.graph.GraphActivity;
 import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
@@ -130,10 +131,10 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     	float maxValue =  0.75f * (float)dailyBudget;
     	float floatDerivative = (float)derivative / maxValue;
-    	System.out.println("floatD före: " + floatDerivative);
+    	//System.out.println("floatD före: " + floatDerivative);
     	
     	floatDerivative = floatDerivative * 255;
-    	System.out.println("floatD efter: " + floatDerivative);
+    	//System.out.println("floatD efter: " + floatDerivative);
     	
     	
     	
@@ -231,15 +232,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	int i;
 		for(i=0;i<categories.size();i++)
 		{
-			System.out.println("Checking "+categories.get(i).getCategory());
+		//	System.out.println("Checking "+categories.get(i).getCategory());
 			if(categories.get(i).getTotal()>0 || categories.get(i).getNum()<2)
 			{	
-				System.out.println("Removing "+categories.get(i).getCategory());
+		//		System.out.println("Removing "+categories.get(i).getCategory());
 				categories.remove(i);
 				i--;
 			}
 		}
-		System.out.println("size "+categories.size());
+		//System.out.println("size "+categories.size());
     	int index = categories.size()-1; // Start at the last entry
     	
     	for(i = 0;i<min(numButtons,categories.size());i++)
@@ -389,7 +390,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-
+    	Intent intent;
     	DialogFragment newFragment;
         switch (item.getItemId()) {
 	        case R.id.menu_undo:
@@ -420,13 +421,13 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
             	return true;
             case R.id.menu_statistics:
-            	Intent intent = new Intent(this,StatsActivity.class);
+            	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-           /* case R.id.menu_showgraph: // Wait for it!
-            	Intent intent = new Intent(this,GraphActivity.class);
+            case R.id.menu_showgraph: // Wait for it!
+            	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;*/
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
