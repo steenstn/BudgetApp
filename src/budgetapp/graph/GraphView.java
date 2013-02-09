@@ -66,9 +66,15 @@ public class GraphView extends ImageView implements OnTouchListener{
 	
 	protected void onDraw(Canvas c) {
 		if(getResources().getConfiguration().orientation==1)
+		{
 			c.drawRect(0, 0, sx, sy, blackPaint);
+		//	host.lineGraph.drawBackground(offsetX,offsetY,sx,sy,c);
+		}
 		else
+		{
 			c.drawRect(0, 0, sy, sx, blackPaint);
+		//	host.lineGraph.drawBackground(offsetX,offsetY,sy,sx,c);
+		}
 		//c.drawCircle(offsetX, offsetY, 30, paint);
 		host.lineGraph.drawGraph(offsetX, offsetY, xScale, yScale, c);
 		host.lineGraph.drawValues(offsetX, offsetY, xScale, yScale, c);

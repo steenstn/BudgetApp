@@ -14,6 +14,7 @@ public class LineGraphRenderer implements IGraphRenderer{
 	String[] values;
     Paint paint = new Paint();
     Paint textPaint = new Paint();
+    Paint bgPaint = new Paint();
     Canvas canvas = new Canvas();
     float[] drawingValues;
     public LineGraphRenderer(float[] theX, float[] theY) {
@@ -57,6 +58,9 @@ public class LineGraphRenderer implements IGraphRenderer{
         paint.setStrokeCap(Cap.ROUND);
         paint.setAntiAlias(true);
         paint.setStrokeMiter(2.0f);
+        
+
+        
     }
     private void setStandardTextPaint()
     {
@@ -111,7 +115,13 @@ public class LineGraphRenderer implements IGraphRenderer{
     	paint = p;
     }
     
-
+    public void drawBackground(float x,float y, float xScale, float yScale, Canvas c)
+    {
+    	bgPaint.setColor(Color.WHITE);
+    //	c.drawLine(x, y, xScale, yScale, bgPaint);
+    //	c.drawLine(x, y, xScale, yScale, bgPaint);
+    	
+    }
 	@Override
 	public void drawGraph(float x, float y, float xScale, float yScale, Canvas c) {
 		
@@ -123,7 +133,7 @@ public class LineGraphRenderer implements IGraphRenderer{
 			drawingValues[i]=arrangedValues[i]*xScale+x;
 			// Flip the graph upside down to have negative values down and positive up
 			drawingValues[i+1]=-1*(arrangedValues[i+1]*yScale+y); 
-			
+			//c.drawCircle(drawingValues[i], drawingValues[i+1], 1, paint);
 		}
 		c.drawLines(drawingValues, paint);
 		
