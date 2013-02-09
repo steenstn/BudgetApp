@@ -39,7 +39,10 @@ public class GraphView extends ImageView implements OnTouchListener{
 	float yScale = 0.1f;
 	float oldDistanceX;
 	float oldDistanceY;
+	float originX;
+	float originY;
 	String[] values;
+	
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {
 		super(context);
@@ -53,6 +56,8 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 		offsetX = 40.0f;
 		offsetY = -sy/2;
+		originX = offsetX;
+		originY = offsetY;
 		oldX=offsetX;
 		oldY=offsetY;
 		blackPaint = new Paint();
@@ -65,20 +70,29 @@ public class GraphView extends ImageView implements OnTouchListener{
 	}
 	
 	protected void onDraw(Canvas c) {
+		blackPaint.setColor(Color.BLACK);
 		if(getResources().getConfiguration().orientation==1)
 		{
-			c.drawRect(0, 0, sx, sy, blackPaint);
-		//	host.lineGraph.drawBackground(offsetX,offsetY,sx,sy,c);
+			
+	    	drawBackground(offsetX,offsetY,sx,sy,c);
+	    	
 		}
 		else
 		{
-			c.drawRect(0, 0, sy, sx, blackPaint);
-		//	host.lineGraph.drawBackground(offsetX,offsetY,sy,sx,c);
+			drawBackground(offsetX,offsetY,sy,sx,c);
 		}
-		//c.drawCircle(offsetX, offsetY, 30, paint);
+		host.lineGraph.drawBackground(offsetX,offsetY,sx,sy,c);
 		host.lineGraph.drawGraph(offsetX, offsetY, xScale, yScale, c);
 		host.lineGraph.drawValues(offsetX, offsetY, xScale, yScale, c);
 		
+	}
+	
+	public void drawBackground(float offsetX,float offsetY,int screenWidth,int screenHeight,Canvas c)
+	{
+		c.drawRect(0, 0, 2*sx, 2*sy, blackPaint);
+		blackPaint.setColor(Color.WHITE);
+    	c.drawLine(offsetX, 0, offsetX, 2*sx, blackPaint);
+    	c.drawLine(0, -offsetY, 2*sy, -offsetY, blackPaint);
 	}
 
 	@SuppressLint("NewApi")

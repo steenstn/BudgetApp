@@ -16,6 +16,8 @@ public class LineGraphRenderer implements IGraphRenderer{
     Paint textPaint = new Paint();
     Paint bgPaint = new Paint();
     Canvas canvas = new Canvas();
+    float originX;
+    float originY;
     float[] drawingValues;
     public LineGraphRenderer(float[] theX, float[] theY) {
         
@@ -29,6 +31,7 @@ public class LineGraphRenderer implements IGraphRenderer{
           arrangeValues(theX,theY);
           setStandardPaint();
           setStandardTextPaint();
+          
             values = new String[theValues.length];
             for(int i=0;i<theValues.length;i++)
             	values[i] = theValues[i];
@@ -117,9 +120,8 @@ public class LineGraphRenderer implements IGraphRenderer{
     
     public void drawBackground(float x,float y, float xScale, float yScale, Canvas c)
     {
-    	bgPaint.setColor(Color.WHITE);
-    //	c.drawLine(x, y, xScale, yScale, bgPaint);
-    //	c.drawLine(x, y, xScale, yScale, bgPaint);
+    	//Activity ac = getResources().getConfiguration().orientation==1
+    	
     	
     }
 	@Override
