@@ -21,7 +21,7 @@ public class GraphActivity extends Activity
 {
 	
 	GraphView view;
-	public List<BudgetEntry> entries;
+	public List<DayEntry> entries;
 	public String[] values;
 	float[] x;// = {0, 30, 60, 90};
     float[] y;// = {200, 100, 350, 100};
@@ -35,7 +35,7 @@ public class GraphActivity extends Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        
-        entries = new ArrayList<BudgetEntry>();
+        entries = new ArrayList<DayEntry>();
         
         view = new GraphView(this);
 
@@ -43,7 +43,7 @@ public class GraphActivity extends Activity
         datasource = new BudgetDataSource(this);
         datasource.open();
         
-        entries = datasource.getAllTransactions(datasource.ASCENDING);
+        entries = datasource.getAllDaysTotal(datasource.ASCENDING);
         x = new float[entries.size()];
         y = new float[entries.size()];
         values = new String[entries.size()];

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.os.Build;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -89,10 +90,25 @@ public class GraphView extends ImageView implements OnTouchListener{
 	
 	public void drawBackground(float offsetX,float offsetY,int screenWidth,int screenHeight,Canvas c)
 	{
+		blackPaint.setColor(Color.BLACK);
+		blackPaint.setStyle(Style.FILL);
 		c.drawRect(0, 0, 2*sx, 2*sy, blackPaint);
+		
 		blackPaint.setColor(Color.WHITE);
+		blackPaint.setStyle(Style.STROKE);
+		blackPaint.setStrokeWidth(3.0f);
+		
     	c.drawLine(offsetX, 0, offsetX, 2*sx, blackPaint);
     	c.drawLine(0, -offsetY, 2*sy, -offsetY, blackPaint);
+    	blackPaint.setStrokeWidth(1.0f);
+    	blackPaint.setColor(Color.GRAY);
+    	for(int i = 0; i<100;i++)
+    	{
+    		c.drawLine(offsetX+i*xScale, 0, offsetX+i*xScale, 2*sy, blackPaint);
+    		
+    		c.drawLine(0, -offsetY-i/(yScale/10), 2*sx, -offsetY-i/(yScale/10), blackPaint);
+    		
+    	}
 	}
 
 	@SuppressLint("NewApi")
@@ -143,7 +159,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 					oldDistanceY = distanceY;
 					
 				}
-				System.out.println("Index: " + pointerIndex);
+				//System.out.println("Index: " + pointerIndex);
 			break;
 			
 			case MotionEvent.ACTION_UP:
