@@ -8,6 +8,7 @@ import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
@@ -96,7 +97,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void updateStats()
 	{
 		TextView stats = (TextView)findViewById(R.id.textViewLogStats);
-		
+		stats.setMovementMethod(new ScrollingMovementMethod());
 		if(days.size()<2)
 		{
 			stats.setText("Not enough days for mean derivative\n");
@@ -107,17 +108,14 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			long dayDerivative = BudgetFunctions.getMeanDerivative(dayFlow,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
-		if(entries.size()<2)
+		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
+		CategoryEntry entry;
+		for(int i=0;i<categoryStats.size();i++)
 		{
-			stats.append("Not enough transactions for mean derivative\n");
+			entry = categoryStats.get(i);
+			
+			stats.append(entry.getCategory() + "\t" + entry.getNum() + "\t" + entry.getTotal() + "\n");
 		}
-		else
-		{
-			stats.append("Mean derivative (" + min(numTransactionsForDerivative,entries.size()) + ") transactions: ");
-			long transactionDerivative = BudgetFunctions.getMeanDerivative(entries,numDaysForDerivative);
-			stats.append(""+transactionDerivative + "\n");
-		}
-		
 		
 	}
 	
@@ -207,7 +205,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		}
 		if(!added)
 		{
-			CategoryEntry newEntry = new CategoryEntry(entry.getCategory());
+			CategoryEntry newEntry = new CategoryEntry(0, entry.getCategory(),1,entry.getValue());
 			categoryStats.add(newEntry);
 		}
 	}
@@ -218,7 +216,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printEntry(TextView view,BudgetEntry entry)
 	{
-		view.append("Date: " + entry.getDate().substring(8) + "  Category: " + entry.getCategory()+"\n");
+		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getCategory()+"\n");
 	}
 	
 	
@@ -231,7 +229,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printMonth(TextView view, ArrayList<Stats> months, int index)
 	{
-		view.append(monthToString(months.get(index).getName())+"\n");
+		view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
 		for(int k=0;k<months.get(index).getTransactions().size();k++)
 		{
 			BudgetEntry entry = months.get(index).getTransactions().get(k);
