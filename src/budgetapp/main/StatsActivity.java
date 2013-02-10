@@ -63,33 +63,35 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         int entryIndex = 0;
         int yearIndex = 0;
         
-        // Set up the composite
-        while(entryIndex<size)
+        if(size>0)
         {
-        	entry = entries.get(entryIndex);
-        	String year = entry.getYear();
-        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
-        	{
-	        	//Add a year
-	        	years.add(new CompositeStats(year));
-        	}
-        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
-        	
-        	entryIndex++;
+	        // Set up the composite
+	        while(entryIndex<size)
+	        {
+	        	entry = entries.get(entryIndex);
+	        	String year = entry.getYear();
+	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
+	        	{
+		        	//Add a year
+		        	years.add(new CompositeStats(year));
+	        	}
+	        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
+	        	
+	        	entryIndex++;
+	        }
+	        
+	        
+	        Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
+	        spinner.setOnItemSelectedListener(this);
+	        spinner = (Spinner) findViewById(R.id.spinnerCategory);
+	        spinner.setOnItemSelectedListener(this);
+	        spinner = (Spinner) findViewById(R.id.spinnerYear);
+	        
+	        spinner.setOnItemSelectedListener(this);
+	
+	       	updateSpinners();
+	        updateLog();
         }
-        
-        
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
-        spinner.setOnItemSelectedListener(this);
-        spinner = (Spinner) findViewById(R.id.spinnerCategory);
-        spinner.setOnItemSelectedListener(this);
-        spinner = (Spinner) findViewById(R.id.spinnerYear);
-        
-        spinner.setOnItemSelectedListener(this);
-
-       	updateSpinners();
-        updateLog();
-		 
         
         
 	}
