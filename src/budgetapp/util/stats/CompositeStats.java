@@ -18,15 +18,12 @@ public class CompositeStats extends Stats {
 		name = theName;
 		children = new ArrayList<Stats>();
 	}
-	public void addChild(Stats theChild){
-		children.add(theChild);
-	}
+	
 	public List<Stats> getChildren(){
 		return children;
 	}
 	public void addEntry(BudgetEntry theEntry,int mode)
 	{
-		addToTotal(theEntry.getValue());
 		boolean added = false;
 		for(int i=0;i<children.size();i++)
 		{
@@ -44,13 +41,6 @@ public class CompositeStats extends Stats {
 		}
 	}
 
-	public long getTotal() {
-		long sum = total;
-		for(int i=0;i<children.size();i++)
-		{
-			sum+=children.get(i).getTotal();
-		}
-		return sum;
-	}
+
 
 }

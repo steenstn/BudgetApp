@@ -191,7 +191,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			 
 			 
 	}
-	
+	/**
+	 * Update the stats for a category
+	 * @param entry The transaction with the data to get stats from
+	 */
 	public void addStats(BudgetEntry entry)
 	{
 		boolean added = false;
@@ -205,7 +208,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 				break;
 			}
 		}
-		if(!added)
+		if(!added) // No entry for this category yet, add a new one
 		{
 			CategoryEntry newEntry = new CategoryEntry(0, entry.getCategory(),1,entry.getValue());
 			categoryStats.add(newEntry);
@@ -218,7 +221,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printEntry(TextView view,BudgetEntry entry)
 	{
-		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getCategory()+"\n");
+		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue() + "\t" + entry.getCategory()+"\n");
 	}
 	
 	
@@ -288,13 +291,18 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         
         updateStats();
 	}
-	
+	/***
+	 * Parses a string and gets the correct month from Resources
+	 * @param in The string to parse
+	 * @return The month as a string
+	 */
 	public String monthToString(String in)
 	{
 		String[] months = getResources().getStringArray(R.array.months_array);
 		int month = Integer.parseInt(in) - 1;
 		return months[month];
 	}
+	
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 		
@@ -302,14 +310,12 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		Spinner monthSpinner =  (Spinner)findViewById(R.id.spinnerMonth);
 		Spinner categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
 		
+		// Find what year, month and category that is chosen
 		selectedYear = yearSpinner.getSelectedItemPosition();
 		selectedMonth = monthSpinner.getSelectedItemPosition()-1;
 		selectedCategory = (String) categorySpinner.getSelectedItem();
 		
 		updateLog();
-		System.out.println("selectedYear: " + selectedYear);
-		System.out.println("selectedMonth: " + selectedMonth);
-		System.out.println("selectedCategory: " + selectedCategory);
 		
 	}
 
