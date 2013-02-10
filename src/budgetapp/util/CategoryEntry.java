@@ -34,6 +34,8 @@ public class CategoryEntry extends DatabaseEntry {
 	
 	public CategoryEntry(String category){
 		this.category = category;
+		this.total=0;
+		this.num=0;
 	}
 	
 	public void setCategory(String category){
@@ -49,6 +51,9 @@ public class CategoryEntry extends DatabaseEntry {
 	public int getNum(){
 		return num;
 	}
+	public void addToNum(int n){
+		num+=n;
+	}
 	
 	public void setTotal(long n)
 	{
@@ -58,6 +63,9 @@ public class CategoryEntry extends DatabaseEntry {
 	public long getTotal()
 	{
 		return total;
+	}
+	public void addToTotal(long n){
+		total+=n;
 	}
 	
 	

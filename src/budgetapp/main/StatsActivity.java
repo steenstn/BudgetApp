@@ -25,6 +25,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	List<DayEntry> dayFlow;
 	List<BudgetEntry> entries;
 	List<CategoryEntry> categories;
+	List<CategoryEntry> categoryStats; // Contains stats for categories
 	List<String> categoryNames;
 	ArrayList<CompositeStats> years;
 	int selectedYear=0;
@@ -48,7 +49,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         days = datasource.getAllDaysTotal(BudgetDataSource.DESCENDING);
         dayFlow = datasource.getAllDays(BudgetDataSource.DESCENDING);
         categories = datasource.getCategoriesSorted();
-        //updateStats();
+        
+        
         categoryNames = new ArrayList<String>();
         for(int i=0;i<categories.size();i++)
         	categoryNames.add(categories.get(i).getCategory());
@@ -190,11 +192,43 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			 
 	}
 	
+	public void addStats(BudgetEntry entry)
+	{
+		boolean added = false;
+		for(int i=0;i<categoryStats.size();i++)
+		{
+			if(categoryStats.get(i).getCategory().equalsIgnoreCase(entry.getCategory()))
+			{
+				categoryStats.get(i).addToNum(1);
+				categoryStats.get(i).addToTotal(entry.getValue());
+				added = true;
+				break;
+			}
+		}
+		if(!added)
+		{
+			CategoryEntry newEntry = new CategoryEntry(entry.getCategory());
+			categoryStats.add(newEntry);
+		}
+	}
+	/**
+	 * Appends a BudgetEntry to a specific TextView
+	 * @param view The view to append to
+	 * @param entry The BudgetEntry to append
+	 */
 	public void printEntry(TextView view,BudgetEntry entry)
 	{
 		view.append("Date: " + entry.getDate().substring(8) + "  Category: " + entry.getCategory()+"\n");
 	}
 	
+	
+	/**
+	 * Appends a months of BudgetEntrys to a TextView, only appends those chosen by selectedCategory, 
+	 * or if selectedCategory is set to All categories, appends all
+	 * @param view The TextView to append to
+	 * @param months An ArrayList<Stats> containing the months
+	 * @param index The index of the month
+	 */
 	public void printMonth(TextView view, ArrayList<Stats> months, int index)
 	{
 		view.append(monthToString(months.get(index).getName())+"\n");
@@ -203,12 +237,19 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			BudgetEntry entry = months.get(index).getTransactions().get(k);
 			// Print the entry if it has the correct category
 			// or if all categories are set to be printed
-			if(selectedCategory.equalsIgnoreCase(entry.getCategory())|| selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
-			printEntry(view,entry);
-			
+			if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
+			{
+				printEntry(view,entry);
+				addStats(entry); // Add the stats to categoryStats
+			}
 		}
 	}
 	
+	/**
+	 * Appends a year worth of BudgetEntrys to a TextView, using printMonth
+	 * @param view The TextView to append to
+	 * @param index The index of the year
+	 */
 	public void printYear(TextView view, int index)
 	{
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
@@ -227,7 +268,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	
 	public void updateLog()
 	{
-		
+		categoryStats = new ArrayList<CategoryEntry>();
+        
         TextView top = (TextView)findViewById(R.id.textViewLogTop);
         BudgetEntry entry;
         
@@ -243,6 +285,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	//for(int i=0;i<years.size();i++)
         		//printYear(top,i);
         }
+        
+        updateStats();
 	}
 	
 	public String monthToString(String in)
