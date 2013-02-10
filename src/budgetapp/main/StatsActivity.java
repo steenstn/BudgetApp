@@ -25,9 +25,11 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	List<DayEntry> dayFlow;
 	List<BudgetEntry> entries;
 	List<CategoryEntry> categories;
+	List<String> categoryNames;
 	ArrayList<CompositeStats> years;
 	int selectedYear=0;
 	int selectedMonth=-1;
+	String selectedCategory = "";
 	int numDaysForDerivative = 7;
 	int numTransactionsForDerivative = 10;
 	int min(int a,int b) 
@@ -47,6 +49,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         dayFlow = datasource.getAllDays(BudgetDataSource.DESCENDING);
         categories = datasource.getCategoriesSorted();
         //updateStats();
+        categoryNames = new ArrayList<String>();
+        for(int i=0;i<categories.size();i++)
+        	categoryNames.add(categories.get(i).getCategory());
+        
         
         years = new ArrayList<CompositeStats>();
         int size = entries.size();
@@ -69,13 +75,16 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	entryIndex++;
         }
         
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerYear);
-        spinner.setOnItemSelectedListener(this);
-        spinner = (Spinner) findViewById(R.id.spinnerMonth);
-        spinner.setOnItemSelectedListener(this);
         
-       	updateSpinners();
+        Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
+        spinner.setOnItemSelectedListener(this);
+        spinner = (Spinner) findViewById(R.id.spinnerCategory);
+        spinner.setOnItemSelectedListener(this);
+        spinner = (Spinner) findViewById(R.id.spinnerYear);
+        
+        spinner.setOnItemSelectedListener(this);
 
+       	updateSpinners();
         updateLog();
 		 
         
@@ -116,8 +125,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		 //Set up the year spinner
 		ArrayList<String> yearStartValues = new ArrayList<String>();
 		ArrayList<String> monthStartValues = new ArrayList<String>();
+        ArrayList<String> categoryStartValues = new ArrayList<String>();
         
-		yearStartValues.add(getString(R.string.all_years));
+		//yearStartValues.add(getString(R.string.all_years));
         for(int i=0;i<years.size();i++)
         {
         	yearStartValues.add(years.get(i).getName());
@@ -161,42 +171,77 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 // Apply the adapter to the spinner
 		 spinner.setAdapter(adapter);
+		 
+		 // Set up the category spinner
+		 categoryStartValues.add(getString(R.string.all_categories));
+	     for(int i=0;i<categoryNames.size();i++)
+	     {
+	    	 categoryStartValues.add(categoryNames.get(i));
+	     }
+         spinner = (Spinner) findViewById(R.id.spinnerCategory);
+		 // Create an ArrayAdapter using the string array and a default spinner layout
+         adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, categoryStartValues);
+	   
+	     // Specify the layout to use when the list of choices appears
+		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		 // Apply the adapter to the spinner
+		 spinner.setAdapter(adapter);
+			 
 			 
 	}
+	
+	public void printEntry(TextView view,BudgetEntry entry)
+	{
+		view.append("Date: " + entry.getDate().substring(8) + "  Category: " + entry.getCategory()+"\n");
+	}
+	
+	public void printMonth(TextView view, ArrayList<Stats> months, int index)
+	{
+		view.append(monthToString(months.get(index).getName())+"\n");
+		for(int k=0;k<months.get(index).getTransactions().size();k++)
+		{
+			BudgetEntry entry = months.get(index).getTransactions().get(k);
+			// Print the entry if it has the correct category
+			// or if all categories are set to be printed
+			if(selectedCategory.equalsIgnoreCase(entry.getCategory())|| selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
+			printEntry(view,entry);
+			
+		}
+	}
+	
+	public void printYear(TextView view, int index)
+	{
+		ArrayList<Stats> months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
+    	if(selectedMonth>-1) // A specific month is chosen
+    	{
+    		printMonth(view,months,selectedMonth);
+    	}
+    	else // Print all transactions this year
+    	{
+        	for(int j=0;j<months.size();j++)
+        	{
+        		printMonth(view,months,j);
+        	}
+    	}
+	}
+	
 	public void updateLog()
 	{
 		
         TextView top = (TextView)findViewById(R.id.textViewLogTop);
         BudgetEntry entry;
+        
         top.setText("");
         top.setMovementMethod(new ScrollingMovementMethod());
-        if(selectedYear>-1)
+        if(selectedYear>-1) // A specific year is chosen
         {
-	        	ArrayList<Stats> months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
-	        	if(selectedMonth>-1)
-	        	{
-	        		top.append(monthToString(months.get(selectedMonth).getName())+"\n");
-	        		for(int k=0;k<months.get(selectedMonth).getTransactions().size();k++)
-	        		{
-	        			entry = months.get(selectedMonth).getTransactions().get(k);
-	        			top.append(entry.getDate().substring(8) + " " + entry.getCategory()+"\n");
-	        			
-	        		}
-	        	}
-	        	else
-	        	{
-		        	for(int j=0;j<months.size();j++)
-		        	{
-		        		top.append(months.get(j).getName()+"\n");
-		        		for(int k=0;k<months.get(j).getTransactions().size();k++)
-		        		{
-		        			entry = months.get(j).getTransactions().get(k);
-		        			top.append(entry.getDate().substring(8) + " " + entry.getCategory()+"\n");
-		        			
-		        		}
-		        	}
-	        	}
+	        printYear(top,selectedYear);
 	        
+        }
+        else // Print all years
+        {
+        	//for(int i=0;i<years.size();i++)
+        		//printYear(top,i);
         }
 	}
 	
@@ -208,15 +253,20 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	}
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		//Toast.makeText(parent.getContext(), "The planet is " +parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
+		
 		Spinner yearSpinner =  (Spinner)findViewById(R.id.spinnerYear);
 		Spinner monthSpinner =  (Spinner)findViewById(R.id.spinnerMonth);
+		Spinner categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
 		
-		selectedYear = yearSpinner.getSelectedItemPosition()-1;
+		selectedYear = yearSpinner.getSelectedItemPosition();
 		selectedMonth = monthSpinner.getSelectedItemPosition()-1;
+		selectedCategory = (String) categorySpinner.getSelectedItem();
+		
 		updateLog();
 		System.out.println("selectedYear: " + selectedYear);
 		System.out.println("selectedMonth: " + selectedMonth);
+		System.out.println("selectedCategory: " + selectedCategory);
+		
 	}
 
 	@Override
