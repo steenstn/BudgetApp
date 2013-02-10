@@ -35,7 +35,7 @@ import android.content.Intent;
 public class MainActivity extends FragmentActivity implements OnItemSelectedListener{
 
 	
-	TransactionCommand tempCom; // A TransactionCommand enabling Undo
+	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
 	public static BudgetDataSource datasource; // The connection to the database
 	int currentBudget = 0;
 	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         setContentView(R.layout.activity_main);
         datasource = new BudgetDataSource(this);
         datasource.open();
-
+        tempCom = new ArrayList<TransactionCommand>();
         updateSpinner();
         updateLog();
     }
@@ -282,8 +282,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	Calendar cal = Calendar.getInstance();
 	        	
 	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
-	        	tempCom = new TransactionCommand(datasource,entry);
-	        	tempCom.execute();
+	        	tempCom.add(new TransactionCommand(datasource,entry));
+	        	tempCom.get(tempCom.size()-1).execute();
 	        	
         	}
         	resultText.setText("");
@@ -343,8 +343,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
-		        	tempCom = new TransactionCommand(datasource,entry);
-		        	tempCom.execute();
+		        	tempCom.add(new TransactionCommand(datasource,entry));
+		        	tempCom.get(tempCom.size()-1).execute();
 		        	currentBudget+=dailyBudget;
 		        	totalMoney+=dailyBudget;
 		        	numDays++;
@@ -394,10 +394,11 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	DialogFragment newFragment;
         switch (item.getItemId()) {
 	        case R.id.menu_undo:
-	        	if(tempCom!=null && tempCom.unexecute()==true)
+	        	if(!tempCom.isEmpty() && tempCom.get(tempCom.size()-1).unexecute()==true)
 	        	{
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-		        	currentBudget-=tempCom.getEntry().getValue();
+		        	currentBudget-=tempCom.get(tempCom.size()-1).getEntry().getValue();
+		        	tempCom.remove(tempCom.size()-1);
 		        	newBudget.setText(""+currentBudget);
 		        	updateAll();
 	        	}
