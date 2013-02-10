@@ -52,6 +52,13 @@ public class BudgetEntry extends DatabaseEntry{
 		return date;
 	}
 	
+	public String getYear(){
+		return date.substring(0, 4);
+	}
+	
+	public String getMonth(){
+		return date.substring(5,7);
+	}
 	public void setDate(String date){
 		this.date=date;
 	}

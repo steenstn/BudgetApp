@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import budgetapp.main.R;
 import budgetapp.util.*;
+import budgetapp.util.database.BudgetDataSource;
 
 public class GraphActivity extends Activity
 {

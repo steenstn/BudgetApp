@@ -1,13 +1,16 @@
-package budgetapp.util;
+package budgetapp.util.database;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import budgetapp.util.BudgetEntry;
+import budgetapp.util.CategoryEntry;
+import budgetapp.util.DayEntry;
 
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 /***
  * DatabaseAccess. The class responsible for communicating with the database. Used by DatabaseSource
  * 

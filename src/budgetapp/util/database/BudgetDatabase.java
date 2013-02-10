@@ -1,4 +1,4 @@
-package budgetapp.util;
+package budgetapp.util.database;
 /**
  * The database containing all the tables used by the application
  * 
@@ -7,13 +7,13 @@ package budgetapp.util;
  */
 import java.util.ArrayList;
 
+import budgetapp.util.DayEntry;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
 public class BudgetDatabase extends SQLiteOpenHelper{
 

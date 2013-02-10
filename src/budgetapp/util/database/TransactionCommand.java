@@ -1,4 +1,7 @@
-package budgetapp.util;
+package budgetapp.util.database;
+
+import budgetapp.util.BudgetEntry;
+
 /**
  * The class for executing a transaction. Uses the Command design pattern
  * to enable undo.

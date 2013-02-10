@@ -3,66 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
 	
-		    <TextView
-	          android:id="@+id/textViewLogStats"
-	          android:layout_width="match_parent"
-	          android:layout_height="0dip"
-	          android:layout_marginTop="10dip"
-	          android:layout_weight="4"
-	          android:text="" />
-		    <TextView
-	          android:id="@+id/textViewLogTopHead"
-	          android:layout_width="match_parent"
-	          android:layout_height="wrap_content"
-	          android:layout_marginTop="1dip"
-	          android:textStyle="bold"
-	          android:text="All transactions" />
-		    <TextView
-	          android:id="@+id/textViewLogTop"
-	          android:layout_width="match_parent"
-	          android:layout_height="0dip"
-	          android:layout_marginTop="1dip"
-	          android:layout_weight="4"
-	          android:scrollbars="vertical"
-	          android:text="" />
-		    <TextView
-	          android:id="@+id/textViewLogMiddleHead"
-	          android:layout_width="match_parent"
-	          android:layout_height="wrap_content"
-	          android:layout_marginTop="1dip"
-	          android:textStyle="bold"
-	          android:text="Top categories" />
-		    <TextView
-	          android:id="@+id/textViewLogMiddle"
-	          android:layout_width="match_parent"
-	          android:layout_height="0dip"
-	          android:layout_marginTop="1dip"
-	          android:layout_weight="4"
-	          android:scrollbars="vertical"
-	          android:text="" />
-		    <TextView
-	          android:id="@+id/textViewLogBottomHead"
-	          android:layout_width="match_parent"
-	          android:layout_height="wrap_content"
-	          android:layout_marginTop="1dip"
-	          android:textStyle="bold"
-	          android:text="Daily total" />
-		    <TextView
-	          android:id="@+id/textViewLogBottom"
-	          android:layout_width="match_parent"
-	          android:layout_height="0dip"
-	          android:layout_marginTop="1dip"
-	          android:scrollbars="vertical"
-	          android:layout_weight="4"
-	          android:text="" />
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+        
+        <Spinner
+        android:id="@+id/spinnerYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        />
+        <Spinner
+        android:id="@+id/spinnerMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+        
+    </LinearLayout>
+    
+	    <TextView
+	        android:id="@+id/textViewLogStats"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dip"
+	        android:layout_marginTop="10dip"
+	        android:layout_weight="1.25"
+	        android:text="" />
+
+	    <TextView
+          android:id="@+id/textViewLogTopHead"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="1dip"
+          android:textStyle="bold"
+          android:text="All transactions" />
+	    <TextView
+          android:id="@+id/textViewLogTop"
+          android:layout_width="match_parent"
+          android:layout_height="0dip"
+          android:layout_marginTop="1dip"
+          android:layout_weight="4"
+          android:scrollbars="vertical"
+          android:text="" />
+	   
 		    
-	    
-	
-      
-
-      
 
 </LinearLayout>
 

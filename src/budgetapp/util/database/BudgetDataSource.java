@@ -1,4 +1,4 @@
-package budgetapp.util;
+package budgetapp.util.database;
 /**
  * The class used to access the database. It itself uses the DatabaseAccess class to
  * query the database.
@@ -8,6 +8,10 @@ package budgetapp.util;
  */
 
 import java.util.List;
+
+import budgetapp.util.BudgetEntry;
+import budgetapp.util.CategoryEntry;
+import budgetapp.util.DayEntry;
 
 
 import android.content.Context;
@@ -24,9 +28,6 @@ public class BudgetDataSource {
 	public static final String ASCENDING = "asc";
 	public static final String DESCENDING = "desc";
 	
-	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
-			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY};
-	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY};
 	
 	public BudgetDataSource(Context context)
 	{

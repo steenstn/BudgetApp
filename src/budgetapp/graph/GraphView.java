@@ -2,8 +2,8 @@ package budgetapp.graph;
 
 import java.util.List;
 
-import budgetapp.util.BudgetDataSource;
 import budgetapp.util.DayEntry;
+import budgetapp.util.database.BudgetDataSource;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Point;
 import android.os.Build;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -52,6 +53,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 		Display display = host.getWindowManager().getDefaultDisplay();
 		//values = new String[host.values.length];
 		//values = host.values;
+		
 		sx = display.getWidth();
 		sy = display.getHeight();
 		
@@ -111,8 +113,7 @@ public class GraphView extends ImageView implements OnTouchListener{
     	}
 	}
 
-	@SuppressLint("NewApi")
-	@TargetApi(Build.VERSION_CODES.ECLAIR)
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		

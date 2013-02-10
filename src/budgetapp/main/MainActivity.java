@@ -7,12 +7,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import budgetapp.graph.GraphActivity;
-import budgetapp.util.BudgetDataSource;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
-import budgetapp.util.TransactionCommand;
+import budgetapp.util.database.BudgetDataSource;
+import budgetapp.util.database.TransactionCommand;
 
 import android.os.Bundle;
 import android.graphics.Color;
@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
-    	List<DayEntry> days = datasource.getSomeDays(7,datasource.DESCENDING);
+    	List<DayEntry> days = datasource.getSomeDays(7,BudgetDataSource.DESCENDING);
     	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
@@ -182,7 +182,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     // Updates the log of transactions, categories and daysums
     public void updateLog()
     {
-    	List<BudgetEntry> entries = datasource.getSomeTransactions(5,datasource.DESCENDING);
+    	List<BudgetEntry> entries = datasource.getSomeTransactions(5,BudgetDataSource.DESCENDING);
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
         TextView right = (TextView)findViewById(R.id.textViewLogRight);
         left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
@@ -195,9 +195,9 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         }
         
         
-        List<CategoryEntry> categories = datasource.getCategoriesSorted();
+        /*List<CategoryEntry> categories = datasource.getCategoriesSorted();
         
-        /*left.append(Html.fromHtml("<b>Top categories</b><br />"));
+        left.append(Html.fromHtml("<b>Top categories</b><br />"));
         right.append(Html.fromHtml("<b>Transactions</b><br />"));
         for(int i=0;i<categories.size();i++) 
         {	
@@ -209,7 +209,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	right.append(categories.get(i).getNum()+"\n");
         	}
         }*/
-        List<DayEntry> days = datasource.getSomeDays(5,datasource.DESCENDING);
+        List<DayEntry> days = datasource.getSomeDays(5,BudgetDataSource.DESCENDING);
         left.append("\n\n");
         left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
@@ -232,15 +232,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	int i;
 		for(i=0;i<categories.size();i++)
 		{
-		//	System.out.println("Checking "+categories.get(i).getCategory());
 			if(categories.get(i).getTotal()>0 || categories.get(i).getNum()<2)
 			{	
-		//		System.out.println("Removing "+categories.get(i).getCategory());
 				categories.remove(i);
 				i--;
 			}
 		}
-		//System.out.println("size "+categories.size());
     	int index = categories.size()-1; // Start at the last entry
     	
     	for(i = 0;i<min(numButtons,categories.size());i++)
