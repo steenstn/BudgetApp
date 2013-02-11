@@ -99,6 +99,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void updateStats()
 	{
 		TextView stats = (TextView)findViewById(R.id.textViewLogStats);
+		
 		stats.setMovementMethod(new ScrollingMovementMethod());
 		if(days.size()<2)
 		{
@@ -112,11 +113,29 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		}
 		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
 		CategoryEntry entry;
+		int length = 0;
+		for(int i=0;i<categoryStats.size();i++) // Get longest name
+		{
+			entry = categoryStats.get(i);
+			if(entry.getCategory().length()>length)
+			{
+				length = entry.getCategory().length();
+			}
+		}
+		length++;
+		
 		for(int i=0;i<categoryStats.size();i++)
 		{
 			entry = categoryStats.get(i);
 			
-			stats.append(entry.getCategory() + "\t" + entry.getNum() + "\t" + entry.getTotal() + "\n");
+			stats.append(entry.getCategory()+":");
+			for(int j=0;j<Math.floor((length-entry.getCategory().length()+1)/3)+1;j++)
+				stats.append("\t");
+			stats.append(""+entry.getNum());
+			stats.append("\t");
+			if(entry.getNum()<10)
+				stats.append("\t");
+			stats.append(" Total: " + entry.getTotal() + "\n");
 		}
 		
 	}
@@ -221,7 +240,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printEntry(TextView view,BudgetEntry entry)
 	{
-		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue() + "\t" + entry.getCategory()+"\n");
+		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
+		if(entry.getValue()>-100 && entry.getValue()<1000)
+			view.append("\t");
+		view.append("\t" + entry.getCategory()+"\n");
 	}
 	
 	
@@ -234,7 +256,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printMonth(TextView view, ArrayList<Stats> months, int index)
 	{
-		view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
+		boolean monthPrinted = false;
+		
 		for(int k=0;k<months.get(index).getTransactions().size();k++)
 		{
 			BudgetEntry entry = months.get(index).getTransactions().get(k);
@@ -242,6 +265,11 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			// or if all categories are set to be printed
 			if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
 			{
+				if(!monthPrinted)
+				{
+					view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
+					monthPrinted = true;
+				}
 				printEntry(view,entry);
 				addStats(entry); // Add the stats to categoryStats
 			}

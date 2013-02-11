@@ -38,7 +38,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int menu_addcategory=0x7f090014;
         public static final int menu_removecategory=0x7f090015;
         public static final int menu_setdailybudget=0x7f090016;
-        public static final int menu_showgraph=0x7f090018;
         public static final int menu_statistics=0x7f090017;
         public static final int menu_undo=0x7f090013;
         public static final int spinnerCategory=0x7f09000b;
