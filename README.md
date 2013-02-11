@@ -4,6 +4,11 @@ The recognised world leading budget application paradigm
 
 Changelog
 =========
+v2.2
+- Up to three favorite buttons for easy adding of transactions
+- Improved statistics activity
+- Support for multiple undo operations
+
 v2.1
 - Temporary category
 - New layout of main screen
