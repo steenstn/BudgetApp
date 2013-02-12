@@ -25,6 +25,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_DATE = "date";
 	public static final String COLUMN_CATEGORY = "category";
 	public static final String COLUMN_FLAGS = "flags";
+	public static final String COLUMN_COMMENT = "comment";
 	
 	//The table with the different names for categories, used by the Spinner to select categories
 	public static final String TABLE_CATEGORY_NAMES = "categorynames";
@@ -48,16 +49,18 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	//COLUMN_TOTAL
 
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 8;
 	
 	private static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY
 			+ " text);";
+	// This is the table for transactions
 	private static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
 			+ TABLE_CASHFLOW + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " +COLUMN_VALUE +
-			" integer, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer);";
+			" integer, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer, "
+			+ COLUMN_COMMENT + " text);";
 	
 	private static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
@@ -175,6 +178,9 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 				}
 				
 			}
+		case 7: // Updating from 2.2
+			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_COMMENT);
+			
 			/*values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
 			db.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 			values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");

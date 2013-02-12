@@ -59,6 +59,7 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory());
+		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_CASHFLOW, null,values);
 		
@@ -113,8 +114,7 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
-		//om den itne finns, ta från igår
-		//OM igår itne finns, skapa ny
+		
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
 		{
 			ContentValues values = new ContentValues();
@@ -236,7 +236,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}

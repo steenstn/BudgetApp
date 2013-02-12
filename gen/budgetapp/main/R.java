@@ -30,16 +30,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class id {
         public static final int categories_spinner=0x7f090003;
         public static final int dialog_category_name=0x7f09000f;
-        public static final int dialog_dailybudget=0x7f090012;
-        public static final int dialog_dailybudget_currentbudget=0x7f090011;
+        public static final int dialog_dailybudget=0x7f090013;
+        public static final int dialog_dailybudget_currentbudget=0x7f090012;
+        public static final int dialog_other_category_comment=0x7f090011;
         public static final int dialog_other_category_name=0x7f090010;
         public static final int editTextSubtract=0x7f090002;
         public static final int fullscreen_content=0x7f090000;
-        public static final int menu_addcategory=0x7f090014;
-        public static final int menu_removecategory=0x7f090015;
-        public static final int menu_setdailybudget=0x7f090016;
-        public static final int menu_statistics=0x7f090017;
-        public static final int menu_undo=0x7f090013;
+        public static final int menu_addcategory=0x7f090015;
+        public static final int menu_removecategory=0x7f090016;
+        public static final int menu_setdailybudget=0x7f090017;
+        public static final int menu_showgraph=0x7f090019;
+        public static final int menu_statistics=0x7f090018;
+        public static final int menu_undo=0x7f090014;
         public static final int spinnerCategory=0x7f09000b;
         public static final int spinnerMonth=0x7f09000a;
         public static final int spinnerYear=0x7f090009;

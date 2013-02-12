@@ -12,19 +12,33 @@ public class BudgetEntry extends DatabaseEntry{
 	private int value; // How large the transaction was
 	private String date; // The date it was done
 	private String category; // What category the transaction had
+	private String comment; // Possible comment for the transaction
 	private int flags;
+	
 	public BudgetEntry(int value,String date,String category)
 	{
 		this.value=value;
 		this.date=date;
 		this.category=category;
+		this.flags=0;
+		this.comment = "";
+	}
+	public BudgetEntry(int value,String date,String category,String comment)
+	{
+		this.value=value;
+		this.date=date;
+		this.category=category;
+		this.flags=0;
+		this.comment = comment;
 	}
 	public BudgetEntry(long id,int value,String date,String category)
 	{
 		this.id=id;
 		this.value=value;
 		this.date=date;
+		this.flags=0;
 		this.category=category;
+		this.comment = "";
 	}
 	public BudgetEntry(long id,int value,String date,String category,int flags)
 	{
@@ -33,6 +47,17 @@ public class BudgetEntry extends DatabaseEntry{
 		this.date=date;
 		this.category=category;
 		this.flags=flags;
+		this.comment = "";
+	}
+	
+	public BudgetEntry(long id,int value,String date,String category,int flags,String comment)
+	{
+		this.id=id;
+		this.value=value;
+		this.date=date;
+		this.category=category;
+		this.flags=flags;
+		this.comment = comment;
 	}
 	
 	
@@ -69,6 +94,16 @@ public class BudgetEntry extends DatabaseEntry{
 	
 	public String getCategory(){
 		return category;
+	}
+	
+	public void setComment(String comment)
+	{
+		this.comment = comment;
+	}
+	
+	public String getComment()
+	{
+		return comment;
 	}
 	@Override
 	public String toString(){

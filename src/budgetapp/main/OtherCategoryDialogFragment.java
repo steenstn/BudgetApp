@@ -30,8 +30,10 @@ public class OtherCategoryDialogFragment extends DialogFragment {
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_other_category_name);
+	            	   EditText comment = (EditText)view.findViewById(R.id.dialog_other_category_comment);
+	            	   
 	            	   if(!category.getText().toString().equalsIgnoreCase(""))
-	            		   ((MainActivity) getActivity()).subtractFromBudget(view,category.getText().toString()); 
+	            		   ((MainActivity) getActivity()).subtractFromBudget(view,category.getText().toString(),comment.getText().toString()); 
 	            	   else
 	            		   Toast.makeText(view.getContext(), "Please enter category name" , Toast.LENGTH_LONG).show();
 	               }

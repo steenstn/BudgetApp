@@ -95,7 +95,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         
         
 	}
-	
+	/**
+	 * Updates the stats TextView
+	 */
 	public void updateStats()
 	{
 		TextView stats = (TextView)findViewById(R.id.textViewLogStats);
@@ -123,7 +125,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			}
 		}
 		length++;
-		
+		long sum = 0;
 		for(int i=0;i<categoryStats.size();i++)
 		{
 			entry = categoryStats.get(i);
@@ -136,7 +138,11 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			if(entry.getNum()<10)
 				stats.append("\t");
 			stats.append(" Total: " + entry.getTotal() + "\n");
+			
+				sum += entry.getTotal();
 		}
+		
+		stats.append("Total cash flow: " + sum);
 		
 	}
 	
@@ -243,7 +249,15 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
 		if(entry.getValue()>-100 && entry.getValue()<1000)
 			view.append("\t");
-		view.append("\t" + entry.getCategory()+"\n");
+		view.append("\t" + entry.getCategory());
+		// Add comment if there is one
+		// But only print max 20 characters
+		String comment = entry.getComment();
+		if(comment!=null && comment.length()>0)
+		{
+			view.append(Html.fromHtml("<i> - "+(comment.length()<10 ? comment : comment.substring(0, 10)+"...")+"</i>"));
+		}
+		view.append("\n");
 	}
 	
 	

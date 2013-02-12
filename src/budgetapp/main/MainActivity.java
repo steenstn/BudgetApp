@@ -194,21 +194,6 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		
         }
         
-        
-        /*List<CategoryEntry> categories = datasource.getCategoriesSorted();
-        
-        left.append(Html.fromHtml("<b>Top categories</b><br />"));
-        right.append(Html.fromHtml("<b>Transactions</b><br />"));
-        for(int i=0;i<categories.size();i++) 
-        {	
-        	if(i>4) // Only show top 5
-        		break;
-        	//if(categories.get(i).getTotal()!=0)
-        	{
-	        	left.append(categories.get(i)+ ": "+ categories.get(i).getTotal() + "\n");
-	        	right.append(categories.get(i).getNum()+"\n");
-        	}
-        }*/
         List<DayEntry> days = datasource.getSomeDays(5,BudgetDataSource.DESCENDING);
         left.append("\n\n");
         left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
@@ -255,7 +240,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     }
     
     
-    public void subtractFromBudget(View view,String theCategory) {
+    public void subtractFromBudget(View view,String theCategory, String theComment) {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
@@ -278,7 +263,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	        	Calendar cal = Calendar.getInstance();
 	        	
-	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory);
+	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory,theComment);
 	        	tempCom.add(new TransactionCommand(datasource,entry));
 	        	tempCom.get(tempCom.size()-1).execute();
 	        	
@@ -300,7 +285,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void buttonPressed(View v)
     {
     	Button pressedButton = (Button)v;
-    	subtractFromBudget(v,pressedButton.getText().toString());
+    	subtractFromBudget(v,pressedButton.getText().toString(),null);
     }
     
     // Adds the daily plus sum for all days missing since the last time the program was run
@@ -422,10 +407,10 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-           /* case R.id.menu_showgraph: // Wait for it!
+            case R.id.menu_showgraph: // Wait for it!
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;*/
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -439,7 +424,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		String theCategory = parent.getItemAtPosition(pos).toString();
 		if(pos!=0 && pos!=parent.getCount()-1) // Don't add "Choose category" or "Other..."
 		{
-			subtractFromBudget(parent,theCategory);
+			subtractFromBudget(parent,theCategory,null);
 		}
 		if(pos==parent.getCount()-1)
 		{
