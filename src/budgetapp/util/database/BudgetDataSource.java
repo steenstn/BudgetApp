@@ -58,11 +58,11 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	public void addToCategory(String theCategory,int value)
+	public void addToCategory(String theCategory,double value)
 	{
 		dbAccess.addToCategory(theCategory,value);
 	}
-	public void removeFromCategory(String theCategory,long value)
+	public void removeFromCategory(String theCategory,double value)
 	{
 		dbAccess.removeFromCategory(theCategory,value);
 	}

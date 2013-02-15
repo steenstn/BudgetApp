@@ -34,7 +34,7 @@
 	          android:layout_width="180dip"
 	          android:layout_height="wrap_content"
 	          android:ems="10"
-	          android:inputType="numberSigned" >
+	          android:inputType="numberDecimal|numberSigned">"
 				
 	      </EditText>
 	      <Spinner
@@ -58,7 +58,6 @@
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
 	        android:text="Top 1"
-	        android:onClick="buttonPressed"
 	        />
 	    <Button
 	        android:id="@+id/topCategoryButton1"
@@ -68,8 +67,7 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
-	        android:text="Top 2"
-	        android:onClick="buttonPressed" />
+	        android:text="Top 2"/>
 	    <Button
 	        android:id="@+id/topCategoryButton3"
 	        android:layout_width="0dip"
@@ -78,8 +76,7 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
-	        android:text="Top 3"
-	        android:onClick="buttonPressed" />
+	        android:text="Top 3"/>
 	
 	</LinearLayout>
 	<LinearLayout 

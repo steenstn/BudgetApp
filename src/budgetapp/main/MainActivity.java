@@ -11,6 +11,7 @@ import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
 
@@ -39,12 +40,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
 	public static BudgetDataSource datasource; // The connection to the database
-	int currentBudget = 0;
+	Money currentBudget = new Money();
 	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
 	private boolean logData = true; // If transactions should be logged
-	private int dailyBudget = 0; // The daily plus, set to zero until value is read/written in internal file
+	private Money dailyBudget = new Money(); // The daily plus, set to zero until value is read/written in internal file
 	public ArrayList<String> allCategories = new ArrayList<String>();
-	
+	private String chosenCategory = "";
 	int min(int a,int b) 
 	{
 		if(a<b)
@@ -52,12 +53,22 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		return b;
 	}
 	
-	public void setDailyBudget(int budget)
+	public String getChosenCategory()
 	{
-		dailyBudget = budget;
+		return chosenCategory;
+	}
+	public void setChosenCategory(String c)
+	{
+		chosenCategory = c;
 	}
 	
-	public int getDailyBudget()
+	
+	public void setDailyBudget(double budget)
+	{
+		dailyBudget.set(budget);
+	}
+	
+	public Money getDailyBudget()
 	{
 		return dailyBudget;
 	}
@@ -93,11 +104,11 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
              try
              {
             	 String strLine = in.readUTF();
-            	 currentBudget = Integer.parseInt(strLine);
+            	 currentBudget.set(Double.parseDouble(strLine));
             	 try
             	 {
             		 strLine = in.readUTF();
-            		 dailyBudget = Integer.parseInt(strLine);
+            		 dailyBudget.set(Double.parseDouble(strLine));
             	 }
             	 catch(IOException e)
             	 {
@@ -114,16 +125,16 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
              }
              catch(IOException e)
              {
-            	 currentBudget=0;
+            	// currentBudget=0;
              }
         }
         catch(NumberFormatException e)
         {
-        	currentBudget=0;
+        //	currentBudget=0;
         }
         catch(FileNotFoundException e)
         {
-        	currentBudget=0;
+        //	currentBudget=0;
         }
       
          //Add daily budget for all days since last run
@@ -137,12 +148,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     public void updateColor()
     {
     	List<DayEntry> days = datasource.getSomeDays(7,BudgetDataSource.DESCENDING);
-    	int derivative = (int)(BudgetFunctions.getMeanDerivative(days,7));
+    	Money derivative = (BudgetFunctions.getMeanDerivative(days,7));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
     	
-    	float maxValue =  0.75f * (float)dailyBudget;
-    	float floatDerivative = (float)derivative / maxValue;
+    	double maxValue =  0.75 * (double)dailyBudget.get();
+    	double floatDerivative = derivative.get() / maxValue;
     	//System.out.println("floatD före: " + floatDerivative);
     	
     	floatDerivative = floatDerivative * 255;
@@ -151,7 +162,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     	
     	int coloringFactor = min(255,Math.abs((int)floatDerivative));
-    	if(derivative<0)
+    	if(derivative.get()<0)
     		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
     	else
     		newBudget.setTextColor(Color.rgb(255-coloringFactor,255,255-coloringFactor));
@@ -229,7 +240,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	int i;
 		for(i=0;i<categories.size();i++)
 		{
-			if(categories.get(i).getTotal()>0 || categories.get(i).getNum()<2)
+			if(categories.get(i).getTotal().get()>0 || categories.get(i).getNum()<2)
 			{	
 				categories.remove(i);
 				i--;
@@ -260,13 +271,13 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	try
     	{
     		addToBudget(); // Check so that all dailies has come in
-    		int resultInt = Integer.parseInt(result);
+    		double resultInt = Double.parseDouble(result);
         	if(resultInt==0)
         		throw new NumberFormatException();
         
     		TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
         	
-        	currentBudget-=resultInt;
+        	currentBudget.subtract(resultInt);
         	newBudget.setText(""+currentBudget);
         	
         	// Add to database if logging is set
@@ -275,7 +286,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	        	Calendar cal = Calendar.getInstance();
 	        	
-	        	BudgetEntry entry = new BudgetEntry(resultInt*-1, dateFormat.format(cal.getTime()),theCategory,theComment);
+	        	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
 	        	tempCom.add(new TransactionCommand(datasource,entry));
 	        	tempCom.get(tempCom.size()-1).execute();
 	        	
@@ -295,11 +306,17 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     }
     public void onClick(View v)
     {
-    	Toast.makeText(this, "Click",Toast.LENGTH_SHORT).show();
+    	//Toast.makeText(this, "Click",Toast.LENGTH_SHORT).show();
+    	Button pressedButton = (Button)v;
+    	subtractFromBudget(v,pressedButton.getText().toString(),null);
     }
     @Override
 	public boolean onLongClick(View v) {
-    	Toast.makeText(this, "LongClick",Toast.LENGTH_SHORT).show();
+    	Button pressedButton = (Button)v;
+    	chosenCategory = (String) pressedButton.getText();
+    	DialogFragment newFragment = new OtherCategoryDialogFragment();
+    	newFragment.show(getSupportFragmentManager(), "other_category");
+    	
 		return true;
 	}
     public void buttonPressed(View v)
@@ -338,17 +355,17 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	int numDays = 0;
-	    	int totalMoney = 0;
+	    	double totalMoney = 0;
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(dailyBudget, dateFormat.format(tempDate.getTime()),"Income");
+	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
 		        	tempCom.add(new TransactionCommand(datasource,entry));
 		        	tempCom.get(tempCom.size()-1).execute();
-		        	currentBudget+=dailyBudget;
-		        	totalMoney+=dailyBudget;
+		        	currentBudget.add(dailyBudget);
+		        	totalMoney+=dailyBudget.get();
 		        	numDays++;
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	newBudget.setText(""+currentBudget);
@@ -366,7 +383,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	{
     		Calendar tempDate = Calendar.getInstance();
     		
-        	datasource.updateDaySum(new BudgetEntry(0, dateFormat.format(tempDate.getTime()),"Income"));
+        	datasource.updateDaySum(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
         
 
         	updateLog();
@@ -380,8 +397,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	DataOutputStream out;
 		try {
 			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-			out.writeUTF(""+currentBudget);
-			out.writeUTF(""+dailyBudget);
+			out.writeUTF(""+currentBudget.get());
+			out.writeUTF(""+dailyBudget.get());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -399,7 +416,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	        	if(!tempCom.isEmpty() && tempCom.get(tempCom.size()-1).unexecute()==true)
 	        	{
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-		        	currentBudget-=tempCom.get(tempCom.size()-1).getEntry().getValue();
+		        	currentBudget.subtract(tempCom.get(tempCom.size()-1).getEntry().getValue().get());
 		        	tempCom.remove(tempCom.size()-1);
 		        	newBudget.setText(""+currentBudget);
 		        	updateAll();

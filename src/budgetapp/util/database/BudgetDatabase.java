@@ -127,7 +127,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		Cursor cursor;
 		switch(oldVersion)  
 		{
-		case 1:// Database from app version 2.0. Add the flags-column
+		/*case 1:// Database from app version 2.0. Add the flags-column
 			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_DAYSUM + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);
@@ -177,11 +177,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 					db.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				}
 				
-			}
+			}*/
 		case 7: // Updating from 2.2
 			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_COMMENT);
 		case 8: // Updating from 2.2, changing to doubles by creating new tables
 			
+			ContentValues values;
 			db.execSQL("create table temp"+"(" + COLUMN_ID
 					+ " integer primary key autoincrement, " +COLUMN_VALUE +
 					" double, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer, "

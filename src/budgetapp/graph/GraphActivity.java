@@ -53,7 +53,7 @@ public class GraphActivity extends Activity
         for(int i=0;i<entries.size();i++)
         {
         	x[i] = i;
-        	y[i] = entries.get(i).getValue();
+        	y[i] = (float)entries.get(i).getValue().get();
         	values[i] = ""+entries.get(i).getValue();
         	//System.out.println("x["+i+"]: " + x[i] + "y["+i+"]: " + days.get(i).getValue());
         }

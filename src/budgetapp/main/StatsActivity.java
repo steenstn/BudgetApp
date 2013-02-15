@@ -6,6 +6,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Money;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
@@ -110,7 +111,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		else
 		{
 			stats.setText("Mean derivative (" + min(numDaysForDerivative,dayFlow.size()) + ") days: ");
-			long dayDerivative = BudgetFunctions.getMeanDerivative(dayFlow,numDaysForDerivative);
+			Money dayDerivative = BudgetFunctions.getMeanDerivative(dayFlow,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
 		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
@@ -125,7 +126,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			}
 		}
 		length++;
-		long sum = 0; // Calculate the total cash flow for the selected time span
+		Money sum = new Money(); // Calculate the total cash flow for the selected time span
 		for(int i=0;i<categoryStats.size();i++)
 		{
 			entry = categoryStats.get(i);
@@ -139,7 +140,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 				stats.append("\t");
 			stats.append(" Total: " + entry.getTotal() + "\n");
 			
-			sum += entry.getTotal();
+			sum.add(entry.getTotal());
 		}
 		
 		stats.append("Total cash flow: " + sum);
@@ -247,7 +248,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void printEntry(TextView view,BudgetEntry entry)
 	{
 		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
-		if(entry.getValue()>-100 && entry.getValue()<1000)
+		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
 			view.append("\t");
 		view.append("\t" + Html.fromHtml("<a href='com.budgetapp.main://AddCategoryDialog'>"+entry.getCategory()+"</a>"));
 		// Add comment if there is one

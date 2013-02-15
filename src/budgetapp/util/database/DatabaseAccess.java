@@ -6,6 +6,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Money;
 
 
 import android.content.ContentValues;
@@ -56,7 +57,7 @@ public class DatabaseAccess {
 		
 		ContentValues values = new ContentValues();
 		// Put in the values
-		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
+		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory());
 		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment());
@@ -67,7 +68,8 @@ public class DatabaseAccess {
 				allColumnsTransactions,BudgetDatabase.COLUMN_ID + " = " + insertId, null,
 				null, null, null);
 		cursor.moveToFirst();
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+		
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 		cursor.close();
 		return entry;
 	}
@@ -93,7 +95,7 @@ public class DatabaseAccess {
 			ContentValues values = new ContentValues();
 			// Put in the values
 			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-			values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
+			values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
 			
 			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);
 			cursor.close();
@@ -101,8 +103,8 @@ public class DatabaseAccess {
 		}
 		// There exists an entry for this day, update it.
 		cursor.moveToFirst();
-		long total = cursor.getLong(0);
-		total += theEntry.getValue();
+		double total = cursor.getDouble(0);
+		total += theEntry.getValue().get();
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_VALUE, total);
 		
@@ -122,16 +124,16 @@ public class DatabaseAccess {
 			if(yesterdayCursor.getCount()<=0) // No yesterday, create new entry from incoming entry
 			{
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
+				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
 			else // Yesterday exists, create new entry with yesterdays total + new total
 			{
 				yesterdayCursor.moveToFirst();
-				long yesterdayValue = yesterdayCursor.getLong(0);
+				double yesterdayValue = yesterdayCursor.getDouble(0);
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue()+yesterdayValue);
+				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get()+yesterdayValue);
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
@@ -140,8 +142,8 @@ public class DatabaseAccess {
 		else // There is an entry for today, add to it
 		{
 			cursor.moveToFirst();
-			long total = cursor.getLong(0);
-			total += theEntry.getValue();
+			double total = cursor.getDouble(0);
+			total += theEntry.getValue().get();
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
@@ -151,7 +153,7 @@ public class DatabaseAccess {
 		
 	}
 	
-	public void addToCategory(String theCategory,long value)
+	public void addToCategory(String theCategory,double value)
 	{
 		
 		Cursor cursor;
@@ -161,7 +163,7 @@ public class DatabaseAccess {
 		{
 			cursor.moveToFirst();
 			int num = cursor.getInt(0)+1; // Number of transactions of this category 
-			long newTotal = cursor.getLong(1)+value;
+			double newTotal = cursor.getDouble(1)+value;
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_NUM,num);
 			values.put(BudgetDatabase.COLUMN_VALUE,newTotal);
@@ -182,7 +184,7 @@ public class DatabaseAccess {
 	}
 	
 	// Remove a value from the category table, also decreases the number of transactions by 1
-	public void removeFromCategory(String theCategory,long value)
+	public void removeFromCategory(String theCategory,double value)
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
@@ -190,7 +192,7 @@ public class DatabaseAccess {
 		{
 			cursor.moveToFirst();
 			int num = cursor.getInt(0)-1; // Number of transactions of this category 
-			long newTotal = cursor.getLong(1)+value;
+			double newTotal = cursor.getDouble(1)+value;
 			
 			if(num==0 && newTotal==0) // No transactions left here, remove
 			{
@@ -236,7 +238,8 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -255,7 +258,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -276,7 +279,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),cursor.getLong(2),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -294,7 +297,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getLong(3),cursor.getInt(4)));
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3)),cursor.getInt(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();

@@ -19,6 +19,6 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="Enter new daily budget" 
-        android:inputType="numberSigned"/>
+        android:inputType="numberDecimal|numberSigned"/>
    
 </LinearLayout>
