@@ -22,7 +22,7 @@ public class DatabaseAccess {
 	private SQLiteDatabase database;
 	private String[] allColumnsTransactions = {BudgetDatabase.COLUMN_ID,
 			BudgetDatabase.COLUMN_VALUE, BudgetDatabase.COLUMN_DATE, BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_FLAGS};
-	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_TOTAL,BudgetDatabase.COLUMN_FLAGS};
+	private String[] allColumnsCategories = {BudgetDatabase.COLUMN_ID,BudgetDatabase.COLUMN_CATEGORY,BudgetDatabase.COLUMN_NUM,BudgetDatabase.COLUMN_VALUE,BudgetDatabase.COLUMN_FLAGS};
 	
 	public static final String ASCENDING = "asc";
 	public static final String DESCENDING = "desc";
@@ -84,16 +84,16 @@ public class DatabaseAccess {
 	public boolean updateDaySum(BudgetEntry theEntry)
 	{
 		//COLUMN_DATE
-		//COLUMN_TOTAL
+		//COLUMN_VALUE
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
 		//System.out.println("substring: "+ theEntry.getDate().substring(0, 10));
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
 			ContentValues values = new ContentValues();
 			// Put in the values
 			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-			values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
+			values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
 			
 			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);
 			cursor.close();
@@ -104,7 +104,7 @@ public class DatabaseAccess {
 		long total = cursor.getLong(0);
 		total += theEntry.getValue();
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_TOTAL, total);
+		values.put(BudgetDatabase.COLUMN_VALUE, total);
 		
 		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 		cursor.close();
@@ -113,16 +113,16 @@ public class DatabaseAccess {
 	public boolean updateDayTotal(BudgetEntry theEntry)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
 		
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
 		{
 			ContentValues values = new ContentValues();
-			Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_TOTAL + " from " + BudgetDatabase.TABLE_DAYTOTAL+ " order by _id desc limit 1", null);
+			Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_DAYTOTAL+ " order by _id desc limit 1", null);
 			if(yesterdayCursor.getCount()<=0) // No yesterday, create new entry from incoming entry
 			{
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue());
+				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue());
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
@@ -131,7 +131,7 @@ public class DatabaseAccess {
 				yesterdayCursor.moveToFirst();
 				long yesterdayValue = yesterdayCursor.getLong(0);
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_TOTAL, theEntry.getValue()+yesterdayValue);
+				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue()+yesterdayValue);
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
@@ -143,7 +143,7 @@ public class DatabaseAccess {
 			long total = cursor.getLong(0);
 			total += theEntry.getValue();
 			ContentValues values = new ContentValues();
-			values.put(BudgetDatabase.COLUMN_TOTAL, total);
+			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
 			return true;
@@ -155,7 +155,7 @@ public class DatabaseAccess {
 	{
 		
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
 		
 		if(cursor.getCount()!=0) // The category already has transactions
 		{
@@ -164,7 +164,7 @@ public class DatabaseAccess {
 			long newTotal = cursor.getLong(1)+value;
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_NUM,num);
-			values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+			values.put(BudgetDatabase.COLUMN_VALUE,newTotal);
 			database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
 			
 		}
@@ -173,7 +173,7 @@ public class DatabaseAccess {
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
 			values.put(BudgetDatabase.COLUMN_NUM,1);
-			values.put(BudgetDatabase.COLUMN_TOTAL,value);
+			values.put(BudgetDatabase.COLUMN_VALUE,value);
 			
 			database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 			
@@ -185,7 +185,7 @@ public class DatabaseAccess {
 	public void removeFromCategory(String theCategory,long value)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_TOTAL+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
 		if(cursor.getCount()!=0)
 		{
 			cursor.moveToFirst();
@@ -200,7 +200,7 @@ public class DatabaseAccess {
 			{
 				ContentValues values = new ContentValues();
 				values.put(BudgetDatabase.COLUMN_NUM,num);
-				values.put(BudgetDatabase.COLUMN_TOTAL,newTotal);
+				values.put(BudgetDatabase.COLUMN_VALUE,newTotal);
 				database.update(BudgetDatabase.TABLE_CATEGORIES, values, BudgetDatabase.COLUMN_CATEGORY+" = '"+theCategory+"'", null);
 			}
 			

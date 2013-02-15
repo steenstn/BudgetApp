@@ -22,6 +22,8 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -32,7 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-public class MainActivity extends FragmentActivity implements OnItemSelectedListener{
+public class MainActivity extends FragmentActivity implements OnItemSelectedListener, OnClickListener, OnLongClickListener{
 
 	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
@@ -67,6 +69,16 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         datasource = new BudgetDataSource(this);
         datasource.open();
         tempCom = new ArrayList<TransactionCommand>();
+        Button b = (Button)findViewById(R.id.topCategoryButton1);
+        b.setOnClickListener(this);
+        b.setOnLongClickListener(this);
+        b = (Button)findViewById(R.id.topCategoryButton2);
+        b.setOnClickListener(this);
+        b.setOnLongClickListener(this);
+        b = (Button)findViewById(R.id.topCategoryButton3);
+        b.setOnClickListener(this);
+        b.setOnLongClickListener(this);
+        
         updateSpinner();
         updateLog();
     }
@@ -281,7 +293,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     		
     }
-    
+    public void onClick(View v)
+    {
+    	Toast.makeText(this, "Click",Toast.LENGTH_SHORT).show();
+    }
+    @Override
+	public boolean onLongClick(View v) {
+    	Toast.makeText(this, "LongClick",Toast.LENGTH_SHORT).show();
+		return true;
+	}
     public void buttonPressed(View v)
     {
     	Button pressedButton = (Button)v;
@@ -450,5 +470,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		
 	
 	}
+
+	
     
 }

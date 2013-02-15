@@ -111,7 +111,7 @@ public class BudgetDataSource {
 	// Returns all categories in the category table sorted by total
 	public List<CategoryEntry> getCategoriesSorted()
 	{
-		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
+		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
 	}
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{

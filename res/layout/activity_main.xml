@@ -58,7 +58,8 @@
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
 	        android:text="Top 1"
-	        android:onClick="buttonPressed" />
+	        android:onClick="buttonPressed"
+	        />
 	    <Button
 	        android:id="@+id/topCategoryButton1"
 	        android:layout_width="0dip"
