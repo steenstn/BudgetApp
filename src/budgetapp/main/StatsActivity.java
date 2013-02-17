@@ -30,7 +30,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	List<CategoryEntry> categoryStats; // Contains stats for categories
 	List<String> categoryNames;
 	ArrayList<CompositeStats> years;
-	int selectedYear=0;
+	int selectedYear=-1;
 	int selectedMonth=-1;
 	String selectedCategory = "";
 	int numDaysForDerivative = 7;
@@ -62,7 +62,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         int size = entries.size();
         BudgetEntry entry;
         int entryIndex = 0;
-        int yearIndex = 0;
+        int yearIndex = -1;
         
         if(size>0)
         {
@@ -73,9 +73,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	        	String year = entry.getYear();
 	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
 	        	{
-	        		//System.out.println("years name: " + years.get(yearIndex).getName() + " year");
+	        		
 		        	//Add a year
 		        	years.add(new CompositeStats(year));
+		        	yearIndex++;
 	        	}
 	        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
 	        	
@@ -93,7 +94,6 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	
 	       	updateSpinners();
 	        updateLog();
-	        System.out.println("years size: " + years.size());
         }
         
         
@@ -154,7 +154,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	{
 		 //Set up the year spinner
 		ArrayList<String> yearStartValues = new ArrayList<String>();
-		ArrayList<String> monthStartValues = new ArrayList<String>();
+		
         ArrayList<String> categoryStartValues = new ArrayList<String>();
         
 		//yearStartValues.add(getString(R.string.all_years));
@@ -172,8 +172,29 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		 spinner.setAdapter(adapter);
 		 
 		 
+		updateMonthSpinner();
+		 // Set up the category spinner
+		 categoryStartValues.add(getString(R.string.all_categories));
+	     for(int i=0;i<categoryNames.size();i++)
+	     {
+	    	 categoryStartValues.add(categoryNames.get(i));
+	     }
+         spinner = (Spinner) findViewById(R.id.spinnerCategory);
+		 // Create an ArrayAdapter using the string array and a default spinner layout
+         adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, categoryStartValues);
+	   
+	     // Specify the layout to use when the list of choices appears
+		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		 // Apply the adapter to the spinner
+		 spinner.setAdapter(adapter);
+			 
+			 
+	}
+	
+	public void updateMonthSpinner()
+	{
 		//Set up the month spinner
-     
+		ArrayList<String> monthStartValues = new ArrayList<String>();
         monthStartValues.add(getString(R.string.all_months));
         
        
@@ -193,31 +214,15 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         }
         	
         
-        spinner = (Spinner) findViewById(R.id.spinnerMonth);
+        Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
 		 // Create an ArrayAdapter using the string array and a default spinner layout
-        adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, monthStartValues);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, monthStartValues);
 	   
 	     // Specify the layout to use when the list of choices appears
 		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 // Apply the adapter to the spinner
 		 spinner.setAdapter(adapter);
 		 
-		 // Set up the category spinner
-		 categoryStartValues.add(getString(R.string.all_categories));
-	     for(int i=0;i<categoryNames.size();i++)
-	     {
-	    	 categoryStartValues.add(categoryNames.get(i));
-	     }
-         spinner = (Spinner) findViewById(R.id.spinnerCategory);
-		 // Create an ArrayAdapter using the string array and a default spinner layout
-         adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, categoryStartValues);
-	   
-	     // Specify the layout to use when the list of choices appears
-		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 // Apply the adapter to the spinner
-		 spinner.setAdapter(adapter);
-			 
-			 
 	}
 	/**
 	 * Update the stats for a category
@@ -274,21 +279,23 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void printMonth(TextView view, ArrayList<Stats> months, int index)
 	{
 		boolean monthPrinted = false;
-		
-		for(int k=0;k<months.get(index).getTransactions().size();k++)
+		if(index<months.size())
 		{
-			BudgetEntry entry = months.get(index).getTransactions().get(k);
-			// Print the entry if it has the correct category
-			// or if all categories are set to be printed
-			if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
+			for(int k=0;k<months.get(index).getTransactions().size();k++)
 			{
-				if(!monthPrinted)
+				BudgetEntry entry = months.get(index).getTransactions().get(k);
+				// Print the entry if it has the correct category
+				// or if all categories are set to be printed
+				if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
 				{
-					view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
-					monthPrinted = true;
+					if(!monthPrinted)
+					{
+						view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
+						monthPrinted = true;
+					}
+					printEntry(view,entry);
+					addStats(entry); // Add the stats to categoryStats
 				}
-				printEntry(view,entry);
-				addStats(entry); // Add the stats to categoryStats
 			}
 		}
 	}
@@ -301,8 +308,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void printYear(TextView view, int index)
 	{
 		
-		ArrayList<Stats> months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
-		view.append(years.get(index).getName() + "\n");
+		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
+		view.append(Html.fromHtml("<b>"+years.get(index).getName() + "</b><br />"));
     	if(selectedMonth>-1) // A specific month is chosen
     	{
     		printMonth(view,months,selectedMonth);
@@ -333,7 +340,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         else // Print all years
         {
         	//for(int i=0;i<years.size();i++)
-        		//printYear(top,i);
+        	//	printYear(top,i);
         }
         
         updateStats();
@@ -356,12 +363,13 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		Spinner yearSpinner =  (Spinner)findViewById(R.id.spinnerYear);
 		Spinner monthSpinner =  (Spinner)findViewById(R.id.spinnerMonth);
 		Spinner categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
-		
+		int oldYear = selectedYear;
 		// Find what year, month and category that is chosen
 		selectedYear = yearSpinner.getSelectedItemPosition();
-		selectedMonth = monthSpinner.getSelectedItemPosition()-1;
+		selectedMonth = monthSpinner.getSelectedItemPosition()-1; // When there is a "All categories" entry. -1 is needed to get correct month
 		selectedCategory = (String) categorySpinner.getSelectedItem();
-		
+		if(oldYear!=selectedYear)
+			updateMonthSpinner();
 		updateLog();
 		
 	}
