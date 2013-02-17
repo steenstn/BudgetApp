@@ -322,7 +322,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	}
     	}
 	}
-	
+	/**
+	 * Updates the whole log
+	 */
 	public void updateLog()
 	{
 		categoryStats = new ArrayList<CategoryEntry>();
