@@ -41,15 +41,30 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	// The table for cash flow in a day
 	public static final String TABLE_DAYSUM = "daysum";
 	
-	// Total som for a day
+	// Total sum for a day
 	public static final String TABLE_DAYTOTAL = "daytotal";
 	
 	//COLUMN_ID
 	//COLUMN_DATE
 	//COLUMN_TOTAL
+	
+	// Currencies and their exhange values
+	public static final String TABLE_CURRENCIES = "currencies";
+	
+	//COLUMN_ID
+	public static final String COLUMN_NAME = "name"; // The name of the currency
+	public static final String COLUMN_SYMBOL = "symbol"; // The symbol used when printing
+	public static final String COLUMN_RATE = "rate"; // The exchange rate of the currency
+	//COLUMN_FLAGS
 
+	public static final String DATABASE_CREATE_TABLE_CURRENCIES = "create table if not exists "
+			+ TABLE_CURRENCIES + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, " + COLUMN_NAME
+			+ " text, " + COLUMN_SYMBOL + " text, " + COLUMN_RATE + " double not null, "
+			+ COLUMN_FLAGS + " integer);";
+	
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 9;
+	private static final int DATABASE_VERSION = 10;
 	
 	private static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
@@ -89,6 +104,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 		database.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
+		database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
 		
 		// Put in initial categories
 		ContentValues values = new ContentValues();
@@ -287,7 +303,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			db.execSQL("ALTER TABLE temp RENAME TO " + TABLE_DAYTOTAL);
 			
 			//db.execSQL("ALTER TABLE " + TABLE_DAYTOTAL + " MODIFY total DOUBLE");
-			
+		case 9:
+			db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
 		}
 		/*
 		 * cash flow

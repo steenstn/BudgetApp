@@ -73,6 +73,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	        	String year = entry.getYear();
 	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
 	        	{
+	        		//System.out.println("years name: " + years.get(yearIndex).getName() + " year");
 		        	//Add a year
 		        	years.add(new CompositeStats(year));
 	        	}
@@ -92,6 +93,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	
 	       	updateSpinners();
 	        updateLog();
+	        System.out.println("years size: " + years.size());
         }
         
         
@@ -298,7 +300,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 */
 	public void printYear(TextView view, int index)
 	{
+		
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
+		view.append(years.get(index).getName() + "\n");
     	if(selectedMonth>-1) // A specific month is chosen
     	{
     		printMonth(view,months,selectedMonth);

@@ -7,13 +7,12 @@ package budgetapp.util;
 public class Money {
 	
 	private double value;
-	public static boolean after;
+	public static boolean after = true;
 	private static String currency = "kr";
 	
 	public Money()
 	{
 		value = 0;
-		after = true;
 	}
 	public Money(double x)
 	{
@@ -92,12 +91,23 @@ public class Money {
 	{
 		if(after)
 		{
-			return ("" + value + " " + currency);
+			if(frac(value)<0.01)
+				return String.format("%.0f "+currency,value);
+			else
+				return String.format("%.2f "+currency,value);
 		}
 		else
 		{
-			return currency + value;
+			if(frac(value)<0.01)
+				return (value<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(value));
+			else
+				return (value<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(value));
 		}
+	}
+	
+	double frac(double d)
+	{
+		return d-Math.floor(d);
 	}
 	
 
