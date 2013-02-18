@@ -7,8 +7,8 @@ package budgetapp.util;
 public class Money {
 	
 	private double value;
-	public static boolean after = true;
-	private static String currency = "kr";
+	public static boolean after = false;
+	private static String currency = "£";
 	
 	public Money()
 	{
@@ -87,6 +87,10 @@ public class Money {
 		return this;
 	}
 	
+	/**
+	 * Returns a string of the value with some formatting to get the minus sign
+	 * at the right place and not print out decimals where it's not needed
+	 */
 	public String toString()
 	{
 		if(after)
