@@ -152,12 +152,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
     	
-    	double maxValue =  0.75 * (double)dailyBudget.get();
+    	double maxValue = (double)dailyBudget.get();
     	double floatDerivative = derivative.get() / maxValue;
-    	//System.out.println("floatD före: " + floatDerivative);
+    	//Compute the square root of the derivative, make sure it's real
+    	if(floatDerivative<0)
+    		floatDerivative=-Math.sqrt(Math.abs(floatDerivative));
+    	else
+    		floatDerivative=Math.sqrt(floatDerivative);
     	
     	floatDerivative = floatDerivative * 255;
-    	//System.out.println("floatD efter: " + floatDerivative);
     	
     	
     	
