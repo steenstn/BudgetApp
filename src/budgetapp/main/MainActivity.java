@@ -355,7 +355,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	int numDays = 0;
-	    	double totalMoney = 0;
+	    	Money totalMoney= new Money();
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
@@ -365,7 +365,7 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		        	tempCom.add(new TransactionCommand(datasource,entry));
 		        	tempCom.get(tempCom.size()-1).execute();
 		        	currentBudget.add(dailyBudget);
-		        	totalMoney+=dailyBudget.get();
+		        	totalMoney.add(dailyBudget);
 		        	numDays++;
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	newBudget.setText(""+currentBudget);
