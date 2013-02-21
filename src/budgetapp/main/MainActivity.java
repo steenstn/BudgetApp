@@ -155,11 +155,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     	
     	double maxValue = (double)dailyBudget.get();
     	double floatDerivative = derivative.get() / maxValue;
-    	//Compute the square root of the derivative, make sure it's real
+    	// Choose transfer function, sqrt if negative for fast red value,
+    	// x^2 if positive for slow green value
     	if(floatDerivative<0)
     		floatDerivative=-Math.sqrt(Math.abs(floatDerivative));
     	else
-    		floatDerivative=Math.sqrt(floatDerivative);
+    		floatDerivative=floatDerivative*floatDerivative;
     	
     	floatDerivative = floatDerivative * 255;
     	
