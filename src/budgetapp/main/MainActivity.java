@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ListFragment;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -198,7 +199,11 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 		 spinner.setOnItemSelectedListener(this);
 			
     }
-
+    public void chooseCategory()
+    {
+    //	ListFragment newFragment = new ChooseCategoryFragment();
+    	//newFragment.show(getSupportFragmentManager(), "choose_category");
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -220,8 +225,8 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         		
         }
         
-        List<DayEntry> days = datasource.getSomeDays(5,BudgetDataSource.DESCENDING);
-        left.append("\n\n");
+        List<DayEntry> days = datasource.getSomeDays(7,BudgetDataSource.DESCENDING);
+        left.append("\n");
         left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	

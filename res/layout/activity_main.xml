@@ -39,10 +39,9 @@
 	      </EditText>
 	      <Spinner
             android:id="@+id/categories_spinner"
-            android:layout_width="0dip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:spinnerMode="dialog" />
+            android:text="Choose category"/>
 	</LinearLayout>
 	<LinearLayout
 	    android:layout_width="match_parent"
