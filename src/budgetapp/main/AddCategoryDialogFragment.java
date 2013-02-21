@@ -33,7 +33,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	            	   if(MainActivity.datasource.addCategory(category.getText().toString())==true)
 	            	   {
 	            		   Toast.makeText(view.getContext(), "Successfully added "+ category.getText().toString() , Toast.LENGTH_LONG).show();
-	            		   ((MainActivity) getActivity()).updateSpinner();
+	            		   
 	            	   }
 	            		   else
 	            		   Toast.makeText(view.getContext(), "Failed to add "+ category.getText().toString() , Toast.LENGTH_LONG).show();

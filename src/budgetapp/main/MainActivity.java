@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.ListFragment;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-public class MainActivity extends FragmentActivity implements OnItemSelectedListener, OnClickListener, OnLongClickListener{
+public class MainActivity extends FragmentActivity implements OnClickListener, OnLongClickListener{
 
 	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
@@ -91,7 +90,6 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
         b.setOnClickListener(this);
         b.setOnLongClickListener(this);
         
-        updateSpinner();
         updateLog();
     }
     
@@ -174,36 +172,12 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
 	  
     }
     
-    // Updates the spinner with all available categories
-    public void updateSpinner()
+    
+    public void chooseCategory(View view)
     {
-    	// Get the categories for the Spinner
-        List<String> categories = datasource.getCategoryNames();
-        
-        //Clear allCategories if there is anything in it
-        allCategories.clear();
-        // Put the category names in an ArrayList to get them into the spinner
-        allCategories.add("Choose category");
-        for(int i=0;i<categories.size();i++)
-        {
-        	allCategories.add(categories.get(i));
-        }
-        allCategories.add("Other...");
-        Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
-		 // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, allCategories);
-	   
-	     // Specify the layout to use when the list of choices appears
-		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 // Apply the adapter to the spinner
-		 spinner.setAdapter(adapter);
-		 spinner.setOnItemSelectedListener(this);
-			
-    }
-    public void chooseCategory()
-    {
-    //	ListFragment newFragment = new ChooseCategoryFragment();
-    	//newFragment.show(getSupportFragmentManager(), "choose_category");
+    	DialogFragment newFragment = new ChooseCategoryFragment();
+    	newFragment.show(getSupportFragmentManager(), "choose_category");
+		
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -463,39 +437,15 @@ public class MainActivity extends FragmentActivity implements OnItemSelectedList
     }
 
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-	{
-		//Toast.makeText(parent.getContext(), "The planet is " +parent.getItemAtPosition(pos).toString(), Toast.LENGTH_LONG).show();
-		String theCategory = parent.getItemAtPosition(pos).toString();
-		if(pos!=0 && pos!=parent.getCount()-1) // Don't add "Choose category" or "Other..."
-		{
-			subtractFromBudget(parent,theCategory,null);
-		}
-		if(pos==parent.getCount()-1)
-		{
-			DialogFragment newFragment = new OtherCategoryDialogFragment();
-        	newFragment.show(getSupportFragmentManager(), "other_category");
-		}
-		parent.setSelection(0); // Reset to "Choose category"
-		
-	}
 	
 	public void updateAll()
 	{
 		updateLog();
-		updateSpinner();
 		updateButtons();
 		updateColor();
 		saveToFile();
 	}
 
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-		
-		
-	
-	}
 
 	
     

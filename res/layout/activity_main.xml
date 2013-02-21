@@ -14,7 +14,7 @@
             android:id="@+id/textViewCurrentBudget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="10dip"
             android:text="0"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -24,24 +24,27 @@
     
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dip"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal" >
 
 	      <EditText
 	          android:id="@+id/editTextSubtract"
-	          android:layout_width="180dip"
+	          android:layout_width="120dip"
 	          android:layout_height="wrap_content"
 	          android:ems="10"
 	          android:inputType="numberDecimal|numberSigned">"
 				
 	      </EditText>
-	      <Spinner
-            android:id="@+id/categories_spinner"
+	      <Button
+            android:id="@+id/button_choose_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose category"/>
+            android:layout_marginEnd="1dip"
+            android:text="Choose category"
+            android:onClick="chooseCategory"/>
 	</LinearLayout>
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -51,7 +54,7 @@
 	    <Button
 	        android:id="@+id/topCategoryButton2"
 	        android:layout_width="0dip"
-	        android:layout_height="wrap_content"
+	        android:layout_height="50dip"
 	        android:layout_weight="3"
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
@@ -61,7 +64,7 @@
 	    <Button
 	        android:id="@+id/topCategoryButton1"
 	        android:layout_width="0dip"
-	        android:layout_height="wrap_content"
+	        android:layout_height="50dip"
 	        android:layout_weight="3"
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
@@ -70,7 +73,7 @@
 	    <Button
 	        android:id="@+id/topCategoryButton3"
 	        android:layout_width="0dip"
-	        android:layout_height="wrap_content"
+	        android:layout_height="50dip"
 	        android:layout_weight="3"
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
