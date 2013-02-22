@@ -90,6 +90,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         b.setOnClickListener(this);
         b.setOnLongClickListener(this);
         
+        Money test = new Money();
+        System.out.println("test: "+test);
+        
+        test = test.add(10);
+        System.out.println("test: "+test);
+        test = test.add(19);
+        System.out.println("test: "+test);
         updateLog();
     }
     
@@ -349,7 +356,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		        	tempCom.add(new TransactionCommand(datasource,entry));
 		        	tempCom.get(tempCom.size()-1).execute();
 		        	currentBudget.add(dailyBudget);
-		        	totalMoney.add(dailyBudget);
+		        	totalMoney = totalMoney.add(dailyBudget);
 		        	numDays++;
 		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
 		        	newBudget.setText(""+currentBudget);

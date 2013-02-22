@@ -46,45 +46,41 @@ public class Money {
 	
 	public Money add(double x)
 	{
-		value+=x;
-		return this;
+		return new Money(this.value+x);
 	}
 	public Money add(Money x)
 	{
-		value+=x.get();
-		return this;
+		return new Money(this.value + x.get());
 	}
 	public Money subtract(double x)
 	{
-		value-=x;
-		return this;
+		return new Money(this.value - x);
 	}
 	public Money subtract(Money x)
 	{
-		value-=x.get();
-		return this;
+		return new Money(this.value - x.get());
 	}
 	public Money divide(double x)
 	{
 		if(x!=0)
-			value/=x;
-		return this;
+			return new Money(this.value/x);
+		else
+			return new Money();
 	}
 	public Money divide(Money x)
 	{
 		if(x.get()!=0)
-			value/=x.get();
-		return this;
+			return new Money(this.value/x.get());
+		else
+			return new Money();
 	}
 	public Money multiply(double x)
 	{
-		value*=x;
-		return this;
+		return new Money(this.value*x);
 	}
 	public Money multiply(Money x)
 	{
-		value*=x.get();
-		return this;
+		return new Money(this.value*x.get());
 	}
 	
 	/**

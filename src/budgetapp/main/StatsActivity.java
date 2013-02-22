@@ -10,6 +10,7 @@ import budgetapp.util.Money;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
@@ -93,7 +94,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	
 	       	updateSpinners();
 	       	spinner = (Spinner) findViewById(R.id.spinnerMonth);
-	       	spinner.setSelection(spinner.getCount()-1);
+	       	
 	        updateLog();
         }
         
@@ -142,8 +143,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			if(entry.getNum()<10)
 				stats.append("\t");
 			stats.append(" Total: " + entry.getTotal() + "\n");
+			System.out.println("Före" + entry.getTotal());
+			sum = sum.add(entry.getTotal());
+			System.out.println("Efter" + entry.getTotal());
 			
-			sum.add(entry.getTotal());
 		}
 		
 		stats.append("Total cash flow: " + sum);
@@ -258,7 +261,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
 		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
 			view.append("\t");
-		view.append("\t" + Html.fromHtml("<a href='com.budgetapp.main://AddCategoryDialog'>"+entry.getCategory()+"</a>"));
+		view.append("\t" + Html.fromHtml("<a href='com.budgetapp.main://MainActivity'>"+entry.getCategory()+"</a>"));
 		// Add comment if there is one
 		// But only print max 20 characters
 		String comment = entry.getComment();
@@ -334,7 +337,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         BudgetEntry entry;
         
         top.setText("");
-        top.setMovementMethod(new ScrollingMovementMethod());
+        top.setMovementMethod(LinkMovementMethod.getInstance());
         if(selectedYear>-1) // A specific year is chosen
         {
 	        printYear(top,selectedYear);

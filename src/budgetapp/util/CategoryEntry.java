@@ -65,7 +65,7 @@ public class CategoryEntry extends DatabaseEntry {
 		return total;
 	}
 	public void addToTotal(Money n){
-		total.add(n);
+		total = total.add(n);
 	}
 	
 	
