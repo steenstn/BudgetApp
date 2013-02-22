@@ -26,6 +26,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
+        public static final int spinner_default_holo_dark=0x7f020001;
     }
     public static final class id {
         public static final int button_choose_category=0x7f090003;

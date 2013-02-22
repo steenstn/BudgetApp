@@ -146,8 +146,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
-    	List<DayEntry> days = datasource.getSomeDays(7,BudgetDataSource.DESCENDING);
-    	Money derivative = (BudgetFunctions.getMeanDerivative(days,7));
+    	int numDays = 30;
+    	List<DayEntry> days = datasource.getSomeDays(numDays,BudgetDataSource.DESCENDING);
+    	Money derivative = (BudgetFunctions.getWeightedMeanDerivative(days,numDays));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
     	

@@ -33,7 +33,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	int selectedYear=-1;
 	int selectedMonth=-1;
 	String selectedCategory = "";
-	int numDaysForDerivative = 7;
+	int numDaysForDerivative = 30;
 	int numTransactionsForDerivative = 10;
 	int min(int a,int b) 
 	{
@@ -47,7 +47,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         setContentView(R.layout.activity_stats);
         
         // Read in all the data
-        entries = datasource.getAllTransactions(BudgetDataSource.ASCENDING);
+        entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
         days = datasource.getAllDaysTotal(BudgetDataSource.DESCENDING);
         dayFlow = datasource.getAllDays(BudgetDataSource.DESCENDING);
         categories = datasource.getCategoriesSorted();
@@ -113,7 +113,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		else
 		{
 			stats.setText("Mean derivative (" + min(numDaysForDerivative,dayFlow.size()) + ") days: ");
-			Money dayDerivative = BudgetFunctions.getMeanDerivative(dayFlow,numDaysForDerivative);
+			Money dayDerivative = BudgetFunctions.getWeightedMeanDerivative(dayFlow,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
 		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
