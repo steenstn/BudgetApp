@@ -32,7 +32,7 @@ public class TransactionCommand {
 		BudgetEntry temp = _datasource.createTransactionEntry(_entry);
 		_entry.setId(temp.getId());
 		
-    	_datasource.addToCategory(_entry.getCategory(),_entry.getValue());
+    	_datasource.addToCategory(_entry.getCategory(),_entry.getValue().get());
     	_datasource.updateDaySum(_entry);
     	_datasource.updateDayTotal(_entry);
 	}
@@ -44,12 +44,12 @@ public class TransactionCommand {
 			//Remove transactionEntry
 			_datasource.removeTransactionEntry(_entry);
 			//Update category by adding the negative value that was added
-			_datasource.removeFromCategory(_entry.getCategory(),_entry.getValue()*-1);
+			_datasource.removeFromCategory(_entry.getCategory(),_entry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
-			_entry.setValue(_entry.getValue()*-1);
+			_entry.setValue(_entry.getValue().get()*-1);
 			_datasource.updateDaySum(_entry);
 			_datasource.updateDayTotal(_entry);
-			_entry.setValue(_entry.getValue()*-1);
+			_entry.setValue(_entry.getValue().get()*-1);
 			
 			
 			unexecuted=true;

@@ -7,29 +7,24 @@ package budgetapp.util;
  */
 
 public class DayEntry extends DatabaseEntry{
-	private long total;
+	private Money total;
 	private String date;
 	
-	public DayEntry(String date,int total)
+	public DayEntry(String date,Money total)
 	{
-		this.total=total;
+		this.total=new Money(total);
 		this.date=date;
 	}
-	public DayEntry(String date,long total)
-	{
-		this.total=total;
-		this.date=date;
-	}
-	public DayEntry(long id,String date,long total)
+	public DayEntry(long id,String date,Money total)
 	{
 		this.id=id;
-		this.total=total;
+		this.total=new Money(total);
 		this.date=date;
 	}
-	public DayEntry(long id,String date,long total,int flags)
+	public DayEntry(long id,String date,Money total,int flags)
 	{
 		this.id=id;
-		this.total=total;
+		this.total=new Money(total);
 		this.date=date;
 		this.flags=flags;
 	}
@@ -38,15 +33,15 @@ public class DayEntry extends DatabaseEntry{
 		this.id = id;
 	}
 	
-	public long getTotal(){
+	public Money getTotal(){
 		return total;
 	}
 	
-	public long getValue(){
+	public Money getValue(){
 		return total;
 	}
 	
-	public void setTotal(int total){
+	public void setTotal(Money total){
 		this.total = total;
 	}
 	

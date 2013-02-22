@@ -58,11 +58,11 @@ public class BudgetDataSource {
 	{
 		return dbAccess.addEntry(theEntry);
 	}
-	public void addToCategory(String theCategory,int value)
+	public void addToCategory(String theCategory,double value)
 	{
 		dbAccess.addToCategory(theCategory,value);
 	}
-	public void removeFromCategory(String theCategory,long value)
+	public void removeFromCategory(String theCategory,double value)
 	{
 		dbAccess.removeFromCategory(theCategory,value);
 	}
@@ -111,7 +111,7 @@ public class BudgetDataSource {
 	// Returns all categories in the category table sorted by total
 	public List<CategoryEntry> getCategoriesSorted()
 	{
-		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_TOTAL);
+		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
 	}
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{

@@ -15,12 +15,13 @@ import android.support.v4.app.DialogFragment;
 
 public class OtherCategoryDialogFragment extends DialogFragment {
 
+	View view;
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    // Inflate and set the layout for the dialog
-	    final View view = inflater.inflate(R.layout.dialog_other_category, null);
+	   view = inflater.inflate(R.layout.dialog_other_category, null);
 	 
 	    builder.setView(view);
 	 
@@ -30,8 +31,11 @@ public class OtherCategoryDialogFragment extends DialogFragment {
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_other_category_name);
+	            	   
+	            	   EditText comment = (EditText)view.findViewById(R.id.dialog_other_category_comment);
+	            	   
 	            	   if(!category.getText().toString().equalsIgnoreCase(""))
-	            		   ((MainActivity) getActivity()).subtractFromBudget(view,category.getText().toString()); 
+	            		   ((MainActivity) getActivity()).subtractFromBudget(view,category.getText().toString(),comment.getText().toString()); 
 	            	   else
 	            		   Toast.makeText(view.getContext(), "Please enter category name" , Toast.LENGTH_LONG).show();
 	               }
@@ -43,5 +47,20 @@ public class OtherCategoryDialogFragment extends DialogFragment {
 	           });   
 	          // System.out.println("itdd is_ " + category.getText().toString());
 	    return builder.create();
+	}
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		EditText category = (EditText)view.findViewById(R.id.dialog_other_category_name);
+		String chosenCategory = ((MainActivity) getActivity()).getChosenCategory();
+		if(chosenCategory.length()!=0)
+		{	
+			category.setText(chosenCategory);
+			((MainActivity) getActivity()).setChosenCategory("");
+			EditText comment = (EditText)view.findViewById(R.id.dialog_other_category_comment);
+			comment.requestFocus();
+		}
+		
 	}
 }
