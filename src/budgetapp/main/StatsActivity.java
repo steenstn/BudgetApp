@@ -89,10 +89,11 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	        spinner = (Spinner) findViewById(R.id.spinnerCategory);
 	        spinner.setOnItemSelectedListener(this);
 	        spinner = (Spinner) findViewById(R.id.spinnerYear);
-	        
 	        spinner.setOnItemSelectedListener(this);
 	
 	       	updateSpinners();
+	       	spinner = (Spinner) findViewById(R.id.spinnerMonth);
+	       	spinner.setSelection(spinner.getCount()-1);
 	        updateLog();
         }
         

@@ -36,9 +36,11 @@ public class BudgetFunctions {
 				return new Money();
 			int i=0;
 			
+			double totalWeight = 0;
 			Money sum = new Money();
 			while(i<theEntries.size() && i<n) 
 			{
+				totalWeight+= Math.exp(-0.1*(double)i);
 				//Get the value depending on the class
 				if(theEntries.get(i) instanceof DayEntry)
 					sum.add(weight(i,((DayEntry)theEntries.get(i) ).getTotal() ));
@@ -47,7 +49,7 @@ public class BudgetFunctions {
 				
 				i++;
 			}
-			return sum.divide(i);
+			return sum.divide(totalWeight);
 		}
 		// Weight a value depending on time
 		private static Money weight(int n,Money d)
