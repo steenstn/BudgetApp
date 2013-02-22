@@ -52,7 +52,8 @@ public class BudgetFunctions {
 		// Weight a value depending on time
 		private static Money weight(int n,Money d)
 		{
-			double res = Math.exp(-0.1*(double)n) * d.get();
+			double weight = Math.exp(-0.1*(double)n);
+			double res = weight * d.get();
 			return new Money(res);
 		}
 }
