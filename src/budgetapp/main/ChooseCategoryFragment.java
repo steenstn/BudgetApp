@@ -12,26 +12,18 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 public class ChooseCategoryFragment extends DialogFragment {
 	
-	private ArrayList<String> allCategories;
 	private ListView theList;
 	View view;
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	    
-	    allCategories = new ArrayList<String>();
 	    		
 	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -69,9 +61,8 @@ public class ChooseCategoryFragment extends DialogFragment {
 		 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
         		  android.R.layout.simple_list_item_1, android.R.id.text1, temp);
-	     // Specify the layout to use when the list of choices appears
-		 //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 // Apply the adapter to the spinner
+        
+		 // Apply the adapter to the ListView
 		 theList.setAdapter(adapter);
 		 theList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 		   @Override
