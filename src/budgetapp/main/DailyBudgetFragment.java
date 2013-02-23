@@ -3,6 +3,7 @@ package budgetapp.main;
  * Dialog Fragment for adding a new category
  * 
  */
+import budgetapp.util.Money;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -36,13 +37,13 @@ public class DailyBudgetFragment extends DialogFragment {
 	            	   
 		               try
 		               {
-							int theBudget = Integer.parseInt(newBudget.getText().toString());
+							double theBudget = Double.parseDouble(newBudget.getText().toString());
 							
 							((MainActivity) getActivity()).setDailyBudget(theBudget);
 							((MainActivity) getActivity()).updateLog();
 							((MainActivity) getActivity()).updateColor();
 							((MainActivity) getActivity()).saveToFile();
-							Toast.makeText(view.getContext(), "Daily budget set to "+ newBudget.getText().toString() , Toast.LENGTH_LONG).show();
+							Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
 		               }
 		               catch(NumberFormatException e)
 		               {
