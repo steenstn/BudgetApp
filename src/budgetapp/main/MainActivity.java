@@ -77,8 +77,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        datasource = new BudgetDataSource(this);
-        datasource.open();
+        datasource = BudgetDataSource.instance(this);
+        //datasource.open();
         tempCom = new ArrayList<TransactionCommand>();
         Button b = (Button)findViewById(R.id.topCategoryButton1);
         b.setOnClickListener(this);
@@ -333,7 +333,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	    	// Set HH:mm to 00:00
 	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
 	    	
-	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
+	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
 
 	    	// Step up to the day before tomorrow

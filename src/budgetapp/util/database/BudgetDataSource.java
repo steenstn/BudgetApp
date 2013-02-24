@@ -22,19 +22,31 @@ public class BudgetDataSource {
 
 	
 	// Database fields
-	private SQLiteDatabase database;
-	private BudgetDatabase dbHelper;
-	private DatabaseAccess dbAccess;
+	private static SQLiteDatabase database;
+	private static BudgetDatabase dbHelper;
+	private static DatabaseAccess dbAccess;
 	public static final String ASCENDING = "asc";
 	public static final String DESCENDING = "desc";
+	private static BudgetDataSource instance;
 	
 	
-	public BudgetDataSource(Context context)
+	public static BudgetDataSource instance(Context context)
 	{
-		dbHelper = new BudgetDatabase(context);
+		if(instance==null)
+			instance = new BudgetDataSource(context);
+		
+		return instance;
+		
 	}
 	
-	public void open() throws SQLException
+	private BudgetDataSource(Context context)
+	{
+		dbHelper = new BudgetDatabase(context);
+		open();
+		close();
+	}
+	
+	private void open() throws SQLException
 	{
 		database = dbHelper.getWritableDatabase();
 		dbAccess = new DatabaseAccess(database);
@@ -47,88 +59,155 @@ public class BudgetDataSource {
 	
 	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
-		return dbAccess.addEntry(theEntry);
+		open();
+		BudgetEntry result = dbAccess.addEntry(theEntry);
+		close();
+		return result;
+		
 	}
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
-		return dbAccess.removeEntry(theEntry);
+		open();
+		boolean result = dbAccess.removeEntry(theEntry);
+		close();
+		return result;
 	}
 	
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
-		return dbAccess.addEntry(theEntry);
+		open();
+		CategoryEntry result;
+		result = dbAccess.addEntry(theEntry);
+		close();
+		return result;
 	}
 	public void addToCategory(String theCategory,double value)
 	{
+		open();
 		dbAccess.addToCategory(theCategory,value);
+		close();
 	}
 	public void removeFromCategory(String theCategory,double value)
 	{
+		open();
 		dbAccess.removeFromCategory(theCategory,value);
+		close();
 	}
 	public void updateDaySum(BudgetEntry theEntry)
 	{
+		open();
 		dbAccess.updateDaySum(theEntry);
+		close();
 	}
 	public void updateDayTotal(BudgetEntry theEntry)
 	{
+		open();
 		dbAccess.updateDayTotal(theEntry);
+		close();
 	}
 	
 	
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
-		return dbAccess.getTransactions(0,orderBy);
+		List<BudgetEntry> result;
+		open();
+		result = dbAccess.getTransactions(0,orderBy);
+		close();
+		return result;
 	}
 	
 	public List<DayEntry> getAllDays(String orderBy)
 	{
-		return dbAccess.getDaySum(0,orderBy);
+		List<DayEntry> result;
+		open();
+		result = dbAccess.getDaySum(0,orderBy);
+		close();
+		return result;
 	}
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
-		return dbAccess.getDaySum(n, orderBy);
+		List<DayEntry> result;
+		open();
+		result = dbAccess.getDaySum(n, orderBy);
+		close();
+		return result;
 	}
 	public List<DayEntry> getAllDaysTotal(String orderBy)
 	{
-		return dbAccess.getDayTotal(0,orderBy);
+		List<DayEntry> result;
+		open();
+		result = dbAccess.getDayTotal(0,orderBy);
+		close();
+		return result;
 	}
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
-		return dbAccess.getDayTotal(n, orderBy);
+		List<DayEntry> result;
+		open();
+		result = dbAccess.getDayTotal(n, orderBy);
+		close();
+		return result;
 	}
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
-		return dbAccess.getTransactions(n,orderBy);
+		List<BudgetEntry> result;
+		open();
+		result = dbAccess.getTransactions(n,orderBy);
+		close();
+		return result;
 	}
 	
 	// Returns all categories in the category table
 	public List<CategoryEntry> getAllCategories(int mode)
 	{
-		return dbAccess.getCategories(null, null, null, null, null);
+		List<CategoryEntry> result;
+		open();
+		result = dbAccess.getCategories(null, null, null, null, null);
+		close();
+		return result;
 	}
 	
 	// Returns all categories in the category table sorted by total
 	public List<CategoryEntry> getCategoriesSorted()
 	{
-		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
+		List<CategoryEntry> result;
+		open();
+		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
+		close();
+		return result;
 	}
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
-		return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
+		List<CategoryEntry> result;
+		open();
+		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
+		close();
+		return result;
 	}
 	public List<String> getCategoryNames()
 	{
-		return dbAccess.getCategoryNames();
+		List<String> result;
+		open();
+		result = dbAccess.getCategoryNames();
+		close();
+		return result;
 	}
 	public boolean addCategory(String theCategory)
 	{
-		return dbAccess.addCategory(theCategory);
+		boolean result;
+		open();
+		result = dbAccess.addCategory(theCategory);
+		close();
+		return result;
 	}
 
 	public boolean removeCategory(String theCategory)
 	{
-		return dbAccess.removeCategory(theCategory);
+		boolean result;
+		open();
+		result = dbAccess.removeCategory(theCategory);
+		close();
+		return result;
 	}
 	
 }
