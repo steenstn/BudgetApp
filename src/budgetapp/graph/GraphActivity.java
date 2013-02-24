@@ -41,8 +41,8 @@ public class GraphActivity extends Activity
         view = new GraphView(this);
 
         
-        datasource = new BudgetDataSource(this);
-        datasource.open();
+        datasource = BudgetDataSource.instance(this);
+       // datasource.open();
         
         entries = datasource.getAllDaysTotal(datasource.ASCENDING);
         x = new float[entries.size()];

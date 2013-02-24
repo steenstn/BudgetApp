@@ -77,8 +77,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        datasource = new BudgetDataSource(this);
-        datasource.open();
+        datasource = BudgetDataSource.instance(this);
+        //datasource.open();
         tempCom = new ArrayList<TransactionCommand>();
         Button b = (Button)findViewById(R.id.topCategoryButton1);
         b.setOnClickListener(this);
@@ -90,13 +90,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         b.setOnClickListener(this);
         b.setOnLongClickListener(this);
         
-        Money test = new Money();
-        System.out.println("test: "+test);
-        
-        test = test.add(10);
-        System.out.println("test: "+test);
-        test = test.add(19);
-        System.out.println("test: "+test);
         updateLog();
     }
     
@@ -110,7 +103,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
              try
              {
             	 String strLine = in.readUTF();
-            	 currentBudget.set(Double.parseDouble(strLine));
+            	 //currentBudget.set(Double.parseDouble(strLine));
             	 try
             	 {
             		 strLine = in.readUTF();
@@ -125,7 +118,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	           	in.close();
            	  
              	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-             	newBudget.setText(""+currentBudget);
+             	//newBudget.setText(""+currentBudget);
              	updateColor();
             	 
              }
@@ -144,7 +137,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         }
       
          //Add daily budget for all days since last run
-        addToBudget();
+        addToBudget();        
         updateColor();
         updateButtons();
         
@@ -268,7 +261,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         
     		TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
         	
-        	currentBudget.subtract(resultInt);
+        	currentBudget = currentBudget.subtract(resultInt);
         	newBudget.setText(""+currentBudget);
         	
         	// Add to database if logging is set
@@ -319,9 +312,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     // Adds the daily plus sum for all days missing since the last time the program was run
     public void addToBudget()
     {
+    	List<DayEntry> lastTotal = datasource.getSomeDaysTotal(1,BudgetDataSource.DESCENDING);
     	
-    	List<DayEntry> lastDay = datasource.getSomeDays(1,datasource.DESCENDING);
+    	if(!lastTotal.isEmpty())
+    		currentBudget.set(new Money(lastTotal.get(0).getValue()));
+    	System.out.println("currentBudget: " + currentBudget);
     	
+    	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		
     	
@@ -336,7 +333,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	    	// Set HH:mm to 00:00
 	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
 	    	
-	    	System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
+	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
 
 	    	// Step up to the day before tomorrow
@@ -355,15 +352,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
 		        	tempCom.add(new TransactionCommand(datasource,entry));
 		        	tempCom.get(tempCom.size()-1).execute();
-		        	currentBudget.add(dailyBudget);
+		        	currentBudget = currentBudget.add(dailyBudget);
 		        	totalMoney = totalMoney.add(dailyBudget);
 		        	numDays++;
-		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-		        	newBudget.setText(""+currentBudget);
+		        	
 	    		}
 	    		
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
+	    	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
+        	newBudget.setText(""+currentBudget);
 	    	saveToFile();
 	    	if(numDays>0)
 	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " day"+((numDays>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();
@@ -406,10 +404,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	        case R.id.menu_undo:
 	        	if(!tempCom.isEmpty() && tempCom.get(tempCom.size()-1).unexecute()==true)
 	        	{
-		        	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-		        	currentBudget.subtract(tempCom.get(tempCom.size()-1).getEntry().getValue().get());
-		        	tempCom.remove(tempCom.size()-1);
-		        	newBudget.setText(""+currentBudget);
+		        	tempCom.remove(tempCom.size()-1); // Remove last transaction from list
+		        	addToBudget();
 		        	updateAll();
 	        	}
 	        	return true;
