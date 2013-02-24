@@ -62,8 +62,6 @@ public class LineGraphRenderer implements IGraphRenderer{
         paint.setAntiAlias(true);
         paint.setStrokeMiter(2.0f);
         
-
-        
     }
     private void setStandardTextPaint()
     {
@@ -167,7 +165,10 @@ public class LineGraphRenderer implements IGraphRenderer{
 		//c.drawCircle(40, 40, 30, paint);
 		
 	}
-
+	
+	/**
+	 * Prints values
+	 */
 	@Override
 	public void drawValues(float x, float y, float xScale, float yScale, Canvas c) {
 		int j=0;

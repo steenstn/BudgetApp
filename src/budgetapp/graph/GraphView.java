@@ -1,19 +1,11 @@
 package budgetapp.graph;
 
-import java.util.List;
 
-import budgetapp.util.DayEntry;
-import budgetapp.util.database.BudgetDataSource;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Point;
-import android.os.Build;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +29,7 @@ public class GraphView extends ImageView implements OnTouchListener{
     float offsetY;
     float oldX;
 	float oldY;
+	float oldX2, oldY2;
 	float xScale = 40;
 	float yScale = 0.1f;
 	float oldDistanceX;
@@ -128,39 +121,64 @@ public class GraphView extends ImageView implements OnTouchListener{
 			
 			case MotionEvent.ACTION_POINTER_DOWN:
 				pointerIndex2 = event.getActionIndex();
-				oldDistanceX = (event.getX(pointerIndex)-event.getX(pointerIndex2));
-				oldDistanceY = (event.getY(pointerIndex)-event.getY(pointerIndex2));
+				oldX2 = (event.getX(pointerIndex2));
+				oldY2 = (event.getY(pointerIndex2));
 			break;
 			
 			case MotionEvent.ACTION_MOVE:
-				 pointerIndex = event.findPointerIndex(mActivePointerId);
-				float x = event.getX(pointerIndex);
-				float y = event.getY(pointerIndex);
-				
-				
-				float dx = x - oldX;
-				float dy = y - oldY;
-				
-				offsetX+= dx;
-				offsetY-= dy;
-				oldX = x;
-				oldY = y;
-				if(pointerIndex2!=INVALID_POINTER_ID)
+				int numTouch = event.getPointerCount();
+				if(numTouch == 1)
 				{
-					float distanceX =(x-event.getX(pointerIndex2))/200.0f;
-					float distanceY =(y-event.getY(pointerIndex2))/20000.0f;
+					pointerIndex = event.findPointerIndex(mActivePointerId);
+					
+					float x = event.getX(pointerIndex);
+					float y = event.getY(pointerIndex);
+					
+					
+					float dx = x - oldX;
+					float dy = y - oldY;
+					
+					offsetX+= dx;
+					offsetY-= dy;
+					oldX = x;
+					oldY = y;
+					
+				}
+				else if(numTouch == 2)
+				{
+
+					int id1 = event.getPointerId(0);
+					int id2 = event.getPointerId(1);
+					float x1 = event.getX(id1);
+					float y1 = event.getY(id1);
+					float x2 = event.getX(id2);
+					float y2 = event.getY(id2);
+					
+					float dx1 = x1 - oldX;
+					float dy1 = y1 - oldY;
+					
+					float dx2 = x2 - oldX2;
+					float dy2 = y2 - oldY2;
+					
+					
+					
+					float distanceX =(x1-x2)/200.0f;
+					float distanceY =(y1-y2)/20000.0f;
 					
 					float distdx = distanceX - oldDistanceX;
 					float distdy = distanceY - oldDistanceY;
 					
-					xScale+=distdx/10.0f;
-					yScale+=distdy/1000.0f;
+					xScale+=(dx1-dx2)/10.0f;
+					yScale+=(dy1-dy2)/1000.0f;
 					
 					oldDistanceX = distanceX;
 					oldDistanceY = distanceY;
-					
+					oldX = x1;
+					oldY = y1;
+					oldX2 = x2;
+					oldY2 = y2;
+					//System.out.println("Multitouch!");
 				}
-				//System.out.println("Index: " + pointerIndex);
 			break;
 			
 			case MotionEvent.ACTION_UP:
