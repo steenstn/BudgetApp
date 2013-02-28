@@ -46,7 +46,7 @@
           android:layout_marginTop="1dip"
           android:textStyle="bold"
           android:text="All transactions" />
-	    <TextView
+	    <TextView 
           android:id="@+id/textViewLogTop"
           android:layout_width="match_parent"
           android:layout_height="0dip"

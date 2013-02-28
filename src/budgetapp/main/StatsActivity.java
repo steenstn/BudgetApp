@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -143,9 +144,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			if(entry.getNum()<10)
 				stats.append("\t");
 			stats.append(" Total: " + entry.getTotal() + "\n");
-			System.out.println("Före" + entry.getTotal());
 			sum = sum.add(entry.getTotal());
-			System.out.println("Efter" + entry.getTotal());
 			
 		}
 		
@@ -261,7 +260,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
 		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
 			view.append("\t");
-		view.append("\t" + Html.fromHtml("<a href='com.budgetapp.main://MainActivity'>"+entry.getCategory()+"</a>"));
+		//view.append("\t" + entry.getCategory());
+		view.append(Html.fromHtml(
+	            "<a href=\"stats://myactivity\">" +
+	            		 entry.getCategory() +"</a>"));
 		// Add comment if there is one
 		// But only print max 20 characters
 		String comment = entry.getComment();
@@ -335,9 +337,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         
         TextView top = (TextView)findViewById(R.id.textViewLogTop);
         BudgetEntry entry;
+        top.setMovementMethod(LinkMovementMethod.getInstance());
         
         top.setText("");
-        top.setMovementMethod(LinkMovementMethod.getInstance());
         if(selectedYear>-1) // A specific year is chosen
         {
 	        printYear(top,selectedYear);
@@ -348,7 +350,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	//for(int i=0;i<years.size();i++)
         	//	printYear(top,i);
         }
-        
+        //Linkify.addLinks(top, Linkify.ALL);
         updateStats();
 	}
 	/***
