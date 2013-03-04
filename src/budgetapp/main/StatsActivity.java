@@ -3,21 +3,29 @@ package budgetapp.main;
 import java.util.ArrayList;
 import java.util.List;
 
+import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.Money;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.util.Linkify;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.database.BudgetDataSource;
@@ -31,6 +39,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	List<CategoryEntry> categories;
 	List<CategoryEntry> categoryStats; // Contains stats for categories
 	List<String> categoryNames;
+	ListView top;
+	BudgetAdapter ad;
+	ArrayList<BudgetEntry> allEntries = new ArrayList<BudgetEntry>();
 	ArrayList<CompositeStats> years;
 	int selectedYear=-1;
 	int selectedMonth=-1;
@@ -47,7 +58,9 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
-        
+        top = (ListView)findViewById(R.id.ListViewLogTop);
+       // ad = new ArrayAdapter<BudgetEntry>(top.getContext(), R.layout.stats_listitem);
+        ad = new BudgetAdapter(this);
         // Read in all the data
         entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
         days = datasource.getAllDaysTotal(BudgetDataSource.DESCENDING);
@@ -72,6 +85,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	        while(entryIndex<size)
 	        {
 	        	entry = entries.get(entryIndex);
+	        	//ad.add(entry);
+	        	//ad.
 	        	String year = entry.getYear();
 	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
 	        	{
@@ -255,23 +270,26 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 * @param view The view to append to
 	 * @param entry The BudgetEntry to append
 	 */
-	public void printEntry(TextView view,BudgetEntry entry)
+	public void printEntry(ArrayList<String> list,BudgetEntry entry)
 	{
-		view.append("Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue());
+		String temp = "Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue();
+		
 		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
-			view.append("\t");
+			temp+="\t";
+		if(entry.getValue().get()<=-1000)
+			temp+="\t";
 		//view.append("\t" + entry.getCategory());
-		view.append(Html.fromHtml(
-	            "<a href=\"stats://myactivity\">" +
-	            		 entry.getCategory() +"</a>"));
+		temp+="\t"+entry.getCategory();
 		// Add comment if there is one
 		// But only print max 20 characters
 		String comment = entry.getComment();
-		if(comment!=null && comment.length()>0)
+		if(comment!=null && !comment.equalsIgnoreCase(""))
 		{
-			view.append(Html.fromHtml("<i> - "+(comment.length()<10 ? comment : comment.substring(0, 10)+"...")+"</i>"));
+			temp+=" *";
 		}
-		view.append("\n");
+		//list.add(temp);
+		ad.add(entry);
+		
 	}
 	
 	
@@ -282,7 +300,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 * @param months An ArrayList<Stats> containing the months
 	 * @param index The index of the month
 	 */
-	public void printMonth(TextView view, ArrayList<Stats> months, int index)
+	public void printMonth(ArrayList<String> list, ArrayList<Stats> months, int index)
 	{
 		boolean monthPrinted = false;
 		if(index<months.size())
@@ -296,10 +314,10 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 				{
 					if(!monthPrinted)
 					{
-						view.append(Html.fromHtml("<b>"+monthToString(months.get(index).getName())+"</b><br />"));
+						list.add(monthToString(months.get(index).getName()));
 						monthPrinted = true;
 					}
-					printEntry(view,entry);
+					printEntry(list,entry);
 					addStats(entry); // Add the stats to categoryStats
 				}
 			}
@@ -311,20 +329,20 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	 * @param view The TextView to append to
 	 * @param index The index of the year
 	 */
-	public void printYear(TextView view, int index)
+	public void printYear(ArrayList<String> list, int index)
 	{
 		
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
-		view.append(Html.fromHtml("<b>"+years.get(index).getName() + "</b><br />"));
+		list.add(years.get(index).getName());
     	if(selectedMonth>-1) // A specific month is chosen
     	{
-    		printMonth(view,months,selectedMonth);
+    		printMonth(list,months,selectedMonth);
     	}
     	else // Print all transactions this year
     	{
         	for(int j=0;j<months.size();j++)
         	{
-        		printMonth(view,months,j);
+        		printMonth(list,months,j);
         	}
     	}
 	}
@@ -334,15 +352,16 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void updateLog()
 	{
 		categoryStats = new ArrayList<CategoryEntry>();
-        
-        TextView top = (TextView)findViewById(R.id.textViewLogTop);
-        BudgetEntry entry;
-        top.setMovementMethod(LinkMovementMethod.getInstance());
-        
-        top.setText("");
+		ArrayAdapter<String> listViewAdapter;
+		ArrayList<String> allTransactionsList = new ArrayList<String>();
+        allTransactionsList.clear();
+        //BudgetEntry entry;
+        //top.setMovementMethod(LinkMovementMethod.getInstance());
+        ad = new BudgetAdapter(this);
+        //top.setText("");
         if(selectedYear>-1) // A specific year is chosen
         {
-	        printYear(top,selectedYear);
+	        printYear(allTransactionsList,selectedYear);
 	        
         }
         else // Print all years
@@ -350,7 +369,19 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	//for(int i=0;i<years.size();i++)
         	//	printYear(top,i);
         }
-        //Linkify.addLinks(top, Linkify.ALL);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(top.getContext(),
+      		  R.layout.stats_listitem, android.R.id.text1, allTransactionsList);
+        
+        // Apply the adapter to the ListView
+        top.setAdapter(ad);
+        
+        top.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+ 		   @Override
+ 		   public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+ 		      Object listItem = top.getItemAtPosition(position);
+ 		     Toast.makeText(view.getContext(), ((BudgetEntry)ad.getItem(position)).getComment(), Toast.LENGTH_LONG).show();
+ 		   }
+ 		 });
         updateStats();
 	}
 	/***
@@ -387,4 +418,5 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

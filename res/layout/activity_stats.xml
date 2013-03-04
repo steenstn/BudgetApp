@@ -46,13 +46,12 @@
           android:layout_marginTop="1dip"
           android:textStyle="bold"
           android:text="All transactions" />
-	    <TextView 
-          android:id="@+id/textViewLogTop"
+	    <ListView 
+          android:id="@+id/ListViewLogTop"
           android:layout_width="match_parent"
           android:layout_height="0dip"
           android:layout_marginTop="1dip"
           android:layout_weight="6"
-          android:scrollbars="vertical"
           android:text="" />
 	   
 		    
