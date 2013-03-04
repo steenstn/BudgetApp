@@ -163,14 +163,27 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	
     	floatDerivative = floatDerivative * 255;
     	
-    	
-    	
     	int coloringFactor = min(255,Math.abs((int)floatDerivative));
-    	if(derivative.get()<0)
-    		newBudget.setTextColor(Color.rgb(255,255-coloringFactor,255-coloringFactor));
+    	int start = 255;
+    	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+    	
+    	 // If the user has old android, the theme is light. Color accordingly
+    	if(currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
+    	{
+    		start = 0;
+    	 	if(derivative.get()<0)
+	    		newBudget.setTextColor(Color.rgb(coloringFactor,start,start));
+	    	else
+	    		newBudget.setTextColor(Color.rgb(start,coloringFactor,start));
+    	
+    	}
     	else
-    		newBudget.setTextColor(Color.rgb(255-coloringFactor,255,255-coloringFactor));
-	  
+    	{
+	    	if(derivative.get()<0)
+	    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
+	    	else
+	    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
+    	}
     }
     
     
