@@ -8,6 +8,7 @@ import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.Money;
+import budgetapp.util.ViewHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -288,7 +289,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 			temp+=" *";
 		}
 		//list.add(temp);
-		ad.add(entry);
+		ad.add(new ViewHolder(entry));
 		
 	}
 	
@@ -315,6 +316,7 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 					if(!monthPrinted)
 					{
 						list.add(monthToString(months.get(index).getName()));
+						ad.add(new ViewHolder(monthToString(months.get(index).getName()),ViewHolder.MONTH));
 						monthPrinted = true;
 					}
 					printEntry(list,entry);
@@ -369,8 +371,6 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         	//for(int i=0;i<years.size();i++)
         	//	printYear(top,i);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(top.getContext(),
-      		  R.layout.stats_listitem, android.R.id.text1, allTransactionsList);
         
         // Apply the adapter to the ListView
         top.setAdapter(ad);
@@ -379,7 +379,8 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
  		   @Override
  		   public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
  		      Object listItem = top.getItemAtPosition(position);
- 		     Toast.makeText(view.getContext(), ((BudgetEntry)ad.getItem(position)).getComment(), Toast.LENGTH_LONG).show();
+ 		      if(!((ViewHolder)ad.getItem(position)).entry.getComment().equalsIgnoreCase(""))
+ 		    	  Toast.makeText(view.getContext(), ((ViewHolder)ad.getItem(position)).entry.getComment(), Toast.LENGTH_LONG).show();
  		   }
  		 });
         updateStats();

@@ -13,41 +13,16 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class BudgetAdapter extends BaseAdapter {
-	private static class ViewHolder {
-		public ViewHolder(BudgetEntry entry)
-		{
-			this.entry = entry;
-		}
-		
-        public TextView textView;
-        public BudgetEntry entry;
-        public String toString(){
-        	String temp = "Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue();
-    		
-    		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
-    			temp+="\t";
-    		if(entry.getValue().get()<=-1000)
-    			temp+="\t";
-    		//view.append("\t" + entry.getCategory());
-    		temp+="\t"+entry.getCategory();
-    		// Add comment if there is one
-    		// But only print max 20 characters
-    		String comment = entry.getComment();
-    		if(comment!=null && !comment.equalsIgnoreCase(""))
-    		{
-    			temp+=" *";
-    		}
-    		return temp;
-        }
-    }
-	private ArrayList<BudgetEntry> data = new ArrayList<BudgetEntry>();
+	
+	private ArrayList<ViewHolder> data = new ArrayList<ViewHolder>();
 	private LayoutInflater inflater;
 	
 	public BudgetAdapter(Context theContext ) {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-	public void add(final BudgetEntry item)
+	
+	public void add(ViewHolder item)
 	{
 		data.add(item);
 	}
@@ -79,9 +54,12 @@ public class BudgetAdapter extends BaseAdapter {
 		}
 		else
 		{
-			BudgetEntry tempEntry = data.get(position);
+			ViewHolder tempEntry = data.get(position);
 			holder = (ViewHolder)convertView.getTag();
-			holder.entry = tempEntry;
+			holder.entry = tempEntry.entry;
+			holder.title = tempEntry.title;
+			holder.flag = tempEntry.flag;
+			
 		}
 		holder.textView.setText(holder.toString());
 		return convertView;
