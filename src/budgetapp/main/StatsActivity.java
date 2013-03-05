@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
@@ -20,6 +21,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -31,7 +33,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.stats.*;
-public class StatsActivity extends Activity implements OnItemSelectedListener{
+public class StatsActivity extends FragmentActivity implements OnItemSelectedListener, OnLongClickListener{
 	
 	BudgetDataSource datasource = MainActivity.datasource;
 	List<DayEntry> days;
@@ -378,11 +380,33 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
         top.setOnItemClickListener(new AdapterView.OnItemClickListener() {
  		   @Override
  		   public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
- 		      Object listItem = top.getItemAtPosition(position);
- 		      if(!((ViewHolder)ad.getItem(position)).entry.getComment().equalsIgnoreCase(""))
- 		    	  Toast.makeText(view.getContext(), ((ViewHolder)ad.getItem(position)).entry.getComment(), Toast.LENGTH_LONG).show();
+ 		      ViewHolder listItem = (ViewHolder)top.getItemAtPosition(position);
+ 		      if(!listItem.entry.getComment().equalsIgnoreCase(""))
+ 		      {	
+ 		    	  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
+ 		      }
+ 		    	  //datasource.addComment(((ViewHolder)ad.getItem(position)).entry, "Heeyeaeyeea");
  		   }
  		 });
+        
+        top.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View view,
+					int position, long arg) {
+				ViewHolder listItem = (ViewHolder)top.getItemAtPosition(position);
+	 		      
+		    	 DialogFragment newFragment = new EditTransactionDialogFragment();
+		    	 Bundle bundle = new Bundle();
+		    	 bundle.putLong("id", listItem.entry.getId());
+		    	 newFragment.setArguments(bundle);
+		    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
+		    	  //  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
+		    
+	 		      return true;
+			}
+			
+		});
         updateStats();
 	}
 	/***
@@ -418,6 +442,12 @@ public class StatsActivity extends Activity implements OnItemSelectedListener{
 	public void onNothingSelected(AdapterView<?> parent) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean onLongClick(View v) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 }

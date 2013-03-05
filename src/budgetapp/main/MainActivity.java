@@ -385,9 +385,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	{
     		Calendar tempDate = Calendar.getInstance();
     		
-        	datasource.updateDaySum(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
-        
-
+    		// We want an entry in the daily cash flow table but not in transactions,
+    		// so add and undo an entry. (Temporary solution for now)
+    		tempCom.add(new TransactionCommand(datasource,new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income")));
+    		tempCom.get(tempCom.size()-1).execute();
+    		tempCom.get(tempCom.size()-1).unexecute();
+        	
         	updateLog();
     	}
     	

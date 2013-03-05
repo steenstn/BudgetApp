@@ -152,6 +152,24 @@ public class DatabaseAccess {
 		}
 		
 	}
+	public boolean updateComment(BudgetEntry theEntry, String newComment)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + theEntry.getId(),null);
+		
+		if(cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_COMMENT, newComment);
+			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
+			if(res!=0)
+				return true;
+		}
+		
+		return false;
+	
+	}
 	
 	public void addToCategory(String theCategory,double value)
 	{

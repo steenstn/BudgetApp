@@ -57,22 +57,54 @@ public class BudgetDataSource {
 		dbHelper.close();
 	}
 	
+	/**
+	 * Creates a transaction entry and updates the affected tables
+	 * @param theEntry The entry to add
+	 * @return The entry that was added
+	 */
 	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
 		open();
 		BudgetEntry result = dbAccess.addEntry(theEntry);
+		if(result != null)
+		{
+			addToCategory(theEntry.getCategory(),theEntry.getValue().get());
+	    	updateDaySum(theEntry);
+	    	updateDayTotal(theEntry);
+		}
 		close();
 		return result;
 		
 	}
+	/**
+	 * Removes a transaction entry from the database and updates the affected tables
+	 * @param theEntry The entry to remove
+	 * @return true if the removal was successful
+	 */
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
 		open();
 		boolean result = dbAccess.removeEntry(theEntry);
+		if(result == true)
+		{
+			removeFromCategory(theEntry.getCategory(),theEntry.getValue().get()*-1);
+			//Update daysum and daytotal by adding the negative value that was added
+			theEntry.setValue(theEntry.getValue().get()*-1);
+			updateDaySum(theEntry);
+			updateDayTotal(theEntry);
+			theEntry.setValue(theEntry.getValue().get()*-1);
+		}
 		close();
 		return result;
 	}
 	
+	public boolean addComment(BudgetEntry theEntry, String comment)
+	{
+		open();
+		boolean result = dbAccess.updateComment(theEntry, comment);
+		close();
+		return result;
+	}
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
 		open();
@@ -81,32 +113,7 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-	public void addToCategory(String theCategory,double value)
-	{
-		open();
-		dbAccess.addToCategory(theCategory,value);
-		close();
-	}
-	public void removeFromCategory(String theCategory,double value)
-	{
-		open();
-		dbAccess.removeFromCategory(theCategory,value);
-		close();
-	}
-	public void updateDaySum(BudgetEntry theEntry)
-	{
-		open();
-		dbAccess.updateDaySum(theEntry);
-		close();
-	}
-	public void updateDayTotal(BudgetEntry theEntry)
-	{
-		open();
-		dbAccess.updateDayTotal(theEntry);
-		close();
-	}
-	
-	
+		
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
@@ -208,6 +215,24 @@ public class BudgetDataSource {
 		result = dbAccess.removeCategory(theCategory);
 		close();
 		return result;
+	}
+	
+	// Helper functions to update different tables correctly
+	private void addToCategory(String theCategory,double value)
+	{
+		dbAccess.addToCategory(theCategory,value);
+	}
+	private void removeFromCategory(String theCategory,double value)
+	{
+		dbAccess.removeFromCategory(theCategory,value);
+	}
+	private void updateDaySum(BudgetEntry theEntry)
+	{
+		dbAccess.updateDaySum(theEntry);
+	}
+	private void updateDayTotal(BudgetEntry theEntry)
+	{
+		dbAccess.updateDayTotal(theEntry);
 	}
 	
 }

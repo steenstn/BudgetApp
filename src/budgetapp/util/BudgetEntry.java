@@ -106,7 +106,10 @@ public class BudgetEntry extends DatabaseEntry{
 	
 	public String getComment()
 	{
-		return comment;
+		if(comment!=null)
+			return comment;
+		else
+			return "";
 	}
 	@Override
 	public String toString(){
