@@ -114,12 +114,28 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         	 
         	 String strLine;
         	 boolean done = false;
+        	 int counter = 0;
         		 while(!done)
         		 {
         			 try
         			 {
         				 strLine = in.readUTF();
+        				 // Second run, reading dailyBudget in old config file,
+        				 // try and parse it directly
+        				 if(counter==1) 
+        				 {
+        					 try
+        					 {
+        						 double tempDailyBudget = Double.parseDouble(strLine);
+        						 dailyBudget.set(tempDailyBudget);
+        					 }
+        					 catch(NumberFormatException e)
+        					 {
+        						 System.out.println("No double");
+        					 }
+        				 }
         				 parseString(strLine);
+        				 counter++;
         				
         			 }
         			 catch(IOException e)
@@ -484,6 +500,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
             	newFragment = new DailyBudgetFragment();
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
             	return true;
+            case R.id.menu_editcurrency:
+            	newFragment = new EditCurrencyDialogFragment();
+            	newFragment.show(getSupportFragmentManager(), "edit_currency");
+            	return true;
             case R.id.menu_statistics:
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
@@ -501,6 +521,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	
 	public void updateAll()
 	{
+		addToBudget();
 		updateLog();
 		updateButtons();
 		updateColor();

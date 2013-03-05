@@ -14,7 +14,7 @@
     <string name="all_years">All years</string>
     <string name="all_months">All months</string>
     <string name="all_categories">All categories</string>
-    
+    <string name="menu_editcurrency">Edit currency</string>
     
     <string-array name="months_array">
         <item>January</item>
