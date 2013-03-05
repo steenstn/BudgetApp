@@ -226,6 +226,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         return true;
     }
     
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+    	MenuItem item = menu.findItem(R.id.menu_setdailybudget);
+    	CharSequence withBudget = "Set daily budget" + " (" + dailyBudget + ")";
+    	item.setTitle(withBudget);
+    	return true;
+    }
+    
     // Updates the log of transactions, categories and daysums
     public void updateLog()
     {

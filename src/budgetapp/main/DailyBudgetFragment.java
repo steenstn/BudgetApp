@@ -44,6 +44,7 @@ public class DailyBudgetFragment extends DialogFragment {
 							((MainActivity) getActivity()).updateColor();
 							((MainActivity) getActivity()).saveToFile();
 							Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
+							
 		               }
 		               catch(NumberFormatException e)
 		               {
