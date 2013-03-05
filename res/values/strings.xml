@@ -30,5 +30,14 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+        
+    <string-array name="config_values_array">
+    	<item>dailyBudget</item>
+    	<item>currency</item>
+    	<item>printCurrencyAfter</item>
+    	<item>exchangeRate</item>
+    </string-array>
+        
+        
 
 </resources>

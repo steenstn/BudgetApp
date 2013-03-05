@@ -22,12 +22,12 @@ public class Money {
 	{
 		value = m.get();
 	}
-	public void setCurrency(String c)
+	public static void setCurrency(String c)
 	{
 		currency = c;
 	}
 	
-	public String currency()
+	public static String currency()
 	{
 		return currency;
 	}

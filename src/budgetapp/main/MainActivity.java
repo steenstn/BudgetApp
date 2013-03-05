@@ -97,45 +97,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     public void onResume()
     {
     	super.onResume();
-        try
-        {
-        	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
-             try
-             {
-            	 String strLine = in.readUTF();
-            	 //currentBudget.set(Double.parseDouble(strLine));
-            	 try
-            	 {
-            		 strLine = in.readUTF();
-            		 dailyBudget.set(Double.parseDouble(strLine));
-            	 }
-            	 catch(IOException e)
-            	 {
-            		 Toast.makeText(this.getBaseContext(),"Daily budget set to 0. Change in menu", Toast.LENGTH_LONG).show();
-            	 }
-           	
-	           	//Close the input stream
-	           	in.close();
-           	  
-             	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-             	//newBudget.setText(""+currentBudget);
-             	updateColor();
-            	 
-             }
-             catch(IOException e)
-             {
-            	// currentBudget=0;
-             }
-        }
-        catch(NumberFormatException e)
-        {
-        //	currentBudget=0;
-        }
-        catch(FileNotFoundException e)
-        {
-        //	currentBudget=0;
-        }
-      
+        
+      readConfigFile();
          //Add daily budget for all days since last run
         addToBudget();        
         updateColor();
@@ -143,6 +106,70 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         
     }
     
+    public void readConfigFile()
+    {
+    	try
+        {
+        	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
+        	 
+        	 String strLine;
+        	 boolean done = false;
+        		 while(!done)
+        		 {
+        			 try
+        			 {
+        				 strLine = in.readUTF();
+        				 parseString(strLine);
+        				
+        			 }
+        			 catch(IOException e)
+        			 {
+        				 System.out.println("Done reading config");
+        				 done = true;
+        			 }
+        		 }
+            	 
+	           	//Close the input stream
+            	 in.close();
+   
+        }
+        catch(FileNotFoundException e)
+        {
+        	Toast.makeText(this.getBaseContext(), "Config file not found", Toast.LENGTH_LONG).show();
+        } 
+    	catch (IOException e) 
+        {
+			e.printStackTrace();
+		}
+    }
+    
+    private void parseString(String in)
+    {
+    	System.out.println("Parsing " + in);
+    	//String array with all values in config
+    	String[] values = getResources().getStringArray(R.array.config_values_array);
+    		
+		if(in.startsWith(values[0]+"=")) // dailyBudget
+    	{
+    		System.out.println(values[0]);
+    		dailyBudget.set(Double.parseDouble(in.substring(values[0].length()+1)));
+    	}
+		else if(in.startsWith(values[1]+"=")) // currency
+		{
+			System.out.println(values[1] + "=" + in);
+    		//dailyBudget.set(Double.parseDouble(in));
+		}
+		else if(in.startsWith(values[2]+"=")) // printCurrencyAfter
+		{
+			System.out.println(values[2] + "=" + in);
+		}
+		else if(in.startsWith(values[3]+"=")) // exchangeRate
+		{
+			System.out.println(values[3] + "=" + in);
+		}
+    	
+    	
+    }
     // Colors the currentBudget text depending on the size of the current budget
     public void updateColor()
     {
@@ -402,8 +429,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	DataOutputStream out;
 		try {
 			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-			out.writeUTF(""+currentBudget.get());
-			out.writeUTF(""+dailyBudget.get());
+			String[] values = getResources().getStringArray(R.array.config_values_array);
+	    	
+			out.writeUTF(values[0]+"="+dailyBudget.get());
+			
+			out.writeUTF(values[1]+"="+Money.currency());
+			out.writeUTF(values[2]+"="+Money.after);
+			out.writeUTF(values[3]+"="+1);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
