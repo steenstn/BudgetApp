@@ -98,7 +98,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     {
     	super.onResume();
         
-      readConfigFile();
+        readConfigFile();
          //Add daily budget for all days since last run
         addToBudget();        
         updateColor();
@@ -151,7 +151,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         }
         catch(FileNotFoundException e)
         {
-        	Toast.makeText(this.getBaseContext(), "Config file not found", Toast.LENGTH_LONG).show();
+        	
         } 
     	catch (IOException e) 
         {
@@ -172,12 +172,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	}
 		else if(in.startsWith(values[1]+"=")) // currency
 		{
-			System.out.println(values[1] + "=" + in);
-    		//dailyBudget.set(Double.parseDouble(in));
+			System.out.println(values[1]);
+    		Money.setCurrency(in.substring(values[1].length()+1));
 		}
 		else if(in.startsWith(values[2]+"=")) // printCurrencyAfter
 		{
 			System.out.println(values[2] + "=" + in);
+			if(in.substring(values[2].length()+1).equalsIgnoreCase("true"))
+				Money.after = true;
+			else
+				Money.after = false;
 		}
 		else if(in.startsWith(values[3]+"=")) // exchangeRate
 		{
