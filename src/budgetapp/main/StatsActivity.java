@@ -1,5 +1,6 @@
 package budgetapp.main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import budgetapp.util.ViewHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
@@ -51,12 +53,6 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	String selectedCategory = "";
 	int numDaysForDerivative = 30;
 	int numTransactionsForDerivative = 10;
-	int min(int a,int b) 
-	{
-		if(a<b)
-			return a;
-		return b;
-	}
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +129,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		}
 		else
 		{
-			stats.setText("Mean derivative (" + min(numDaysForDerivative,dayFlow.size()) + ") days: ");
+			stats.setText("Mean derivative (" + BudgetFunctions.min(numDaysForDerivative,dayFlow.size()) + ") days: ");
 			Money dayDerivative = BudgetFunctions.getWeightedMeanDerivative(dayFlow,numDaysForDerivative);
 			stats.append(""+dayDerivative + "\n");
 		}
@@ -359,10 +355,8 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		ArrayAdapter<String> listViewAdapter;
 		ArrayList<String> allTransactionsList = new ArrayList<String>();
         allTransactionsList.clear();
-        //BudgetEntry entry;
-        //top.setMovementMethod(LinkMovementMethod.getInstance());
         ad = new BudgetAdapter(this);
-        //top.setText("");
+        
         if(selectedYear>-1) // A specific year is chosen
         {
 	        printYear(allTransactionsList,selectedYear);
@@ -385,7 +379,6 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
  		      {	
  		    	  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
  		      }
- 		    	  //datasource.addComment(((ViewHolder)ad.getItem(position)).entry, "Heeyeaeyeea");
  		   }
  		 });
         
@@ -398,8 +391,10 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	 		      
 		    	 DialogFragment newFragment = new EditTransactionDialogFragment();
 		    	 Bundle bundle = new Bundle();
-		    	 bundle.putLong("id", listItem.entry.getId());
-		    	 newFragment.setArguments(bundle);
+		    	 bundle.putParcelable("entry", (Parcelable) listItem.entry);
+		    	 
+		    	newFragment.setArguments(bundle);
+		    	
 		    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
 		    	  //  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
 		    
@@ -435,6 +430,10 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		if(oldYear!=selectedYear)
 			updateMonthSpinner();
 		updateLog();
+		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
+		listView.scrollTo(0,0);
+		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
+		textView.scrollTo(0,0);
 		
 	}
 

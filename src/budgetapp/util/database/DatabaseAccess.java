@@ -83,19 +83,34 @@ public class DatabaseAccess {
 			return true;
 		return false;
 	}
-	public boolean updateDaySum(BudgetEntry theEntry)
+	
+	/**
+	 * Updates the DAYSUM table
+	 * @param theEntry
+	 * @param newEntry
+	 * @return
+	 */
+	public boolean updateDaySum(BudgetEntry theEntry, BudgetEntry newEntry)
 	{
 		//COLUMN_DATE
 		//COLUMN_VALUE
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
 		//System.out.println("substring: "+ theEntry.getDate().substring(0, 10));
+		// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
+		double newValue = theEntry.getValue().get();
+		if(newEntry != null)
+		{
+			newValue = newEntry.getValue().get()-theEntry.getValue().get();
+		}
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
 			ContentValues values = new ContentValues();
+			
+			
 			// Put in the values
 			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-			values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
+			values.put(BudgetDatabase.COLUMN_VALUE, newValue);
 			
 			database.insert(BudgetDatabase.TABLE_DAYSUM, null,values);
 			cursor.close();
@@ -104,7 +119,7 @@ public class DatabaseAccess {
 		// There exists an entry for this day, update it.
 		cursor.moveToFirst();
 		double total = cursor.getDouble(0);
-		total += theEntry.getValue().get();
+		total += newValue;
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_VALUE, total);
 		
@@ -112,19 +127,20 @@ public class DatabaseAccess {
 		cursor.close();
 		return true;
 	}
-	public boolean updateDayTotal(BudgetEntry theEntry)
+	public boolean updateDayTotal(BudgetEntry theEntry, BudgetEntry newEntry)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
-		
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+", " + BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		double newValue = theEntry.getValue().get();
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
-		{
+		{		
 			ContentValues values = new ContentValues();
 			Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_DAYTOTAL+ " order by _id desc limit 1", null);
 			if(yesterdayCursor.getCount()<=0) // No yesterday, create new entry from incoming entry
 			{
+				
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
+				values.put(BudgetDatabase.COLUMN_VALUE, newValue);
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
@@ -133,7 +149,7 @@ public class DatabaseAccess {
 				yesterdayCursor.moveToFirst();
 				double yesterdayValue = yesterdayCursor.getDouble(0);
 				values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
-				values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get()+yesterdayValue);
+				values.put(BudgetDatabase.COLUMN_VALUE, newValue+yesterdayValue);
 				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
 				cursor.close();
 			}
@@ -143,14 +159,36 @@ public class DatabaseAccess {
 		{
 			cursor.moveToFirst();
 			double total = cursor.getDouble(0);
-			total += theEntry.getValue().get();
+			long theId = cursor.getLong(1);
+			
+			// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
+			if(newEntry != null)
+			{
+				newValue = newEntry.getValue().get()-theEntry.getValue().get();
+			}
+			total += newValue;
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
+			if(newEntry != null && newValue != 0) //Changes has been made, update all day total after this one
+			{
+				database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + newValue + " where _id > " + theId);
+			}
 			return true;
 		}
 		
+	}
+	private void addChangeToRemaindingDays(BudgetEntry theEntry, double theValue, long theId)
+	{
+		ContentValues values = new ContentValues();
+		
+				values.put(BudgetDatabase.COLUMN_VALUE, theValue);
+				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
+		
+		int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " > " + theId, null);
+		
+	
 	}
 	public boolean updateComment(BudgetEntry theEntry, String newComment)
 	{
@@ -163,13 +201,42 @@ public class DatabaseAccess {
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_COMMENT, newComment);
 			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
+			
 			if(res!=0)
+			{	
+				cursor.close();
 				return true;
+			}
 		}
-		
+		cursor.close();
 		return false;
 	
 	}
+	
+	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + oldEntry.getId(), null);
+		
+		if(cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory());
+			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());
+			values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment());
+			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + oldEntry.getId(), null);
+			
+			if(res!=0)
+			{
+				cursor.close();
+				return true;
+			}
+		}
+		cursor.close();
+		return false;
+	}
+	
 	
 	public void addToCategory(String theCategory,double value)
 	{

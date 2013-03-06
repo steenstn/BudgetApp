@@ -69,8 +69,8 @@ public class BudgetDataSource {
 		if(result != null)
 		{
 			addToCategory(theEntry.getCategory(),theEntry.getValue().get());
-	    	updateDaySum(theEntry);
-	    	updateDayTotal(theEntry);
+	    	addToDaySum(theEntry);
+	    	addToDayTotal(theEntry);
 		}
 		close();
 		return result;
@@ -90,12 +90,32 @@ public class BudgetDataSource {
 			removeFromCategory(theEntry.getCategory(),theEntry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
 			theEntry.setValue(theEntry.getValue().get()*-1);
-			updateDaySum(theEntry);
-			updateDayTotal(theEntry);
+			addToDaySum(theEntry);
+			addToDayTotal(theEntry);
 			theEntry.setValue(theEntry.getValue().get()*-1);
 		}
 		close();
 		return result;
+	}
+	
+	// Changes the fields that are changeable of the transaction entry
+	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		open();
+		updateTransaction(oldEntry, newEntry);
+		
+		// New category, move the entry from old category to new
+		if(!oldEntry.getCategory().equalsIgnoreCase(newEntry.getCategory()))
+		{
+			removeFromCategory(oldEntry.getCategory(),oldEntry.getValue().get()*-1);
+			addToCategory(newEntry.getCategory(),oldEntry.getValue().get());
+		}
+		if(oldEntry.getValue().get()!=newEntry.getValue().get())
+		{
+			updateDaySum(oldEntry,newEntry);
+			updateDayTotal(oldEntry,newEntry);
+		}
+		close();
 	}
 	
 	public boolean addComment(BudgetEntry theEntry, String comment)
@@ -226,13 +246,26 @@ public class BudgetDataSource {
 	{
 		dbAccess.removeFromCategory(theCategory,value);
 	}
-	private void updateDaySum(BudgetEntry theEntry)
+	private void updateDaySum(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
-		dbAccess.updateDaySum(theEntry);
+		dbAccess.updateDaySum(oldEntry, newEntry);
 	}
-	private void updateDayTotal(BudgetEntry theEntry)
+	private void updateDayTotal(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
-		dbAccess.updateDayTotal(theEntry);
+		dbAccess.updateDayTotal(oldEntry, newEntry);
+	}
+	
+	private void addToDaySum(BudgetEntry theEntry)
+	{
+		dbAccess.updateDaySum(theEntry, null);
+	}
+	private void addToDayTotal(BudgetEntry theEntry)
+	{
+		dbAccess.updateDayTotal(theEntry, null);
+	}
+	private void updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		dbAccess.updateTransaction(oldEntry, newEntry);
 	}
 	
 }

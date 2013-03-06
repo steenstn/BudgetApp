@@ -46,12 +46,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private Money dailyBudget = new Money(); // The daily plus, set to zero until value is read/written in internal file
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	private String chosenCategory = "";
-	int min(int a,int b) 
-	{
-		if(a<b)
-			return a;
-		return b;
-	}
+	
 	
 	public String getChosenCategory()
 	{
@@ -100,9 +95,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         
         readConfigFile();
          //Add daily budget for all days since last run
-        addToBudget();        
-        updateColor();
-        updateButtons();
+        updateAll();
         
     }
     
@@ -210,7 +203,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	
     	floatDerivative = floatDerivative * 255;
     	
-    	int coloringFactor = min(255,Math.abs((int)floatDerivative));
+    	int coloringFactor = BudgetFunctions.min(255,Math.abs((int)floatDerivative));
     	int start = 255;
     	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
     	
@@ -301,7 +294,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
     	int index = categories.size()-1; // Start at the last entry
     	
-    	for(i = 0;i<min(numButtons,categories.size());i++)
+    	for(i = 0;i<BudgetFunctions.min(numButtons,categories.size());i++)
     	{
     		theButtons.get(i).setText(categories.get(index).getCategory());
     		theButtons.get(i).setVisibility(View.VISIBLE);

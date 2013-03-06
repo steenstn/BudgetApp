@@ -3,6 +3,13 @@ package budgetapp.util;
 import java.util.List;
 
 public class BudgetFunctions {
+	
+	public static int min(int a,int b) 
+	{
+		if(a<b)
+			return a;
+		return b;
+	}
 	// Returns the mean cash flow for n time steps or as many as are available if less
 		public static Money getMeanDerivative(List<?> theEntries, int n)
 		{

@@ -1,5 +1,8 @@
 package budgetapp.util;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * Class for a budget entry. Used to keep track of transactions.
@@ -7,7 +10,7 @@ package budgetapp.util;
  * @author Steen
  * 
  */
-public class BudgetEntry extends DatabaseEntry{
+public class BudgetEntry extends DatabaseEntry implements Parcelable{
 
 	private Money value; // How large the transaction was
 	private String date; // The date it was done
@@ -59,6 +62,54 @@ public class BudgetEntry extends DatabaseEntry{
 		this.flags=flags;
 		this.comment = comment;
 	}
+	
+	public BudgetEntry(Parcel in)
+	{
+		String[] data = new String[6];
+		
+		in.readStringArray(data);
+		
+		this.id = Long.parseLong(data[0]);
+		this.value=new Money(Double.parseDouble(data[1]));
+		this.date=data[2];
+		this.category=data[3];
+		this.flags=Integer.parseInt(data[4]);
+		this.comment = data[5];
+		
+	}
+	
+	@Override
+	public int describeContents()
+	{
+		return 0;
+	}
+	
+	public void writeToParcel(Parcel dest, int flags)
+	{
+		dest.writeStringArray(new String[]{
+			String.valueOf(this.id),
+			String.valueOf(this.value),
+			this.date,
+			this.category,
+			String.valueOf(this.flags),
+			this.comment
+		});
+	}
+	
+	public static final Parcelable.Creator<BudgetEntry> CREATOR= new Parcelable.Creator<BudgetEntry>() {
+		 
+		@Override
+		public BudgetEntry createFromParcel(Parcel source) {
+		// TODO Auto-generated method stub
+		return new BudgetEntry(source);  //using parcelable constructor
+		}
+		 
+		@Override
+		public BudgetEntry[] newArray(int size) {
+		// TODO Auto-generated method stub
+		return new BudgetEntry[size];
+		}
+		};
 	
 	
 	public void setId(long id){

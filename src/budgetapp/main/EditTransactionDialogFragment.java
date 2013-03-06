@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 
@@ -24,24 +25,75 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	    // Inflate and set the layout for the dialog
 	    final View view = inflater.inflate(R.layout.dialog_edit_transaction, null);
 	    
-	     long theId = getArguments().getLong("id");
-	     final BudgetEntry theEntry = new BudgetEntry(theId, new Money(), "", "");
-	    builder.setView(view);
-	 
+	     final BudgetEntry theEntry = getArguments().getParcelable("entry");
+	     builder.setView(view);
+	     TextView date = (TextView)view.findViewById(R.id.dialog_edit_transaction_date_textview);
+	     date.setText(theEntry.getDate());
+
+	     final EditText category = (EditText)view.findViewById(R.id.dialog_edit_transaction_category_edittext);
+	     category.setText(theEntry.getCategory());
+	     
+	     final EditText value = (EditText)view.findViewById(R.id.dialog_edit_transaction_value_edittext);
+	     value.setText(""+theEntry.getValue().get());
+	     
+	     final EditText comment = (EditText)view.findViewById(R.id.dialog_add_comment);
+	     comment.setText(theEntry.getComment());
+	     
 	    // Add action buttons
-	           builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+	           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 	        	   
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
-	            	   EditText comment = (EditText)view.findViewById(R.id.dialog_add_comment);
-	            	   if(MainActivity.datasource.addComment(theEntry, comment.getText().toString())==true)
-	            	   {
-	            		   Toast.makeText(view.getContext(), "Successfully added "+ comment.getText().toString() , Toast.LENGTH_LONG).show();
+	            	   
+	            	   // See if the new entry is ok
+	            	   long newId;
+	            	   String newDate;
+	            	   String newCategory;
+	            	   double newValue;
+	            	   int newFlags;
+	            	   String newComment;
+	            	   try{
+	            		   newId = theEntry.getId();
+	            		   if(newId<0)
+	            			   throw new Exception();
 	            		   
+	            		   newDate = theEntry.getDate();
+	            		   if(newDate.equalsIgnoreCase(""))
+	            			   throw new Exception();
+	            		   
+	            		   newCategory = category.getText().toString(); 
+	            		   if(newCategory.equalsIgnoreCase(""))
+	            			   throw new Exception();
+	            		   
+	            		   newValue = Double.parseDouble(value.getText().toString());
+	            		   if(newValue==0)
+	            			   throw new Exception();
+	            		   
+	            		   newFlags = theEntry.getFlags();
+	            		   
+	            		   newComment = comment.getText().toString(); // Comment can be empty, no biggie
+	            		   
+	            		   BudgetEntry newEntry = new BudgetEntry(
+		            			   newId, 
+		            			   new Money(newValue), 
+		            			   newDate, 
+		            			   newCategory,
+		            			   newFlags,
+		            			   newComment);
+		            	   
+		            	   MainActivity.datasource.editTransactionEntry(theEntry, newEntry);
+		            	   
+	            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
+		            		
 	            	   }
-	            		   else
-	            		   Toast.makeText(view.getContext(), "Failed to add "+ comment.getText().toString() , Toast.LENGTH_LONG).show();
-	            	      
+	            	   catch(Exception e){
+	            		   e.printStackTrace();
+	            		   Toast.makeText(view.getContext(), "Could not edit transaction" , Toast.LENGTH_LONG).show();
+	            	   }
+	            	   
+	            	   ((StatsActivity)getActivity()).updateLog();
+	            	   ((StatsActivity)getActivity()).updateStats();
+	            	   
 	               }
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
