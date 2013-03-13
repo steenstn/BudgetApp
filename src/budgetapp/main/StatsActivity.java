@@ -53,6 +53,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	String selectedCategory = "";
 	int numDaysForDerivative = 30;
 	int numTransactionsForDerivative = 10;
+	ViewHolder selectedViewHolder;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +85,8 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	        while(entryIndex<size)
 	        {
 	        	entry = entries.get(entryIndex);
-	        	//ad.add(entry);
-	        	//ad.
+
+
 	        	String year = entry.getYear();
 	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
 	        	{
@@ -189,7 +190,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		 spinner.setAdapter(adapter);
 		 
 		 
-		updateMonthSpinner();
+		 updateMonthSpinner();
 		 // Set up the category spinner
 		 categoryStartValues.add(getString(R.string.all_categories));
 	     for(int i=0;i<categoryNames.size();i++)
@@ -286,7 +287,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		{
 			temp+=" *";
 		}
-		//list.add(temp);
+		
 		ad.add(new ViewHolder(entry));
 		
 	}
@@ -387,22 +388,33 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view,
 					int position, long arg) {
-				ViewHolder listItem = (ViewHolder)top.getItemAtPosition(position);
-	 		      
-		    	 DialogFragment newFragment = new EditTransactionDialogFragment();
-		    	 Bundle bundle = new Bundle();
-		    	 bundle.putParcelable("entry", (Parcelable) listItem.entry);
-		    	 
-		    	newFragment.setArguments(bundle);
-		    	
-		    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
-		    	  //  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
-		    
+				 ViewHolder listItem = (ViewHolder)top.getItemAtPosition(position);
+	 		     selectedViewHolder = listItem;
+	 		     
+				 if(listItem.flag == ViewHolder.ENTRY)
+				 {
+			    	 DialogFragment newFragment = new EditTransactionDialogFragment();
+			    	 Bundle bundle = new Bundle();
+			    	 bundle.putParcelable("entry", (Parcelable) listItem.entry);
+			    	 
+			    	 newFragment.setArguments(bundle);
+			    	
+			    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
+			    	  //  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
+				 }
 	 		      return true;
 			}
 			
 		});
         updateStats();
+	}
+	
+	public void updateEntry(BudgetEntry newEntry)
+	{
+		selectedViewHolder.entry.setCategory(newEntry.getCategory());
+		selectedViewHolder.entry.setComment(newEntry.getComment());
+		selectedViewHolder.entry.setValue(newEntry.getValue());
+		top.invalidate();
 	}
 	/***
 	 * Parses a string and gets the correct month from Resources

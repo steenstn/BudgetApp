@@ -2,6 +2,12 @@ package budgetapp.util;
 
 import android.widget.TextView;
 
+/**
+ * Class used in the ListView. Contains a TextView and a BudgetEntry that is printed in 
+ * the TextView
+ * @author Steen
+ *
+ */
 public class ViewHolder {
 	
 	
@@ -9,6 +15,7 @@ public class ViewHolder {
     public BudgetEntry entry;
     public int flag;
     public String title;
+    // What kind of entry it is
     public static final int ENTRY = 0;
     public static final int YEAR = 1;
     public static final int MONTH = 2;

@@ -82,7 +82,8 @@ public class EditTransactionDialogFragment extends DialogFragment {
 		            			   newComment);
 		            	   
 		            	   MainActivity.datasource.editTransactionEntry(theEntry, newEntry);
-		            	   
+
+		            	   ((StatsActivity)getActivity()).updateEntry(newEntry);
 	            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
 		            		
 	            	   }
@@ -91,7 +92,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	            		   Toast.makeText(view.getContext(), "Could not edit transaction" , Toast.LENGTH_LONG).show();
 	            	   }
 	            	   
-	            	   ((StatsActivity)getActivity()).updateLog();
+	            	  // ((StatsActivity)getActivity()).updateLog();
 	            	   ((StatsActivity)getActivity()).updateStats();
 	            	   
 	               }

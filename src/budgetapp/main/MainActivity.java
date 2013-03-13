@@ -154,23 +154,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     
     private void parseString(String in)
     {
-    	System.out.println("Parsing " + in);
     	//String array with all values in config
     	String[] values = getResources().getStringArray(R.array.config_values_array);
     		
 		if(in.startsWith(values[0]+"=")) // dailyBudget
     	{
-    		System.out.println(values[0]);
     		dailyBudget.set(Double.parseDouble(in.substring(values[0].length()+1)));
     	}
 		else if(in.startsWith(values[1]+"=")) // currency
 		{
-			System.out.println(values[1]);
     		Money.setCurrency(in.substring(values[1].length()+1));
 		}
 		else if(in.startsWith(values[2]+"=")) // printCurrencyAfter
 		{
-			System.out.println(values[2] + "=" + in);
 			if(in.substring(values[2].length()+1).equalsIgnoreCase("true"))
 				Money.after = true;
 			else
@@ -352,7 +348,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     }
     public void onClick(View v)
     {
-    	//Toast.makeText(this, "Click",Toast.LENGTH_SHORT).show();
     	Button pressedButton = (Button)v;
     	subtractFromBudget(v,pressedButton.getText().toString(),null);
     }

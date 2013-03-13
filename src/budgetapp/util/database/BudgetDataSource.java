@@ -110,6 +110,7 @@ public class BudgetDataSource {
 			removeFromCategory(oldEntry.getCategory(),oldEntry.getValue().get()*-1);
 			addToCategory(newEntry.getCategory(),oldEntry.getValue().get());
 		}
+		
 		if(oldEntry.getValue().get()!=newEntry.getValue().get())
 		{
 			updateDaySum(oldEntry,newEntry);
