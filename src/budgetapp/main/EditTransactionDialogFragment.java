@@ -92,7 +92,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	            		   Toast.makeText(view.getContext(), "Could not edit transaction" , Toast.LENGTH_LONG).show();
 	            	   }
 	            	   
-	            	  // ((StatsActivity)getActivity()).updateLog();
+	            	   ((StatsActivity)getActivity()).updateLog();
 	            	   ((StatsActivity)getActivity()).updateStats();
 	            	   
 	               }
