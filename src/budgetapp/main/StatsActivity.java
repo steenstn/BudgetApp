@@ -177,6 +177,12 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	
 	public void updateSpinners()
 	{
+		categories = datasource.getCategoriesSorted();
+        
+		categoryNames = new ArrayList<String>();
+        for(int i=0;i<categories.size();i++)
+        	categoryNames.add(categories.get(i).getCategory());
+        
 		 //Set up the year spinner
 		ArrayList<String> yearStartValues = new ArrayList<String>();
 		
@@ -425,6 +431,8 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			selectedViewHolder.entry.setCategory(newEntry.getCategory());
 			selectedViewHolder.entry.setComment(newEntry.getComment());
 			selectedViewHolder.entry.setValue(newEntry.getValue());
+			updateSpinners();
+			updateMonthSpinner();
 		}
 		top.invalidate();
 	}
@@ -439,6 +447,8 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			readEntries();
 		//	updateLog();
 			top.invalidate();
+			updateSpinners();
+			updateMonthSpinner();
 		}
 		//
 		//ad.remove(selectedViewHolderIndex);

@@ -500,10 +500,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.menu_showgraph: // Wait for it!
+           /* case R.id.menu_showgraph: // Wait for it!
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
