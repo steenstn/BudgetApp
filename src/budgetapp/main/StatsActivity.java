@@ -339,20 +339,22 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	 */
 	public void printYear(ArrayList<String> list, int index)
 	{
-		
-		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
-		list.add(years.get(index).getName());
-    	if(selectedMonth>-1) // A specific month is chosen
-    	{
-    		printMonth(list,months,selectedMonth);
-    	}
-    	else // Print all transactions this year
-    	{
-        	for(int j=0;j<months.size();j++)
-        	{
-        		printMonth(list,months,j);
-        	}
-    	}
+		if(entries.size()>0)
+		{
+			ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
+			list.add(years.get(index).getName());
+	    	if(selectedMonth>-1) // A specific month is chosen
+	    	{
+	    		printMonth(list,months,selectedMonth);
+	    	}
+	    	else // Print all transactions this year
+	    	{
+	        	for(int j=0;j<months.size();j++)
+	        	{
+	        		printMonth(list,months,j);
+	        	}
+	    	}
+		}
 	}
 	/**
 	 * Updates the whole log
@@ -431,10 +433,11 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	{
 
         entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
-		readEntries();
+		
 		if(entries.size()>0)
 		{
-			updateLog();
+			readEntries();
+		//	updateLog();
 			top.invalidate();
 		}
 		//
