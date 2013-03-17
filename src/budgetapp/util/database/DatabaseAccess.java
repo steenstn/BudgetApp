@@ -80,8 +80,11 @@ public class DatabaseAccess {
 		int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
 		System.out.println("\nid: "+res);
 		if(res!=0)
+		{
+			database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " - " + theEntry.getValue().get() + " where _id > " + theEntry.getId());
 			return true;
-		return false;
+		}
+			return false;
 	}
 	
 	/**

@@ -26,6 +26,11 @@ public class BudgetAdapter extends BaseAdapter {
 	{
 		data.add(item);
 	}
+	
+	public void remove(int pos)
+	{
+		data.remove(pos);
+	}
 	@Override
 	public int getCount() {
 		return data.size();

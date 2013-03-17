@@ -33,6 +33,13 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="Enter comment" />
+    <CheckBox 
+        android:id="@+id/dialog_edit_transaction_delete_transaction_checkbox"
+        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:text="Delete transaction" />
     
 
 </LinearLayout>

@@ -54,6 +54,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	int numDaysForDerivative = 30;
 	int numTransactionsForDerivative = 10;
 	ViewHolder selectedViewHolder;
+	int selectedViewHolderIndex;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,33 +74,13 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
         	categoryNames.add(categories.get(i).getCategory());
         
         
-        years = new ArrayList<CompositeStats>();
+
         int size = entries.size();
-        BudgetEntry entry;
-        int entryIndex = 0;
-        int yearIndex = -1;
         
         if(size>0)
         {
-	        // Set up the composite
-	        while(entryIndex<size)
-	        {
-	        	entry = entries.get(entryIndex);
-
-
-	        	String year = entry.getYear();
-	        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
-	        	{
-	        		
-		        	//Add a year
-		        	years.add(new CompositeStats(year));
-		        	yearIndex++;
-	        	}
-	        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
-	        	
-	        	entryIndex++;
-	        }
 	        
+	        readEntries();
 	        
 	        Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
 	        spinner.setOnItemSelectedListener(this);
@@ -115,6 +96,32 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
         }
         
         
+	}
+	
+	public void readEntries()
+	{
+		years = new ArrayList<CompositeStats>();
+        BudgetEntry entry;
+        int entryIndex = 0;
+        int yearIndex = -1;
+		// Set up the composite
+        while(entryIndex<entries.size())
+        {
+        	entry = entries.get(entryIndex);
+
+
+        	String year = entry.getYear();
+        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
+        	{
+        		
+	        	//Add a year
+	        	years.add(new CompositeStats(year));
+	        	yearIndex++;
+        	}
+        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
+        	
+        	entryIndex++;
+        }
 	}
 	/**
 	 * Updates the stats TextView
@@ -357,7 +364,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		ArrayList<String> allTransactionsList = new ArrayList<String>();
         allTransactionsList.clear();
         ad = new BudgetAdapter(this);
-        
+
         if(selectedYear>-1) // A specific year is chosen
         {
 	        printYear(allTransactionsList,selectedYear);
@@ -390,7 +397,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 					int position, long arg) {
 				 ViewHolder listItem = (ViewHolder)top.getItemAtPosition(position);
 	 		     selectedViewHolder = listItem;
-	 		     
+	 		    selectedViewHolderIndex = position;
 				 if(listItem.flag == ViewHolder.ENTRY)
 				 {
 			    	 DialogFragment newFragment = new EditTransactionDialogFragment();
@@ -409,12 +416,33 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
         updateStats();
 	}
 	
-	public void updateEntry(BudgetEntry newEntry)
+	public void updateSelectedEntry(BudgetEntry newEntry)
 	{
-		selectedViewHolder.entry.setCategory(newEntry.getCategory());
-		selectedViewHolder.entry.setComment(newEntry.getComment());
-		selectedViewHolder.entry.setValue(newEntry.getValue());
+		if(newEntry!=null)
+		{
+			selectedViewHolder.entry.setCategory(newEntry.getCategory());
+			selectedViewHolder.entry.setComment(newEntry.getComment());
+			selectedViewHolder.entry.setValue(newEntry.getValue());
+		}
 		top.invalidate();
+	}
+	
+	public void removeSelectedEntry()
+	{
+
+        entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
+		readEntries();
+		if(entries.size()>0)
+		{
+			updateLog();
+			top.invalidate();
+		}
+		//
+		//ad.remove(selectedViewHolderIndex);
+		//ad.notifyDataSetChanged();
+		//
+		//top.setAdapter(ad);
+		//top.invalidate();
 	}
 	/***
 	 * Parses a string and gets the correct month from Resources

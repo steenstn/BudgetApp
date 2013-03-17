@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,57 +40,73 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	     final EditText comment = (EditText)view.findViewById(R.id.dialog_add_comment);
 	     comment.setText(theEntry.getComment());
 	     
+	     final CheckBox checkBox = (CheckBox)view.findViewById(R.id.dialog_edit_transaction_delete_transaction_checkbox);
+	     
+	     
 	    // Add action buttons
 	           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 	        	   
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   
-	            	   // See if the new entry is ok
-	            	   long newId;
-	            	   String newDate;
-	            	   String newCategory;
-	            	   double newValue;
-	            	   int newFlags;
-	            	   String newComment;
-	            	   try{
-	            		   newId = theEntry.getId();
-	            		   if(newId<0)
-	            			   throw new Exception();
+	            	   
+	            	   if(checkBox.isChecked())
+	            	   {
+	            		   MainActivity.datasource.removeTransactionEntry(theEntry);
+	            		   //((StatsActivity)getActivity()).updateSelectedEntry(new BudgetEntry(new Money(), "", ""));
+	            		   ((StatsActivity)getActivity()).removeSelectedEntry();
+	            		   Toast.makeText(view.getContext(), "Transaction deleted" , Toast.LENGTH_LONG).show();
 	            		   
-	            		   newDate = theEntry.getDate();
-	            		   if(newDate.equalsIgnoreCase(""))
-	            			   throw new Exception();
-	            		   
-	            		   newCategory = category.getText().toString(); 
-	            		   if(newCategory.equalsIgnoreCase(""))
-	            			   throw new Exception();
-	            		   
-	            		   newValue = Double.parseDouble(value.getText().toString());
-	            		   if(newValue==0)
-	            			   throw new Exception();
-	            		   
-	            		   newFlags = theEntry.getFlags();
-	            		   
-	            		   newComment = comment.getText().toString(); // Comment can be empty, no biggie
-	            		   
-	            		   BudgetEntry newEntry = new BudgetEntry(
-		            			   newId, 
-		            			   new Money(newValue), 
-		            			   newDate, 
-		            			   newCategory,
-		            			   newFlags,
-		            			   newComment);
-		            	   
-		            	   MainActivity.datasource.editTransactionEntry(theEntry, newEntry);
-
-		            	   ((StatsActivity)getActivity()).updateEntry(newEntry);
-	            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
-		            		
 	            	   }
-	            	   catch(Exception e){
-	            		   e.printStackTrace();
-	            		   Toast.makeText(view.getContext(), "Could not edit transaction" , Toast.LENGTH_LONG).show();
+	            	   else
+	            	   {
+	            		   // See if the new entry is ok
+		            	   long newId;
+		            	   String newDate;
+		            	   String newCategory;
+		            	   double newValue;
+		            	   int newFlags;
+		            	   String newComment;
+		            	   
+		            	   try{
+		            		   newId = theEntry.getId();
+		            		   if(newId<0)
+		            			   throw new Exception();
+		            		   
+		            		   newDate = theEntry.getDate();
+		            		   if(newDate.equalsIgnoreCase(""))
+		            			   throw new Exception();
+		            		   
+		            		   newCategory = category.getText().toString(); 
+		            		   if(newCategory.equalsIgnoreCase(""))
+		            			   throw new Exception();
+		            		   
+		            		   newValue = Double.parseDouble(value.getText().toString());
+		            		   if(newValue==0)
+		            			   throw new Exception();
+		            		   
+		            		   newFlags = theEntry.getFlags();
+		            		   
+		            		   newComment = comment.getText().toString(); // Comment can be empty, no biggie
+		            		   
+		            		   BudgetEntry newEntry = new BudgetEntry(
+			            			   newId, 
+			            			   new Money(newValue), 
+			            			   newDate, 
+			            			   newCategory,
+			            			   newFlags,
+			            			   newComment);
+			            	   
+			            	   MainActivity.datasource.editTransactionEntry(theEntry, newEntry);
+	
+			            	   ((StatsActivity)getActivity()).updateSelectedEntry(newEntry);
+		            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
+			            		
+		            	   }
+		            	   catch(Exception e){
+		            		   e.printStackTrace();
+		            		   Toast.makeText(view.getContext(), "Could not edit transaction" , Toast.LENGTH_LONG).show();
+		            	   }
 	            	   }
 	            	   
 	            	   ((StatsActivity)getActivity()).updateLog();
