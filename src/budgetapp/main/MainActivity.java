@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        datasource = BudgetDataSource.instance(this);
+        datasource = new BudgetDataSource(this);
         //datasource.open();
         tempCom = new ArrayList<TransactionCommand>();
         Button b = (Button)findViewById(R.id.topCategoryButton1);
@@ -265,6 +265,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");
+        		left.append(days.get(i).getTotal()+"\n");
+        }
+        days = datasource.getSomeDaysTotal(15,BudgetDataSource.DESCENDING);
+        left.append("\n");
+        left.append(Html.fromHtml("<b>Daily Total</b><br />"));
+        for(int i=0;i<days.size();i++) 
+        {	
+        	left.append(days.get(i).getId() + " - " + days.get(i).getDate()+ ": ");
         		left.append(days.get(i).getTotal()+"\n");
         }
         

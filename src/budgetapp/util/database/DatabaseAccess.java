@@ -76,12 +76,10 @@ public class DatabaseAccess {
 	
 	public boolean removeEntry(BudgetEntry theEntry)
 	{
-		System.out.println("Id of entry: "+theEntry.getId());
 		int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
-		System.out.println("\nid: "+res);
+		
 		if(res!=0)
 		{
-			database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " - " + theEntry.getValue().get() + " where _id > " + theEntry.getId());
 			return true;
 		}
 			return false;
@@ -174,24 +172,24 @@ public class DatabaseAccess {
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
-			if(newEntry != null && newValue != 0) //Changes has been made, update all day total after this one
-			{
-				database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + newValue + " where _id > " + theId);
-			}
+			System.out.println("id in database: " + theId);
+			System.out.println("newValue " + newValue);
+			System.out.println("total " + total);
+			
+			addValueToRemaindingDays(newValue, theId);
+			
 			return true;
 		}
 		
 	}
-	private void addChangeToRemaindingDays(BudgetEntry theEntry, double theValue, long theId)
+	/**
+	 * Adds a value to all entries in table daytotal that have an id > theId
+	 * @param theValue - The value to add
+	 * @param theId - The id
+	 */
+	private void addValueToRemaindingDays(double theValue, long theId)
 	{
-		ContentValues values = new ContentValues();
-		
-				values.put(BudgetDatabase.COLUMN_VALUE, theValue);
-				database.insert(BudgetDatabase.TABLE_DAYTOTAL, null,values);
-		
-		int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " > " + theId, null);
-		
-	
+		database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
 	}
 	public boolean updateComment(BudgetEntry theEntry, String newComment)
 	{

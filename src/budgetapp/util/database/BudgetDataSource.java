@@ -30,16 +30,7 @@ public class BudgetDataSource {
 	private static BudgetDataSource instance;
 	
 	
-	public static BudgetDataSource instance(Context context)
-	{
-		if(instance==null)
-			instance = new BudgetDataSource(context);
-		
-		return instance;
-		
-	}
-	
-	private BudgetDataSource(Context context)
+	public BudgetDataSource(Context context)
 	{
 		dbHelper = new BudgetDatabase(context);
 		open();

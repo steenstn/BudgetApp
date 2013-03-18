@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import budgetapp.main.MainActivity;
 import budgetapp.main.R;
 import budgetapp.util.*;
 import budgetapp.util.database.BudgetDataSource;
@@ -41,7 +42,7 @@ public class GraphActivity extends Activity
         view = new GraphView(this);
 
         
-        datasource = BudgetDataSource.instance(this);
+        datasource = MainActivity.datasource;
        // datasource.open();
         
         entries = datasource.getAllDaysTotal(datasource.ASCENDING);

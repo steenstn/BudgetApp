@@ -78,6 +78,14 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		
 	}
 	
+	public BudgetEntry() {
+		this.id=-1;
+		this.value=new Money(0);
+		this.date="";
+		this.category="";
+		this.flags=0;
+		this.comment = "";
+	}
 	@Override
 	public int describeContents()
 	{
