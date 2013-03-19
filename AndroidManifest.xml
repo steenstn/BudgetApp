@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="budgetapp.main.MainActivity"
+            android:name="budgetapp.activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -24,19 +24,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="budgetapp.graph.GraphActivity"
+            android:name="budgetapp.activities.GraphActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_graph"
-            android:parentActivityName="budgetapp.main.MainActivity"
+            android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="budgetapp.main.MainActivity" />
+                android:value="budgetapp.activities.MainActivity" />
         </activity>
         <activity
-            android:name="budgetapp.main.StatsActivity"
+            android:name="budgetapp.activities.StatsActivity"
             android:label="@string/app_name"
-            android:parentActivityName="budgetapp.main.MainActivity"
+            android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/AppTheme"  >
             <intent-filter>
 				<data android:host="myactivity" android:scheme="stats" />
@@ -46,7 +46,7 @@
 			</intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="budgetapp.main.MainActivity" />
+                android:value="budgetapp.activities.MainActivity" />
         </activity>
     </application>
 
