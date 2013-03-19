@@ -24,6 +24,7 @@ import budgetapp.util.DayEntry;
 import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
+import budgetapp.views.MainView;
 
 import android.os.Bundle;
 import android.graphics.Color;
@@ -45,7 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-public class MainActivity extends FragmentActivity implements OnClickListener, OnLongClickListener{
+public class MainActivity extends FragmentActivity{
 
 	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
@@ -55,7 +56,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private Money dailyBudget = new Money(); // The daily plus, set to zero until value is read/written in internal file
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	private String chosenCategory = "";
-	
+	private MainView view;
 	
 	public String getChosenCategory()
 	{
@@ -80,20 +81,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        view = (MainView)View.inflate(this, R.layout.activity_main, null);
+        view.setViewListener(viewListener);
+        setContentView(view);
         datasource = new BudgetDataSource(this);
-        //datasource.open();
         tempCom = new ArrayList<TransactionCommand>();
-        Button b = (Button)findViewById(R.id.topCategoryButton1);
-        b.setOnClickListener(this);
-        b.setOnLongClickListener(this);
-        b = (Button)findViewById(R.id.topCategoryButton2);
-        b.setOnClickListener(this);
-        b.setOnLongClickListener(this);
-        b = (Button)findViewById(R.id.topCategoryButton3);
-        b.setOnClickListener(this);
-        b.setOnLongClickListener(this);
-        
+       
         updateLog();
     }
     
@@ -107,6 +100,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         updateAll();
         
     }
+    
     
     public void readConfigFile()
     {
@@ -231,13 +225,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	}
     }
     
-    
-    public void chooseCategory(View view)
-    {
-    	DialogFragment newFragment = new ChooseCategoryFragment();
-    	newFragment.show(getSupportFragmentManager(), "choose_category");
-		
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -333,12 +320,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         	newBudget.setText(""+currentBudget);
         	
         	
-	        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-	        	Calendar cal = Calendar.getInstance();
-	        	
-	        	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
-	        	tempCom.add(new TransactionCommand(datasource,entry));
-	        	tempCom.get(tempCom.size()-1).execute();
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        	Calendar cal = Calendar.getInstance();
+        	
+        	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
+        	tempCom.add(new TransactionCommand(datasource,entry));
+        	tempCom.get(tempCom.size()-1).execute();
 	        
         	resultText.setText("");
         	//Set color
@@ -352,25 +339,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     	}
     	
     		
-    }
-    public void onClick(View v)
-    {
-    	Button pressedButton = (Button)v;
-    	subtractFromBudget(v,pressedButton.getText().toString(),null);
-    }
-    @Override
-	public boolean onLongClick(View v) {
-    	Button pressedButton = (Button)v;
-    	chosenCategory = (String) pressedButton.getText();
-    	DialogFragment newFragment = new OtherCategoryDialogFragment();
-    	newFragment.show(getSupportFragmentManager(), "other_category");
-    	
-		return true;
-	}
-    public void buttonPressed(View v)
-    {
-    	Button pressedButton = (Button)v;
-    	subtractFromBudget(v,pressedButton.getText().toString(),null);
     }
     
     // Adds the daily plus sum for all days missing since the last time the program was run
@@ -521,7 +489,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		saveToFile();
 	}
 
-
+	private MainView.ViewListener viewListener = new MainView.ViewListener() {
+		
+		@Override
+		public void favButtLongClick(Button id) {
+			Button pressedButton = id;
+	    	chosenCategory = (String) pressedButton.getText();
+	    	DialogFragment newFragment = new OtherCategoryDialogFragment();
+	    	newFragment.show(getSupportFragmentManager(), "other_category");
+	    	
+		}
+		
+		@Override
+		public void favButtClick(Button id) {
+			Button pressedButton = id;
+	    	subtractFromBudget(id,pressedButton.getText().toString(),null);
+		}
+		
+		@Override
+		public void chooseCategory() {
+			DialogFragment newFragment = new ChooseCategoryFragment();
+	    	newFragment.show(getSupportFragmentManager(), "choose_category");
+		}
+	};
 	
     
 }

@@ -43,7 +43,7 @@ public class BudgetDataSource {
 		dbAccess = new DatabaseAccess(database);
 	}
 	
-	public void close()
+	private void close()
 	{
 		dbHelper.close();
 	}
