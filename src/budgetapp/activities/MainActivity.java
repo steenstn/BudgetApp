@@ -17,10 +17,12 @@ import budgetapp.main.R.array;
 import budgetapp.main.R.id;
 import budgetapp.main.R.layout;
 import budgetapp.main.R.menu;
+import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
@@ -46,7 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends FragmentActivity {
 
 	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
@@ -57,6 +59,7 @@ public class MainActivity extends FragmentActivity{
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	private String chosenCategory = "";
 	private MainView view;
+	private BudgetModel model;
 	
 	public String getChosenCategory()
 	{
@@ -66,7 +69,6 @@ public class MainActivity extends FragmentActivity{
 	{
 		chosenCategory = c;
 	}
-	
 	
 	public void setDailyBudget(double budget)
 	{
@@ -83,21 +85,22 @@ public class MainActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         view = (MainView)View.inflate(this, R.layout.activity_main, null);
         view.setViewListener(viewListener);
+
+        model = new BudgetModel(this);
         setContentView(view);
+        view.setModel(model);
+        view.update();
         datasource = new BudgetDataSource(this);
         tempCom = new ArrayList<TransactionCommand>();
        
-        updateLog();
     }
     
     @Override
     public void onResume()
     {
     	super.onResume();
-        
         readConfigFile();
-         //Add daily budget for all days since last run
-        updateAll();
+        update();
         
     }
     
@@ -182,48 +185,7 @@ public class MainActivity extends FragmentActivity{
     	
     	
     }
-    // Colors the currentBudget text depending on the size of the current budget
-    public void updateColor()
-    {
-    	int numDays = 30;
-    	List<DayEntry> days = datasource.getSomeDays(numDays,BudgetDataSource.DESCENDING);
-    	Money derivative = (BudgetFunctions.getWeightedMeanDerivative(days,numDays));
-    	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	
-    	
-    	double maxValue = (double)dailyBudget.get();
-    	double floatDerivative = derivative.get() / maxValue;
-    	// Choose transfer function, sqrt if negative for fast red value,
-    	// x^2 if positive for slow green value
-    	if(floatDerivative<0)
-    		floatDerivative=-Math.sqrt(Math.abs(floatDerivative));
-    	else
-    		floatDerivative=floatDerivative*floatDerivative;
-    	
-    	floatDerivative = floatDerivative * 255;
-    	
-    	int coloringFactor = BudgetFunctions.min(255,Math.abs((int)floatDerivative));
-    	int start = 255;
-    	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-    	
-    	 // If the user has old android, the theme is light. Color accordingly
-    	if(currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
-    	{
-    		start = 0;
-    	 	if(derivative.get()<0)
-	    		newBudget.setTextColor(Color.rgb(coloringFactor,start,start));
-	    	else
-	    		newBudget.setTextColor(Color.rgb(start,coloringFactor,start));
-    	
-    	}
-    	else
-    	{
-	    	if(derivative.get()<0)
-	    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
-	    	else
-	    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
-    	}
-    }
+    
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -240,179 +202,24 @@ public class MainActivity extends FragmentActivity{
     	return true;
     }
     
-    // Updates the log of transactions, categories and daysums
-    public void updateLog()
-    {
-    	List<BudgetEntry> entries = datasource.getSomeTransactions(5,BudgetDataSource.DESCENDING);
-        TextView left = (TextView)findViewById(R.id.textViewLogLeft);
-        TextView right = (TextView)findViewById(R.id.textViewLogRight);
-        left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
-        right.setText(Html.fromHtml("<b>Category</><br />"));
-        for(int i=0;i<entries.size();i++)
-        {	
-        		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
-        		right.append(entries.get(i).getCategory() + "\n");
-        		
-        }
-        
-        List<DayEntry> days = datasource.getSomeDays(7,BudgetDataSource.DESCENDING);
-        left.append("\n");
-        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
-        for(int i=0;i<days.size();i++) 
-        {	
-        	left.append(days.get(i).getDate()+ ": ");
-        		left.append(days.get(i).getTotal()+"\n");
-        }
-        
-        
-    }
-    
-    void updateButtons()
-    {
-    	int numButtons = 3;
-    	ArrayList<Button> theButtons = new ArrayList<Button>();
-    	theButtons.add((Button)findViewById(R.id.topCategoryButton1));
-    	theButtons.add((Button)findViewById(R.id.topCategoryButton2));
-    	theButtons.add((Button)findViewById(R.id.topCategoryButton3));
-    	List<CategoryEntry> categories = datasource.getCategoriesSortedByNum();
-    	//Remove categories with positive total
-    	int i;
-		for(i=0;i<categories.size();i++)
-		{
-			if(categories.get(i).getTotal().get()>0 || categories.get(i).getNum()<2)
-			{	
-				categories.remove(i);
-				i--;
-			}
-		}
-    	int index = categories.size()-1; // Start at the last entry
-    	
-    	for(i = 0;i<BudgetFunctions.min(numButtons,categories.size());i++)
-    	{
-    		theButtons.get(i).setText(categories.get(index).getCategory());
-    		theButtons.get(i).setVisibility(View.VISIBLE);
-    		index--;
-    	}
-    	
-    	for(;i<numButtons;i++)
-    	{
-    		theButtons.get(i).setVisibility(View.GONE);
-    	}
-    	
-    }
-    
-    
     public void subtractFromBudget(View view,String theCategory, String theComment) {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
     	
-    	try
-    	{
-    		addToBudget(); // Check so that all dailies has come in
-    		double resultInt = Double.parseDouble(result);
-        	if(resultInt==0)
-        		throw new NumberFormatException();
-        
-    		TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-        	
-        	currentBudget = currentBudget.subtract(resultInt);
-        	newBudget.setText(""+currentBudget);
-        	
-        	
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        	Calendar cal = Calendar.getInstance();
-        	
-        	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
-        	tempCom.add(new TransactionCommand(datasource,entry));
-        	tempCom.get(tempCom.size()-1).execute();
-	        
-        	resultText.setText("");
-        	//Set color
-        	updateAll();
-    		
-    	}
-    	catch(NumberFormatException e)
-    	{
-    		resultText.setText("");
-    		System.out.println("Error: "+e);
-    	}
-    	
-    		
-    }
-    
-    // Adds the daily plus sum for all days missing since the last time the program was run
-    public void addToBudget()
-    {
-    	List<DayEntry> lastTotal = datasource.getSomeDaysTotal(1,BudgetDataSource.DESCENDING);
-    	
-    	if(!lastTotal.isEmpty())
-    		currentBudget.set(new Money(lastTotal.get(0).getValue()));
-    	System.out.println("currentBudget: " + currentBudget);
-    	
-    	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
-    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+		double resultInt = Double.parseDouble(result);
 		
-    	
-    	if(!lastDay.isEmpty())
+    	if(resultInt!=0)
     	{
-    		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
-    		
-    		
-	    	String lastDayString = lastDay.get(0).getDate();
-	    	Calendar lastDayCalendar = Calendar.getInstance();
-	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
-	    	// Set HH:mm to 00:00
-	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
+	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	    	Calendar cal = Calendar.getInstance();
 	    	
-	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
-	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
-
-	    	// Step up to the day before tomorrow
-	    	Calendar nextDay = Calendar.getInstance();
-	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
-	    	
-	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
-	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
-	    	int numDays = 0;
-	    	Money totalMoney= new Money();
-	    	while(tempDate.before(nextDay))
-	    	{
-	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
-	    		{
-	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
-		        	tempCom.add(new TransactionCommand(datasource,entry));
-		        	tempCom.get(tempCom.size()-1).execute();
-		        	currentBudget = currentBudget.add(dailyBudget);
-		        	totalMoney = totalMoney.add(dailyBudget);
-		        	numDays++;
-		        	
-	    		}
-	    		
-	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
-	    	}
-	    	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-        	newBudget.setText(""+currentBudget);
-	    	saveToFile();
-	    	if(numDays>0)
-	    		Toast.makeText(this.getBaseContext(), "Added " + totalMoney + " to budget (" + numDays + " day"+((numDays>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();
-	    	
-	    	updateLog();
+	    	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
+	    	model.createTransaction(entry);
+	        
     	}
-    	else // Add a transaction of 0
-    	{
-    		Calendar tempDate = Calendar.getInstance();
-    		
-    		// We want an entry in the daily cash flow table but not in transactions,
-    		// so add and undo an entry. (Temporary solution for now)
-    		tempCom.add(new TransactionCommand(datasource,new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income")));
-    		tempCom.get(tempCom.size()-1).execute();
-    		tempCom.get(tempCom.size()-1).unexecute();
-        	
-        	updateLog();
-    	}
-    	
+    	resultText.setText("");
+		
     }
     
     // Saves the current budget to the internal file
@@ -442,12 +249,7 @@ public class MainActivity extends FragmentActivity{
     	DialogFragment newFragment;
         switch (item.getItemId()) {
 	        case R.id.menu_undo:
-	        	if(!tempCom.isEmpty() && tempCom.get(tempCom.size()-1).unexecute()==true)
-	        	{
-		        	tempCom.remove(tempCom.size()-1); // Remove last transaction from list
-		        	addToBudget();
-		        	updateAll();
-	        	}
+		        model.undoLatestTransaction();
 	        	return true;
             case R.id.menu_addcategory:
             	newFragment = new AddCategoryDialogFragment();
@@ -480,12 +282,8 @@ public class MainActivity extends FragmentActivity{
 
 
 	
-	public void updateAll()
+	public void update()
 	{
-		addToBudget();
-		updateLog();
-		updateButtons();
-		updateColor();
 		saveToFile();
 	}
 

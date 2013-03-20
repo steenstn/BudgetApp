@@ -38,7 +38,7 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 
 	            		   Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
 	            		   
-	            		   ((MainActivity) getActivity()).updateLog();
+	            		  // ((MainActivity) getActivity()).updateLog();
 
 	            	   }
 	            	   else

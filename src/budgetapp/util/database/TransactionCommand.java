@@ -15,12 +15,10 @@ public class TransactionCommand {
 
 	private BudgetDataSource _datasource;
 	private BudgetEntry _entry;
-	private boolean unexecuted;
 	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry)
 	{
 		_datasource = theSource;
 		_entry = theEntry;
-		unexecuted = false;
 	}
 	
 	public BudgetEntry getEntry()
@@ -33,16 +31,10 @@ public class TransactionCommand {
 		_entry.setId(temp.getId());
 	}
 	
-	public boolean unexecute()
+	public void unexecute()
 	{
-		if(!unexecuted) // Only enable one unexecute()
-		{
 			//Remove transactionEntry
 			_datasource.removeTransactionEntry(_entry);
 			
-			unexecuted=true;
-			return true;
-		}
-		return false;
 	}
 }
