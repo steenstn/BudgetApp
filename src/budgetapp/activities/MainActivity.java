@@ -18,6 +18,7 @@ import budgetapp.main.R.id;
 import budgetapp.main.R.layout;
 import budgetapp.main.R.menu;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
@@ -50,7 +51,6 @@ import android.content.Context;
 import android.content.Intent;
 public class MainActivity extends FragmentActivity {
 
-	
 	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
 	public static BudgetDataSource datasource; // The connection to the database
 	Money currentBudget = new Money();
@@ -60,6 +60,7 @@ public class MainActivity extends FragmentActivity {
 	private String chosenCategory = "";
 	private MainView view;
 	private BudgetModel model;
+	private BudgetConfig config;
 	
 	public String getChosenCategory()
 	{
@@ -72,12 +73,12 @@ public class MainActivity extends FragmentActivity {
 	
 	public void setDailyBudget(double budget)
 	{
-		dailyBudget.set(budget);
+		model.setDailyBudget(new Money(budget));
 	}
 	
 	public Money getDailyBudget()
 	{
-		return dailyBudget;
+		return model.getDailyBudget();
 	}
 	
     @Override
@@ -85,11 +86,11 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         view = (MainView)View.inflate(this, R.layout.activity_main, null);
         view.setViewListener(viewListener);
-
         model = new BudgetModel(this);
+
+        config = new BudgetConfig(this,model);
         setContentView(view);
         view.setModel(model);
-        view.update();
         datasource = new BudgetDataSource(this);
         tempCom = new ArrayList<TransactionCommand>();
        
@@ -99,91 +100,14 @@ public class MainActivity extends FragmentActivity {
     public void onResume()
     {
     	super.onResume();
-        readConfigFile();
+        view.update();
         update();
         
     }
     
-    
-    public void readConfigFile()
+    public void saveConfig()
     {
-    	try
-        {
-        	 DataInputStream in = new DataInputStream(openFileInput(currentBudgetFileName));
-        	 
-        	 String strLine;
-        	 boolean done = false;
-        	 int counter = 0;
-        		 while(!done)
-        		 {
-        			 try
-        			 {
-        				 strLine = in.readUTF();
-        				 // Second run, reading dailyBudget in old config file,
-        				 // try and parse it directly
-        				 if(counter==1) 
-        				 {
-        					 try
-        					 {
-        						 double tempDailyBudget = Double.parseDouble(strLine);
-        						 dailyBudget.set(tempDailyBudget);
-        					 }
-        					 catch(NumberFormatException e)
-        					 {
-        						 System.out.println("No double");
-        					 }
-        				 }
-        				 parseString(strLine);
-        				 counter++;
-        				
-        			 }
-        			 catch(IOException e)
-        			 {
-        				 System.out.println("Done reading config");
-        				 done = true;
-        			 }
-        		 }
-            	 
-	           	//Close the input stream
-            	 in.close();
-   
-        }
-        catch(FileNotFoundException e)
-        {
-        	
-        } 
-    	catch (IOException e) 
-        {
-			e.printStackTrace();
-		}
-    }
-    
-    private void parseString(String in)
-    {
-    	//String array with all values in config
-    	String[] values = getResources().getStringArray(R.array.config_values_array);
-    		
-		if(in.startsWith(values[0]+"=")) // dailyBudget
-    	{
-    		dailyBudget.set(Double.parseDouble(in.substring(values[0].length()+1)));
-    	}
-		else if(in.startsWith(values[1]+"=")) // currency
-		{
-    		Money.setCurrency(in.substring(values[1].length()+1));
-		}
-		else if(in.startsWith(values[2]+"=")) // printCurrencyAfter
-		{
-			if(in.substring(values[2].length()+1).equalsIgnoreCase("true"))
-				Money.after = true;
-			else
-				Money.after = false;
-		}
-		else if(in.startsWith(values[3]+"=")) // exchangeRate
-		{
-			System.out.println(values[3] + "=" + in);
-		}
-    	
-    	
+    	config.saveToFile();
     }
     
     
@@ -197,7 +121,7 @@ public class MainActivity extends FragmentActivity {
     public boolean onPrepareOptionsMenu(Menu menu)
     {
     	MenuItem item = menu.findItem(R.id.menu_setdailybudget);
-    	CharSequence withBudget = "Set daily budget" + " (" + dailyBudget + ")";
+    	CharSequence withBudget = "Set daily budget" + " (" + model.getDailyBudget() + ")";
     	item.setTitle(withBudget);
     	return true;
     }
@@ -206,41 +130,26 @@ public class MainActivity extends FragmentActivity {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
-    	
-		double resultInt = Double.parseDouble(result);
-		
-    	if(resultInt!=0)
+    	try
     	{
+    		double value = Double.parseDouble(result);
+		
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	    	Calendar cal = Calendar.getInstance();
 	    	
-	    	BudgetEntry entry = new BudgetEntry(new Money(resultInt*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
+	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
 	    	model.createTransaction(entry);
-	        
+	    	resultText.setText("");
     	}
-    	resultText.setText("");
+    	catch(NumberFormatException e)
+    	{
+    		// Bad/no input, don't do anything.
+    	}
 		
     }
     
     // Saves the current budget to the internal file
-    public void saveToFile()
-    {
-    	DataOutputStream out;
-		try {
-			out = new DataOutputStream(openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-			String[] values = getResources().getStringArray(R.array.config_values_array);
-	    	
-			out.writeUTF(values[0]+"="+dailyBudget.get());
-			
-			out.writeUTF(values[1]+"="+Money.currency());
-			out.writeUTF(values[2]+"="+Money.after);
-			out.writeUTF(values[3]+"="+1);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+    
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -284,7 +193,7 @@ public class MainActivity extends FragmentActivity {
 	
 	public void update()
 	{
-		saveToFile();
+		saveConfig();
 	}
 
 	private MainView.ViewListener viewListener = new MainView.ViewListener() {

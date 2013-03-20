@@ -1,5 +1,8 @@
 package budgetapp.models;
 
+/**
+ * The Model for MrCashManager, controls the database and all logic and notifies Observers when changed
+ */
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +22,7 @@ public class BudgetModel {
 	private Money dailyBudget;
 	private ArrayList<TransactionCommand> transactions;
 	private ArrayList<IBudgetObserver> observers;
+	private boolean stateChanged;
 	
 	public BudgetModel(Context context)
 	{
@@ -26,6 +30,7 @@ public class BudgetModel {
 		dailyBudget = new Money(100);
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
+		stateChanged = true;
 	}
 	
 	public void createTransaction(BudgetEntry entry)
@@ -33,6 +38,7 @@ public class BudgetModel {
 		addDailyBudget();
 		transactions.add(new TransactionCommand(datasource,entry));
 		transactions.get(transactions.size()-1).execute();
+		stateChanged = true;
 		notifyObservers();
 	}
 	
@@ -41,6 +47,7 @@ public class BudgetModel {
 		if(transactions.size()>0){
 			transactions.get(transactions.size()-1).unexecute();
 			transactions.remove(transactions.size()-1);
+			stateChanged = true;
 			notifyObservers();
 		}
 	}
@@ -60,6 +67,12 @@ public class BudgetModel {
 	{
 		return dailyBudget;
 	}
+	
+	public void setDailyBudget(Money budget)
+	{
+		dailyBudget = budget;
+	}
+	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		return datasource.getSomeTransactions(n, orderBy);
@@ -75,6 +88,9 @@ public class BudgetModel {
 		return datasource.getSomeDaysTotal(n, orderBy);
 	}
 	
+	/**
+	 * Checks if days have passed and daily budget have to be added
+	 */
 	public void addDailyBudget()
     {
     	List<DayEntry> lastTotal = datasource.getSomeDaysTotal(1,BudgetDataSource.DESCENDING);
@@ -110,8 +126,8 @@ public class BudgetModel {
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
 		        	datasource.createTransactionEntry(entry);
+		    		stateChanged = true;
 	    		}
-	    		
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
     	}
@@ -120,7 +136,7 @@ public class BudgetModel {
     		Calendar tempDate = Calendar.getInstance();
     		
     		datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
-    		
+    		stateChanged = true;
     	}
     	notifyObservers();
     	
@@ -137,9 +153,13 @@ public class BudgetModel {
 	
 	private void notifyObservers()
 	{
-		for(int i = 0; i < observers.size(); i++)
+		if(stateChanged)
 		{
-			observers.get(i).update();
+			for(int i = 0; i < observers.size(); i++)
+			{
+				observers.get(i).update();
+			}
+			stateChanged = false;
 		}
 		
 	}
