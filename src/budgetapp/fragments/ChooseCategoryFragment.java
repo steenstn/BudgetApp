@@ -55,7 +55,7 @@ public class ChooseCategoryFragment extends DialogFragment {
     {
 		final MainActivity main = ((MainActivity) getActivity());
     	// Get the categories for the Spinner
-        List<String> categories = main.datasource.getCategoryNames();
+        List<String> categories = main.getCategoryNames();
         String temp[] = new String[categories.size()+1];
         for(int i=0;i<categories.size();i++)
         {

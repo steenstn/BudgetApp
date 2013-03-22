@@ -25,7 +25,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    // Inflate and set the layout for the dialog
 	    final View view = inflater.inflate(R.layout.dialog_add_category, null);
-	 
+	    final MainActivity activity = (MainActivity)getActivity();
 	    builder.setView(view);
 	 
 	    // Add action buttons
@@ -34,7 +34,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	            	   if(MainActivity.datasource.addCategory(category.getText().toString())==true)
+	            	   if(activity.addCategory(category.getText().toString())==true)
 	            	   {
 	            		   Toast.makeText(view.getContext(), "Successfully added "+ category.getText().toString() , Toast.LENGTH_LONG).show();
 	            		   

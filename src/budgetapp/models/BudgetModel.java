@@ -42,6 +42,20 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	public void removeTransaction(BudgetEntry entry)
+	{
+		datasource.removeTransactionEntry(entry);
+		stateChanged = true;
+		notifyObservers();
+	}
+	
+	public void editTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		datasource.editTransactionEntry(oldEntry, newEntry);
+		stateChanged = true;
+		notifyObservers();
+	}
+	
 	public void undoLatestTransaction()
 	{
 		if(transactions.size()>0){
@@ -68,10 +82,29 @@ public class BudgetModel {
 		return dailyBudget;
 	}
 	
+	public List<String> getCategoryNames()
+	{
+		return datasource.getCategoryNames();
+	}
 	public void setDailyBudget(Money budget)
 	{
 		dailyBudget = budget;
 	}
+	
+	public boolean addCategory(String category)
+	{
+		if(!category.equalsIgnoreCase(""))
+			return datasource.addCategory(category);
+		else
+			return false;
+	}
+	
+	public boolean removeCategory(String category)
+	{
+		return datasource.removeCategory(category);
+	}
+	
+	
 	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{

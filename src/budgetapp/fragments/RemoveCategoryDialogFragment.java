@@ -26,20 +26,17 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	    // Inflate and set the layout for the dialog
 	    // Pass null as the parent view because its going in the dialog layout
 	    builder.setView(view);
-	  
+	    final MainActivity activity = ((MainActivity) getActivity());
 	    // Add action buttons
 	           builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
 	        	   
 	               @Override
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	            	   if(MainActivity.datasource.removeCategory(category.getText().toString())==true)
+	            	   if(activity.removeCategory(category.getText().toString())==true)
 	            	   {
-
 	            		   Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
-	            		   
-	            		  // ((MainActivity) getActivity()).updateLog();
-
+	            		  
 	            	   }
 	            	   else
 	            		   Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();

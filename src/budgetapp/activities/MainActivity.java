@@ -81,6 +81,30 @@ public class MainActivity extends FragmentActivity {
 		return model.getDailyBudget();
 	}
 	
+	public boolean addCategory(String category)
+	{
+		return model.addCategory(category);
+	}
+	public boolean removeCategory(String category)
+	{
+		return model.removeCategory(category);
+	}
+	
+	public List<String> getCategoryNames()
+	{
+		return model.getCategoryNames();
+	}
+	
+	public void removeTransactionEntry(BudgetEntry entry)
+	{
+		model.removeTransaction(entry);
+	}
+	
+	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		model.editTransaction(oldEntry, newEntry);
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,7 +214,6 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-	
 	public void update()
 	{
 		saveConfig();
