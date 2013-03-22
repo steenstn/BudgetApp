@@ -15,7 +15,9 @@ import android.content.Context;
  */
 public class BudgetConfig {
 
-	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
+	// Internal filename for current budget
+	private String currentBudgetFileName = "current_budget"; 
+	
 	private Context context;
 	
 	// Variables for the config values
@@ -56,7 +58,7 @@ public class BudgetConfig {
 			case exchangeRate:
 				return var_exchangeRate;
 			default:
-					throw new IllegalArgumentException();
+				throw new IllegalArgumentException();
 		}
 	}
 	
@@ -224,7 +226,7 @@ public class BudgetConfig {
 			else
 				var_printCurrencyAfter = false;
 		}
-		else if(in.startsWith(fields.exchangeRate.name()+"="))
+		else if(in.startsWith(fields.exchangeRate.name()+"=")) // Not yet implemented
 		{
 			System.out.println(in);
 		}
