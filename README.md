@@ -2,13 +2,14 @@ MrCashManager
 =========
 The recognised world leading budget application paradigm
 
-Changelog
-=========
-v2.3
+v2.3 -- Coming soon!
 - Adding comments to entries possible
 - Editing and removing of old transactions possible
-- Money now uses doubles instead of integers
+- Money will use doubles instead of integers
 - Weighted coloring of derivative
+
+Changelog
+=========
 
 v2.2
 - Up to three favorite buttons for easy adding of transactions

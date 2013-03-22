@@ -21,7 +21,6 @@ import android.database.sqlite.SQLiteDatabase;
 public class BudgetDataSource {
 
 	
-	// Database fields
 	private static SQLiteDatabase database;
 	private static BudgetDatabase dbHelper;
 	private static DatabaseAccess dbAccess;
@@ -189,17 +188,10 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	// Returns all categories in the category table
-	public List<CategoryEntry> getAllCategories(int mode)
-	{
-		List<CategoryEntry> result;
-		open();
-		result = dbAccess.getCategories(null, null, null, null, null);
-		close();
-		return result;
-	}
-	
-	// Returns all categories in the category table sorted by total
+	/**
+	 * Gets all categories, sorted by total value
+	 * @return ArrayList containging all CategoryEntries
+	 */
 	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
@@ -208,6 +200,11 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets all categories, sorted by total number of entries in the category
+	 * @return ArrayList containging all CategoryEntries
+	 */
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
 		List<CategoryEntry> result;
@@ -216,6 +213,11 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets all category names
+	 * @return ArrayList of the category names
+	 */
 	public List<String> getCategoryNames()
 	{
 		List<String> result;
@@ -224,6 +226,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Adds a category
+	 * @param theCategory - Name of the new category
+	 * @return - Wether or not the adding was successful
+	 */
 	public boolean addCategory(String theCategory)
 	{
 		boolean result;
@@ -232,7 +240,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-
+	
+	/**
+	 * Removes a category
+	 * @param theCategory - The category to remove
+	 * @return - Wether or not the removal was successful
+	 */
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
@@ -241,6 +254,7 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
 	
 	// Helper functions to update different tables correctly
 	private void addToCategory(String theCategory,double value)

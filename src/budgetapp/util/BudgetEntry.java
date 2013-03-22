@@ -104,18 +104,16 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		});
 	}
 	
-	public static final Parcelable.Creator<BudgetEntry> CREATOR= new Parcelable.Creator<BudgetEntry>() {
+	public static final Parcelable.Creator<BudgetEntry> CREATOR = new Parcelable.Creator<BudgetEntry>() {
 		 
 		@Override
 		public BudgetEntry createFromParcel(Parcel source) {
-		// TODO Auto-generated method stub
-		return new BudgetEntry(source);  //using parcelable constructor
+			return new BudgetEntry(source);  
 		}
 		 
 		@Override
 		public BudgetEntry[] newArray(int size) {
-		// TODO Auto-generated method stub
-		return new BudgetEntry[size];
+			return new BudgetEntry[size];
 		}
 		};
 	
@@ -139,13 +137,22 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		return date;
 	}
 	
+	/**
+	 * Gets just the year from the date string
+	 * @return The year as a string
+	 */
 	public String getYear(){
 		return date.substring(0, 4);
 	}
 	
+	/**
+	 * Gets just the month from the date string, two digits
+	 * @return The month as a string
+	 */
 	public String getMonth(){
 		return date.substring(5,7);
 	}
+	
 	public void setDate(String date){
 		this.date=date;
 	}

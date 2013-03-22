@@ -132,12 +132,10 @@ public class BudgetModel {
 	}
 	
 	/**
-	 * Checks if days have passed and daily budget have to be added
+	 * Checks if days have passed and add transactions if so
 	 */
 	public void addDailyBudget()
     {
-    	List<DayEntry> lastTotal = datasource.getSomeDaysTotal(1,BudgetDataSource.DESCENDING);
-    	
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		

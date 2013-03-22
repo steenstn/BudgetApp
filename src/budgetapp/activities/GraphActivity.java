@@ -18,8 +18,8 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.*;
 import budgetapp.util.database.BudgetDataSource;
-import budgetapp.util.graph.GraphView;
 import budgetapp.util.graph.LineGraphRenderer;
+import budgetapp.views.GraphView;
 
 public class GraphActivity extends Activity
 {

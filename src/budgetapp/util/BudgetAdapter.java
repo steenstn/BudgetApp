@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import budgetapp.main.R;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

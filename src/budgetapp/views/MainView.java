@@ -1,5 +1,8 @@
 package budgetapp.views;
 
+/**
+ * The View for the MainActivity, observes the model
+ */
 import java.util.ArrayList;
 import java.util.List;
 

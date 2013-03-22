@@ -1,4 +1,4 @@
-package budgetapp.util.graph;
+package budgetapp.views;
 
 
 import budgetapp.activities.GraphActivity;
