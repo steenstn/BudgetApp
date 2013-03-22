@@ -81,15 +81,17 @@ public class BudgetDataSource {
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
 		open();
+		// Get the entry from the database, it may have been edited
+		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
 		if(result == true)
 		{
-			removeFromCategory(theEntry.getCategory(),theEntry.getValue().get()*-1);
+			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
-			theEntry.setValue(theEntry.getValue().get()*-1);
-			addToDaySum(theEntry);
-			addToDayTotal(theEntry);
-			theEntry.setValue(theEntry.getValue().get()*-1);
+			workingEntry.setValue(workingEntry.getValue().get()*-1);
+			addToDaySum(workingEntry);
+			addToDayTotal(workingEntry);
+			workingEntry.setValue(workingEntry.getValue().get()*-1);
 		}
 		close();
 		return result;
@@ -193,7 +195,7 @@ public class BudgetDataSource {
 	}
 	
 	// Returns all categories in the category table sorted by total
-	public List<CategoryEntry> getCategoriesSorted()
+	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
 		open();

@@ -178,6 +178,10 @@ public class BudgetModel {
 	public List<CategoryEntry> getCategoriesSortedByNum() {
 		return datasource.getCategoriesSortedByNum();
 	}
+	public List<CategoryEntry> getCategoriesSortedByValue() {
+		return datasource.getCategoriesSortedByValue();
+	}
+	
 	
 	public void addObserver(IBudgetObserver observer)
 	{

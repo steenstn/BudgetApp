@@ -10,6 +10,7 @@ import budgetapp.main.R.array;
 import budgetapp.main.R.id;
 import budgetapp.main.R.layout;
 import budgetapp.main.R.string;
+import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -43,7 +44,6 @@ import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.stats.*;
 public class StatsActivity extends FragmentActivity implements OnItemSelectedListener, OnLongClickListener{
 	
-	BudgetDataSource datasource = MainActivity.datasource;
 	List<DayEntry> days;
 	List<DayEntry> dayFlow;
 	List<BudgetEntry> entries;
@@ -61,18 +61,30 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	int numTransactionsForDerivative = 10;
 	ViewHolder selectedViewHolder;
 	int selectedViewHolderIndex;
+	private BudgetModel model;
+	
+	public void removeTransactionEntry(BudgetEntry entry)
+	{
+		model.removeTransaction(entry);
+	}
+	
+	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		model.editTransaction(oldEntry, newEntry);
+	}
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
         top = (ListView)findViewById(R.id.ListViewLogTop);
+        model = new BudgetModel(this);
        // ad = new ArrayAdapter<BudgetEntry>(top.getContext(), R.layout.stats_listitem);
         ad = new BudgetAdapter(this);
         // Read in all the data
-        entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
-        days = datasource.getAllDaysTotal(BudgetDataSource.DESCENDING);
-        dayFlow = datasource.getAllDays(BudgetDataSource.DESCENDING);
-        categories = datasource.getCategoriesSorted();
+        entries = model.getSomeTransactions(0,BudgetDataSource.DESCENDING);
+        days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
+        dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
+        categories = model.getCategoriesSortedByValue();
         
         
         categoryNames = new ArrayList<String>();
@@ -183,7 +195,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	
 	public void updateSpinners()
 	{
-		categories = datasource.getCategoriesSorted();
+		categories = model.getCategoriesSortedByValue();
         
 		categoryNames = new ArrayList<String>();
         for(int i=0;i<categories.size();i++)
@@ -446,22 +458,16 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	public void removeSelectedEntry()
 	{
 
-        entries = datasource.getAllTransactions(BudgetDataSource.DESCENDING);
+        entries = model.getSomeTransactions(0,BudgetDataSource.DESCENDING);
 		
 		if(entries.size()>0)
 		{
 			readEntries();
-		//	updateLog();
+
 			top.invalidate();
 			updateSpinners();
 			updateMonthSpinner();
 		}
-		//
-		//ad.remove(selectedViewHolderIndex);
-		//ad.notifyDataSetChanged();
-		//
-		//top.setAdapter(ad);
-		//top.invalidate();
 	}
 	/***
 	 * Parses a string and gets the correct month from Resources

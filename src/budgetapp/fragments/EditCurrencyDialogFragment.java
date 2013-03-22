@@ -49,6 +49,8 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	            	   Money.setCurrency(currency.getText().toString());
 	            	   Money.after = checkBox.isChecked();
 	            	   ((MainActivity) getActivity()).update();
+	            	   
+	            	   
 	               }
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
