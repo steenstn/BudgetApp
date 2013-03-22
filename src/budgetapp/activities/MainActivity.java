@@ -1,6 +1,5 @@
 package budgetapp.activities;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,47 +12,22 @@ import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.fragments.RemoveCategoryDialogFragment;
 import budgetapp.main.R;
-import budgetapp.main.R.array;
-import budgetapp.main.R.id;
-import budgetapp.main.R.layout;
-import budgetapp.main.R.menu;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
-import budgetapp.util.BudgetFunctions;
-import budgetapp.util.CategoryEntry;
-import budgetapp.util.DayEntry;
-import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Money;
-import budgetapp.util.database.BudgetDataSource;
-import budgetapp.util.database.TransactionCommand;
 import budgetapp.views.MainView;
 
 import android.os.Bundle;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.content.Context;
 import android.content.Intent;
 public class MainActivity extends FragmentActivity {
 
-	Money currentBudget = new Money();
-	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
-	private Money dailyBudget = new Money(); // The daily plus, set to zero until value is read/written in internal file
 	public ArrayList<String> allCategories = new ArrayList<String>();
 	private String chosenCategory = "";
 	private MainView view;
@@ -123,8 +97,7 @@ public class MainActivity extends FragmentActivity {
     {
     	super.onResume();
     	model.addDailyBudget();
-    	
-        
+    	view.update();
     }
     
     public void saveConfig()
@@ -142,7 +115,8 @@ public class MainActivity extends FragmentActivity {
     public boolean onPrepareOptionsMenu(Menu menu)
     {
     	MenuItem item = menu.findItem(R.id.menu_setdailybudget);
-    	CharSequence withBudget = "Set daily budget" + " (" + model.getDailyBudget() + ")";
+    	String menuString = getString(R.string.menu_setdailybudget);
+    	CharSequence withBudget = menuString + " (" + model.getDailyBudget() + ")";
     	item.setTitle(withBudget);
     	return true;
     }
@@ -164,13 +138,10 @@ public class MainActivity extends FragmentActivity {
     	}
     	catch(NumberFormatException e)
     	{
-    		// Bad/no input, don't do anything.
+    		// Bad/no input, don't do anything. No biggie.
     	}
 		
     }
-    
-    // Saves the current budget to the internal file
-    
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -211,7 +182,7 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-
+    // Set up a ViewListener for the MainView
 	private MainView.ViewListener viewListener = new MainView.ViewListener() {
 		
 		@Override
@@ -220,7 +191,6 @@ public class MainActivity extends FragmentActivity {
 	    	chosenCategory = (String) pressedButton.getText();
 	    	DialogFragment newFragment = new OtherCategoryDialogFragment();
 	    	newFragment.show(getSupportFragmentManager(), "other_category");
-	    	
 		}
 		
 		@Override

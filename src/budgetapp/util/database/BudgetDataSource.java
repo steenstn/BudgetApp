@@ -7,22 +7,16 @@ package budgetapp.util.database;
  * 
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
-import budgetapp.main.R;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
-import budgetapp.util.Money;
 
 
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class BudgetDataSource {
 
@@ -33,7 +27,6 @@ public class BudgetDataSource {
 	private static DatabaseAccess dbAccess;
 	public static final String ASCENDING = "asc";
 	public static final String DESCENDING = "desc";
-	private static BudgetDataSource instance;
 	
 	
 	public BudgetDataSource(Context context)
@@ -84,6 +77,7 @@ public class BudgetDataSource {
 		// Get the entry from the database, it may have been edited
 		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
+		
 		if(result == true)
 		{
 			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
@@ -97,7 +91,11 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	// Changes the fields that are changeable of the transaction entry
+	/** 
+	 * Changes the fields that are changeable of the transaction entry
+	 * @param oldEntry - The entry to change
+	 * @param newEntry - Entry containing the new values
+	 */
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		open();
@@ -118,13 +116,11 @@ public class BudgetDataSource {
 		close();
 	}
 	
-	public boolean addComment(BudgetEntry theEntry, String comment)
-	{
-		open();
-		boolean result = dbAccess.updateComment(theEntry, comment);
-		close();
-		return result;
-	}
+	/**
+	 * Creates and returns a new CategoryEntry
+	 * @param theEntry - The CategoryEntry to add
+	 * @return The created CategoryEntry
+	 */
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
 		open();
@@ -133,7 +129,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-		
+	
+	/**
+	 * Gets all transactions in the database ordered by id
+	 * @param orderBy - BudgetDatbase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of all entries
+	 */
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
@@ -143,14 +144,12 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	public List<DayEntry> getAllDays(String orderBy)
-	{
-		List<DayEntry> result;
-		open();
-		result = dbAccess.getDaySum(0,orderBy);
-		close();
-		return result;
-	}
+	/**
+	 * Gets n number of DayEntries from daily cash flow table sorted by id
+	 * @param n - Number of transactions to fetch. Fetches all if n <= 0
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
 		List<DayEntry> result;
@@ -159,14 +158,13 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-	public List<DayEntry> getAllDaysTotal(String orderBy)
-	{
-		List<DayEntry> result;
-		open();
-		result = dbAccess.getDayTotal(0,orderBy);
-		close();
-		return result;
-	}
+	
+	/**
+	 * Gets n number of DayEntries from day total table sorted by id
+	 * @param n - Number of transactions to get. Gets all if n <= 0
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
 		List<DayEntry> result;
@@ -175,6 +173,13 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets n number of transactions. Returns all transactions if n <= 0
+	 * @param n - Number of entries to get
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		List<BudgetEntry> result;

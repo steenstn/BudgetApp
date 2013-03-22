@@ -18,7 +18,6 @@ import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,15 +30,9 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 		public void favButtLongClick(Button id);
 	}
 	
-	private TextView currentBudgetTextView;
-	private EditText editBudgetEditText;
 	private Button chooseCategoryButton;
 	private Button favButt1,favButt2,favButt3;
-	private TextView logLeftTextView;
-	private TextView logRightTextView;
-	
 	private ViewListener viewListener;
-	
 	private BudgetModel model;
 	
 	public void setViewListener(ViewListener viewListener)
@@ -63,14 +56,10 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     {
     	super.onFinishInflate();
     	
-    	currentBudgetTextView = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	editBudgetEditText = (EditText)findViewById(R.id.editTextSubtract);
     	chooseCategoryButton = (Button)findViewById(R.id.button_choose_category);
     	favButt1 = (Button)findViewById(R.id.topCategoryButton1);
     	favButt2 = (Button)findViewById(R.id.topCategoryButton2);
     	favButt3 = (Button)findViewById(R.id.topCategoryButton3);
-    	logLeftTextView = (TextView)findViewById(R.id.textViewLogLeft);
-    	logRightTextView = (TextView)findViewById(R.id.textViewLogRight);
     	
     	setUpListeners();
     	
@@ -151,6 +140,9 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	curr.setText(""+model.getCurrentBudget());
     }
 	
+	/**
+	 * Update the favButtz to show top categories
+	 */
 	void updateButtons()
     {
     	int numButtons = 3;
