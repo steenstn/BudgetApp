@@ -55,6 +55,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	{
 		this.model = model;
 		model.addObserver(this);
+		update();
 		
 	}
 	@Override

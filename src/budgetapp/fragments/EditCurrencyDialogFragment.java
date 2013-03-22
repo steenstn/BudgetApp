@@ -48,8 +48,8 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	            	   EditText currency = (EditText)view.findViewById(R.id.edit_currency_currency);
 	            	   Money.setCurrency(currency.getText().toString());
 	            	   Money.after = checkBox.isChecked();
-	            	   ((MainActivity) getActivity()).update();
-	            	   
+	            	   ((MainActivity) getActivity()).saveConfig();
+	            	   ((MainActivity) getActivity()).updateView();
 	            	   
 	               }
 	           })

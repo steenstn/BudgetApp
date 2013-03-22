@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import budgetapp.main.R;
+import budgetapp.models.BudgetModel;
 import budgetapp.util.*;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.graph.GraphView;
@@ -30,7 +31,7 @@ public class GraphActivity extends Activity
     float[] y;// = {200, 100, 350, 100};
     float offsetX = 0;
     float offsetY = 0;
-    public BudgetDataSource datasource;
+    private BudgetModel model;
     
     public LineGraphRenderer lineGraph;
     
@@ -43,10 +44,10 @@ public class GraphActivity extends Activity
         view = new GraphView(this);
 
         
-        datasource = MainActivity.datasource;
+        model = new BudgetModel(this);
        // datasource.open();
         
-        entries = datasource.getAllDaysTotal(datasource.ASCENDING);
+        entries = model.getSomeDaysTotal(0,BudgetDataSource.ASCENDING);
         x = new float[entries.size()];
         y = new float[entries.size()];
         values = new String[entries.size()];

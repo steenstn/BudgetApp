@@ -51,8 +51,6 @@ import android.content.Context;
 import android.content.Intent;
 public class MainActivity extends FragmentActivity {
 
-	ArrayList<TransactionCommand> tempCom; // A list of TransactionCommand enabling Undo
-	public static BudgetDataSource datasource; // The connection to the database
 	Money currentBudget = new Money();
 	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
 	private Money dailyBudget = new Money(); // The daily plus, set to zero until value is read/written in internal file
@@ -60,7 +58,6 @@ public class MainActivity extends FragmentActivity {
 	private String chosenCategory = "";
 	private MainView view;
 	private BudgetModel model;
-	private BudgetConfig config;
 	
 	public String getChosenCategory()
 	{
@@ -105,6 +102,10 @@ public class MainActivity extends FragmentActivity {
 		model.editTransaction(oldEntry, newEntry);
 	}
 	
+	public void updateView()
+	{
+		view.update();
+	}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,11 +113,8 @@ public class MainActivity extends FragmentActivity {
         view.setViewListener(viewListener);
         model = new BudgetModel(this);
 
-        config = new BudgetConfig(this,model);
         setContentView(view);
         view.setModel(model);
-        datasource = new BudgetDataSource(this);
-        tempCom = new ArrayList<TransactionCommand>();
        
     }
     
@@ -124,16 +122,15 @@ public class MainActivity extends FragmentActivity {
     public void onResume()
     {
     	super.onResume();
-        view.update();
-        update();
+    	model.addDailyBudget();
+    	
         
     }
     
     public void saveConfig()
     {
-    	config.saveToFile();
+    	model.saveConfig();
     }
-    
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,8 +157,8 @@ public class MainActivity extends FragmentActivity {
 		
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	    	Calendar cal = Calendar.getInstance();
-	    	
-	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateFormat.format(cal.getTime()),theCategory,theComment);
+	    	String dateString = dateFormat.format(cal.getTime());
+	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.createTransaction(entry);
 	    	resultText.setText("");
     	}
@@ -214,10 +211,6 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-	public void update()
-	{
-		saveConfig();
-	}
 
 	private MainView.ViewListener viewListener = new MainView.ViewListener() {
 		

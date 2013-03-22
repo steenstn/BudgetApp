@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.IBudgetObserver;
@@ -23,11 +24,16 @@ public class BudgetModel {
 	private ArrayList<TransactionCommand> transactions;
 	private ArrayList<IBudgetObserver> observers;
 	private boolean stateChanged;
+	private BudgetConfig config;
 	
 	public BudgetModel(Context context)
 	{
 		datasource = new BudgetDataSource(context);
-		dailyBudget = new Money(100);
+		config = new BudgetConfig(context);
+		Money.after = config.getBooleanValue(BudgetConfig.fields.printCurrencyAfter);
+		Money.setCurrency(config.getStringValue(BudgetConfig.fields.currency));
+		
+		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.fields.dailyBudget));
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
 		stateChanged = true;
@@ -89,6 +95,8 @@ public class BudgetModel {
 	public void setDailyBudget(Money budget)
 	{
 		dailyBudget = budget;
+		config.writeValue(BudgetConfig.fields.dailyBudget, budget.get());
+		config.saveToFile();
 	}
 	
 	public boolean addCategory(String category)
@@ -182,6 +190,12 @@ public class BudgetModel {
 		return datasource.getCategoriesSortedByValue();
 	}
 	
+	public void saveConfig()
+	{
+		config.writeValue(BudgetConfig.fields.currency,Money.currency());
+		config.writeValue(BudgetConfig.fields.printCurrencyAfter, Money.after);
+		config.saveToFile();
+	}
 	
 	public void addObserver(IBudgetObserver observer)
 	{

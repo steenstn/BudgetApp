@@ -12,15 +12,108 @@ import android.content.Context;
 
 public class BudgetConfig {
 
+	
 	private String currentBudgetFileName = "current_budget"; // Internal filename for current budget
 	private Context context;
-	private BudgetModel model;
+	private double var_dailyBudget = 0;
+	private String var_currency = "kr";
+	private boolean var_printCurrencyAfter = true;
+	private double var_exchangeRate = 1;
 	
-	public BudgetConfig(Context context, BudgetModel model)
+	public static enum fields
+	{
+		dailyBudget,
+		currency,
+		printCurrencyAfter,
+		exchangeRate
+	}
+	
+	public BudgetConfig(Context context)
 	{
 		this.context = context;
-		this.model = model;
 		readConfigFile();
+	}
+	
+	public double getDoubleValue(BudgetConfig.fields theField)
+	{
+		switch(theField)
+		{
+			case dailyBudget:
+				return var_dailyBudget;
+			case exchangeRate:
+				return var_exchangeRate;
+			default:
+					throw new IllegalArgumentException();
+		}
+		
+	}
+	
+	public String getStringValue(BudgetConfig.fields theField)
+	{
+		switch(theField)
+		{
+			case currency:
+				return var_currency;
+			default:
+					throw new IllegalArgumentException();
+		}
+		
+	}
+	
+	public boolean getBooleanValue(BudgetConfig.fields theField)
+	{
+		switch(theField)
+		{
+			case printCurrencyAfter:
+				return var_printCurrencyAfter;
+			default:
+					throw new IllegalArgumentException();
+		}
+		
+	}
+	public boolean writeValue(BudgetConfig.fields theField, double theValue)
+	{
+		switch(theField)
+		{
+			case dailyBudget:
+				var_dailyBudget = theValue;
+				break;
+			case exchangeRate:
+				var_exchangeRate = theValue;
+				break;
+			default:
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean writeValue(BudgetConfig.fields theField, String theValue)
+	{
+		switch(theField)
+		{
+			case currency:
+				var_currency = theValue;
+				break;
+			default:
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean writeValue(BudgetConfig.fields theField, boolean theValue)
+	{
+		switch(theField)
+		{
+			case printCurrencyAfter:
+				var_printCurrencyAfter = theValue;
+				break;
+			default:
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public void readConfigFile()
@@ -43,12 +136,11 @@ public class BudgetConfig {
         				 {
         					 try
         					 {
-        						 double tempDailyBudget = Double.parseDouble(strLine);
-        						 model.setDailyBudget(new Money(tempDailyBudget));
+        						 var_dailyBudget = Double.parseDouble(strLine);
         					 }
         					 catch(NumberFormatException e)
         					 {
-        						 System.out.println("No double");
+
         					 }
         				 }
         				 parseString(strLine);
@@ -75,30 +167,31 @@ public class BudgetConfig {
 			e.printStackTrace();
 		}
     }
-	
+	/**
+	 * Parses a string and acts accordingly
+	 * @param in
+	 */
 	private void parseString(String in)
     {
-    	//String array with all values in config
-    	String[] values = context.getResources().getStringArray(R.array.config_values_array);
-    		
-		if(in.startsWith(values[0]+"=")) // dailyBudget
+    	
+		if(in.startsWith(fields.dailyBudget.name()+"=")) // dailyBudget
     	{
-    		model.setDailyBudget(new Money(Double.parseDouble(in.substring(values[0].length()+1))));
+    		var_dailyBudget = Double.parseDouble(in.substring(fields.dailyBudget.name().length()+1));
     	}
-		else if(in.startsWith(values[1]+"=")) // currency
+		else if(in.startsWith(fields.currency.name()+"=")) // currency
 		{
-    		Money.setCurrency(in.substring(values[1].length()+1));
+    		var_currency = in.substring(fields.currency.name().length()+1);
 		}
-		else if(in.startsWith(values[2]+"=")) // printCurrencyAfter
+		else if(in.startsWith(fields.printCurrencyAfter.name()+"=")) // printCurrencyAfter
 		{
-			if(in.substring(values[2].length()+1).equalsIgnoreCase("true"))
-				Money.after = true;
+			if(in.substring(fields.printCurrencyAfter.name().length()+1).equalsIgnoreCase("true"))
+				var_printCurrencyAfter = true;
 			else
-				Money.after = false;
+				var_printCurrencyAfter = false;
 		}
-		else if(in.startsWith(values[3]+"=")) // exchangeRate
+		else if(in.startsWith(fields.exchangeRate.name()+"=")) // exchangeRate
 		{
-			System.out.println(values[3] + "=" + in);
+			System.out.println(fields.exchangeRate.name() + "=" + in);
 		}
     	
     }
@@ -108,13 +201,11 @@ public class BudgetConfig {
     	DataOutputStream out;
 		try {
 			out = new DataOutputStream(context.openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
-			String[] values = context.getResources().getStringArray(R.array.config_values_array);
-	    	
-			out.writeUTF(values[0]+"="+model.getDailyBudget().get());
 			
-			out.writeUTF(values[1]+"="+Money.currency());
-			out.writeUTF(values[2]+"="+Money.after);
-			out.writeUTF(values[3]+"="+1);
+			out.writeUTF(fields.dailyBudget.name()+"="+var_dailyBudget);
+			out.writeUTF(fields.currency.name()+"="+var_currency);
+			out.writeUTF(fields.printCurrencyAfter.name()+"="+var_printCurrencyAfter);
+			out.writeUTF(fields.exchangeRate.name()+"="+1);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
