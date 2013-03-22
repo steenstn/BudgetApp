@@ -97,6 +97,8 @@ public class BudgetModel {
 		dailyBudget = budget;
 		config.writeValue(BudgetConfig.fields.dailyBudget, budget.get());
 		config.saveToFile();
+		stateChanged = true;
+		notifyObservers();
 	}
 	
 	public boolean addCategory(String category)

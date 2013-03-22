@@ -208,15 +208,6 @@ public class MainView extends LinearLayout implements IBudgetObserver{
         		left.append(days.get(i).getTotal()+"\n");
         }
         
-        days = model.getSomeDaysTotal(7,BudgetDataSource.DESCENDING);
-        left.append("\n");
-        left.append(Html.fromHtml("<b>Daily cash total</b><br />"));
-        for(int i=0;i<days.size();i++) 
-        {	
-        	left.append(days.get(i).getDate()+ ": ");
-        		left.append(days.get(i).getTotal()+"\n");
-        }
-        
     }
 	
 	// Colors the currentBudget text depending on the size of the current budget
