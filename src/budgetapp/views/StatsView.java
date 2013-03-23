@@ -8,8 +8,11 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
+import budgetapp.util.DayEntry;
 import budgetapp.util.IBudgetObserver;
+import budgetapp.util.Money;
 import budgetapp.util.ViewHolder;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.stats.CompositeStats;
@@ -18,6 +21,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -142,6 +147,61 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		entryList.setAdapter(listAdapter);
 		//updateSpinners();
 	}
+	
+	/**
+	 * Updates the stats TextView
+	 */
+	public void updateStats()
+	{
+		TextView stats = (TextView)findViewById(R.id.textViewLogStats);
+		
+		List<DayEntry> days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
+        List<DayEntry> dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
+        
+		stats.setMovementMethod(new ScrollingMovementMethod());
+		if(days.size()<2)
+		{
+			stats.setText("Not enough days for mean derivative\n");
+		}
+		else
+		{
+			stats.setText("Mean derivative (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
+			Money dayDerivative = BudgetFunctions.getWeightedMeanDerivative(dayFlow,30);
+			stats.append(""+dayDerivative + "\n");
+		}
+		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
+		CategoryEntry entry;
+		int length = 0;
+		for(int i=0;i<categoryStats.size();i++) // Get longest name
+		{
+			entry = categoryStats.get(i);
+			if(entry.getCategory().length()>length)
+			{
+				length = entry.getCategory().length();
+			}
+		}
+		length++;
+		Money sum = new Money(); // Calculate the total cash flow for the selected time span
+		for(int i=0;i<categoryStats.size();i++)
+		{
+			entry = categoryStats.get(i);
+			
+			stats.append(entry.getCategory()+":");
+			for(int j=0;j<Math.floor((length-entry.getCategory().length()+1)/3)+1;j++) // Fancy pancy formatting
+				stats.append("\t");
+			stats.append(""+entry.getNum());
+			stats.append("\t");
+			if(entry.getNum()<10)
+				stats.append("\t");
+			stats.append(" Total: " + entry.getTotal() + "\n");
+			sum = sum.add(entry.getTotal());
+			
+		}
+		
+		stats.append("Total cash flow: " + sum);
+		
+	}
+	
 	/**
 	 * Appends a year worth of BudgetEntrys to a TextView, using printMonth
 	 * @param view The TextView to append to
@@ -192,7 +252,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 						monthPrinted = true;
 					}
 					printEntry(entry);
-					//addStats(entry); // Add the stats to categoryStats
+					addStats(entry); // Add the stats to categoryStats
 				}
 			}
 		}
@@ -321,7 +381,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		updateLog();
 		updateSpinners();
 		//updateMonthSpinner();
-
+		updateStats();
 		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
 		listView.scrollTo(0,0);
 		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
