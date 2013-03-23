@@ -68,66 +68,6 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	
     	
     }
-	
-	private void setUpListeners()
-	{
-		
-		chooseCategoryButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				viewListener.chooseCategory();
-			}
-		});
-    	
-    	favButt1.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				viewListener.favButtClick(favButt1);
-			}
-		});
-    	favButt1.setOnLongClickListener(new View.OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				viewListener.favButtLongClick(favButt1);
-				return true;
-			}
-		});
-    	
-    	favButt2.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				viewListener.favButtClick(favButt2);
-			}
-		});
-    	favButt2.setOnLongClickListener(new View.OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				viewListener.favButtLongClick(favButt2);
-				return true;
-			}
-		});
-    	
-    	favButt3.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				viewListener.favButtClick(favButt3);
-			}
-		});
-    	favButt3.setOnLongClickListener(new View.OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				viewListener.favButtLongClick(favButt3);
-				return true;
-			}
-		});
-	}
 
 	@Override
 	public void update() {
@@ -248,4 +188,63 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	}
     }
 
+    private void setUpListeners()
+	{
+		
+		chooseCategoryButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				viewListener.chooseCategory();
+			}
+		});
+    	
+    	favButt1.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				viewListener.favButtClick(favButt1);
+			}
+		});
+    	favButt1.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				viewListener.favButtLongClick(favButt1);
+				return true;
+			}
+		});
+    	
+    	favButt2.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				viewListener.favButtClick(favButt2);
+			}
+		});
+    	favButt2.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				viewListener.favButtLongClick(favButt2);
+				return true;
+			}
+		});
+    	
+    	favButt3.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				viewListener.favButtClick(favButt3);
+			}
+		});
+    	favButt3.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				viewListener.favButtLongClick(favButt3);
+				return true;
+			}
+		});
+	}
 }

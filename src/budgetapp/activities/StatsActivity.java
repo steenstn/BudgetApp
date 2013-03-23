@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ import budgetapp.util.stats.*;
 import budgetapp.views.StatsView;
 public class StatsActivity extends FragmentActivity implements OnItemSelectedListener, OnLongClickListener{
 	
-	private StatsView view;
+	private StatsView theView;
 	List<DayEntry> days;
 	List<DayEntry> dayFlow;
 	List<BudgetEntry> entries;
@@ -44,9 +45,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	BudgetAdapter ad;
 	ArrayList<BudgetEntry> allEntries = new ArrayList<BudgetEntry>();
 	ArrayList<CompositeStats> years;
-	int selectedYear=-1;
-	int selectedMonth=-1;
-	String selectedCategory = "";
+	
 	int numDaysForDerivative = 30;
 	int numTransactionsForDerivative = 10;
 	ViewHolder selectedViewHolder;
@@ -65,18 +64,25 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
-        top = (ListView)findViewById(R.id.ListViewLogTop);
+        theView = (StatsView)View.inflate(this, R.layout.activity_stats, null);
+        setContentView(theView);
         model = new BudgetModel(this);
+        theView.setModel(model);
+        theView.setViewListener(viewListener);
+        
+       // top = (ListView)findViewById(R.id.ListViewLogTop);
+        
+        theView.setUpComposite();
+        theView.update();
        // ad = new ArrayAdapter<BudgetEntry>(top.getContext(), R.layout.stats_listitem);
-        ad = new BudgetAdapter(this);
+       // ad = new BudgetAdapter(this);
         // Read in all the data
-        entries = model.getSomeTransactions(0,BudgetDataSource.DESCENDING);
+       /* entries = model.getSomeTransactions(0,BudgetDataSource.DESCENDING);
         days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
         dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
         categories = model.getCategoriesSortedByValue();
-        
-        
+        */
+        /*
         categoryNames = new ArrayList<String>();
         for(int i=0;i<categories.size();i++)
         	categoryNames.add(categories.get(i).getCategory());
@@ -97,12 +103,12 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	        spinner = (Spinner) findViewById(R.id.spinnerYear);
 	        spinner.setOnItemSelectedListener(this);
 	
-	       	updateSpinners();
+	       	//updateSpinners();
 	       	spinner = (Spinner) findViewById(R.id.spinnerMonth);
 	       	
 	        updateLog();
         }
-        
+        */
         
 	}
 	
@@ -121,7 +127,6 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
         	String year = entry.getYear();
         	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
         	{
-        		
 	        	//Add a year
 	        	years.add(new CompositeStats(year));
 	        	yearIndex++;
@@ -183,56 +188,11 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	}
 	
 	
-	public void updateSpinners()
-	{
-		categories = model.getCategoriesSortedByValue();
-        
-		categoryNames = new ArrayList<String>();
-        for(int i=0;i<categories.size();i++)
-        	categoryNames.add(categories.get(i).getCategory());
-        
-		 //Set up the year spinner
-		ArrayList<String> yearStartValues = new ArrayList<String>();
-		
-        ArrayList<String> categoryStartValues = new ArrayList<String>();
-        
-		//yearStartValues.add(getString(R.string.all_years));
-        for(int i=0;i<years.size();i++)
-        {
-        	yearStartValues.add(years.get(i).getName());
-        }
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerYear);
-		 // Create an ArrayAdapter using the string array and a default spinner layout
-         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, yearStartValues);
-	   
-	     // Specify the layout to use when the list of choices appears
-		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 // Apply the adapter to the spinner
-		 spinner.setAdapter(adapter);
-		 
-		 
-		 updateMonthSpinner();
-		 // Set up the category spinner
-		 categoryStartValues.add(getString(R.string.all_categories));
-	     for(int i=0;i<categoryNames.size();i++)
-	     {
-	    	 categoryStartValues.add(categoryNames.get(i));
-	     }
-         spinner = (Spinner) findViewById(R.id.spinnerCategory);
-		 // Create an ArrayAdapter using the string array and a default spinner layout
-         adapter = new ArrayAdapter<String>(this,   android.R.layout.simple_spinner_item, categoryStartValues);
-	   
-	     // Specify the layout to use when the list of choices appears
-		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 // Apply the adapter to the spinner
-		 spinner.setAdapter(adapter);
-			 
-			 
-	}
+	
 	
 	public void updateMonthSpinner()
 	{
-		//Set up the month spinner
+		/*//Set up the month spinner
 		ArrayList<String> monthStartValues = new ArrayList<String>();
         monthStartValues.add(getString(R.string.all_months));
         
@@ -261,7 +221,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 // Apply the adapter to the spinner
 		 spinner.setAdapter(adapter);
-		 
+		 */
 	}
 	/**
 	 * Update the stats for a category
@@ -286,86 +246,25 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			categoryStats.add(newEntry);
 		}
 	}
-	/**
-	 * Appends a BudgetEntry to a specific TextView
-	 * @param view The view to append to
-	 * @param entry The BudgetEntry to append
-	 */
-	public void printEntry(ArrayList<String> list,BudgetEntry entry)
-	{
-		ad.add(new ViewHolder(entry));
-	}
 	
 	
-	/**
-	 * Appends a months of BudgetEntrys to a TextView, only appends those chosen by selectedCategory, 
-	 * or if selectedCategory is set to All categories, appends all
-	 * @param view The TextView to append to
-	 * @param months An ArrayList<Stats> containing the months
-	 * @param index The index of the month
-	 */
-	public void printMonth(ArrayList<String> list, ArrayList<Stats> months, int index)
-	{
-		boolean monthPrinted = false;
-		if(index<months.size())
-		{
-			for(int k=0;k<months.get(index).getTransactions().size();k++)
-			{
-				BudgetEntry entry = months.get(index).getTransactions().get(k);
-				// Print the entry if it has the correct category
-				// or if all categories are set to be printed
-				if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
-				{
-					if(!monthPrinted)
-					{
-						list.add(monthToString(months.get(index).getName()));
-						ad.add(new ViewHolder(monthToString(months.get(index).getName()),ViewHolder.MONTH));
-						monthPrinted = true;
-					}
-					printEntry(list,entry);
-					addStats(entry); // Add the stats to categoryStats
-				}
-			}
-		}
-	}
 	
-	/**
-	 * Appends a year worth of BudgetEntrys to a TextView, using printMonth
-	 * @param view The TextView to append to
-	 * @param index The index of the year
-	 */
-	public void printYear(ArrayList<String> list, int index)
-	{
-		if(entries.size()>0)
-		{
-			ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
-			list.add(years.get(index).getName());
-	    	if(selectedMonth>-1) // A specific month is chosen
-	    	{
-	    		printMonth(list,months,selectedMonth);
-	    	}
-	    	else // Print all transactions this year
-	    	{
-	        	for(int j=0;j<months.size();j++)
-	        	{
-	        		printMonth(list,months,j);
-	        	}
-	    	}
-		}
-	}
+	
+	
+	
 	/**
 	 * Updates the whole log
 	 */
 	public void updateLog()
 	{
-		categoryStats = new ArrayList<CategoryEntry>();
+	/*	categoryStats = new ArrayList<CategoryEntry>();
 		ArrayList<String> allTransactionsList = new ArrayList<String>();
         allTransactionsList.clear();
         ad = new BudgetAdapter(this);
 
         if(selectedYear>-1) // A specific year is chosen
         {
-	        printYear(allTransactionsList,selectedYear);
+	        //printYear(allTransactionsList,selectedYear);
 	        
         }
         else // Print all years
@@ -411,7 +310,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			}
 			
 		});
-        updateStats();
+        updateStats();*/
 	}
 	
 	public void updateSelectedEntry(BudgetEntry newEntry)
@@ -421,7 +320,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			selectedViewHolder.entry.setCategory(newEntry.getCategory());
 			selectedViewHolder.entry.setComment(newEntry.getComment());
 			selectedViewHolder.entry.setValue(newEntry.getValue());
-			updateSpinners();
+			//updateSpinners();
 			updateMonthSpinner();
 		}
 		top.invalidate();
@@ -429,7 +328,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	
 	public void removeSelectedEntry()
 	{
-
+/*
         entries = model.getSomeTransactions(0,BudgetDataSource.DESCENDING);
 		
 		if(entries.size()>0)
@@ -437,9 +336,9 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 			readEntries();
 
 			top.invalidate();
-			updateSpinners();
+			//updateSpinners();
 			updateMonthSpinner();
-		}
+		}*/
 	}
 	/***
 	 * Parses a string and gets the correct month from Resources
@@ -456,7 +355,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 		
-		Spinner yearSpinner =  (Spinner)findViewById(R.id.spinnerYear);
+		/*Spinner yearSpinner =  (Spinner)findViewById(R.id.spinnerYear);
 		Spinner monthSpinner =  (Spinner)findViewById(R.id.spinnerMonth);
 		Spinner categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
 		int oldYear = selectedYear;
@@ -470,7 +369,7 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
 		listView.scrollTo(0,0);
 		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
-		textView.scrollTo(0,0);
+		textView.scrollTo(0,0);*/
 		
 	}
 
@@ -485,5 +384,36 @@ public class StatsActivity extends FragmentActivity implements OnItemSelectedLis
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	private StatsView.ViewListener viewListener = new StatsView.ViewListener() {
+		
+		@Override
+		public void spinnerItemSelected(AdapterView<?> parent, View view, int pos,
+				long id) {
+			Spinner yearSpinner =  (Spinner)findViewById(R.id.spinnerYear);
+			Spinner monthSpinner =  (Spinner)findViewById(R.id.spinnerMonth);
+			Spinner categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
+			// Find what year, month and category that is chosen
+			int selectedYear = yearSpinner.getSelectedItemPosition();
+			int selectedMonth = monthSpinner.getSelectedItemPosition()-1; // When there is a "All categories" entry. -1 is needed to get correct month
+			String selectedCategory = (String) categorySpinner.getSelectedItem();
+			
+			theView.setSelectedYear(selectedYear);
+			theView.setSelectedMonth(selectedMonth);
+			theView.setSelectedCategory(selectedCategory);
+		}
+		
+		@Override
+		public void listViewLongClick(Button id) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void listViewClick(Button id) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	
 }

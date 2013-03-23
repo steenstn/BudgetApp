@@ -24,19 +24,16 @@ public class ChooseCategoryFragment extends DialogFragment {
 	
 	private ListView theList;
 	private View view;
-	private final MainActivity activity = ((MainActivity) getActivity());
-
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		
-	    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-	    		
-	    LayoutInflater inflater = activity.getLayoutInflater();
+
+	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    view = inflater.inflate(R.layout.dialog_choose_category, null);
 	    
 	    builder.setView(view);
 	    theList = (ListView) view.findViewById(R.id.dialog_choose_category_listview);
-	    
-	    
+
 	    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() 
 	    {
 	        public void onClick(DialogInterface dialog, int id) {
@@ -54,7 +51,7 @@ public class ChooseCategoryFragment extends DialogFragment {
 	 */
 	private void updateCategories()
     {
-        List<String> categories = activity.getCategoryNames();
+        List<String> categories = ((MainActivity)getActivity()).getCategoryNames();
         String temp[] = new String[categories.size()+1];
         for(int i=0;i<categories.size();i++)
         {
@@ -68,6 +65,9 @@ public class ChooseCategoryFragment extends DialogFragment {
 		 theList.setAdapter(adapter);
     }
 	
+	/**
+	 * Set up the listeners for the ListView, click and longclick listeners
+	 */
 	private void setUpListeners()
 	{
 		theList.setOnItemClickListener(new AdapterView.OnItemClickListener() 
@@ -77,13 +77,13 @@ public class ChooseCategoryFragment extends DialogFragment {
 				Object listItem = theList.getItemAtPosition(position);
 				if(position!=adapter.getCount()-1)
 				{
-					activity.subtractFromBudget(adapter,listItem.toString(),null);
+					((MainActivity)getActivity()).subtractFromBudget(adapter,listItem.toString(),null);
 					ChooseCategoryFragment.this.getDialog().cancel();
 				}
 				else if(position==adapter.getCount()-1)
 				{
 					DialogFragment newFragment = new OtherCategoryDialogFragment();
-					newFragment.show(activity.getSupportFragmentManager(), "other_category");
+					newFragment.show(((MainActivity)getActivity()).getSupportFragmentManager(), "other_category");
 					ChooseCategoryFragment.this.getDialog().cancel();
 				}
 			}
@@ -96,9 +96,9 @@ public class ChooseCategoryFragment extends DialogFragment {
 				if(position!=adapter.getCount()-1)
 			    {   
 					Object listItem = theList.getItemAtPosition(position);
-					activity.setChosenCategory(listItem.toString());
+					((MainActivity)getActivity()).setChosenCategory(listItem.toString());
 					DialogFragment newFragment = new OtherCategoryDialogFragment();
-		            newFragment.show(activity.getSupportFragmentManager(), "other_category");
+		            newFragment.show(((MainActivity)getActivity()).getSupportFragmentManager(), "other_category");
 		            ChooseCategoryFragment.this.getDialog().cancel();
 			    }
 				
