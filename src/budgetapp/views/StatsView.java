@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
@@ -40,17 +41,17 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	public static interface ViewListener
 	{
 		public void spinnerItemSelected(AdapterView<?> parent, View view, int pos, long id);
-		public void listViewClick(Button id);
-		public void listViewLongClick(Button id);
+		public void listViewClick(ViewHolder theEntry);
+		public void listViewLongClick(ViewHolder theEntry);
 	}
 	
 	private int selectedYear=0;
 	private int selectedMonth=0;
 
 	String selectedCategory = "";
-	
+	ViewHolder selectedListItem;
 	private ArrayList<CompositeStats> years;
-	List<CategoryEntry> categoryStats; // Contains stats for categories
+	private List<CategoryEntry> categoryStats; // Contains stats for categories
 	private ViewListener viewListener;
 	private Spinner yearSpinner;
 	private Spinner monthSpinner;
@@ -71,6 +72,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	public void setModel(BudgetModel model)
 	{
 		this.model = model;
+		this.model.addObserver(this);
 	}
 	public void setSelectedYear(int value)
 	{
@@ -145,7 +147,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		listAdapter = new BudgetAdapter(this.getContext());
 		printYear(0);
 		entryList.setAdapter(listAdapter);
-		//updateSpinners();
+		updateStats();
 	}
 	
 	/**
@@ -244,7 +246,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 				// Print the entry if it has the correct category
 				// or if all categories are set to be printed
 				if(selectedCategory.equalsIgnoreCase(entry.getCategory()) || selectedCategory.equalsIgnoreCase(getResources().getString(R.string.all_categories)))
-			{
+				{
 					if(!monthPrinted)
 					{
 						//list.add(monthToString(months.get(index).getName()));
@@ -378,26 +380,38 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	
 	@Override
 	public void update() {
+		setUpComposite();
 		updateLog();
+		updateStats();
 		updateSpinners();
 		//updateMonthSpinner();
-		updateStats();
 		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
 		listView.scrollTo(0,0);
 		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
 		textView.scrollTo(0,0);
 	}
 	
+	public void updateSelectedEntry(BudgetEntry newEntry)
+	{
+		if(newEntry!=null)
+		{
+			selectedListItem.entry.setCategory(newEntry.getCategory());
+			selectedListItem.entry.setComment(newEntry.getComment());
+			selectedListItem.entry.setValue(newEntry.getValue());
+			//updateSpinners();
+		}
+		entryList.invalidate();
+		
+	}
+	
 	private void setUpListeners()
 	{
+		
 		entryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	    @Override
 		    public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
 		       ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
-		       if(!listItem.entry.getComment().equalsIgnoreCase(""))
-		       {	
-		    	   Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
-		       }
+		       viewListener.listViewClick(listItem);
 		    }
 	 	});
 		
@@ -406,20 +420,14 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view,int position, long arg)
 			{
-				ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
-	 		   // selectedViewHolder = listItem;
-	 		   // selectedViewHolderIndex = position;
-				if(listItem.flag == ViewHolder.ENTRY)
-				{
-				  //  DialogFragment newFragment = new EditTransactionDialogFragment();
-				   // Bundle bundle = new Bundle();
-				   // bundle.putParcelable("entry", (Parcelable) listItem.entry);
-				    
-				   // newFragment.setArguments(bundle);
-				  //  newFragment.show(getSupportFragmentManager(), "edit_transaction");
-				    //  Toast.makeText(view.getContext(), listItem.entry.getComment(), Toast.LENGTH_LONG).show();
-				}
-	 		    return true;
+				 ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
+			     
+				 if(listItem.flag == ViewHolder.ENTRY)
+				 {
+					 	selectedListItem = listItem;
+						viewListener.listViewLongClick(listItem);					 
+			     }
+				return true;
 			}
 			
 		});

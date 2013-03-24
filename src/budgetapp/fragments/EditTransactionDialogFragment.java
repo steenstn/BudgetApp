@@ -58,8 +58,6 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	            	   if(checkBox.isChecked())
 	            	   {
 	            		   activity.removeTransactionEntry(theEntry);
-	            		   //((StatsActivity)getActivity()).updateSelectedEntry(new BudgetEntry(new Money(), "", ""));
-	            		   ((StatsActivity)getActivity()).removeSelectedEntry();
 	            		   Toast.makeText(view.getContext(), "Transaction deleted" , Toast.LENGTH_LONG).show();
 	            		   
 	            	   }
@@ -103,9 +101,8 @@ public class EditTransactionDialogFragment extends DialogFragment {
 			            			   newComment);
 			            	   
 			            	   activity.editTransactionEntry(theEntry, newEntry);
-	
-			            	   ((StatsActivity)getActivity()).updateSelectedEntry(newEntry);
-		            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
+			            	   
+			            	   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
 			            		
 		            	   }
 		            	   catch(Exception e){
@@ -114,8 +111,6 @@ public class EditTransactionDialogFragment extends DialogFragment {
 		            	   }
 	            	   }
 	            	   
-	            	   ((StatsActivity)getActivity()).updateLog();
-	            	   ((StatsActivity)getActivity()).updateStats();
 	            	   
 	               }
 	           })

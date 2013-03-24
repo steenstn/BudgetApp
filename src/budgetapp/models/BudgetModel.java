@@ -104,14 +104,32 @@ public class BudgetModel {
 	public boolean addCategory(String category)
 	{
 		if(!category.equalsIgnoreCase(""))
-			return datasource.addCategory(category);
+		{
+			boolean result = datasource.addCategory(category);
+			if(result == true)
+			{
+				stateChanged = true;
+				notifyObservers();
+				return true;
+			}
+			else
+				return false;
+		}
 		else
 			return false;
 	}
 	
 	public boolean removeCategory(String category)
 	{
-		return datasource.removeCategory(category);
+		boolean result = datasource.removeCategory(category);
+		if(result == true)
+		{
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	
