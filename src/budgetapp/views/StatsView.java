@@ -73,8 +73,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedYear)
 		{
 			this.selectedYear = value;
-			updateMonthSpinner();
-			updateLog();
+			update();
 		}
 	}
 	
@@ -83,7 +82,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedMonth)
 		{
 			this.selectedMonth = value;
-			updateLog();
+			update();
 		}
 	}
 	
@@ -92,7 +91,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(!value.equalsIgnoreCase(this.selectedCategory))
 		{
 			this.selectedCategory = value;
-			updateLog();
+			update();
 		}
 	}
 	
