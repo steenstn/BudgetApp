@@ -2,14 +2,15 @@ MrCashManager
 =========
 The recognised world leading budget application paradigm
 
-v2.3 -- Coming soon!
-- Adding comments to entries possible
-- Editing and removing of old transactions possible
-- Money will use doubles instead of integers
-- Weighted coloring of derivative
 
 Changelog
 =========
+
+v2.3
+- Adding comments to entries possible
+- Editing and removing of old transactions possible
+- Money now uses doubles instead of integers
+- Weighted coloring of derivative
 
 v2.2
 - Up to three favorite buttons for easy adding of transactions

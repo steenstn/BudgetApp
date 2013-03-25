@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.content.Intent;
 public class MainActivity extends FragmentActivity {
 
@@ -96,7 +97,14 @@ public class MainActivity extends FragmentActivity {
     public void onResume()
     {
     	super.onResume();
-    	model.addDailyBudget();
+    	// Add daily budget and Toast the result if anything was added
+    	int daysAdded = model.addDailyBudget();
+    	if(daysAdded>0)
+    	{
+    		Money result = new Money();
+    		result.set(daysAdded*getDailyBudget().get());
+    		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
+    	}
     	view.update();
     }
     
@@ -172,10 +180,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.menu_showgraph: // Wait for it!
+            /*case R.id.menu_showgraph: // Wait for it!
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

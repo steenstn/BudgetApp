@@ -35,7 +35,7 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	    edit = (EditText)view.findViewById(R.id.edit_currency_exchangerate);
 	    edit.setText(""+1);
 	    edit.setEnabled(false);
-	    
+	    edit.setVisibility(View.GONE);
 	    checkBox = (CheckBox)view.findViewById(R.id.edit_currency_after_checkbox);
 	    checkBox.setChecked(Money.after);
 	    builder.setView(view);

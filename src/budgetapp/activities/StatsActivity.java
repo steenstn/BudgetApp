@@ -1,55 +1,23 @@
 package budgetapp.activities;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
-import budgetapp.util.CategoryEntry;
-import budgetapp.util.DayEntry;
-import budgetapp.util.Money;
 import budgetapp.util.ViewHolder;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
-import budgetapp.util.BudgetFunctions;
-import budgetapp.util.database.BudgetDataSource;
-import budgetapp.util.stats.*;
 import budgetapp.views.StatsView;
 public class StatsActivity extends FragmentActivity{
 	
 	private StatsView theView;
-	List<DayEntry> days;
-	List<DayEntry> dayFlow;
-	List<BudgetEntry> entries;
-	List<CategoryEntry> categories;
-	List<CategoryEntry> categoryStats; // Contains stats for categories
-	List<String> categoryNames;
-	ListView top;
-	BudgetAdapter ad;
-	ArrayList<BudgetEntry> allEntries = new ArrayList<BudgetEntry>();
-	ArrayList<CompositeStats> years;
-	
-	int numDaysForDerivative = 30;
-	int numTransactionsForDerivative = 10;
-	ViewHolder selectedViewHolder;
-	int selectedViewHolderIndex;
 	private BudgetModel model;
 	
 	public void removeTransactionEntry(BudgetEntry entry)
@@ -64,14 +32,15 @@ public class StatsActivity extends FragmentActivity{
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        theView = (StatsView)View.inflate(this, R.layout.activity_stats, null);
-        setContentView(theView);
         model = new BudgetModel(this);
-        theView.setModel(model);
-        theView.setViewListener(viewListener);
+        theView = (StatsView)View.inflate(this, R.layout.activity_stats, null);
+
+        theView.setModel(this.model);
+        setContentView(theView);
         
-        theView.setUpComposite();
+        theView.setViewListener(viewListener);
         theView.update();
+        
         
 	}
 	
@@ -103,7 +72,6 @@ public class StatsActivity extends FragmentActivity{
 		    	 bundle.putParcelable("entry", (Parcelable) listItem.entry);
 		    	 
 		    	 newFragment.setArguments(bundle);
-		    	
 		    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
 		     }
 			

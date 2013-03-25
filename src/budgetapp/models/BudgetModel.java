@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.widget.Toast;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -25,6 +26,7 @@ public class BudgetModel {
 	private ArrayList<IBudgetObserver> observers;
 	private boolean stateChanged;
 	private BudgetConfig config;
+	
 	
 	public BudgetModel(Context context)
 	{
@@ -152,12 +154,12 @@ public class BudgetModel {
 	/**
 	 * Checks if days have passed and add transactions if so
 	 */
-	public void addDailyBudget()
+	public int addDailyBudget()
     {
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		
-    	
+    	int daysAdded = 0;
     	if(!lastDay.isEmpty())
     	{
     		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -178,6 +180,7 @@ public class BudgetModel {
 	    	
 	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
+	    	
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
@@ -186,9 +189,11 @@ public class BudgetModel {
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
 		        	datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
+		    		daysAdded++;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
+
     	}
     	else // Add a transaction of 0
     	{
@@ -196,9 +201,10 @@ public class BudgetModel {
     		
     		datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
     		stateChanged = true;
+    		daysAdded = 1;
     	}
     	notifyObservers();
-    	
+    	return daysAdded;
     }
 	
 	public List<CategoryEntry> getCategoriesSortedByNum() {
@@ -220,7 +226,7 @@ public class BudgetModel {
 		observers.add(observer);
 	}
 	
-	private void notifyObservers()
+	public void notifyObservers()
 	{
 		if(stateChanged)
 		{
