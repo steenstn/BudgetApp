@@ -1,8 +1,12 @@
-package budgetapp.main;
+package budgetapp.fragments;
 /**
  * Dialog Fragment for adding a new category
  * 
  */
+import budgetapp.activities.MainActivity;
+import budgetapp.main.R;
+import budgetapp.main.R.id;
+import budgetapp.main.R.layout;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,9 +44,8 @@ public class DailyBudgetFragment extends DialogFragment {
 							double theBudget = Double.parseDouble(newBudget.getText().toString());
 							
 							((MainActivity) getActivity()).setDailyBudget(theBudget);
-							((MainActivity) getActivity()).updateLog();
-							((MainActivity) getActivity()).updateColor();
-							((MainActivity) getActivity()).saveToFile();
+							//((MainActivity) getActivity()).updateLog();
+							//((MainActivity) getActivity()).updateColor();
 							Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
 							
 		               }

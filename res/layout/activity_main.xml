@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<budgetapp.views.MainView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,8 +35,8 @@
 	          android:layout_width="120dip"
 	          android:layout_height="wrap_content"
 	          android:ems="10"
-	          android:inputType="numberDecimal|numberSigned">"
-				
+	          android:inputType="numberDecimal|numberSigned">
+			  
 	      </EditText>
 	      <Button
             android:id="@+id/button_choose_category"
@@ -44,8 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dip"
             android:layout_marginEnd="1dip"
-            android:text="Choose cat."
-            android:onClick="chooseCategory"/>
+            android:text="Choose cat."/>
 	</LinearLayout>
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -107,5 +106,5 @@
 
       
 
-</LinearLayout>
+</budgetapp.views.MainView>
 

@@ -1,8 +1,12 @@
-package budgetapp.main;
+package budgetapp.fragments;
 /**
  * Dialog Fragment for adding a new category
  * 
  */
+import budgetapp.activities.MainActivity;
+import budgetapp.main.R;
+import budgetapp.main.R.id;
+import budgetapp.main.R.layout;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
@@ -31,7 +35,7 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	    edit = (EditText)view.findViewById(R.id.edit_currency_exchangerate);
 	    edit.setText(""+1);
 	    edit.setEnabled(false);
-	    
+	    edit.setVisibility(View.GONE);
 	    checkBox = (CheckBox)view.findViewById(R.id.edit_currency_after_checkbox);
 	    checkBox.setChecked(Money.after);
 	    builder.setView(view);
@@ -44,7 +48,9 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	            	   EditText currency = (EditText)view.findViewById(R.id.edit_currency_currency);
 	            	   Money.setCurrency(currency.getText().toString());
 	            	   Money.after = checkBox.isChecked();
-	            	   ((MainActivity) getActivity()).updateAll();
+	            	   ((MainActivity) getActivity()).saveConfig();
+	            	   ((MainActivity) getActivity()).updateView();
+	            	   
 	               }
 	           })
 	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -1,4 +1,4 @@
-package budgetapp.graph;
+package budgetapp.util.graph;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -21,13 +21,11 @@ import android.database.sqlite.SQLiteDatabase;
 public class BudgetDataSource {
 
 	
-	// Database fields
 	private static SQLiteDatabase database;
 	private static BudgetDatabase dbHelper;
 	private static DatabaseAccess dbAccess;
 	public static final String ASCENDING = "asc";
 	public static final String DESCENDING = "desc";
-	private static BudgetDataSource instance;
 	
 	
 	public BudgetDataSource(Context context)
@@ -43,7 +41,7 @@ public class BudgetDataSource {
 		dbAccess = new DatabaseAccess(database);
 	}
 	
-	public void close()
+	private void close()
 	{
 		dbHelper.close();
 	}
@@ -75,21 +73,28 @@ public class BudgetDataSource {
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
 		open();
+		// Get the entry from the database, it may have been edited
+		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
+		
 		if(result == true)
 		{
-			removeFromCategory(theEntry.getCategory(),theEntry.getValue().get()*-1);
+			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
-			theEntry.setValue(theEntry.getValue().get()*-1);
-			addToDaySum(theEntry);
-			addToDayTotal(theEntry);
-			theEntry.setValue(theEntry.getValue().get()*-1);
+			workingEntry.setValue(workingEntry.getValue().get()*-1);
+			addToDaySum(workingEntry);
+			addToDayTotal(workingEntry);
+			workingEntry.setValue(workingEntry.getValue().get()*-1);
 		}
 		close();
 		return result;
 	}
 	
-	// Changes the fields that are changeable of the transaction entry
+	/** 
+	 * Changes the fields that are changeable of the transaction entry
+	 * @param oldEntry - The entry to change
+	 * @param newEntry - Entry containing the new values
+	 */
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		open();
@@ -110,13 +115,11 @@ public class BudgetDataSource {
 		close();
 	}
 	
-	public boolean addComment(BudgetEntry theEntry, String comment)
-	{
-		open();
-		boolean result = dbAccess.updateComment(theEntry, comment);
-		close();
-		return result;
-	}
+	/**
+	 * Creates and returns a new CategoryEntry
+	 * @param theEntry - The CategoryEntry to add
+	 * @return The created CategoryEntry
+	 */
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
 		open();
@@ -125,7 +128,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-		
+	
+	/**
+	 * Gets all transactions in the database ordered by id
+	 * @param orderBy - BudgetDatbase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of all entries
+	 */
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
@@ -135,14 +143,12 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	public List<DayEntry> getAllDays(String orderBy)
-	{
-		List<DayEntry> result;
-		open();
-		result = dbAccess.getDaySum(0,orderBy);
-		close();
-		return result;
-	}
+	/**
+	 * Gets n number of DayEntries from daily cash flow table sorted by id
+	 * @param n - Number of transactions to fetch. Fetches all if n <= 0
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
 		List<DayEntry> result;
@@ -151,14 +157,13 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-	public List<DayEntry> getAllDaysTotal(String orderBy)
-	{
-		List<DayEntry> result;
-		open();
-		result = dbAccess.getDayTotal(0,orderBy);
-		close();
-		return result;
-	}
+	
+	/**
+	 * Gets n number of DayEntries from day total table sorted by id
+	 * @param n - Number of transactions to get. Gets all if n <= 0
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
 		List<DayEntry> result;
@@ -167,6 +172,13 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets n number of transactions. Returns all transactions if n <= 0
+	 * @param n - Number of entries to get
+	 * @param orderBy - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
+	 * @return An ArrayList of the entries
+	 */
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		List<BudgetEntry> result;
@@ -176,18 +188,11 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	// Returns all categories in the category table
-	public List<CategoryEntry> getAllCategories(int mode)
-	{
-		List<CategoryEntry> result;
-		open();
-		result = dbAccess.getCategories(null, null, null, null, null);
-		close();
-		return result;
-	}
-	
-	// Returns all categories in the category table sorted by total
-	public List<CategoryEntry> getCategoriesSorted()
+	/**
+	 * Gets all categories, sorted by total value
+	 * @return ArrayList containging all CategoryEntries
+	 */
+	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
 		open();
@@ -195,6 +200,11 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets all categories, sorted by total number of entries in the category
+	 * @return ArrayList containging all CategoryEntries
+	 */
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
 		List<CategoryEntry> result;
@@ -203,6 +213,11 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Gets all category names
+	 * @return ArrayList of the category names
+	 */
 	public List<String> getCategoryNames()
 	{
 		List<String> result;
@@ -211,6 +226,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	/**
+	 * Adds a category
+	 * @param theCategory - Name of the new category
+	 * @return - Wether or not the adding was successful
+	 */
 	public boolean addCategory(String theCategory)
 	{
 		boolean result;
@@ -219,7 +240,12 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
-
+	
+	/**
+	 * Removes a category
+	 * @param theCategory - The category to remove
+	 * @return - Wether or not the removal was successful
+	 */
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
@@ -228,6 +254,7 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
 	
 	// Helper functions to update different tables correctly
 	private void addToCategory(String theCategory,double value)

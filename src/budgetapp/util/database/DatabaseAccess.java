@@ -74,6 +74,19 @@ public class DatabaseAccess {
 		return entry;
 	}
 	
+	public BudgetEntry getEntry(long theId)
+	{
+		Cursor cursor;
+		cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, null, BudgetDatabase.COLUMN_ID + " = " + theId, null, null, null, null);
+		if(cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+			return entry;
+		}
+		else
+			return new BudgetEntry();
+	}
 	public boolean removeEntry(BudgetEntry theEntry)
 	{
 		int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
@@ -311,7 +324,12 @@ public class DatabaseAccess {
 		cursor.close();
 		return entry;
 	}
-	// Get n number of transactions
+	/**
+	 *  Get n number of transactions. If n = 0, returns all transactions
+	 * @param n - Number of transactions
+	 * @param mode Ascending/descending by id
+	 * @return n number of transactions
+	 */
 	public List<BudgetEntry> getTransactions(int n,String mode)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();

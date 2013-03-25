@@ -1,6 +1,7 @@
-package budgetapp.graph;
+package budgetapp.views;
 
 
+import budgetapp.activities.GraphActivity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

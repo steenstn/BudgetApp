@@ -1,8 +1,13 @@
-package budgetapp.main;
+package budgetapp.fragments;
 /**
  * Dialog Fragment for adding a new category
  * 
  */
+import budgetapp.activities.MainActivity;
+import budgetapp.activities.StatsActivity;
+import budgetapp.main.R;
+import budgetapp.main.R.id;
+import budgetapp.main.R.layout;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
@@ -42,7 +47,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	     
 	     final CheckBox checkBox = (CheckBox)view.findViewById(R.id.dialog_edit_transaction_delete_transaction_checkbox);
 	     
-	     
+	     final StatsActivity activity = ((StatsActivity) getActivity());
 	    // Add action buttons
 	           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 	        	   
@@ -52,9 +57,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 	            	   
 	            	   if(checkBox.isChecked())
 	            	   {
-	            		   MainActivity.datasource.removeTransactionEntry(theEntry);
-	            		   //((StatsActivity)getActivity()).updateSelectedEntry(new BudgetEntry(new Money(), "", ""));
-	            		   ((StatsActivity)getActivity()).removeSelectedEntry();
+	            		   activity.removeTransactionEntry(theEntry);
 	            		   Toast.makeText(view.getContext(), "Transaction deleted" , Toast.LENGTH_LONG).show();
 	            		   
 	            	   }
@@ -97,10 +100,9 @@ public class EditTransactionDialogFragment extends DialogFragment {
 			            			   newFlags,
 			            			   newComment);
 			            	   
-			            	   MainActivity.datasource.editTransactionEntry(theEntry, newEntry);
-	
-			            	   ((StatsActivity)getActivity()).updateSelectedEntry(newEntry);
-		            		   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
+			            	   activity.editTransactionEntry(theEntry, newEntry);
+			            	   
+			            	   Toast.makeText(view.getContext(), "Successfully edited transaction" , Toast.LENGTH_LONG).show();
 			            		
 		            	   }
 		            	   catch(Exception e){
@@ -109,8 +111,6 @@ public class EditTransactionDialogFragment extends DialogFragment {
 		            	   }
 	            	   }
 	            	   
-	            	   ((StatsActivity)getActivity()).updateLog();
-	            	   ((StatsActivity)getActivity()).updateStats();
 	            	   
 	               }
 	           })

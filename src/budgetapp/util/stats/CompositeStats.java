@@ -17,6 +17,7 @@ public class CompositeStats extends Stats {
 	{
 		name = theName;
 		children = new ArrayList<Stats>();
+		
 	}
 	
 	public List<Stats> getChildren(){
