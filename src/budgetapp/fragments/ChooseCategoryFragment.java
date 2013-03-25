@@ -77,7 +77,7 @@ public class ChooseCategoryFragment extends DialogFragment {
 				Object listItem = theList.getItemAtPosition(position);
 				if(position!=adapter.getCount()-1)
 				{
-					((MainActivity)getActivity()).subtractFromBudget(adapter,listItem.toString(),null);
+					((MainActivity)getActivity()).subtractFromBudget(listItem.toString(),null);
 					ChooseCategoryFragment.this.getDialog().cancel();
 				}
 				else if(position==adapter.getCount()-1)

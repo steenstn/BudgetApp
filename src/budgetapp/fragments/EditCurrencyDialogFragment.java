@@ -5,9 +5,6 @@ package budgetapp.fragments;
  */
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
-import budgetapp.main.R.id;
-import budgetapp.main.R.layout;
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 
 public class EditCurrencyDialogFragment extends DialogFragment {
@@ -41,23 +37,24 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	    builder.setView(view);
 	 
 	    // Add action buttons
-	           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-	        	   
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   EditText currency = (EditText)view.findViewById(R.id.edit_currency_currency);
-	            	   Money.setCurrency(currency.getText().toString());
-	            	   Money.after = checkBox.isChecked();
-	            	   ((MainActivity) getActivity()).saveConfig();
-	            	   ((MainActivity) getActivity()).updateView();
-	            	   
-	               }
-	           })
-	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	                   EditCurrencyDialogFragment.this.getDialog().cancel();
-	               }
-	           });   
-	    return builder.create();
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    	   
+        	@Override
+            public void onClick(DialogInterface dialog, int id) {
+        		EditText currency = (EditText)view.findViewById(R.id.edit_currency_currency);
+        	    Money.setCurrency(currency.getText().toString());
+        	    Money.after = checkBox.isChecked();
+        	    ((MainActivity) getActivity()).saveConfig();
+        	    ((MainActivity) getActivity()).updateView();
+        	   
+            }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                EditCurrencyDialogFragment.this.getDialog().cancel();
+            }
+        });   
+	    
+        return builder.create();
 	}
 }

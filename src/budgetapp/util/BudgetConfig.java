@@ -21,10 +21,10 @@ public class BudgetConfig {
 	private Context context;
 	
 	// Variables for the config values
-	private double var_dailyBudget = 0;
-	private String var_currency = "kr";
-	private boolean var_printCurrencyAfter = true;
-	private double var_exchangeRate = 1;
+	private double varDailyBudget = 0;
+	private String varCurrency = "kr";
+	private boolean varPrintCurrencyAfter = true;
+	private double varExchangeRate = 1;
 	
 	/**
 	 * The available fields in the config
@@ -54,9 +54,9 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case dailyBudget:
-				return var_dailyBudget;
+				return varDailyBudget;
 			case exchangeRate:
-				return var_exchangeRate;
+				return varExchangeRate;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -73,7 +73,7 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case currency:
-				return var_currency;
+				return varCurrency;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -90,7 +90,7 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case printCurrencyAfter:
-				return var_printCurrencyAfter;
+				return varPrintCurrencyAfter;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -107,10 +107,10 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case dailyBudget:
-				var_dailyBudget = theValue;
+				varDailyBudget = theValue;
 				break;
 			case exchangeRate:
-				var_exchangeRate = theValue;
+				varExchangeRate = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -128,7 +128,7 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case currency:
-				var_currency = theValue;
+				varCurrency = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -146,7 +146,7 @@ public class BudgetConfig {
 		switch(theField)
 		{
 			case printCurrencyAfter:
-				var_printCurrencyAfter = theValue;
+				varPrintCurrencyAfter = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -176,7 +176,7 @@ public class BudgetConfig {
         				 {
         					 try
         					 {
-        						 var_dailyBudget = Double.parseDouble(strLine);
+        						 varDailyBudget = Double.parseDouble(strLine);
         					 }
         					 catch(NumberFormatException e)
         					 {
@@ -213,18 +213,18 @@ public class BudgetConfig {
     {
 		if(in.startsWith(fields.dailyBudget.name()+"="))
     	{
-    		var_dailyBudget = Double.parseDouble(in.substring(fields.dailyBudget.name().length()+1));
+    		varDailyBudget = Double.parseDouble(in.substring(fields.dailyBudget.name().length()+1));
     	}
 		else if(in.startsWith(fields.currency.name()+"="))
 		{
-    		var_currency = in.substring(fields.currency.name().length()+1);
+    		varCurrency = in.substring(fields.currency.name().length()+1);
 		}
 		else if(in.startsWith(fields.printCurrencyAfter.name()+"="))
 		{
 			if(in.substring(fields.printCurrencyAfter.name().length()+1).equalsIgnoreCase("true"))
-				var_printCurrencyAfter = true;
+				varPrintCurrencyAfter = true;
 			else
-				var_printCurrencyAfter = false;
+				varPrintCurrencyAfter = false;
 		}
 		else if(in.startsWith(fields.exchangeRate.name()+"=")) // Not yet implemented
 		{
@@ -241,9 +241,9 @@ public class BudgetConfig {
 		try{
 			out = new DataOutputStream(context.openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
 			
-			out.writeUTF(fields.dailyBudget.name()+"="+var_dailyBudget);
-			out.writeUTF(fields.currency.name()+"="+var_currency);
-			out.writeUTF(fields.printCurrencyAfter.name()+"="+var_printCurrencyAfter);
+			out.writeUTF(fields.dailyBudget.name()+"="+varDailyBudget);
+			out.writeUTF(fields.currency.name()+"="+varCurrency);
+			out.writeUTF(fields.printCurrencyAfter.name()+"="+varPrintCurrencyAfter);
 			out.writeUTF(fields.exchangeRate.name()+"="+1);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

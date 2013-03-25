@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
-import android.widget.Toast;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -152,7 +151,9 @@ public class BudgetModel {
 	}
 	
 	/**
-	 * Checks if days have passed and add transactions if so
+	 * Looks for last day with entries and adds the daily budget up to current date.
+	 * Returns number of daily budgets was added
+	 * @return - The number of times the daily budget was added
 	 */
 	public int addDailyBudget()
     {
@@ -226,7 +227,7 @@ public class BudgetModel {
 		observers.add(observer);
 	}
 	
-	public void notifyObservers()
+	private void notifyObservers()
 	{
 		if(stateChanged)
 		{
