@@ -57,6 +57,7 @@ public class StatsActivity extends FragmentActivity{
 			int selectedMonth = monthSpinner.getSelectedItemPosition()-1; // When there is a "All categories" entry. -1 is needed to get correct month
 			String selectedCategory = (String) categorySpinner.getSelectedItem();
 			
+			
 			theView.setSelectedYear(selectedYear);
 			theView.setSelectedMonth(selectedMonth);
 			theView.setSelectedCategory(selectedCategory);
