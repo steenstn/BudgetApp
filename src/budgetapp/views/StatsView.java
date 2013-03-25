@@ -142,12 +142,15 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	{
 
 		listAdapter = new BudgetAdapter(this.getContext());
-		if(selectedYear>-1)
-			printYear(selectedYear);
-		else
+		if(years.size()!=0)
 		{
-			for(int i = 0; i < years.size(); i++)
-				printYear(i);
+			if(selectedYear>-1)
+				printYear(selectedYear);
+			else
+			{
+				for(int i = 0; i < years.size(); i++)
+					printYear(i);
+			}
 		}
 		entryList.setAdapter(listAdapter);
 	}
@@ -344,29 +347,31 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	
 	public void updateMonthSpinner()
 	{
+		
 		//Set up the month spinner
 		ArrayList<String> monthStartValues = new ArrayList<String>();
         monthStartValues.add(getContext().getString(R.string.all_months));
         
-       
-        if(selectedYear>-1)
+        if(years.size()!=0)
         {
-        	ArrayList<Stats> months = new ArrayList<Stats>();
-        	months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
-        	
-        	for(int i=0;i<months.size();i++)
-        	{
-        		monthStartValues.add(monthToString(months.get(i).getName()));
-        	}
+	        if(selectedYear>-1)
+	        {
+	        	ArrayList<Stats> months = new ArrayList<Stats>();
+	        	months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
+	        	
+	        	for(int i=0;i<months.size();i++)
+	        	{
+	        		monthStartValues.add(monthToString(months.get(i).getName()));
+	        	}
+	        }
+	        else
+	        {
+	        	for(int i=1;i<=12;i++)
+	        	{
+	        		monthStartValues.add(monthToString(""+i));
+	        	}
+	        }
         }
-        else
-        {
-        	for(int i=1;i<=12;i++)
-        	{
-        		monthStartValues.add(monthToString(""+i));
-        	}
-        }
-        	
         
         Spinner spinner = (Spinner) findViewById(R.id.spinnerMonth);
 		 // Create an ArrayAdapter using the string array and a default spinner layout
@@ -382,7 +387,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	
 	@Override
 	public void update() {
-
+		
 		categoryStats = new ArrayList<CategoryEntry>();
 		setUpComposite();
 		updateSpinners();
