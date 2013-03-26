@@ -5,8 +5,6 @@ package budgetapp.fragments;
  */
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
-import budgetapp.main.R.id;
-import budgetapp.main.R.layout;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,35 +30,31 @@ public class DailyBudgetFragment extends DialogFragment {
 	    builder.setView(view);
 	 
 	    // Add action buttons
-	           builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
 	        	   
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   
-	            	   EditText newBudget = (EditText)view.findViewById(R.id.dialog_dailybudget);
-	            	   
-		               try
-		               {
-							double theBudget = Double.parseDouble(newBudget.getText().toString());
-							
-							((MainActivity) getActivity()).setDailyBudget(theBudget);
-							//((MainActivity) getActivity()).updateLog();
-							//((MainActivity) getActivity()).updateColor();
-							Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
-							
-		               }
-		               catch(NumberFormatException e)
-		               {
-		            	   
-		               }
-	               }
-	           })
-	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	                   DailyBudgetFragment.this.getDialog().cancel();
-	               }
-	           });   
-	          // System.out.println("itdd is_ " + category.getText().toString());
+        	@Override
+	        public void onClick(DialogInterface dialog, int id) {
+	    	   
+	    	    EditText newBudget = (EditText)view.findViewById(R.id.dialog_dailybudget);
+	    	   
+	            try
+	            {
+	            	double theBudget = Double.parseDouble(newBudget.getText().toString());
+				 	((MainActivity) getActivity()).setDailyBudget(theBudget);
+					Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
+	            }
+	            catch(NumberFormatException e)
+	            {
+	        	   
+	            }
+	        }
+	    })
+	    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int id) {
+	            DailyBudgetFragment.this.getDialog().cancel();
+	        }
+	    });   
+	           
 	    return builder.create();
 	}
 }

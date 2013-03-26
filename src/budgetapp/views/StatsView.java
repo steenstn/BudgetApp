@@ -41,8 +41,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	private int selectedYear=0;
 	private int selectedMonth=0;
 
-	String selectedCategory = getResources().getString(R.string.all_categories);
-	ViewHolder selectedListItem;
+	private String selectedCategory = getResources().getString(R.string.all_categories);
 	private ArrayList<CompositeStats> years;
 	private List<CategoryEntry> categoryStats; // Contains stats for categories
 	private ViewListener viewListener;
@@ -51,7 +50,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	private Spinner categorySpinner;
 	private ListView entryList;
 	private BudgetModel model;
-	private TextView stats;
 	BudgetAdapter listAdapter;
 	
 	public StatsView(Context context, AttributeSet attrs) {
@@ -73,7 +71,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedYear)
 		{
 			this.selectedYear = value;
-			update();
+			updateLog();
+			updateStats();
 		}
 	}
 	
@@ -82,7 +81,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedMonth)
 		{
 			this.selectedMonth = value;
-			update();
+			updateLog();
+			updateStats();
 		}
 	}
 	
@@ -91,7 +91,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(!value.equalsIgnoreCase(this.selectedCategory))
 		{
 			this.selectedCategory = value;
-			update();
+			updateLog();
+			updateStats();
 		}
 	}
 	
@@ -130,7 +131,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
     	monthSpinner = (Spinner)findViewById(R.id.spinnerMonth);
     	categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
     	entryList = (ListView)findViewById(R.id.ListViewLogTop);
-    	stats = (TextView)findViewById(R.id.textViewLogStats);
 		
     	listAdapter = new BudgetAdapter(this.getContext());
     	setUpListeners();
@@ -140,6 +140,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	public void updateLog()
 	{
 
+		categoryStats = new ArrayList<CategoryEntry>();
 		listAdapter = new BudgetAdapter(this.getContext());
 		if(years.size()!=0)
 		{
@@ -162,6 +163,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		List<DayEntry> days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
         List<DayEntry> dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
         
+        TextView stats = (TextView)findViewById(R.id.textViewLogStats);
 		stats.setMovementMethod(new ScrollingMovementMethod());
 		if(days.size()<2)
 		{
@@ -211,7 +213,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 * @param view The TextView to append to
 	 * @param index The index of the year
 	 */
-	public void printYear(int index)
+	private void printYear(int index)
 	{
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
 		listAdapter.add(new ViewHolder(years.get(index).getName(),ViewHolder.YEAR));
@@ -236,7 +238,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 * @param months An ArrayList<Stats> containing the months
 	 * @param index The index of the month
 	 */
-	public void printMonth(ArrayList<Stats> months, int index)
+	private void printMonth(ArrayList<Stats> months, int index)
 	{
 		boolean monthPrinted = false;
 		if(index<months.size())
@@ -268,7 +270,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 * @param view The view to append to
 	 * @param entry The BudgetEntry to append
 	 */
-	public void printEntry(BudgetEntry entry)
+	private void printEntry(BudgetEntry entry)
 	{
 		listAdapter.add(new ViewHolder(entry));
 	}
@@ -277,7 +279,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 * Update the stats for a category
 	 * @param entry The transaction with the data to get stats from
 	 */
-	public void addStats(BudgetEntry entry)
+	private void addStats(BudgetEntry entry)
 	{
 		boolean added = false;
 		for(int i=0;i<categoryStats.size();i++)
@@ -298,17 +300,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	}
 	public void updateSpinners()
 	{
-		List<CategoryEntry> categories = new ArrayList<CategoryEntry>();
-		categories = model.getCategoriesSortedByValue();
-        
-		List<String> categoryNames = new ArrayList<String>();
-        for(int i=0;i<categories.size();i++)
-        	categoryNames.add(categories.get(i).getCategory());
-        
+		
 		 //Set up the year spinner
 		ArrayList<String> yearStartValues = new ArrayList<String>();
 		
-        ArrayList<String> categoryStartValues = new ArrayList<String>();
         
 		//yearStartValues.add(getContext().getString(R.string.all_years));
         for(int i=0;i<years.size();i++)
@@ -326,25 +321,13 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		 
 		 
 		updateMonthSpinner();
-		// Set up the category spinner
-		categoryStartValues.add(getContext().getString(R.string.all_categories));
-		for(int i=0;i<categoryNames.size();i++)
-		{
-			categoryStartValues.add(categoryNames.get(i));
-		}
-		spinner = (Spinner) findViewById(R.id.spinnerCategory);
-		// Create an ArrayAdapter using the string array and a default spinner layout
-		adapter = new ArrayAdapter<String>(this.getContext(),   android.R.layout.simple_spinner_item, categoryStartValues);
-		  
-		// Specify the layout to use when the list of choices appears
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// Apply the adapter to the spinner
-		spinner.setAdapter(adapter);
+		
+		updateCategorySpinner();
 			 
 			 
 	}
 	
-	public void updateMonthSpinner()
+	private void updateMonthSpinner()
 	{
 		
 		//Set up the month spinner
@@ -383,11 +366,36 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		 
 	}
 	
+	/**
+	 * Updates the category spinner
+	 */
+	private void updateCategorySpinner()
+	{
+		List<CategoryEntry> categories = new ArrayList<CategoryEntry>();
+		categories = model.getCategoriesSortedByValue();
+        
+		List<String> categoryNames = new ArrayList<String>();
+        for(int i=0;i<categories.size();i++)
+        	categoryNames.add(categories.get(i).getCategory());
+        
+		// Set up the category spinner
+		ArrayList<String> categoryStartValues = new ArrayList<String>();
+        
+		categoryStartValues.add(getContext().getString(R.string.all_categories));
+		for(int i=0;i<categoryNames.size();i++)
+		{
+			categoryStartValues.add(categoryNames.get(i));
+		}
+		Spinner spinner = (Spinner) findViewById(R.id.spinnerCategory);
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(),   android.R.layout.simple_spinner_item, categoryStartValues);
+		  
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+	}
 	
 	@Override
 	public void update() {
-		
-		categoryStats = new ArrayList<CategoryEntry>();
 		setUpComposite();
 		updateSpinners();
 		updateLog();
@@ -398,17 +406,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		textView.scrollTo(0,0);
 	}
 	
-	public void updateSelectedEntry(BudgetEntry newEntry)
-	{
-		if(newEntry!=null)
-		{
-			selectedListItem.entry.setCategory(newEntry.getCategory());
-			selectedListItem.entry.setComment(newEntry.getComment());
-			selectedListItem.entry.setValue(newEntry.getValue());
-		}
-		entryList.invalidate();
-		
-	}
+	
 	
 	private void setUpListeners()
 	{
@@ -426,8 +424,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 			public boolean onItemLongClick(AdapterView<?> adapter, View view,int position, long arg)
 			{
 				ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
-			     
-			 	selectedListItem = listItem;
 				viewListener.listViewLongClick(listItem);					 
 			     
 				return true;

@@ -4,6 +4,12 @@ import java.util.List;
 
 public class BudgetFunctions {
 	
+	/**
+	 * Returns the minimum value of two integers
+	 * @param a - The first integer to compare
+	 * @param b - The second integer to compare
+	 * @return The integer with the lowest value
+	 */
 	public static int min(int a,int b) 
 	{
 		if(a<b)

@@ -4,8 +4,6 @@ package budgetapp.fragments;
  */
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
-import budgetapp.main.R.id;
-import budgetapp.main.R.layout;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -20,35 +18,32 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	    // Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    final View view = inflater.inflate(R.layout.dialog_remove_category, null);
-	    // Inflate and set the layout for the dialog
-	    // Pass null as the parent view because its going in the dialog layout
 	    builder.setView(view);
+	    
 	    final MainActivity activity = ((MainActivity) getActivity());
 	    // Add action buttons
-	           builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
-	        	   
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	            	   if(activity.removeCategory(category.getText().toString())==true)
-	            	   {
-	            		   Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
-	            		  
-	            	   }
-	            	   else
-	            		   Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();
-	               }
-	           })
-	           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	                   RemoveCategoryDialogFragment.this.getDialog().cancel();
-	                   
-	               }
-	           });   
-	          // System.out.println("itdd is_ " + category.getText().toString());
+    	builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+    	   
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+        	    EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
+        	    if(activity.removeCategory(category.getText().toString())==true)
+        	    {
+        		    Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+        	    }
+        	    else
+        		    Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();
+            }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                RemoveCategoryDialogFragment.this.getDialog().cancel();
+            }
+        });   
+        	
 	    return builder.create();
 	}
 }

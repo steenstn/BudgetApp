@@ -20,11 +20,20 @@ public class StatsActivity extends FragmentActivity{
 	private StatsView theView;
 	private BudgetModel model;
 	
+	/**
+	 * Removes an entry from the model
+	 * @param entry - The BudgetEntry to remove
+	 */
 	public void removeTransactionEntry(BudgetEntry entry)
 	{
 		model.removeTransaction(entry);
 	}
 	
+	/**
+	 * Edits an entry
+	 * @param oldEntry - The entry to edit
+	 * @param newEntry - The entry to replace the old with
+	 */
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		model.editTransaction(oldEntry, newEntry);
@@ -56,6 +65,7 @@ public class StatsActivity extends FragmentActivity{
 			int selectedYear = yearSpinner.getSelectedItemPosition();
 			int selectedMonth = monthSpinner.getSelectedItemPosition()-1; // When there is a "All categories" entry. -1 is needed to get correct month
 			String selectedCategory = (String) categorySpinner.getSelectedItem();
+			
 			
 			theView.setSelectedYear(selectedYear);
 			theView.setSelectedMonth(selectedMonth);

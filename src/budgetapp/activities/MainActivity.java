@@ -90,13 +90,14 @@ public class MainActivity extends FragmentActivity {
 
         setContentView(view);
         view.setModel(model);
-       
+        view.update();
     }
     
     @Override
     public void onResume()
     {
     	super.onResume();
+    	
     	// Add daily budget and Toast the result if anything was added
     	int daysAdded = model.addDailyBudget();
     	if(daysAdded>0)
@@ -129,7 +130,12 @@ public class MainActivity extends FragmentActivity {
     	return true;
     }
     
-    public void subtractFromBudget(View view,String theCategory, String theComment) {
+    /**
+     * Gets the value from the EditText and subtract the value from current budget
+     * @param theCategory - The category to add to the entry
+     * @param theComment - The comment to add to the entry
+     */
+    public void subtractFromBudget(String theCategory, String theComment) {
        
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
@@ -180,10 +186,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-            /*case R.id.menu_showgraph: // Wait for it!
+            case R.id.menu_showgraph: // Wait for it!
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;*/
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -204,7 +210,7 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void favButtClick(Button id) {
 			Button pressedButton = id;
-	    	subtractFromBudget(id,pressedButton.getText().toString(),null);
+	    	subtractFromBudget(pressedButton.getText().toString(),null);
 		}
 		
 		@Override

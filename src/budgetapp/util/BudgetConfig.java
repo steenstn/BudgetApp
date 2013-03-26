@@ -21,15 +21,15 @@ public class BudgetConfig {
 	private Context context;
 	
 	// Variables for the config values
-	private double var_dailyBudget = 0;
-	private String var_currency = "kr";
-	private boolean var_printCurrencyAfter = true;
-	private double var_exchangeRate = 1;
+	private double varDailyBudget = 0;
+	private String varCurrency = "kr";
+	private boolean varPrintCurrencyAfter = true;
+	private double varExchangeRate = 1;
 	
 	/**
 	 * The available fields in the config
 	 */
-	public static enum fields
+	public static enum Fields
 	{
 		dailyBudget,
 		currency,
@@ -49,14 +49,14 @@ public class BudgetConfig {
 	 * @return A double from the listed enum values
 	 * @throws IllegalArgumentException() - If the field entered is not a double in the enum list
 	 */
-	public double getDoubleValue(BudgetConfig.fields theField)
+	public double getDoubleValue(BudgetConfig.Fields theField)
 	{
 		switch(theField)
 		{
 			case dailyBudget:
-				return var_dailyBudget;
+				return varDailyBudget;
 			case exchangeRate:
-				return var_exchangeRate;
+				return varExchangeRate;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -68,12 +68,12 @@ public class BudgetConfig {
 	 * @return A double from the listed enum values
 	 * @throws IllegalArgumentException() - If the field entered is not a String in the enum list
 	 */
-	public String getStringValue(BudgetConfig.fields theField)
+	public String getStringValue(BudgetConfig.Fields theField)
 	{
 		switch(theField)
 		{
 			case currency:
-				return var_currency;
+				return varCurrency;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -85,12 +85,12 @@ public class BudgetConfig {
 	 * @return A double from the listed enum values
 	 * @throws IllegalArgumentException() - If the field entered is not a boolean in the enum list
 	 */
-	public boolean getBooleanValue(BudgetConfig.fields theField)
+	public boolean getBooleanValue(BudgetConfig.Fields theField)
 	{
 		switch(theField)
 		{
 			case printCurrencyAfter:
-				return var_printCurrencyAfter;
+				return varPrintCurrencyAfter;
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -102,15 +102,15 @@ public class BudgetConfig {
 	 * @param theValue - The double to write
 	 * @throws IllegalArgumentException() - If the field is not one of the double variables
 	 */
-	public void writeValue(BudgetConfig.fields theField, double theValue)
+	public void writeValue(BudgetConfig.Fields theField, double theValue)
 	{
 		switch(theField)
 		{
 			case dailyBudget:
-				var_dailyBudget = theValue;
+				varDailyBudget = theValue;
 				break;
 			case exchangeRate:
-				var_exchangeRate = theValue;
+				varExchangeRate = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -123,12 +123,12 @@ public class BudgetConfig {
 	 * @param theValue - The String to write
 	 * @throws IllegalArgumentException() - If the field is not one of the String variables
 	 */
-	public void writeValue(BudgetConfig.fields theField, String theValue)
+	public void writeValue(BudgetConfig.Fields theField, String theValue)
 	{
 		switch(theField)
 		{
 			case currency:
-				var_currency = theValue;
+				varCurrency = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -141,12 +141,12 @@ public class BudgetConfig {
 	 * @param theValue - The boolean to write
 	 * @throws IllegalArgumentException() - If the field is not one of the boolean variables
 	 */
-	public void writeValue(BudgetConfig.fields theField, boolean theValue)
+	public void writeValue(BudgetConfig.Fields theField, boolean theValue)
 	{
 		switch(theField)
 		{
 			case printCurrencyAfter:
-				var_printCurrencyAfter = theValue;
+				varPrintCurrencyAfter = theValue;
 				break;
 			default:
 				throw new IllegalArgumentException();
@@ -176,7 +176,7 @@ public class BudgetConfig {
         				 {
         					 try
         					 {
-        						 var_dailyBudget = Double.parseDouble(strLine);
+        						 varDailyBudget = Double.parseDouble(strLine);
         					 }
         					 catch(NumberFormatException e)
         					 {
@@ -211,22 +211,22 @@ public class BudgetConfig {
 	 */
 	private void parseString(String in)
     {
-		if(in.startsWith(fields.dailyBudget.name()+"="))
+		if(in.startsWith(Fields.dailyBudget.name()+"="))
     	{
-    		var_dailyBudget = Double.parseDouble(in.substring(fields.dailyBudget.name().length()+1));
+    		varDailyBudget = Double.parseDouble(in.substring(Fields.dailyBudget.name().length()+1));
     	}
-		else if(in.startsWith(fields.currency.name()+"="))
+		else if(in.startsWith(Fields.currency.name()+"="))
 		{
-    		var_currency = in.substring(fields.currency.name().length()+1);
+    		varCurrency = in.substring(Fields.currency.name().length()+1);
 		}
-		else if(in.startsWith(fields.printCurrencyAfter.name()+"="))
+		else if(in.startsWith(Fields.printCurrencyAfter.name()+"="))
 		{
-			if(in.substring(fields.printCurrencyAfter.name().length()+1).equalsIgnoreCase("true"))
-				var_printCurrencyAfter = true;
+			if(in.substring(Fields.printCurrencyAfter.name().length()+1).equalsIgnoreCase("true"))
+				varPrintCurrencyAfter = true;
 			else
-				var_printCurrencyAfter = false;
+				varPrintCurrencyAfter = false;
 		}
-		else if(in.startsWith(fields.exchangeRate.name()+"=")) // Not yet implemented
+		else if(in.startsWith(Fields.exchangeRate.name()+"=")) // Not yet implemented
 		{
 			System.out.println(in);
 		}
@@ -241,10 +241,10 @@ public class BudgetConfig {
 		try{
 			out = new DataOutputStream(context.openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
 			
-			out.writeUTF(fields.dailyBudget.name()+"="+var_dailyBudget);
-			out.writeUTF(fields.currency.name()+"="+var_currency);
-			out.writeUTF(fields.printCurrencyAfter.name()+"="+var_printCurrencyAfter);
-			out.writeUTF(fields.exchangeRate.name()+"="+1);
+			out.writeUTF(Fields.dailyBudget.name()+"="+varDailyBudget);
+			out.writeUTF(Fields.currency.name()+"="+varCurrency);
+			out.writeUTF(Fields.printCurrencyAfter.name()+"="+varPrintCurrencyAfter);
+			out.writeUTF(Fields.exchangeRate.name()+"="+1);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

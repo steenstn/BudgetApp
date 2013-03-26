@@ -4,17 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.*;
 import budgetapp.util.database.BudgetDataSource;

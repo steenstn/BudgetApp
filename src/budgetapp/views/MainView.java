@@ -51,7 +51,6 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	{
 		this.model = model;
 		model.addObserver(this);
-		update();
 		
 	}
 	@Override
@@ -77,7 +76,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 		updateButtons();
 	}
 	
-	public void updateCurrentBudget()
+	private void updateCurrentBudget()
     {
     	TextView curr = (TextView)findViewById(R.id.textViewCurrentBudget);
     	curr.setText(""+model.getCurrentBudget());
@@ -86,7 +85,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	/**
 	 * Update the favButtz to show top categories
 	 */
-	void updateButtons()
+	private void updateButtons()
     {
     	int numButtons = 3;
     	ArrayList<Button> theButtons = new ArrayList<Button>();
@@ -120,7 +119,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	
     }
 	
-	public void updateLog()
+	private void updateLog()
     {
     	List<BudgetEntry> entries = model.getSomeTransactions(5,BudgetDataSource.DESCENDING);
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
@@ -146,7 +145,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     }
 	
 	// Colors the currentBudget text depending on the size of the current budget
-    public void updateColor()
+    private void updateColor()
     {
     	int numDays = 30;
     	List<DayEntry> days = model.getSomeDays(numDays,BudgetDataSource.DESCENDING);
