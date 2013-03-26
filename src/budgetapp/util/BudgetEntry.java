@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 
 /**
- * Class for a budget entry. Used to keep track of transactions.
+ * Class for a budget entry. Used to keep track of transactions. Implements Parcelable
+ * to be able to be sent between Activities
  * 
  * @author Steen
  * 

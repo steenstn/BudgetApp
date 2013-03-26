@@ -31,10 +31,10 @@ public class BudgetModel {
 	{
 		datasource = new BudgetDataSource(context);
 		config = new BudgetConfig(context);
-		Money.after = config.getBooleanValue(BudgetConfig.fields.printCurrencyAfter);
-		Money.setCurrency(config.getStringValue(BudgetConfig.fields.currency));
+		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
+		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
 		
-		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.fields.dailyBudget));
+		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
 		stateChanged = true;
@@ -96,7 +96,7 @@ public class BudgetModel {
 	public void setDailyBudget(Money budget)
 	{
 		dailyBudget = budget;
-		config.writeValue(BudgetConfig.fields.dailyBudget, budget.get());
+		config.writeValue(BudgetConfig.Fields.dailyBudget, budget.get());
 		config.saveToFile();
 		stateChanged = true;
 		notifyObservers();
@@ -217,8 +217,8 @@ public class BudgetModel {
 	
 	public void saveConfig()
 	{
-		config.writeValue(BudgetConfig.fields.currency,Money.currency());
-		config.writeValue(BudgetConfig.fields.printCurrencyAfter, Money.after);
+		config.writeValue(BudgetConfig.Fields.currency,Money.currency());
+		config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);
 		config.saveToFile();
 	}
 	
