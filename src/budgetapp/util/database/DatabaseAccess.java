@@ -34,7 +34,11 @@ public class DatabaseAccess {
 		database = theDatabase;
 	}
 	
-	
+	/**
+	 * Adds a category to the category table in the database
+	 * @param theCategory - Name of the category to add
+	 * @return - If the insert was successful
+	 */
 	public boolean addCategory(String theCategory)
 	{
 		ContentValues values = new ContentValues();
@@ -46,15 +50,24 @@ public class DatabaseAccess {
 		else
 			return true;
 	}
-
+	
+	/**
+	 * Removes a category from the category table in the database
+	 * @param theCategory - Name of the category to delete
+	 * @return - If the deletion was successful
+	 */
 	public boolean removeCategory(String theCategory)
 	{
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
 	} 
 	
+	/**
+	 * Adds a transaction entry to the cash flow table in the dataase
+	 * @param theEntry - The BudgetEntry to add
+	 * @return - The added BudgetEntry, will have an id from the table
+	 */
 	public BudgetEntry addEntry(BudgetEntry theEntry)
 	{
-		
 		ContentValues values = new ContentValues();
 		// Put in the values
 		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
@@ -74,6 +87,11 @@ public class DatabaseAccess {
 		return entry;
 	}
 	
+	/**
+	 * Gets a BudgetEntry from the cash flow table
+	 * @param theId - Id of the entry to get
+	 * @return - The resulting BudgetEntry or a new BudgetEntry() if not found
+	 */
 	public BudgetEntry getEntry(long theId)
 	{
 		Cursor cursor;
@@ -87,6 +105,12 @@ public class DatabaseAccess {
 		else
 			return new BudgetEntry();
 	}
+	
+	/**
+	 * Removes an entry from the cash flow table
+	 * @param theEntry - The entry to delete
+	 * @return - If the deletion was successful
+	 */
 	public boolean removeEntry(BudgetEntry theEntry)
 	{
 		int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
@@ -99,10 +123,10 @@ public class DatabaseAccess {
 	}
 	
 	/**
-	 * Updates the DAYSUM table
-	 * @param theEntry
-	 * @param newEntry
-	 * @return
+	 * Updates the daysum table
+	 * @param theEntry - The entry to add
+	 * @param newEntry - Possible other entry. This means that an entry was edited
+	 * @return - If the adding was successful
 	 */
 	public boolean updateDaySum(BudgetEntry theEntry, BudgetEntry newEntry)
 	{
@@ -110,7 +134,7 @@ public class DatabaseAccess {
 		//COLUMN_VALUE
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
-		//System.out.println("substring: "+ theEntry.getDate().substring(0, 10));
+		
 		// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
 		double newValue = theEntry.getValue().get();
 		if(newEntry != null)
@@ -120,7 +144,6 @@ public class DatabaseAccess {
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
 			ContentValues values = new ContentValues();
-			
 			
 			// Put in the values
 			values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate().substring(0, 10)); // Don't use the hours and minutes in the daysum
@@ -141,6 +164,13 @@ public class DatabaseAccess {
 		cursor.close();
 		return true;
 	}
+	
+	/**
+	 * Updates the daytotal table, goes through all daytotal entries when updating
+	 * @param theEntry - The entry to add
+	 * @param newEntry - Possible second entry. This means that an entry was edited
+	 * @return - If the updating was successful
+	 */
 	public boolean updateDayTotal(BudgetEntry theEntry, BudgetEntry newEntry)
 	{
 		Cursor cursor;
@@ -185,10 +215,6 @@ public class DatabaseAccess {
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
-			System.out.println("id in database: " + theId);
-			System.out.println("newValue " + newValue);
-			System.out.println("total " + total);
-			
 			addValueToRemaindingDays(newValue, theId);
 			
 			return true;
@@ -204,29 +230,13 @@ public class DatabaseAccess {
 	{
 		database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
 	}
-	public boolean updateComment(BudgetEntry theEntry, String newComment)
-	{
-		Cursor cursor;
-		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + theEntry.getId(),null);
-		
-		if(cursor.getCount()==1)
-		{
-			cursor.moveToFirst();
-			ContentValues values = new ContentValues();
-			values.put(BudgetDatabase.COLUMN_COMMENT, newComment);
-			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(), null);
-			
-			if(res!=0)
-			{	
-				cursor.close();
-				return true;
-			}
-		}
-		cursor.close();
-		return false;
 	
-	}
-	
+	/**
+	 * Updates a transaction entry in the cash flow table
+	 * @param oldEntry - The entry to edit
+	 * @param newEntry - Entry containging the new values
+	 * @return - If te editing was successful
+	 */
 	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		Cursor cursor;
@@ -252,6 +262,11 @@ public class DatabaseAccess {
 	}
 	
 	
+	/**
+	 * Add a value to a category in the category table
+	 * @param theCategory - The category to add to
+	 * @param value - The value to add
+	 */
 	public void addToCategory(String theCategory,double value)
 	{
 		
@@ -282,7 +297,11 @@ public class DatabaseAccess {
 		cursor.close();
 	}
 	
-	// Remove a value from the category table, also decreases the number of transactions by 1
+	/**
+	 *  Remove a value from the category table, also decreases the number of transactions by 1
+	 * @param theCategory - The category to remove from
+	 * @param value - The value to remove
+	 */
 	public void removeFromCategory(String theCategory,double value)
 	{
 		Cursor cursor;
@@ -309,7 +328,11 @@ public class DatabaseAccess {
 		cursor.close();
 			
 	}
-	// Add a CategoryEntry to the database.
+	/**
+	 * Add a CategoryEntry to the database.
+	 * @param theEntry - The CategoryEntry to add
+	 * @return - The resulting CategoryEntry with an id added
+	 */
 	public CategoryEntry addEntry(CategoryEntry theEntry)
 	{
 		ContentValues values = new ContentValues();
@@ -324,6 +347,7 @@ public class DatabaseAccess {
 		cursor.close();
 		return entry;
 	}
+	
 	/**
 	 *  Get n number of transactions. If n = 0, returns all transactions
 	 * @param n - Number of transactions
@@ -333,7 +357,6 @@ public class DatabaseAccess {
 	public List<BudgetEntry> getTransactions(int n,String mode)
 	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
-		//database.
 		Cursor cursor;
 		if(n<=0) // Get all entries
 			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode,null);
@@ -350,6 +373,8 @@ public class DatabaseAccess {
 		cursor.close();
 		return entries;
 	}
+	
+	
 	public List<DayEntry> getDaySum(int n,String mode)
 	{
 		List<DayEntry> entries = new ArrayList<DayEntry>();

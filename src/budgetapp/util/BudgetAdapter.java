@@ -1,5 +1,7 @@
 package budgetapp.util;
-
+/**
+ * Adapter class for adding a transaction entry to a ListView
+ */
 import java.util.ArrayList;
 
 import budgetapp.main.R;
@@ -30,42 +32,50 @@ public class BudgetAdapter extends BaseAdapter {
 	{
 		data.remove(pos);
 	}
+	
 	@Override
 	public int getCount() {
 		return data.size();
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Object getItem(int position)
+	{
 		return data.get(position);
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(int position) 
+	{
 		return position;
 	}
-
+	
+	/**
+	 * Overriden function for getting a View from the ListView, uses recycling to 
+	 * save resources
+	 */
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent)
+	{
 		
 		ViewHolder holder = null;
 		if(convertView == null)
 		{
 			convertView = inflater.inflate(R.layout.stats_listitem,null);
 			holder = new ViewHolder(data.get(position));
-			holder.textView = (TextView)convertView.findViewById(android.R.id.text1);
+			holder.setTextView((TextView)convertView.findViewById(android.R.id.text1));
 			convertView.setTag(holder);
 		}
 		else
 		{
 			ViewHolder tempEntry = data.get(position);
 			holder = (ViewHolder)convertView.getTag();
-			holder.entry = tempEntry.entry;
-			holder.title = tempEntry.title;
-			holder.flag = tempEntry.flag;
+			holder.setEntry(tempEntry.getEntry());
+			holder.setTitle(tempEntry.getTitle());
+			holder.setType(tempEntry.getType());
 			
 		}
-		holder.textView.setText(holder.toString());
+		holder.getTextView().setText(holder.toString());
 		return convertView;
 		
 	}

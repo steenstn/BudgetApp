@@ -170,7 +170,7 @@ public class BudgetConfig {
         			 try
         			 {
         				 strLine = in.readUTF();
-        				 // Second run, if the user has an old version of MrCashManger
+        				 // Second run, if the user have upgraded from an old version of MrCashManger
         				 // the dailyBudget would be here, try and parse the line directly
         				 if(counter==1) 
         				 {

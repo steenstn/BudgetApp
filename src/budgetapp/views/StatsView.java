@@ -71,8 +71,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedYear)
 		{
 			this.selectedYear = value;
-			updateLog();
-			updateStats();
+			updateViews();
 		}
 	}
 	
@@ -81,8 +80,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(value!=this.selectedMonth)
 		{
 			this.selectedMonth = value;
-			updateLog();
-			updateStats();
+			updateViews();
 		}
 	}
 	
@@ -91,8 +89,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		if(!value.equalsIgnoreCase(this.selectedCategory))
 		{
 			this.selectedCategory = value;
-			updateLog();
-			updateStats();
+			updateViews();
 		}
 	}
 	
@@ -137,26 +134,33 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 
     }
 	
-	public void updateLog()
+	/**
+	 * Updates the ListView. Clears the stats and the adapter and calls addYear() which in turn calls 
+	 * addMonth() which calls addEntry()
+	 */
+	public void updateList()
 	{
-
 		categoryStats = new ArrayList<CategoryEntry>();
 		listAdapter = new BudgetAdapter(this.getContext());
 		if(years.size()!=0)
 		{
 			if(selectedYear>-1)
-				printYear(selectedYear);
+			{
+				addYear(selectedYear);
+			}
 			else
 			{
 				for(int i = 0; i < years.size(); i++)
-					printYear(i);
+				{
+					addYear(i);
+				}
 			}
 		}
 		entryList.setAdapter(listAdapter);
 	}
 	
 	/**
-	 * Updates the stats TextView
+	 * Calculates the mean derivative and prints the statistics for the categories
 	 */
 	public void updateStats()
 	{
@@ -209,36 +213,34 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	}
 	
 	/**
-	 * Appends a year worth of BudgetEntrys to a TextView, using printMonth
-	 * @param view The TextView to append to
+	 * Appends a year worth of BudgetEntrys to a BudgetAdapter, using addMonth
 	 * @param index The index of the year
 	 */
-	private void printYear(int index)
+	private void addYear(int index)
 	{
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
-		listAdapter.add(new ViewHolder(years.get(index).getName(),ViewHolder.YEAR));
+		listAdapter.add(new ViewHolder(years.get(index).getName(),ViewHolder.Type.year));
     	if(selectedMonth>-1) // A specific month is chosen
     	{
-    		printMonth(months,selectedMonth);
+    		addMonth(months,selectedMonth);
     	}
     	else // Print all transactions this year
     	{
         	for(int j=0;j<months.size();j++)
         	{
-        		printMonth(months,j);
+        		addMonth(months,j);
         	}
     	}
 		
 	}
 	
 	/**
-	 * Appends a months of BudgetEntrys to a TextView, only appends those chosen by selectedCategory, 
-	 * or if selectedCategory is set to All categories, appends all
-	 * @param view The TextView to append to
+	 * Adds a months of BudgetEntrys to a BudgetAdapter, only adds those chosen by selectedCategory, 
+	 * or if selectedCategory is set to All categories, adds all
 	 * @param months An ArrayList<Stats> containing the months
 	 * @param index The index of the month
 	 */
-	private void printMonth(ArrayList<Stats> months, int index)
+	private void addMonth(ArrayList<Stats> months, int index)
 	{
 		boolean monthPrinted = false;
 		if(index<months.size())
@@ -253,10 +255,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 					if(!monthPrinted)
 					{
 						//list.add(monthToString(months.get(index).getName()));
-						listAdapter.add(new ViewHolder(monthToString(months.get(index).getName()),ViewHolder.MONTH));
+						listAdapter.add(new ViewHolder(monthToString(months.get(index).getName()),ViewHolder.Type.month));
 						monthPrinted = true;
 					}
-					printEntry(entry);
+					addEntry(entry);
 					addStats(entry); // Add the stats to categoryStats
 				}
 			}
@@ -266,11 +268,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	
 	
 	/**
-	 * Appends a BudgetEntry to a specific TextView
-	 * @param view The view to append to
+	 * Adds a BudgetEntry to a specific BudgetAdapter
 	 * @param entry The BudgetEntry to append
 	 */
-	private void printEntry(BudgetEntry entry)
+	private void addEntry(BudgetEntry entry)
 	{
 		listAdapter.add(new ViewHolder(entry));
 	}
@@ -367,7 +368,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	}
 	
 	/**
-	 * Updates the category spinner
+	 * Gets all categories and adds them to the spinner as well as the "All categories" option
 	 */
 	private void updateCategorySpinner()
 	{
@@ -378,7 +379,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
         for(int i=0;i<categories.size();i++)
         	categoryNames.add(categories.get(i).getCategory());
         
-		// Set up the category spinner
 		ArrayList<String> categoryStartValues = new ArrayList<String>();
         
 		categoryStartValues.add(getContext().getString(R.string.all_categories));
@@ -398,16 +398,33 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	public void update() {
 		setUpComposite();
 		updateSpinners();
-		updateLog();
+		updateViews();
+	}
+	
+	/**
+	 * Updates the views without adding new information and scrolls to top of both views
+	 */
+	public void updateViews()
+	{
+		updateList();
 		updateStats();
+		scrollToTop();
+	}
+	
+	/**
+	 * Scroll both views to the top
+	 */
+	public void scrollToTop()
+	{
 		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
 		listView.scrollTo(0,0);
 		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
 		textView.scrollTo(0,0);
 	}
 	
-	
-	
+	/**
+	 * Set up listeners for the Spinners and the ListView
+	 */
 	private void setUpListeners()
 	{
 		
@@ -468,7 +485,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		});
 	}
 
-	/***
+	/**
 	 * Parses a string and gets the correct month from Resources. String must be
 	 * 1-12
 	 * @param in The string to parse
