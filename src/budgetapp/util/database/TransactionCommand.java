@@ -33,8 +33,6 @@ public class TransactionCommand {
 	
 	public void unexecute()
 	{
-			//Remove transactionEntry
-			_datasource.removeTransactionEntry(_entry);
-			
+		_datasource.removeTransactionEntry(_entry);
 	}
 }

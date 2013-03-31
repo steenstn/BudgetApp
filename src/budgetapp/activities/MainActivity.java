@@ -106,7 +106,6 @@ public class MainActivity extends FragmentActivity {
     		result.set(daysAdded*getDailyBudget().get());
     		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
     	}
-    	view.update();
     }
     
     public void saveConfig()
@@ -186,10 +185,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.menu_showgraph: // Wait for it!
+            /*case R.id.menu_showgraph: // Wait for it!
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

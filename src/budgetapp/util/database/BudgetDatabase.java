@@ -6,6 +6,10 @@ package budgetapp.util.database;
  * 
  */
 
+import java.util.ArrayList;
+
+import budgetapp.util.DayEntry;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -111,26 +115,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
-		/*
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
 		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);
-		
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Misc");
-		values.put(BudgetDatabase.COLUMN_NUM, 0);
-		values.put(BudgetDatabase.COLUMN_TOTAL, 0);
-		database.insert(BudgetDatabase.TABLE_CATEGORIES, null,values);*/
 		
 	}
 	
@@ -139,8 +124,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	{
 		Cursor cursor;
 		switch(oldVersion)  
-		{
-		/*case 1:// Database from app version 2.0. Add the flags-column
+		{/*
+		case 1:// Database from app version 2.0. Add the flags-column
 			db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_DAYSUM + " ADD COLUMN " + COLUMN_FLAGS);
 			db.execSQL("ALTER TABLE " + TABLE_CATEGORIES + " ADD COLUMN " + COLUMN_FLAGS);

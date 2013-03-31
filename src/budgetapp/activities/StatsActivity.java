@@ -75,11 +75,11 @@ public class StatsActivity extends FragmentActivity{
 		@Override
 		public void listViewLongClick(ViewHolder theEntry) {
 			 ViewHolder listItem = theEntry;
-			 if(listItem.flag == ViewHolder.ENTRY)
+			 if(listItem.getType() == ViewHolder.Type.entry)
 			 {
 		    	 DialogFragment newFragment = new EditTransactionDialogFragment();
 		    	 Bundle bundle = new Bundle();
-		    	 bundle.putParcelable("entry", (Parcelable) listItem.entry);
+		    	 bundle.putParcelable("entry", (Parcelable) listItem.getEntry());
 		    	 
 		    	 newFragment.setArguments(bundle);
 		    	 newFragment.show(getSupportFragmentManager(), "edit_transaction");
@@ -89,9 +89,9 @@ public class StatsActivity extends FragmentActivity{
 		
 		@Override
 		public void listViewClick(ViewHolder theEntry) {
-			if(!theEntry.entry.getComment().equalsIgnoreCase(""))
+			if(!theEntry.getEntry().getComment().equalsIgnoreCase(""))
 			{	
-				Toast.makeText(getBaseContext(), theEntry.entry.getComment(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getBaseContext(), theEntry.getEntry().getComment(), Toast.LENGTH_LONG).show();
 			}
 			
 		}

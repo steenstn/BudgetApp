@@ -10,56 +10,97 @@ import android.widget.TextView;
  */
 public class ViewHolder {
 	
-	
-    public TextView textView;
-    public BudgetEntry entry;
-    public int flag;
-    public String title;
-    // What kind of entry it is
-    public static final int ENTRY = 0;
-    public static final int YEAR = 1;
-    public static final int MONTH = 2;
+    private TextView textView;
+    private BudgetEntry entry;
+    private Type flag;
+    private String title;
     
+    // What kind of entry it is
+    public static enum Type
+    {
+    	entry,
+    	year,
+    	month
+    }
 	public ViewHolder(BudgetEntry entry)
 	{
 		this.entry = entry;
-		flag = ENTRY;
+		flag = Type.entry;
 		this.title = "";
 	}
 	public ViewHolder(ViewHolder viewHolder)
 	{
-		this.entry = viewHolder.entry;
-		this.title = viewHolder.title;
-		this.flag = viewHolder.flag;
+		this.entry = viewHolder.getEntry();
+		this.title = viewHolder.getTitle();
+		this.flag = viewHolder.getType();
 	}
-	public ViewHolder(String theString,int theInt)
+	public ViewHolder(String theString,Type theType)
 	{
 		this.entry = new BudgetEntry(-1, new Money(), "", "");
-		title = theString;
-		flag = theInt;
+		this.title = theString;
+		this.flag = theType;
 	}
-	
+	/*private TextView textView;
+    private BudgetEntry entry;
+    private Type flag;
+    private String title;
+    */
+    public BudgetEntry getEntry()
+    {
+    	return entry;
+    }
     
+    public TextView getTextView()
+    {
+    	return textView;
+    }
+    
+    public Type getType()
+    {
+    	return flag;
+    }
+    
+    public String getTitle()
+    {
+    	return title;
+    }
+    
+    public void setTextView(TextView textView)
+    {
+    	this.textView = textView;
+    }
+    public void setEntry(BudgetEntry entry)
+    {
+    	this.entry = entry;
+    }
+    public void setType(Type type)
+    {
+    	this.flag = type;
+    }
+    public void setTitle(String title)
+    {
+    	this.title = title;
+    }
     public String toString(){
     	switch(flag)
     	{
-    	case YEAR:
-    	case MONTH:
+    	case year:
+    	case month:
     		return title;
-    	case ENTRY:
-    		if(entry!=null)
+    	case entry:
+    		if(this.entry!=null)
     		{
-	    		String temp = "Date: " + entry.getDate().substring(8) + "\t\t" + entry.getValue();
+	    		String temp = "Date: " + this.entry.getDate().substring(8) + "\t\t" + this.entry.getValue();
 	    		
-	    		if(entry.getValue().get()>-100 && entry.getValue().get()<1000)
+	    		if(this.entry.getValue().get()>-100 && this.entry.getValue().get()<1000)
 	    			temp+="\t";
-	    		if(entry.getValue().get()<=-1000)
+	    		if(this.entry.getValue().get()<=-1000)
 	    			temp+="\t";
 	    		//view.append("\t" + entry.getCategory());
-	    		temp+="\t"+entry.getCategory();
+	    		temp+="\t"+this.entry.getCategory();
 	    		// Add comment if there is one
 	    		// But only print max 20 characters
-	    		String comment = entry.getComment();
+	    		String comment = this.entry.getComment();
 	    		if(comment!=null && !comment.equalsIgnoreCase(""))
 	    		{
 	    			temp+=" *";
