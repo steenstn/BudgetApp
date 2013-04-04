@@ -11,6 +11,7 @@ v2.3
 - Editing and removing of old transactions possible
 - Money now uses doubles instead of integers
 - Weighted coloring of derivative
+- Devices with Android API < 11 now uses the dark theme
 
 v2.2
 - Up to three favorite buttons for easy adding of transactions
