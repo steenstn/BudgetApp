@@ -166,7 +166,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	
     	int coloringFactor = BudgetFunctions.min(255,Math.abs((int)floatDerivative));
     	int start = 255;
-    	int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+    	/*int currentapiVersion = android.os.Build.VERSION.SDK_INT;
     	
     	 // If the user has old android, the theme is light. Color accordingly
     	if(currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
@@ -179,12 +179,12 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	
     	}
     	else
-    	{
+    	{*/
 	    	if(derivative.get()<0)
 	    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
 	    	else
 	    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
-    	}
+    	//}
     }
 
     private void setUpListeners()

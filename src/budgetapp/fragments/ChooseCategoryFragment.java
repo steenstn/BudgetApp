@@ -14,6 +14,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,8 +26,8 @@ public class ChooseCategoryFragment extends DialogFragment {
 	private ListView theList;
 	private View view;
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    view = inflater.inflate(R.layout.dialog_choose_category, null);
@@ -59,7 +60,7 @@ public class ChooseCategoryFragment extends DialogFragment {
         }
         temp[categories.size()] = "Other...";
        
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
         		  android.R.layout.simple_list_item_1, android.R.id.text1, temp);
         
 		 theList.setAdapter(adapter);

@@ -44,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dip"
             android:layout_marginEnd="1dip"
+            android:textColor="#FFFAFAFA"
             android:text="Choose cat."/>
 	</LinearLayout>
 	<LinearLayout
