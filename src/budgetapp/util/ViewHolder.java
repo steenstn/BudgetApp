@@ -40,11 +40,7 @@ public class ViewHolder {
 		this.title = theString;
 		this.flag = theType;
 	}
-	/*private TextView textView;
-    private BudgetEntry entry;
-    private Type flag;
-    private String title;
-    */
+	
     public BudgetEntry getEntry()
     {
     	return entry;
@@ -81,6 +77,8 @@ public class ViewHolder {
     {
     	this.title = title;
     }
+    
+    
     public String toString(){
     	switch(flag)
     	{

@@ -149,7 +149,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     {
     	int numDays = 30;
     	List<DayEntry> days = model.getSomeDays(numDays,BudgetDataSource.DESCENDING);
-    	Money derivative = (BudgetFunctions.getWeightedMeanDerivative(days,numDays));
+    	Money derivative = (BudgetFunctions.getWeightedMean(days,numDays));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
     	

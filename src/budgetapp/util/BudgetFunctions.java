@@ -2,16 +2,33 @@ package budgetapp.util;
 
 import java.util.List;
 
+/**
+ * Class containing functions used throughout the application
+ * @author Steen
+ *
+ */
 public class BudgetFunctions {
 	
+	/**
+	 * Returns the lowest value of a and b
+	 * @param a - First int to compare
+	 * @param b - Second int to compare
+	 * @return - The lowest value of a and b
+	 */
 	public static int min(int a,int b) 
 	{
 		if(a<b)
 			return a;
 		return b;
 	}
-	// Returns the mean cash flow for n time steps or as many as are available if less
-	public static Money getMeanDerivative(List<?> theEntries, int n)
+	
+	/**
+	 * Calculates the mean value for n entries or as many as are available if less
+	 * @param theEntries - List of the entries to calculate
+	 * @param n - Number of entries to use
+	 * @return - The mean for the entries
+	 */
+	public static Money getMean(List<?> theEntries, int n)
 	{
 		
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
@@ -36,8 +53,14 @@ public class BudgetFunctions {
 		return sum.divide(i);
 		
 	}
-		
-	public static Money getWeightedMeanDerivative(List<?> theEntries, int n)
+	
+	/**
+	 * Calculates a weighted mean value for n entries or as many as are available if less
+	 * @param theEntries - List of the entries to calculate
+	 * @param n - Number of entries to use
+	 * @return - The weighted mean
+	 */
+	public static Money getWeightedMean(List<?> theEntries, int n)
 	{
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
 			return new Money();
@@ -59,7 +82,12 @@ public class BudgetFunctions {
 		return sum.divide(totalWeight);
 	}
 	
-	// Weight a value depending on time
+	/**
+	 * Weight a value depending on time
+	 * @param n - Timesteps to weigh with
+	 * @param d - The value to weigh
+	 * @return - The weighted value
+	 */
 	private static Money weight(int n,Money d)
 	{
 		double weight = Math.exp(-0.5*(double)n);
