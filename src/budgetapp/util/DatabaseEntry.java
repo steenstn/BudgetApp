@@ -6,9 +6,12 @@ package budgetapp.util;
  */
 public abstract class DatabaseEntry {
 	
-	protected long id;
+	private long id;
 	protected int flags;
 	
+	public void setId(long id){
+		this.id = id;
+	}
 	
 	public long getId(){
 		return id;

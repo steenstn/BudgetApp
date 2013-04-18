@@ -144,8 +144,8 @@ public class BudgetModel {
 	 */
 	public void setDailyBudget(Money budget)
 	{
-		dailyBudget = budget;
-		config.writeValue(BudgetConfig.Fields.dailyBudget, budget.get());
+		dailyBudget = budget.multiply(Money.getExchangeRate());
+		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
 		stateChanged = true;
 		notifyObservers();
@@ -248,7 +248,7 @@ public class BudgetModel {
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
+	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
 		        	datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
 		    		daysAdded++;

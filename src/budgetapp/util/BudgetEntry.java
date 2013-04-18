@@ -37,7 +37,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	public BudgetEntry(long id,Money value,String date,String category)
 	{
-		this.id=id;
+		setId(id);
 		this.value=new Money(value);
 		this.date=date;
 		this.flags=0;
@@ -46,7 +46,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	public BudgetEntry(long id,Money value,String date,String category,int flags)
 	{
-		this.id=id;
+		setId(id);
 		this.value=new Money(value);
 		this.date=date;
 		this.category=category;
@@ -56,7 +56,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	
 	public BudgetEntry(long id,Money value,String date,String category,int flags,String comment)
 	{
-		this.id=id;
+		setId(id);
 		this.value=new Money(value);
 		this.date=date;
 		this.category=category;
@@ -70,7 +70,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		
 		in.readStringArray(data);
 		
-		this.id = Long.parseLong(data[0]);
+		setId(Long.parseLong(data[0]));
 		this.value=new Money(Double.parseDouble(data[1]));
 		this.date=data[2];
 		this.category=data[3];
@@ -80,7 +80,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	
 	public BudgetEntry() {
-		this.id=-1;
+		setId(-1);
 		this.value=new Money(0);
 		this.date="";
 		this.category="";
@@ -96,7 +96,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	public void writeToParcel(Parcel dest, int flags)
 	{
 		dest.writeStringArray(new String[]{
-			String.valueOf(this.id),
+			String.valueOf(this.getId()),
 			String.valueOf(this.value),
 			this.date,
 			this.category,
@@ -130,9 +130,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		
 	}
 	
-	public void setId(long id){
-		this.id = id;
-	}
 	
 	public Money getValue(){
 		return value;
@@ -191,6 +188,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	@Override
 	public String toString(){
-		return "ID: " + id + " val: "+ value + " date: " + date + " cat: " + category + " flags: " +flags;
+		return "ID: " + getId() + " val: "+ value + " date: " + date + " cat: " + category + " flags: " +flags;
 	}
 }

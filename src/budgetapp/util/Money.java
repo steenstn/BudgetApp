@@ -97,7 +97,7 @@ public class Money {
 	
 	/**
 	 * Returns a string of the value with some formatting to get the minus sign
-	 * at the right place and not print out decimals where it's not needed
+	 * at the right place and not print out decimals where it's not needed.
 	 */
 	public String toString()
 	{

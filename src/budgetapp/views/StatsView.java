@@ -204,8 +204,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 			stats.append("\t");
 			if(entry.getNum()<10)
 				stats.append("\t");
-			stats.append(" Total: " + entry.getTotal() + "\n");
-			sum = sum.add(entry.getTotal());
+			stats.append(" Total: " + entry.getValue() + "\n");
+			sum = sum.add(entry.getValue());
 			
 		}
 		

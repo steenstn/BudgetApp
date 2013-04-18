@@ -10,32 +10,37 @@ public class CategoryEntry extends DatabaseEntry {
 	
 	private String category; // Name of the category
 	private int num; // How many transactions within this category
-	private Money total; // Total money spent/earned within this category
+	private Money value; // Total money spent/earned within this category
 	
 	public CategoryEntry(long id, String category,int num,Money total,int flags){
-		this.id = id;
+		setId(id);
 		this.category = category;
 		this.num=num;
-		this.total= new Money(total);
+		this.value= new Money(total);
 		this.flags=flags;
 	}
+	
 	public CategoryEntry(long id, String category,int num,Money total){
-		this.id = id;
+		setId(id);
 		this.category = category;
 		this.num=num;
-		this.total=new Money(total);
+		this.value=new Money(total);
+		this.flags = 0;
 	}
 	public CategoryEntry(long id, String category){
-		this.id = id;
+		setId(id);
 		this.category = category;
 		this.num=0;
-		this.total=new Money();
+		this.value=new Money();
+		this.flags = 0;
 	}
 	
 	public CategoryEntry(String category){
+		setId(0);
 		this.category = category;
-		this.total=new Money();
+		this.value=new Money();
 		this.num=0;
+		this.flags = 0;
 	}
 	
 	public void setCategory(String category){
@@ -55,17 +60,17 @@ public class CategoryEntry extends DatabaseEntry {
 		num+=n;
 	}
 	
-	public void setTotal(Money n)
+	public void setValue(Money n)
 	{
-		total = n;
+		value = n;
 	}
 	
-	public Money getTotal()
+	public Money getValue()
 	{
-		return total;
+		return value;
 	}
 	public void addToTotal(Money n){
-		total = total.add(n);
+		value = value.add(n);
 	}
 	
 	
