@@ -9,6 +9,7 @@ public class Money {
 	private double value;
 	public static boolean after = true;
 	private static String currency = "kr";
+	private static double exchangeRate = 1;
 	
 	public Money()
 	{
@@ -27,10 +28,21 @@ public class Money {
 		currency = c;
 	}
 	
-	public static String currency()
+	public static String getCurrency()
 	{
 		return currency;
 	}
+	
+	public static double getExchangeRate()
+	{
+		return exchangeRate;
+	}
+	
+	public static void setExchangeRate(double val)
+	{
+		exchangeRate = val;
+	}
+	
 	public void set(double val)
 	{
 		value = val;
@@ -89,19 +101,20 @@ public class Money {
 	 */
 	public String toString()
 	{
+		double values = value/exchangeRate;
 		if(after)
 		{
-			if(frac(value)<0.01)
-				return String.format("%.0f "+currency,value);
+			if(frac(values)<0.01)
+				return String.format("%.0f "+currency,values);
 			else
-				return String.format("%.2f "+currency,value);
+				return String.format("%.2f "+currency,values);
 		}
 		else
 		{
 			if(frac(value)<0.01)
-				return (value<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(value));
+				return (values<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(values));
 			else
-				return (value<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(value));
+				return (values<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(values));
 		}
 	}
 	

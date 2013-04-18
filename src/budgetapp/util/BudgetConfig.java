@@ -228,7 +228,7 @@ public class BudgetConfig {
 		}
 		else if(in.startsWith(Fields.exchangeRate.name()+"=")) // Not yet implemented
 		{
-			System.out.println(in);
+			varExchangeRate = Double.parseDouble(in.substring(Fields.exchangeRate.name().length()+1));
 		}
     }
 	
@@ -245,7 +245,7 @@ public class BudgetConfig {
 			out.writeUTF(Fields.dailyBudget.name()+"="+varDailyBudget);
 			out.writeUTF(Fields.currency.name()+"="+varCurrency);
 			out.writeUTF(Fields.printCurrencyAfter.name()+"="+varPrintCurrencyAfter);
-			out.writeUTF(Fields.exchangeRate.name()+"="+1);
+			out.writeUTF(Fields.exchangeRate.name()+"="+varExchangeRate);
 			
 		} 
 		catch (FileNotFoundException e) 

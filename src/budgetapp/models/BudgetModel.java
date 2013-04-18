@@ -20,10 +20,20 @@ import budgetapp.util.database.TransactionCommand;
 public class BudgetModel {
 	
 	private BudgetDataSource datasource;
+	
+	// The daily budget for the user
 	private Money dailyBudget;
+	
+	// List of transactions that have been done. Enables undo
 	private ArrayList<TransactionCommand> transactions;
+	
+	// The observers of this BudgetModel
 	private ArrayList<IBudgetObserver> observers;
+	
+	// Flag wether or not the model has been altered
 	private boolean stateChanged;
+	
+	// Class containing config values
 	private BudgetConfig config;
 	
 	
@@ -33,6 +43,7 @@ public class BudgetModel {
 		config = new BudgetConfig(context);
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
+		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
 		
 		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
 		transactions = new ArrayList<TransactionCommand>();
@@ -40,6 +51,11 @@ public class BudgetModel {
 		stateChanged = true;
 	}
 	
+	/**
+	 * Adds daily budget and adds a new transaction to the database and the transaction list.
+	 * Notifies observers.
+	 * @param entry - The BudgetEntry to create
+	 */
 	public void createTransaction(BudgetEntry entry)
 	{
 		addDailyBudget();
@@ -49,6 +65,11 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Removes a transaction from the database.
+	 * Notifies observers.
+	 * @param entry
+	 */
 	public void removeTransaction(BudgetEntry entry)
 	{
 		datasource.removeTransactionEntry(entry);
@@ -56,6 +77,12 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Edits a transaction in the database.
+	 * Notifies observers.
+	 * @param oldEntry - The entry to edit
+	 * @param newEntry - Entry with new information
+	 */
 	public void editTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		datasource.editTransactionEntry(oldEntry, newEntry);
@@ -63,6 +90,10 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Unexecutes the latest TransactionCommand in the list.
+	 * Notifies observers.
+	 */
 	public void undoLatestTransaction()
 	{
 		if(transactions.size()>0){
@@ -73,6 +104,10 @@ public class BudgetModel {
 		}
 	}
 	
+	/**
+	 * Gets the current available budget.
+	 * @return - The current budget
+	 */
 	public Money getCurrentBudget()
 	{
 		List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
@@ -84,15 +119,29 @@ public class BudgetModel {
 			return new Money();
 	}
 	
+	/**
+	 * Gets the current daily budget.
+	 * @return - The models daily budget
+	 */
 	public Money getDailyBudget()
 	{
 		return dailyBudget;
 	}
 	
+	/**
+	 * Gets all category names
+	 * @return - A list of all category names
+	 */
 	public List<String> getCategoryNames()
 	{
 		return datasource.getCategoryNames();
 	}
+	
+	/**
+	 * Sets the daily budget and saves to config and config file.
+	 * Notifies observers.
+	 * @param budget
+	 */
 	public void setDailyBudget(Money budget)
 	{
 		dailyBudget = budget;
@@ -102,6 +151,12 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Adds a category to the database.
+	 * Notifies observers.
+	 * @param category - The category name to add
+	 * @return - If the adding was successful
+	 */
 	public boolean addCategory(String category)
 	{
 		if(!category.equalsIgnoreCase(""))
@@ -120,6 +175,12 @@ public class BudgetModel {
 			return false;
 	}
 	
+	/**
+	 * Removes a category name from the database.
+	 * Notifies observers.
+	 * @param category - The category to remove
+	 * @return - If the removal was successful
+	 */
 	public boolean removeCategory(String category)
 	{
 		boolean result = datasource.removeCategory(category);
@@ -217,8 +278,9 @@ public class BudgetModel {
 	
 	public void saveConfig()
 	{
-		config.writeValue(BudgetConfig.Fields.currency,Money.currency());
+		config.writeValue(BudgetConfig.Fields.currency,Money.getCurrency());
 		config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);
+		config.writeValue(BudgetConfig.Fields.exchangeRate, Money.getExchangeRate());
 		config.saveToFile();
 	}
 	
