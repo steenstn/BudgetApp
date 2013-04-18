@@ -116,8 +116,19 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		public BudgetEntry[] newArray(int size) {
 			return new BudgetEntry[size];
 		}
-		};
+	};
 	
+	public BudgetEntry clone()
+	{
+		BudgetEntry result = new BudgetEntry();
+		result.setId(this.getId());
+		result.setDate(this.getDate());
+		result.setCategory(this.getCategory());
+		result.setValue(this.getValue().get());
+		result.setComment(this.getComment());
+		return result;
+		
+	}
 	
 	public void setId(long id){
 		this.id = id;

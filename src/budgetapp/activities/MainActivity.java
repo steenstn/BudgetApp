@@ -106,6 +106,7 @@ public class MainActivity extends FragmentActivity {
     		result.set(daysAdded*getDailyBudget().get());
     		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
     	}
+    	view.update();
     }
     
     public void saveConfig()

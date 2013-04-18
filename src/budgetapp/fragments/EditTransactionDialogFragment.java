@@ -42,7 +42,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 
 		final EditText value = (EditText) view
 				.findViewById(R.id.dialog_edit_transaction_value_edittext);
-		value.setText("" + theEntry.getValue().get());
+		value.setText("" + theEntry.getValue().get()/Money.getExchangeRate());
 
 		final EditText comment = (EditText) view
 				.findViewById(R.id.dialog_add_comment);
