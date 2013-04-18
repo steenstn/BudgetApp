@@ -101,20 +101,20 @@ public class Money {
 	 */
 	public String toString()
 	{
-		double values = value/exchangeRate;
+		double fixedValue = value/exchangeRate;
 		if(after)
 		{
-			if(frac(values)<0.01)
-				return String.format("%.0f "+currency,values);
+			if(frac(fixedValue)<0.01)
+				return String.format("%.0f "+currency,fixedValue);
 			else
-				return String.format("%.2f "+currency,values);
+				return String.format("%.2f "+currency,fixedValue);
 		}
 		else
 		{
-			if(frac(value)<0.01)
-				return (values<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(values));
+			if(frac(fixedValue)<0.01)
+				return (fixedValue<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(fixedValue));
 			else
-				return (values<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(values));
+				return (fixedValue<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(fixedValue));
 		}
 	}
 	
