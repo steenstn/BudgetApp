@@ -26,10 +26,8 @@ public class DayEntry extends DatabaseEntry{
 		setId(id);
 		this.total=new Money(total);
 		this.date=date;
-		this.flags=flags;
+		setFlags(flags);
 	}
-	
-	
 	
 	public Money getTotal(){
 		return total;

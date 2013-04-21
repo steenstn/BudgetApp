@@ -51,7 +51,7 @@ public class BudgetAdapter extends BaseAdapter {
 	}
 	
 	/**
-	 * Overriden function for getting a View from the ListView, uses recycling to 
+	 * Overridden function for getting a View from the ListView, uses recycling to 
 	 * save resources
 	 */
 	@Override

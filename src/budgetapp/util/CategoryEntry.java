@@ -17,7 +17,7 @@ public class CategoryEntry extends DatabaseEntry {
 		this.category = category;
 		this.num=num;
 		this.value= new Money(total);
-		this.flags=flags;
+		setFlags(flags);
 	}
 	
 	public CategoryEntry(long id, String category,int num,Money total){
@@ -25,14 +25,14 @@ public class CategoryEntry extends DatabaseEntry {
 		this.category = category;
 		this.num=num;
 		this.value=new Money(total);
-		this.flags = 0;
+		setFlags(0);
 	}
 	public CategoryEntry(long id, String category){
 		setId(id);
 		this.category = category;
 		this.num=0;
 		this.value=new Money();
-		this.flags = 0;
+		setFlags(0);
 	}
 	
 	public CategoryEntry(String category){
@@ -40,7 +40,7 @@ public class CategoryEntry extends DatabaseEntry {
 		this.category = category;
 		this.value=new Money();
 		this.num=0;
-		this.flags = 0;
+		setFlags(0);
 	}
 	
 	public void setCategory(String category){

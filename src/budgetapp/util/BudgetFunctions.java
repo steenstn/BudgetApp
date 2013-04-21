@@ -28,7 +28,7 @@ public class BudgetFunctions {
 	 * @param n - Number of entries to use
 	 * @return - The mean for the entries
 	 */
-	public static Money getMean(List<?> theEntries, int n)
+	public static Money getMean(List<? extends DatabaseEntry> theEntries, int n)
 	{
 		
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
@@ -37,15 +37,10 @@ public class BudgetFunctions {
 		
 		Money sum = new Money();
 		
-		
 		// Step through days, break if i reaches size or n
 		while(i<theEntries.size() && i<n) 
 		{
-			//Get the value depending on the class
-			if(theEntries.get(i) instanceof DayEntry)
-				sum=sum.add(((DayEntry) theEntries.get(i)).getTotal());
-			if(theEntries.get(i) instanceof BudgetEntry)
-				sum=sum.add(((BudgetEntry) theEntries.get(i)).getValue());
+			sum=sum.add((theEntries.get(i)).getValue());
 			
 			i++;
 		}
@@ -60,7 +55,7 @@ public class BudgetFunctions {
 	 * @param n - Number of entries to use
 	 * @return - The weighted mean
 	 */
-	public static Money getWeightedMean(List<?> theEntries, int n)
+	public static Money getWeightedMean(List<? extends DatabaseEntry> theEntries, int n)
 	{
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
 			return new Money();
@@ -71,11 +66,8 @@ public class BudgetFunctions {
 		while(i<theEntries.size() && i<n) 
 		{
 			totalWeight+= Math.exp(-0.5*(double)i);
-			//Get the value depending on the class
-			if(theEntries.get(i) instanceof DayEntry)
-				sum=sum.add(weight(i,((DayEntry)theEntries.get(i) ).getTotal() ));
-			if(theEntries.get(i) instanceof BudgetEntry)
-				sum=sum.add(weight(i,((BudgetEntry)theEntries.get(i) ).getValue() ));
+			
+			sum=sum.add(weight(i,theEntries.get(i).getValue()));
 			
 			i++;
 		}

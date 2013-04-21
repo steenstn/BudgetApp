@@ -6,9 +6,6 @@ package budgetapp.util.database;
  * 
  */
 
-import java.util.ArrayList;
-
-import budgetapp.util.DayEntry;
 
 import android.content.ContentValues;
 import android.content.Context;

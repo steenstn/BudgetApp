@@ -13,7 +13,6 @@ import android.os.Parcelable;
  */
 public class BudgetEntry extends DatabaseEntry implements Parcelable{
 
-	private Money value; // How large the transaction was
 	private String date; // The date it was done
 	private String category; // What category the transaction had
 	private String comment; // Possible comment for the transaction
@@ -21,7 +20,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	
 	public BudgetEntry(Money value,String date,String category)
 	{
-		this.value=new Money(value);
+		this.setValue(new Money(value));
 		this.date=date;
 		this.category=category;
 		this.flags=0;
@@ -29,7 +28,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	public BudgetEntry(Money value,String date,String category,String comment)
 	{
-		this.value=new Money(value);
+		this.setValue(new Money(value));
 		this.date=date;
 		this.category=category;
 		this.flags=0;
@@ -38,7 +37,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	public BudgetEntry(long id,Money value,String date,String category)
 	{
 		setId(id);
-		this.value=new Money(value);
+		this.setValue(new Money(value));
 		this.date=date;
 		this.flags=0;
 		this.category=category;
@@ -47,7 +46,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	public BudgetEntry(long id,Money value,String date,String category,int flags)
 	{
 		setId(id);
-		this.value=new Money(value);
+		this.setValue(new Money(value));
 		this.date=date;
 		this.category=category;
 		this.flags=flags;
@@ -57,7 +56,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	public BudgetEntry(long id,Money value,String date,String category,int flags,String comment)
 	{
 		setId(id);
-		this.value=new Money(value);
+		this.setValue(new Money(value));
 		this.date=date;
 		this.category=category;
 		this.flags=flags;
@@ -71,7 +70,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		in.readStringArray(data);
 		
 		setId(Long.parseLong(data[0]));
-		this.value=new Money(Double.parseDouble(data[1]));
+		this.setValue(new Money(Double.parseDouble(data[1])));
 		this.date=data[2];
 		this.category=data[3];
 		this.flags=Integer.parseInt(data[4]);
@@ -81,7 +80,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	
 	public BudgetEntry() {
 		setId(-1);
-		this.value=new Money(0);
+		this.setValue(new Money(0));
 		this.date="";
 		this.category="";
 		this.flags=0;
@@ -97,7 +96,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	{
 		dest.writeStringArray(new String[]{
 			String.valueOf(this.getId()),
-			String.valueOf(this.value),
+			String.valueOf(this.getValue()),
 			this.date,
 			this.category,
 			String.valueOf(this.flags),
@@ -128,18 +127,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		result.setComment(this.getComment());
 		return result;
 		
-	}
-	
-	
-	public Money getValue(){
-		return value;
-	}
-	
-	public void setValue(Money value){
-		this.value = value;
-	}
-	public void setValue(double x){
-		this.value.set(x);
 	}
 	
 	public String getDate(){
@@ -188,6 +175,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	@Override
 	public String toString(){
-		return "ID: " + getId() + " val: "+ value + " date: " + date + " cat: " + category + " flags: " +flags;
+		return "ID: " + getId() + " val: "+ this.getValue() + " date: " + date + " cat: " + category + " flags: " +flags;
 	}
 }
