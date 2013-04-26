@@ -25,6 +25,11 @@ public class TransactionCommand {
 	{
 		return _entry;
 	}
+	
+	/**
+	 * Creates a new transaction entry in the database and sets its id. The id is created
+	 * within the database
+	 */
 	public void execute()
 	{
 		BudgetEntry temp = _datasource.createTransactionEntry(_entry);

@@ -16,7 +16,7 @@ public class CategoryEntry extends DatabaseEntry {
 		setId(id);
 		this.category = category;
 		this.num=num;
-		this.value= new Money(total);
+		this.value = new Money(total);
 		setFlags(flags);
 	}
 	
