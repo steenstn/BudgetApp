@@ -171,11 +171,11 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		stats.setMovementMethod(new ScrollingMovementMethod());
 		if(days.size()<2)
 		{
-			stats.setText("Not enough days for mean derivative\n");
+			stats.setText("Not enough days for mean cash flow.\n");
 		}
 		else
 		{
-			stats.setText("Mean derivative (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
+			stats.setText("Mean cash flow (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
 			Money dayDerivative = BudgetFunctions.getWeightedMean(dayFlow,30);
 			stats.append(""+dayDerivative + "\n");
 		}
