@@ -91,8 +91,8 @@ public class BudgetAdapter extends BaseAdapter {
 		}
 		else
 		{
-			holder.getLeftTextView().setText("");
-			holder.getCenterTextView().setText(holder.getTitle());
+			holder.getLeftTextView().setText(holder.getTitle());
+			holder.getCenterTextView().setText("");
 			holder.getRightTextView().setText("");
 		}
 		

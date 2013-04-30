@@ -167,19 +167,16 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		List<DayEntry> days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
         List<DayEntry> dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
         
-        TextView stats = (TextView)findViewById(R.id.textViewLogStats);
-		stats.setMovementMethod(new ScrollingMovementMethod());
-		if(days.size()<2)
-		{
-			stats.setText("Not enough days for mean cash flow.\n");
-		}
-		else
-		{
-			stats.setText("Mean cash flow (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
-			Money dayDerivative = BudgetFunctions.getWeightedMean(dayFlow,30);
-			stats.append(""+dayDerivative + "\n");
-		}
-		stats.append(Html.fromHtml("<b>Category statistics</b><br />"));
+        TextView categoryTextView = (TextView)findViewById(R.id.textViewLogStats);
+        TextView numTextView = (TextView)findViewById(R.id.textViewLogStats2);
+        TextView totalTextView = (TextView)findViewById(R.id.textViewLogStats3);
+        
+		//categoryTextView.setMovementMethod(new ScrollingMovementMethod());
+		
+        categoryTextView.setText("");
+        numTextView.setText("");
+        totalTextView.setText("");
+		
 		CategoryEntry entry;
 		int length = 0;
 		System.out.println("size: " + categoryStats.size());
@@ -197,19 +194,27 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		{
 			entry = categoryStats.get(i);
 			
-			stats.append(entry.getCategory()+":");
-			for(int j=0;j<Math.floor((length-entry.getCategory().length()+1)/3)+1;j++) // Fancy pancy formatting
-				stats.append("\t");
-			stats.append(""+entry.getNum());
-			stats.append("\t");
-			if(entry.getNum()<10)
-				stats.append("\t");
-			stats.append(" Total: " + entry.getValue() + "\n");
+			categoryTextView.append(entry.getCategory()+"\n");
+			
+			numTextView.append(""+entry.getNum() + "\n");
+			totalTextView.append(entry.getValue() + "\n");
 			sum = sum.add(entry.getValue());
 			
 		}
 		
-		stats.append("Total cash flow: " + sum);
+		TextView middleTextView = (TextView)findViewById(R.id.textViewLogTopHead);
+		middleTextView.setText("");
+		if(days.size()<2)
+		{
+			middleTextView.append("Not enough days for mean cash flow.\n");
+		}
+		else
+		{
+			middleTextView.append("Mean cash flow (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
+			Money dayDerivative = BudgetFunctions.getWeightedMean(dayFlow,30);
+			middleTextView.append(""+dayDerivative + "\n");
+		}
+		middleTextView.append("Total cash flow: " + sum);
 	}
 	
 	/**
