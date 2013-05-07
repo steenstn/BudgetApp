@@ -52,6 +52,12 @@
         android:showAsAction="never"
         android:title="Graph"
         />  
+    <item 
+        android:id="@+id/menu_preferences"
+        android:orderInCategory="110"
+        android:showAsAction="never"
+        android:title="Preferences"
+        />
     
 
 </menu>

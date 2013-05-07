@@ -15,8 +15,8 @@ public class GraphActivity extends Activity
 {
 	
 	GraphView view;
-	public List<DayEntry> entries;
-	public String[] values;
+	private List<DayEntry> entries;
+	private String[] values;
 	float[] x;// = {0, 30, 60, 90};
     float[] y;// = {200, 100, 350, 100};
     float offsetX = 0;
@@ -53,5 +53,6 @@ public class GraphActivity extends Activity
         lineGraph = new LineGraphRenderer(x,y,values);
         setContentView(view);
     }
+    
     
 };

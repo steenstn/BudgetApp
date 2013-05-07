@@ -240,14 +240,14 @@ public class BudgetModel {
 	    	Calendar nextDay = Calendar.getInstance();
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
-	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
+	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
 		        	datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
