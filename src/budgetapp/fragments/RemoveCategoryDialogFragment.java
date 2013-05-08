@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RemoveCategoryDialogFragment extends DialogFragment {
@@ -21,15 +22,15 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
 	    final View view = inflater.inflate(R.layout.dialog_remove_category, null);
 	    builder.setView(view);
-	    EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
-	    category.setText(getArguments().getString("chosenCategory"));
+	    TextView category = (TextView)view.findViewById(R.id.dialog_category_name);
+	    category.setText("Remove category '" + getArguments().getString("chosenCategory") + "'?");
 	    final CategoriesActivity activity = ((CategoriesActivity) getActivity());
 	    // Add action buttons
     	builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
     	   
             @Override
             public void onClick(DialogInterface dialog, int id) {
-        	    EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
+            	TextView category = (TextView)view.findViewById(R.id.dialog_category_name);
         	    
         	    if(activity.removeCategory(category.getText().toString())==true)
         	    {
