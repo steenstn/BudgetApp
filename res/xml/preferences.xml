@@ -18,8 +18,13 @@
             android:key="autoBackup"
             android:title="Enable automatic backup"
             android:summary="Writes to backup file after each transaction.">
-            
         </CheckBoxPreference>
+        <EditTextPreference
+            android:key="backupFolder"
+            android:title="Folder for backup file"
+            android:summary="/sdcard/"
+            />
+            
         <PreferenceScreen
             android:key="manageBackup"
             android:title="Backup..."

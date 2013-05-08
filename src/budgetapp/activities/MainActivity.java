@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.fragments.ChooseCategoryFragment;
 import budgetapp.fragments.DailyBudgetFragment;
 import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
-import budgetapp.fragments.RemoveCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
@@ -18,6 +16,7 @@ import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
 
 	public ArrayList<String> allCategories = new ArrayList<String>();
@@ -91,6 +91,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(view);
         view.setModel(model);
         view.update();
+        
     }
     
     @Override

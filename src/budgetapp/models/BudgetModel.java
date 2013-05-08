@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -36,6 +37,9 @@ public class BudgetModel {
 	// Class containing config values
 	private BudgetConfig config;
 	
+	// Class responsible for backups
+	private BudgetBackup backup;
+	
 	
 	public BudgetModel(Context context)
 	{
@@ -44,8 +48,9 @@ public class BudgetModel {
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
 		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
-		
 		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
+		
+		backup = new BudgetBackup();
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
 		stateChanged = true;
@@ -282,6 +287,12 @@ public class BudgetModel {
 		config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);
 		config.writeValue(BudgetConfig.Fields.exchangeRate, Money.getExchangeRate());
 		config.saveToFile();
+	}
+	
+	public void saveBackup(String filename)
+	{
+		ArrayList<BudgetEntry> entries = (ArrayList<BudgetEntry>) getSomeTransactions(0,"desc");
+		backup.writeBackupFile(entries, filename);
 	}
 	
 	public void addObserver(IBudgetObserver observer)

@@ -2,7 +2,10 @@ package budgetapp.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -16,7 +19,7 @@ import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
 	
 	private BudgetModel model;
 	
@@ -28,16 +31,9 @@ public class PreferencesActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
         
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        //PreferenceScreen dailyBudget = (PreferenceScreen) findPreference("setDailyBudget");
-        //String menuString = getString(R.string.menu_setdailybudget);
-    	//CharSequence withBudget = menuString + " (" + model.getDailyBudget() + ")";
-        //dailyBudget.setTitle(withBudget);
         
         setUpListeners();
         
-        
-       // String temp = settings.getString("editCurrency", "fail");
-        //System.out.println("res: " + temp);
         
         
     }
@@ -55,6 +51,30 @@ public class PreferencesActivity extends PreferenceActivity {
 				return true;
 			}
         });
+    	
+    	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
+    	backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+       
+			@Override
+			public boolean onPreferenceClick(Preference arg0) {
+				Intent intent = new Intent(PreferencesActivity.this,BackupActivity.class);
+	    		startActivity(intent);
+				return true;
+			}
+        });
+    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+		
+		if(key.equalsIgnoreCase("backupFolder"))
+		{
+			EditTextPreference backupFolder = (EditTextPreference) findPreference("backupFolder");
+			backupFolder.setSummary(preferences.getString("backupFolder", "/sdcard/"));
+			
+		}
+		
+	}
     
 }
