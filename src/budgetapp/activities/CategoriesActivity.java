@@ -60,16 +60,19 @@ public class CategoriesActivity extends FragmentActivity {
 	
 	private void setUpListeners()
 	{
-		categoryList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+		categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
 			@Override
-			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long arg) {
+			public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
 				
-					DialogFragment newFragment = new RemoveCategoryDialogFragment();
-	            	newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "remove_category");
+				Object item = categoryList.getItemAtPosition(position);
+				String theCategory = item.toString();
+				Bundle bundle = new Bundle();
+				bundle.putString("chosenCategory", theCategory);
+				DialogFragment newFragment = new RemoveCategoryDialogFragment();
+				newFragment.setArguments(bundle);
+            	newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "remove_category");
 			   
-				
-				return true;
 		   }
 		});
 		
