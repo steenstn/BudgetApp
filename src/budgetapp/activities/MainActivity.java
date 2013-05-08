@@ -167,14 +167,6 @@ public class MainActivity extends FragmentActivity {
 	        case R.id.menu_undo:
 		        model.undoLatestTransaction();
 	        	return true;
-            case R.id.menu_addcategory:
-            	newFragment = new AddCategoryDialogFragment();
-                newFragment.show(getSupportFragmentManager(), "add_category");
-                return true;
-            case R.id.menu_removecategory:
-            	newFragment = new RemoveCategoryDialogFragment();
-            	newFragment.show(getSupportFragmentManager(), "remove_category");
-            	return true;
             case R.id.menu_setdailybudget:
             	newFragment = new DailyBudgetFragment();
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");

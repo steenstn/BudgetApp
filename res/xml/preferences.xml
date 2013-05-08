@@ -4,29 +4,12 @@
     android:layout_height="wrap_content" >
  
     <PreferenceCategory android:title="Categories" >
-        <EditTextPreference
-                android:title="Add category"
-                android:summary="Add a new category"
-                android:key="addCategory"/>
-        <EditTextPreference
-                android:title="Remove category"
-                android:summary="Remove a new category"
-                android:key="removeCategory"/>
+        <PreferenceScreen
+                android:title="Manage categories"
+                android:summary="Add/remove categories"
+                android:key="manageCategories">
+        </PreferenceScreen>
         
-    </PreferenceCategory>
-     
-    <PreferenceCategory android:title="Other" >
-        <PreferenceScreen
-            android:key="setDailyBudget"
-            android:title="Set daily budget" 
-            android:summary="Set the value that will be added each day.">
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:key="editCurrency"
-            android:title="Edit currency"
-            android:summary="Customize display of currency and change exchange rate." >
-        </PreferenceScreen>
- 
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Backup" >
@@ -36,18 +19,13 @@
             android:title="Enable automatic backup"
             android:summary="Writes to backup file after each transaction.">
             
-            
         </CheckBoxPreference>
         <PreferenceScreen
-            android:key="readBackup"
-            android:title="Read backup file"
-            android:summary="Overwrite current database with database from file." >
+            android:key="manageBackup"
+            android:title="Backup..."
+            android:summary="Backup database, read backup file" >
         </PreferenceScreen>
-        <PreferenceScreen
-            android:key="saveBackup"
-            android:title="Save backup file"
-            android:summary="Backup current database to file." >
-        </PreferenceScreen>
+        
  
     </PreferenceCategory>
  

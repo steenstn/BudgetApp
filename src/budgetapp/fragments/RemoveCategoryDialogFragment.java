@@ -2,7 +2,9 @@ package budgetapp.fragments;
 /**
  * Dialog fragment for removing a category
  */
+import budgetapp.activities.CategoriesActivity;
 import budgetapp.activities.MainActivity;
+import budgetapp.activities.PreferencesActivity;
 import budgetapp.main.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,7 +24,7 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
 	    final View view = inflater.inflate(R.layout.dialog_remove_category, null);
 	    builder.setView(view);
 	    
-	    final MainActivity activity = ((MainActivity) getActivity());
+	    final CategoriesActivity activity = ((CategoriesActivity) getActivity());
 	    // Add action buttons
     	builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
     	   
@@ -35,6 +37,8 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
         	    }
         	    else
         		    Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();
+        	    
+        	    activity.updateList();
             }
         })
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

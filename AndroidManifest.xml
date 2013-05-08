@@ -53,7 +53,18 @@
             android:label="@string/title_activity_preferences"
             android:parentActivityName="budgetapp.activities.MainACtivity"
             android:theme="@style/AppTheme">
-            
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="budgetapp.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name="budgetapp.activities.CategoriesActivity"
+            android:label="@string/title_activity_categories"
+            android:parentActivityName="budgetapp.activities.MainACtivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="budgetapp.activities.MainActivity" />
         </activity>
     </application>
 
