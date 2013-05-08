@@ -21,8 +21,8 @@
         </CheckBoxPreference>
         <EditTextPreference
             android:key="backupFolder"
-            android:title="Folder for backup file"
-            android:summary="/sdcard/"
+            android:title="Backup file"
+            android:summary="/sdcard/mrcashbackup.txt"
             />
             
         <PreferenceScreen

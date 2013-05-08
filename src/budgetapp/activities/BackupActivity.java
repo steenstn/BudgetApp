@@ -19,8 +19,9 @@ public class BackupActivity extends Activity{
         
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		// then you use
-		String temp = prefs.getString("backupFolder", "/sdcard/");
-		model.saveBackup(temp+"mrcashbackup.txt");
+		String temp = prefs.getString("backupFolder", "/sdcard/mrcashbackup.txt");
+		System.out.println("Backing up to " + temp);
+		model.saveBackup(temp);
 		
 	}
 }
