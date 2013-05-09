@@ -264,6 +264,13 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public void resetTransactionTables()
+	{
+		open();
+		dbAccess.resetTransactionTables();
+		close();
+	}
+	
 	
 	// Helper functions to update different tables correctly
 	private void addToCategory(String theCategory,double value)

@@ -307,8 +307,35 @@ public class BudgetModel {
 		{
 			return false;
 		}
+		// Save current entries
+		List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
+		 currentList = datasource.getAllTransactions("asc");
 		
+		// Merge the two lists, sorting them 
+		currentList.addAll(backupList);
 		
+		// Sort the list
+		for(int i = 0; i < currentList.size() - 1; i++)
+		{
+			for(int j = i+1; j < currentList.size();j++)
+			{
+				if(currentList.get(i).getDate().compareTo(currentList.get(j).getDate())>0)
+				{	
+					BudgetEntry temp = new BudgetEntry(currentList.get(i));
+					currentList.set(i, new BudgetEntry(currentList.get(j)));
+					currentList.set(j, new BudgetEntry(temp));
+				}
+			}
+		}
+		
+		// Reset all the transaction tables
+		datasource.resetTransactionTables();
+		
+		for(int i = 0; i < currentList.size(); i++)
+		{
+			System.out.println(currentList.get(i));
+			datasource.createTransactionEntry(currentList.get(i));
+		}
 		
 		return true;
 	}

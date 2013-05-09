@@ -18,6 +18,15 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	private String comment; // Possible comment for the transaction
 	private int flags;
 	
+	public BudgetEntry(BudgetEntry other)
+	{
+		this.setValue(new Money(other.getValue()));
+		this.date = other.getDate();
+		this.category = other.getCategory();
+		this.flags = other.getFlags();
+		this.comment = other.getComment();
+	}
+	
 	public BudgetEntry(Money value,String date,String category)
 	{
 		this.setValue(new Money(value));
