@@ -295,6 +295,25 @@ public class BudgetModel {
 		backup.writeBackupFile(entries, filename);
 	}
 	
+	/**
+	 * Reads a backup file and merges it with the current database if successful
+	 * @param filename - Name of file to read
+	 */
+	public boolean readAndMergeBackup(String filename)
+	{
+		ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
+		
+		if(backupList.isEmpty())
+		{
+			return false;
+		}
+		
+		
+		
+		return true;
+	}
+	
+	
 	public void addObserver(IBudgetObserver observer)
 	{
 		observers.add(observer);
