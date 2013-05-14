@@ -44,7 +44,7 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="center"
-	    android:text="Reads the specified backup file and merges it with the current database."
+	    android:text="Reads the specified backup file and adds it into the current database."
 	    />
 	<Button
 	    android:id="@+id/readBackupBtn"

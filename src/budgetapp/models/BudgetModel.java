@@ -303,13 +303,13 @@ public class BudgetModel {
 	{
 		ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
 		
-		if(backupList.isEmpty())
+		if(backupList.isEmpty() || backupList == null)
 		{
 			return false;
 		}
 		// Save current entries
 		List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
-		 currentList = datasource.getAllTransactions("asc");
+		currentList = datasource.getAllTransactions("asc");
 		
 		// Merge the two lists, sorting them 
 		currentList.addAll(backupList);
@@ -331,9 +331,9 @@ public class BudgetModel {
 		// Reset all the transaction tables
 		datasource.resetTransactionTables();
 		
+		// Add all transactions again
 		for(int i = 0; i < currentList.size(); i++)
 		{
-			System.out.println(currentList.get(i));
 			datasource.createTransactionEntry(currentList.get(i));
 		}
 		

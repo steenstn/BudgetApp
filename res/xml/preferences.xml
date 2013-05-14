@@ -13,15 +13,10 @@
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Backup" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="autoBackup"
-            android:title="Enable automatic backup"
-            android:summary="Writes to backup file after each transaction.">
-        </CheckBoxPreference>
         <EditTextPreference
             android:key="backupFolder"
             android:title="Backup file"
+            android:defaultValue="/sdcard/mrcashbackup.txt"
             android:summary="/sdcard/mrcashbackup.txt"
             />
             

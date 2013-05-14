@@ -32,7 +32,7 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
             	TextView category = (TextView)view.findViewById(R.id.dialog_category_name);
         	    
-        	    if(activity.removeCategory(category.getText().toString())==true)
+        	    if(activity.removeCategory(getArguments().getString("chosenCategory"))==true)
         	    {
         		    Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
         	    }

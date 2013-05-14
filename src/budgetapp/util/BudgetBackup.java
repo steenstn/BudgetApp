@@ -43,7 +43,6 @@ public class BudgetBackup {
 	        
 	        myOutWriter.close();
 	        fOut.close();
-	        System.out.println("Backup written");
 	    } 
 		catch (Exception e) 
 		{
@@ -52,6 +51,11 @@ public class BudgetBackup {
 
 	}
 	
+	/**
+	 * Reads a file with entries and returns a list with them
+	 * @param filename - The file to read
+	 * @return - A list of all transactions
+	 */
 	public ArrayList<BudgetEntry> readBackupFile(String filename)
 	{
 		
@@ -104,7 +108,6 @@ public class BudgetBackup {
 		
 		double theValue = Double.parseDouble(value);
 		int theFlags = Integer.parseInt(flags);
-		System.out.println("Parsing done");
 		return new BudgetEntry(new Money(theValue), date, category, comment, theFlags);
 	}
 }
