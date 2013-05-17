@@ -50,7 +50,6 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 		sx = display.getWidth();
 		sy = display.getHeight();
-		
 		offsetX = 40.0f;
 		offsetY = -sy/2;
 		originX = offsetX;
@@ -170,7 +169,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 					float distdy = distanceY - oldDistanceY;
 					
 					xScale+=(dx1-dx2)/10.0f;
-					yScale+=(dy1-dy2)/1000.0f;
+					yScale+=(dx1-dx2)/1000.0f;
 					
 					oldDistanceX = distanceX;
 					oldDistanceY = distanceY;

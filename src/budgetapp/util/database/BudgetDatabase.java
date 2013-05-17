@@ -6,9 +6,6 @@ package budgetapp.util.database;
  * 
  */
 
-import java.util.ArrayList;
-
-import budgetapp.util.DayEntry;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -58,7 +55,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_RATE = "rate"; // The exchange rate of the currency
 	//COLUMN_FLAGS
 
-	public static final String DATABASE_CREATE_TABLE_CURRENCIES = "create table if not exists "
+	private static final String DATABASE_CREATE_TABLE_CURRENCIES = "create table if not exists "
 			+ TABLE_CURRENCIES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_NAME
 			+ " text, " + COLUMN_SYMBOL + " text, " + COLUMN_RATE + " double not null, "
@@ -67,27 +64,27 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "budget.db";
 	private static final int DATABASE_VERSION = 10;
 	
-	private static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
+	public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY
 			+ " text);";
 	// This is the table for transactions
-	private static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
+	public static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
 			+ TABLE_CASHFLOW + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " +COLUMN_VALUE +
 			" double, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer, "
 			+ COLUMN_COMMENT + " text);";
 	
-	private static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
+	public static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY +
 			" text, "+ COLUMN_NUM + " integer not null, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);";
 	
-	private static final String DATABASE_CREATE_TABLE_DAYSUM = "create table "
+	public static final String DATABASE_CREATE_TABLE_DAYSUM = "create table "
 			+ TABLE_DAYSUM + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_DATE
 			+ " text, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);";
-	private static final String DATABASE_CREATE_TABLE_DAYTOTAL = "create table "
+	public static final String DATABASE_CREATE_TABLE_DAYTOTAL = "create table "
 			+ TABLE_DAYTOTAL + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_DATE
 			+ " text, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);";
@@ -103,9 +100,10 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_CASHFLOW);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORIES);
 		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
-		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 		database.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
+		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 		database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+		
 		
 		// Put in initial categories
 		ContentValues values = new ContentValues();
@@ -303,5 +301,10 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		 */
 		System.out.println("Updated database from " + oldVersion + " to " + newVersion);
 	    
+	}
+	
+	private void createTransactionTables()
+	{
+		
 	}
 }

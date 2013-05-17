@@ -3,6 +3,7 @@ package budgetapp.fragments;
  * Dialog Fragment for adding a new category
  * 
  */
+import budgetapp.activities.CategoriesActivity;
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
 import android.app.AlertDialog;
@@ -23,7 +24,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
     
 		final View view = inflater.inflate(R.layout.dialog_add_category, null);
-		final MainActivity activity = (MainActivity)getActivity();
+		final CategoriesActivity activity = (CategoriesActivity)getActivity();
     
 		builder.setView(view);
  
@@ -39,6 +40,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
 				}
 				else
 					Toast.makeText(view.getContext(), "Failed to add "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+			activity.updateList();
 			}
 		})
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() 

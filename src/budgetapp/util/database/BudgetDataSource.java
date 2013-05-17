@@ -1,7 +1,8 @@
 package budgetapp.util.database;
 /**
  * The class used to access the database. It itself uses the DatabaseAccess class to
- * query the database.
+ * query the database. All transactions that go into the database are multiplied 
+ * with the exchange rate
  * 
  * @author Steen
  * 
@@ -12,6 +13,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Money;
 
 
 import android.content.Context;
@@ -53,13 +55,17 @@ public class BudgetDataSource {
 	 */
 	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
+		BudgetEntry workingEntry = theEntry.clone();
+		// Add the exchange rate to the entry
+		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
+		
 		open();
-		BudgetEntry result = dbAccess.addEntry(theEntry);
+		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
-			addToCategory(theEntry.getCategory(),theEntry.getValue().get());
-	    	addToDaySum(theEntry);
-	    	addToDayTotal(theEntry);
+			addToCategory(workingEntry.getCategory(),workingEntry.getValue().get());
+	    	addToDaySum(workingEntry);
+	    	addToDayTotal(workingEntry);
 		}
 		close();
 		return result;
@@ -97,20 +103,23 @@ public class BudgetDataSource {
 	 */
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
+		BudgetEntry workingEntry = newEntry.clone();
+		// Add the exchange rate to the entry
+		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
 		open();
-		updateTransaction(oldEntry, newEntry);
+		updateTransaction(oldEntry, workingEntry);
 		
 		// New category, move the entry from old category to new
-		if(!oldEntry.getCategory().equalsIgnoreCase(newEntry.getCategory()))
+		if(!oldEntry.getCategory().equalsIgnoreCase(workingEntry.getCategory()))
 		{
 			removeFromCategory(oldEntry.getCategory(),oldEntry.getValue().get()*-1);
-			addToCategory(newEntry.getCategory(),oldEntry.getValue().get());
+			addToCategory(workingEntry.getCategory(),oldEntry.getValue().get());
 		}
 		
-		if(oldEntry.getValue().get()!=newEntry.getValue().get())
+		if(oldEntry.getValue().get()!=workingEntry.getValue().get())
 		{
-			updateDaySum(oldEntry,newEntry);
-			updateDayTotal(oldEntry,newEntry);
+			updateDaySum(oldEntry,workingEntry);
+			updateDayTotal(oldEntry,workingEntry);
 		}
 		close();
 	}
@@ -253,6 +262,13 @@ public class BudgetDataSource {
 		result = dbAccess.removeCategory(theCategory);
 		close();
 		return result;
+	}
+	
+	public void resetTransactionTables()
+	{
+		open();
+		dbAccess.resetTransactionTables();
+		close();
 	}
 	
 	

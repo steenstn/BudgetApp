@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
@@ -20,11 +21,24 @@ import budgetapp.util.database.TransactionCommand;
 public class BudgetModel {
 	
 	private BudgetDataSource datasource;
+	
+	// The daily budget for the user
 	private Money dailyBudget;
+	
+	// List of transactions that have been done. Enables undo
 	private ArrayList<TransactionCommand> transactions;
+	
+	// The observers of this BudgetModel
 	private ArrayList<IBudgetObserver> observers;
+	
+	// Flag wether or not the model has been altered
 	private boolean stateChanged;
+	
+	// Class containing config values
 	private BudgetConfig config;
+	
+	// Class responsible for backups
+	private BudgetBackup backup;
 	
 	
 	public BudgetModel(Context context)
@@ -33,13 +47,20 @@ public class BudgetModel {
 		config = new BudgetConfig(context);
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
-		
+		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
 		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
+		
+		backup = new BudgetBackup();
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
 		stateChanged = true;
 	}
 	
+	/**
+	 * Adds daily budget and adds a new transaction to the database and the transaction list.
+	 * Notifies observers.
+	 * @param entry - The BudgetEntry to create
+	 */
 	public void createTransaction(BudgetEntry entry)
 	{
 		addDailyBudget();
@@ -49,6 +70,11 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Removes a transaction from the database.
+	 * Notifies observers.
+	 * @param entry
+	 */
 	public void removeTransaction(BudgetEntry entry)
 	{
 		datasource.removeTransactionEntry(entry);
@@ -56,6 +82,12 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Edits a transaction in the database.
+	 * Notifies observers.
+	 * @param oldEntry - The entry to edit
+	 * @param newEntry - Entry with new information
+	 */
 	public void editTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		datasource.editTransactionEntry(oldEntry, newEntry);
@@ -63,6 +95,10 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
+	/**
+	 * Unexecutes the latest TransactionCommand in the list.
+	 * Notifies observers.
+	 */
 	public void undoLatestTransaction()
 	{
 		if(transactions.size()>0){
@@ -73,6 +109,10 @@ public class BudgetModel {
 		}
 	}
 	
+	/**
+	 * Gets the current available budget.
+	 * @return - The current budget
+	 */
 	public Money getCurrentBudget()
 	{
 		List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
@@ -84,24 +124,44 @@ public class BudgetModel {
 			return new Money();
 	}
 	
+	/**
+	 * Gets the current daily budget.
+	 * @return - The models daily budget
+	 */
 	public Money getDailyBudget()
 	{
 		return dailyBudget;
 	}
 	
+	/**
+	 * Gets all category names
+	 * @return - A list of all category names
+	 */
 	public List<String> getCategoryNames()
 	{
 		return datasource.getCategoryNames();
 	}
+	
+	/**
+	 * Sets the daily budget and saves to config and config file.
+	 * Notifies observers.
+	 * @param budget
+	 */
 	public void setDailyBudget(Money budget)
 	{
-		dailyBudget = budget;
-		config.writeValue(BudgetConfig.Fields.dailyBudget, budget.get());
+		dailyBudget = budget.multiply(Money.getExchangeRate());
+		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
 		stateChanged = true;
 		notifyObservers();
 	}
 	
+	/**
+	 * Adds a category to the database.
+	 * Notifies observers.
+	 * @param category - The category name to add
+	 * @return - If the adding was successful
+	 */
 	public boolean addCategory(String category)
 	{
 		if(!category.equalsIgnoreCase(""))
@@ -120,6 +180,12 @@ public class BudgetModel {
 			return false;
 	}
 	
+	/**
+	 * Removes a category name from the database.
+	 * Notifies observers.
+	 * @param category - The category to remove
+	 * @return - If the removal was successful
+	 */
 	public boolean removeCategory(String category)
 	{
 		boolean result = datasource.removeCategory(category);
@@ -179,15 +245,15 @@ public class BudgetModel {
 	    	Calendar nextDay = Calendar.getInstance();
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
-	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	
 	    	while(tempDate.before(nextDay))
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
+	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
+	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
 		        	datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
 		    		daysAdded++;
@@ -217,10 +283,63 @@ public class BudgetModel {
 	
 	public void saveConfig()
 	{
-		config.writeValue(BudgetConfig.Fields.currency,Money.currency());
+		config.writeValue(BudgetConfig.Fields.currency,Money.getCurrency());
 		config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);
+		config.writeValue(BudgetConfig.Fields.exchangeRate, Money.getExchangeRate());
 		config.saveToFile();
 	}
+	
+	public void saveBackup(String filename)
+	{
+		ArrayList<BudgetEntry> entries = (ArrayList<BudgetEntry>) getSomeTransactions(0,"desc");
+		backup.writeBackupFile(entries, filename);
+	}
+	
+	/**
+	 * Reads a backup file and merges it with the current database if successful
+	 * @param filename - Name of file to read
+	 */
+	public boolean readAndMergeBackup(String filename)
+	{
+		ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
+		
+		if(backupList.isEmpty() || backupList == null)
+		{
+			return false;
+		}
+		// Save current entries
+		List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
+		currentList = datasource.getAllTransactions("asc");
+		
+		// Merge the two lists, sorting them 
+		currentList.addAll(backupList);
+		
+		// Sort the list
+		for(int i = 0; i < currentList.size() - 1; i++)
+		{
+			for(int j = i+1; j < currentList.size();j++)
+			{
+				if(currentList.get(i).getDate().compareTo(currentList.get(j).getDate())>0)
+				{	
+					BudgetEntry temp = new BudgetEntry(currentList.get(i));
+					currentList.set(i, new BudgetEntry(currentList.get(j)));
+					currentList.set(j, new BudgetEntry(temp));
+				}
+			}
+		}
+		
+		// Reset all the transaction tables
+		datasource.resetTransactionTables();
+		
+		// Add all transactions again
+		for(int i = 0; i < currentList.size(); i++)
+		{
+			datasource.createTransactionEntry(currentList.get(i));
+		}
+		
+		return true;
+	}
+	
 	
 	public void addObserver(IBudgetObserver observer)
 	{

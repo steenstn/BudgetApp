@@ -12,6 +12,7 @@
         android:id="@+id/dialog_edit_transaction_category_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textCapSentences"
         android:hint="Category" >
 
         <requestFocus />
@@ -32,6 +33,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
+        android:inputType="textCapSentences"
         android:hint="Enter comment" />
     <CheckBox 
         android:id="@+id/dialog_edit_transaction_delete_transaction_checkbox"

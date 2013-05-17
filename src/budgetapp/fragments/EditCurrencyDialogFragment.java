@@ -26,12 +26,10 @@ public class EditCurrencyDialogFragment extends DialogFragment {
 	    final View view = inflater.inflate(R.layout.dialog_edit_currency, null);
 	    
 	    EditText edit = (EditText)view.findViewById(R.id.edit_currency_currency);
-	    edit.setText(Money.currency());
+	    edit.setText(Money.getCurrency());
 	    
 	    edit = (EditText)view.findViewById(R.id.edit_currency_exchangerate);
-	    edit.setText(""+1);
-	    edit.setEnabled(false);
-	    edit.setVisibility(View.GONE);
+	    edit.setText(""+Money.getExchangeRate());
 	    checkBox = (CheckBox)view.findViewById(R.id.edit_currency_after_checkbox);
 	    checkBox.setChecked(Money.after);
 	    builder.setView(view);
@@ -41,9 +39,22 @@ public class EditCurrencyDialogFragment extends DialogFragment {
     	   
         	@Override
             public void onClick(DialogInterface dialog, int id) {
-        		EditText currency = (EditText)view.findViewById(R.id.edit_currency_currency);
-        	    Money.setCurrency(currency.getText().toString());
+        		EditText temp = (EditText)view.findViewById(R.id.edit_currency_currency);
+        	    Money.setCurrency(temp.getText().toString());
         	    Money.after = checkBox.isChecked();
+        	    
+        	    temp = (EditText)view.findViewById(R.id.edit_currency_exchangerate);
+        	    
+        	    try
+        	    {
+        	    	double value = Double.parseDouble(temp.getText().toString());
+        	    	if(value > 0)
+        	    		Money.setExchangeRate(value);
+        	    }
+        	    catch(NumberFormatException e)
+        	    {
+        	    	
+        	    }
         	    ((MainActivity) getActivity()).saveConfig();
         	    ((MainActivity) getActivity()).updateView();
         	   

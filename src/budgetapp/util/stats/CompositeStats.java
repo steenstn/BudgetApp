@@ -13,6 +13,7 @@ public class CompositeStats extends Stats {
 	{
 		children = new ArrayList<Stats>();
 	}
+	
 	public CompositeStats(String theName)
 	{
 		name = theName;
@@ -23,6 +24,7 @@ public class CompositeStats extends Stats {
 	public List<Stats> getChildren(){
 		return children;
 	}
+	
 	public void addEntry(BudgetEntry theEntry,int mode)
 	{
 		boolean added = false;

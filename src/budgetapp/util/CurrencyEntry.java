@@ -14,7 +14,7 @@ public class CurrencyEntry extends DatabaseEntry{
 		this.name = name;
 		this.symbol = symbol;
 		this.rate = rate;
-		this.flags = flags;
+		setFlags(flags);
 	}
 	
 	public String getName()

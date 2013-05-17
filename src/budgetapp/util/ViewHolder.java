@@ -10,7 +10,9 @@ import android.widget.TextView;
  */
 public class ViewHolder {
 	
-    private TextView textView;
+    private TextView leftTextView;
+    private TextView centerTextView;
+    private TextView rightTextView;
     private BudgetEntry entry;
     private Type flag;
     private String title;
@@ -40,19 +42,25 @@ public class ViewHolder {
 		this.title = theString;
 		this.flag = theType;
 	}
-	/*private TextView textView;
-    private BudgetEntry entry;
-    private Type flag;
-    private String title;
-    */
+	
     public BudgetEntry getEntry()
     {
     	return entry;
     }
     
-    public TextView getTextView()
+    public TextView getLeftTextView()
     {
-    	return textView;
+    	return leftTextView;
+    }
+    
+    public TextView getCenterTextView()
+    {
+    	return centerTextView;
+    }
+    
+    public TextView getRightTextView()
+    {
+    	return rightTextView;
     }
     
     public Type getType()
@@ -65,10 +73,19 @@ public class ViewHolder {
     	return title;
     }
     
-    public void setTextView(TextView textView)
+    public void setLeftTextView(TextView textView)
     {
-    	this.textView = textView;
+    	this.leftTextView = textView;
     }
+    public void setCenterTextView(TextView textView)
+    {
+    	this.centerTextView = textView;
+    }
+    public void setRightTextView(TextView textView)
+    {
+    	this.rightTextView = textView;
+    }
+    
     public void setEntry(BudgetEntry entry)
     {
     	this.entry = entry;
@@ -81,6 +98,8 @@ public class ViewHolder {
     {
     	this.title = title;
     }
+    
+    
     public String toString(){
     	switch(flag)
     	{

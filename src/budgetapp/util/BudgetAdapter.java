@@ -51,7 +51,7 @@ public class BudgetAdapter extends BaseAdapter {
 	}
 	
 	/**
-	 * Overriden function for getting a View from the ListView, uses recycling to 
+	 * Overridden function for getting a View from the ListView, uses recycling to 
 	 * save resources
 	 */
 	@Override
@@ -63,7 +63,10 @@ public class BudgetAdapter extends BaseAdapter {
 		{
 			convertView = inflater.inflate(R.layout.stats_listitem,null);
 			holder = new ViewHolder(data.get(position));
-			holder.setTextView((TextView)convertView.findViewById(android.R.id.text1));
+			holder.setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
+			holder.setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
+			holder.setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
+			
 			convertView.setTag(holder);
 		}
 		else
@@ -75,7 +78,25 @@ public class BudgetAdapter extends BaseAdapter {
 			holder.setType(tempEntry.getType());
 			
 		}
-		holder.getTextView().setText(holder.toString());
+		
+		// If this is an entry, print info in all the textviews
+		if(holder.getType()==ViewHolder.Type.entry)
+		{
+			
+			holder.getLeftTextView().setText("Date: " + holder.getEntry().getDate().substring(8));
+			holder.getCenterTextView().setText(""+holder.getEntry().getValue());
+			// Add a star after the categoryt if this entry has a comment
+			holder.getRightTextView().setText(holder.getEntry().getCategory() + (holder.getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));
+			
+		}
+		else
+		{
+			holder.getLeftTextView().setText(holder.getTitle());
+			holder.getCenterTextView().setText("");
+			holder.getRightTextView().setText("");
+		}
+		
+		
 		return convertView;
 		
 	}

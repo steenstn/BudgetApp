@@ -9,6 +9,7 @@ public class Money {
 	private double value;
 	public static boolean after = true;
 	private static String currency = "kr";
+	private static double exchangeRate = 1;
 	
 	public Money()
 	{
@@ -27,10 +28,21 @@ public class Money {
 		currency = c;
 	}
 	
-	public static String currency()
+	public static String getCurrency()
 	{
 		return currency;
 	}
+	
+	public static double getExchangeRate()
+	{
+		return exchangeRate;
+	}
+	
+	public static void setExchangeRate(double val)
+	{
+		exchangeRate = val;
+	}
+	
 	public void set(double val)
 	{
 		value = val;
@@ -85,23 +97,24 @@ public class Money {
 	
 	/**
 	 * Returns a string of the value with some formatting to get the minus sign
-	 * at the right place and not print out decimals where it's not needed
+	 * at the right place and not print out decimals where it's not needed.
 	 */
 	public String toString()
 	{
+		double fixedValue = value/exchangeRate;
 		if(after)
 		{
-			if(frac(value)<0.01)
-				return String.format("%.0f "+currency,value);
+			if(frac(fixedValue)<0.01)
+				return String.format("%.0f "+currency,fixedValue);
 			else
-				return String.format("%.2f "+currency,value);
+				return String.format("%.2f "+currency,fixedValue);
 		}
 		else
 		{
-			if(frac(value)<0.01)
-				return (value<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(value));
+			if(frac(fixedValue)<0.01)
+				return (fixedValue<0.0 ? "-" : "") + String.format(currency+"%.0f ",Math.abs(fixedValue));
 			else
-				return (value<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(value));
+				return (fixedValue<0.0 ? "-" : "") + String.format(currency + "%.2f",Math.abs(fixedValue));
 		}
 	}
 	

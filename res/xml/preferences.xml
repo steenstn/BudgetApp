@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+ 
+    <PreferenceCategory android:title="Categories" >
+        <PreferenceScreen
+                android:title="Manage categories"
+                android:summary="Add/remove categories"
+                android:key="manageCategories">
+        </PreferenceScreen>
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Backup" >
+        <EditTextPreference
+            android:key="backupFolder"
+            android:title="Backup file"
+            android:defaultValue="/sdcard/mrcashbackup.txt"
+            android:summary="/sdcard/mrcashbackup.txt"
+            />
+            
+        <PreferenceScreen
+            android:key="manageBackup"
+            android:title="Backup..."
+            android:summary="Backup database, read backup file" >
+        </PreferenceScreen>
+        
+ 
+    </PreferenceCategory>
+ 
+</PreferenceScreen>

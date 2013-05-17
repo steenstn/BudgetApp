@@ -9,7 +9,7 @@ import java.io.IOException;
 import android.content.Context;
 
 /**
- * Class for keeping track of config values. Can write to internal storage
+ * Class for keeping track of config values. Writes to internal storage
  * @author Steen
  *
  */
@@ -31,10 +31,10 @@ public class BudgetConfig {
 	 */
 	public static enum Fields
 	{
-		dailyBudget,
-		currency,
-		printCurrencyAfter,
-		exchangeRate
+		dailyBudget, // The daily budget
+		currency, // The symbol of the current currency
+		printCurrencyAfter, // If the currency symbol should be printed after the cash value
+		exchangeRate // The exchange rate of the currency, relative to the user's original currency
 	}
 	
 	public BudgetConfig(Context context)
@@ -228,7 +228,7 @@ public class BudgetConfig {
 		}
 		else if(in.startsWith(Fields.exchangeRate.name()+"=")) // Not yet implemented
 		{
-			System.out.println(in);
+			varExchangeRate = Double.parseDouble(in.substring(Fields.exchangeRate.name().length()+1));
 		}
     }
 	
@@ -238,16 +238,22 @@ public class BudgetConfig {
 	public void saveToFile()
     {
     	DataOutputStream out;
-		try{
+		try
+		{
 			out = new DataOutputStream(context.openFileOutput(currentBudgetFileName,Context.MODE_PRIVATE));
 			
 			out.writeUTF(Fields.dailyBudget.name()+"="+varDailyBudget);
 			out.writeUTF(Fields.currency.name()+"="+varCurrency);
 			out.writeUTF(Fields.printCurrencyAfter.name()+"="+varPrintCurrencyAfter);
-			out.writeUTF(Fields.exchangeRate.name()+"="+1);
-		} catch (FileNotFoundException e) {
+			out.writeUTF(Fields.exchangeRate.name()+"="+varExchangeRate);
+			
+		} 
+		catch (FileNotFoundException e) 
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
     }

@@ -6,12 +6,34 @@ package budgetapp.util;
  */
 public abstract class DatabaseEntry {
 	
-	protected long id;
-	protected int flags;
+	private long id;
+	private int flags;
+
+	private Money value; // How large the transaction was
 	
+	public void setId(long id){
+		this.id = id;
+	}
 	
 	public long getId(){
 		return id;
+	}
+	
+	public void setValue(Money value){
+		this.value = value;
+	}
+
+	public void setValue(double x){
+		this.value.set(x);
+	}
+	
+	public Money getValue(){
+		return value;
+	}
+	
+	public void setFlags(int flags)
+	{
+		this.flags = flags;
 	}
 	
 	public int getFlags()

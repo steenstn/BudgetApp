@@ -32,8 +32,21 @@ public class DatabaseAccess {
 	public DatabaseAccess(SQLiteDatabase theDatabase)
 	{
 		database = theDatabase;
+		
 	}
 	
+	public void resetTransactionTables()
+	{
+		database.execSQL("drop table " + BudgetDatabase.TABLE_CASHFLOW);
+		database.execSQL("drop table " + BudgetDatabase.TABLE_CATEGORIES);
+		database.execSQL("drop table " + BudgetDatabase.TABLE_DAYSUM);
+		database.execSQL("drop table " + BudgetDatabase.TABLE_DAYTOTAL);
+		
+		database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_CASHFLOW);
+		database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_CATEGORIES);
+		database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_DAYSUM);
+		database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_DAYTOTAL);
+	}
 	/**
 	 * Adds a category to the category table in the database
 	 * @param theCategory - Name of the category to add

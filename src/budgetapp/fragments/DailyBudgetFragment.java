@@ -41,7 +41,9 @@ public class DailyBudgetFragment extends DialogFragment {
 	            {
 	            	double theBudget = Double.parseDouble(newBudget.getText().toString());
 				 	((MainActivity) getActivity()).setDailyBudget(theBudget);
-					Toast.makeText(view.getContext(), "Daily budget set to "+ new Money(theBudget) , Toast.LENGTH_LONG).show();
+				 	
+				 	Money dailyBudget = ((MainActivity) getActivity()).getDailyBudget();
+					Toast.makeText(view.getContext(), "Daily budget set to "+ dailyBudget , Toast.LENGTH_LONG).show();
 	            }
 	            catch(NumberFormatException e)
 	            {

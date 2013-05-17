@@ -1,11 +1,15 @@
 package budgetapp.util.stats;
+
 /**
  * Class containing transactions
  */
+
 import java.util.ArrayList;
+
 import java.util.List;
 
 import budgetapp.util.*;
+
 public class Stats {
 	
 	private List<BudgetEntry> transactions;

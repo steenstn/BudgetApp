@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.fragments.ChooseCategoryFragment;
 import budgetapp.fragments.DailyBudgetFragment;
 import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
-import budgetapp.fragments.RemoveCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
@@ -18,6 +16,7 @@ import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.view.Menu;
@@ -27,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
 
 	public ArrayList<String> allCategories = new ArrayList<String>();
@@ -91,6 +91,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(view);
         view.setModel(model);
         view.update();
+        
     }
     
     @Override
@@ -106,6 +107,7 @@ public class MainActivity extends FragmentActivity {
     		result.set(daysAdded*getDailyBudget().get());
     		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
     	}
+    	view.update();
     }
     
     public void saveConfig()
@@ -147,6 +149,7 @@ public class MainActivity extends FragmentActivity {
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.createTransaction(entry);
+	    	System.out.println("value after insert "+entry.getValue().get());
 	    	resultText.setText("");
     	}
     	catch(NumberFormatException e)
@@ -165,14 +168,6 @@ public class MainActivity extends FragmentActivity {
 	        case R.id.menu_undo:
 		        model.undoLatestTransaction();
 	        	return true;
-            case R.id.menu_addcategory:
-            	newFragment = new AddCategoryDialogFragment();
-                newFragment.show(getSupportFragmentManager(), "add_category");
-                return true;
-            case R.id.menu_removecategory:
-            	newFragment = new RemoveCategoryDialogFragment();
-            	newFragment.show(getSupportFragmentManager(), "remove_category");
-            	return true;
             case R.id.menu_setdailybudget:
             	newFragment = new DailyBudgetFragment();
             	newFragment.show(getSupportFragmentManager(), "set_dailybudget");
@@ -189,6 +184,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
                 return true;*/
+            case R.id.menu_preferences:
+            	intent = new Intent(this,PreferencesActivity.class);
+            	startActivity(intent);
+            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
