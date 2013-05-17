@@ -34,10 +34,10 @@ public class RemoveCategoryDialogFragment extends DialogFragment {
         	    
         	    if(activity.removeCategory(getArguments().getString("chosenCategory"))==true)
         	    {
-        		    Toast.makeText(view.getContext(), "Successfully removed "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+        		    Toast.makeText(view.getContext(), "Successfully removed "+ getArguments().getString("chosenCategory") , Toast.LENGTH_LONG).show();
         	    }
         	    else
-        		    Toast.makeText(view.getContext(), "Could not remove "+ category.getText().toString(), Toast.LENGTH_LONG).show();
+        		    Toast.makeText(view.getContext(), "Could not remove "+ getArguments().getString("chosenCategory"), Toast.LENGTH_LONG).show();
         	    
         	    activity.updateList();
             }
