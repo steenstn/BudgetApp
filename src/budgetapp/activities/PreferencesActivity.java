@@ -19,7 +19,7 @@ import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 
-public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
+public class PreferencesActivity extends PreferenceActivity /*implements OnSharedPreferenceChangeListener*/{
 	
 	private BudgetModel model;
 	
@@ -52,7 +52,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 			}
         });
     	
-    	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
+    /*	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
     	backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
        
 			@Override
@@ -61,10 +61,10 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 	    		startActivity(intent);
 				return true;
 			}
-        });
-    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        });*/
+    	//getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
-
+    /*
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		
@@ -75,6 +75,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 			
 		}
 		
-	}
+	}*/
     
 }

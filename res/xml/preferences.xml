@@ -12,11 +12,13 @@
         <CheckBoxPreference
             android:title="Auto-add 'Other' categories"
             android:summary="Automatically add categories added using 'Other...' to category list"
-            android:key="autoAddOther">
+            android:key="autoAddOther"
+            android:defaultValue="true"
+            >
             
         </CheckBoxPreference>
     </PreferenceCategory>
-    
+    <!-- 
     <PreferenceCategory android:title="Backup" >
         <EditTextPreference
             android:key="backupFolder"
@@ -33,5 +35,5 @@
         
  
     </PreferenceCategory>
- 
+  -->
 </PreferenceScreen>
