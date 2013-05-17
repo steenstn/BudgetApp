@@ -3,12 +3,16 @@ package budgetapp.fragments;
  * Dialog Fragment for adding a new category
  * 
  */
+import java.util.List;
+
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -35,11 +39,20 @@ public class OtherCategoryDialogFragment extends DialogFragment {
         	    EditText category = (EditText)view.findViewById(R.id.dialog_other_category_name);
         	   
         	    EditText comment = (EditText)view.findViewById(R.id.dialog_other_category_comment);
-        	   
-        	    if(!category.getText().toString().equalsIgnoreCase(""))
-        		    ((MainActivity) getActivity()).subtractFromBudget(category.getText().toString(),comment.getText().toString()); 
-        	    else
-        		    Toast.makeText(view.getContext(), "Please enter category name" , Toast.LENGTH_LONG).show();
+        	    
+        	    String theCategory = category.getText().toString();
+        	    if(!theCategory.equalsIgnoreCase(""))
+        	    {
+        	    	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences((MainActivity) getActivity());
+        	    	boolean autoAdd = settings.getBoolean("autoAddOther", false);
+        	    	
+        	    	if(autoAdd)
+        	    		addCategory(theCategory);
+        	    	
+        		    ((MainActivity) getActivity()).subtractFromBudget(theCategory,comment.getText().toString()); 
+        	    }
+    		    else
+    		    Toast.makeText(view.getContext(), "Please enter category name" , Toast.LENGTH_LONG).show();
             }
         })
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -64,5 +77,27 @@ public class OtherCategoryDialogFragment extends DialogFragment {
 			comment.requestFocus();
 		}
 		
+	}
+	
+	/**
+	 * Adds the category to the database if it does not exist
+	 */
+	private void addCategory(String theCategory)
+	{
+		List<String> allCategories = ((MainActivity) getActivity()).getCategoryNames();
+    	boolean categoryExists = false;
+    	for(int i = 0; i < allCategories.size(); i++)
+    	{
+    		if(allCategories.get(i).equalsIgnoreCase(theCategory))
+    		{
+    			categoryExists = true;
+    			break;
+    		}
+    	}
+    	
+    	if(!categoryExists)
+    	{
+    		((MainActivity) getActivity()).addCategory(theCategory);
+    	}
 	}
 }
