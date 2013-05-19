@@ -98,6 +98,9 @@ public class GraphView extends ImageView implements OnTouchListener{
     	//blackPaint.setStrokeWidth(1.0f);
     	//blackPaint.setColor(Color.GRAY);
 
+    	
+    	
+    	// Draw lines 
     	int numVerticalLines = (int) Math.ceil(screenWidth / xScale);
     	int numHorizontalLines = (int) Math.ceil(screenHeight / yScale);
     	for(float i = 0; i<numVerticalLines;i++)
@@ -116,6 +119,19 @@ public class GraphView extends ImageView implements OnTouchListener{
     		
     		//c.drawLine(0, -offsetY-i/(yScale/10), 2*sx, -offsetY-i/(yScale/10), blackPaint);
     		
+    	}
+    	
+    	blackPaint.setColor(Color.WHITE);
+		blackPaint.setStyle(Style.STROKE);
+		blackPaint.setStrokeWidth(1.0f);
+		
+		// We dont want to display all dates all the time
+		// so scale the increment depending on xScale
+		float scale = 100 / xScale;
+
+    	for(int i = 0; i < host.lineGraph.legends.length; i+=1 + scale)
+    	{
+    		c.drawText(host.lineGraph.legends[i], offsetX+i*xScale, -offsetY+25.0f, blackPaint);
     	}
 	}
 
