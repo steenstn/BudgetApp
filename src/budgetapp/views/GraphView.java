@@ -31,7 +31,7 @@ public class GraphView extends ImageView implements OnTouchListener{
     float oldX;
 	float oldY;
 	float oldX2, oldY2;
-	float xScale = 40;
+	float xScale = 50;
 	float yScale = 0.1f;
 	float oldDistanceX;
 	float oldDistanceY;
@@ -50,7 +50,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 		sx = display.getWidth();
 		sy = display.getHeight();
-		offsetX = 40.0f;
+		offsetX = 0.0f;
 		offsetY = -sy/2;
 		originX = offsetX;
 		originY = offsetY;
@@ -97,9 +97,22 @@ public class GraphView extends ImageView implements OnTouchListener{
     	c.drawLine(0, -offsetY, 2*sy, -offsetY, blackPaint);
     	blackPaint.setStrokeWidth(1.0f);
     	blackPaint.setColor(Color.GRAY);
-    	for(int i = 0; i<100;i++)
+
+    	int numVerticalLines = (int) Math.ceil(screenWidth / xScale);
+    	int numHorizontalLines = (int) Math.ceil(screenHeight / yScale);
+    	for(float i = 0; i<numVerticalLines;i++)
     	{
-    		c.drawLine(offsetX+i*xScale, 0, offsetX+i*xScale, 2*sy, blackPaint);
+    		float drawingX, drawingY;
+    		// Loop around so that the lines are reused
+    		drawingX = (offsetX+i*xScale)%(numVerticalLines*xScale);
+    		//drawingY = (-offsetY-i/(yScale/10));
+    		
+    		if(drawingX < 0.0f)
+    		{
+    			drawingX+=((float)(numVerticalLines)*xScale);
+    		}
+    		c.drawLine(drawingX, 0, drawingX, 2*sy, blackPaint);
+    		//c.drawLine(0, -drawingY, 2*sx, -drawingY, blackPaint);
     		
     		c.drawLine(0, -offsetY-i/(yScale/10), 2*sx, -offsetY-i/(yScale/10), blackPaint);
     		
