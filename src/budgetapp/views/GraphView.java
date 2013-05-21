@@ -9,10 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-public class GraphView extends ImageView implements OnTouchListener{
+public class GraphView extends ImageView implements OnTouchListener, OnScaleGestureListener{
 	
 	private static final int INVALID_POINTER_ID = -1;
 	// The ‘active pointer’ is the one currently moving our object.
@@ -20,6 +22,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 
 	private Context mContext;
 	GraphActivity host;
+	ScaleGestureDetector scaleDetector = new ScaleGestureDetector(getContext(), this);
 	
 	Paint blackPaint;
 	int sx;
@@ -28,19 +31,23 @@ public class GraphView extends ImageView implements OnTouchListener{
 	int pointerIndex2 = INVALID_POINTER_ID;
     public float offsetX;
     public float offsetY;
+    // Old offset to be able to zoom in without moving around
+    float oldOffsetX;
+    float oldOffsetY;
     float oldX;
 	float oldY;
 	float oldX2, oldY2;
 	public float xScale = 50;
-	public float yScale = 0.1f;
+	public float yScale = 0.12f;
 	float oldDistanceX;
 	float oldDistanceY;
 	float originX;
 	float originY;
 	String[] values;
-	float xScaleMax = 100.0f;
+	// Number of pixels to scale maximum
+	float xScaleMax = 200.0f;
 	float yScaleMax = 0.2f;
-	float xScaleMin = 30.0f;
+	float xScaleMin = 20.0f;
 	float yScaleMin = 0.05f;
 	
 	@SuppressWarnings("deprecation")
@@ -148,6 +155,9 @@ public class GraphView extends ImageView implements OnTouchListener{
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		
+		scaleDetector.onTouchEvent(event);
+		
+		
 		switch(event.getAction() & MotionEvent.ACTION_MASK)
 		{
 			case MotionEvent.ACTION_DOWN:
@@ -181,7 +191,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 					oldY = y;
 					
 				}
-				else if(numTouch == 2)
+				/*else if(numTouch == 2)
 				{
 
 					int id1 = event.getPointerId(0);
@@ -218,7 +228,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 					oldX2 = x2;
 					oldY2 = y2;
 					//System.out.println("Multitouch!");
-				}
+				}*/
 			break;
 			
 			case MotionEvent.ACTION_UP:
@@ -289,6 +299,32 @@ public class GraphView extends ImageView implements OnTouchListener{
 			x = b;
 		
 		return x;
+	}
+
+	@Override
+	public boolean onScale(ScaleGestureDetector detector) {
+		xScale += (detector.getCurrentSpan() - detector.getPreviousSpan()) / 10.0f;
+		yScale += (detector.getCurrentSpan() - detector.getPreviousSpan()) / 2000.0f;
+		
+
+		xScale = clamp(xScale, xScaleMin, xScaleMax);
+		yScale = clamp(yScale, yScaleMin, yScaleMax);
+		
+		offsetX = oldOffsetX * xScale;
+		//offsetY = oldOffsetY * yScale;
+		return true;
+	}
+
+	@Override
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
+		oldOffsetX = offsetX / xScale;
+		//oldOffsetY = offsetY / yScale;
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd(ScaleGestureDetector detector) {
+		
 	}
 
 }
