@@ -26,18 +26,22 @@ public class GraphView extends ImageView implements OnTouchListener{
 	int sy;
 	int pointerIndex = INVALID_POINTER_ID;
 	int pointerIndex2 = INVALID_POINTER_ID;
-    float offsetX;
-    float offsetY;
+    public float offsetX;
+    public float offsetY;
     float oldX;
 	float oldY;
 	float oldX2, oldY2;
-	float xScale = 50;
-	float yScale = 0.1f;
+	public float xScale = 50;
+	public float yScale = 0.1f;
 	float oldDistanceX;
 	float oldDistanceY;
 	float originX;
 	float originY;
 	String[] values;
+	float xScaleMax = 100.0f;
+	float yScaleMax = 0.2f;
+	float xScaleMin = 30.0f;
+	float yScaleMin = 0.05f;
 	
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {
@@ -83,6 +87,14 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 	}
 	
+	/**
+	 * Clears the screen, draws the background (lines and  dates)
+	 * @param offsetX
+	 * @param offsetY
+	 * @param screenWidth
+	 * @param screenHeight
+	 * @param c
+	 */
 	public void drawBackground(float offsetX,float offsetY,int screenWidth,int screenHeight,Canvas c)
 	{
 		blackPaint.setColor(Color.BLACK);
@@ -95,10 +107,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
     	c.drawLine(offsetX, 0, offsetX, 2*sx, blackPaint);
     	c.drawLine(0, -offsetY, 2*sy, -offsetY, blackPaint);
-    	//blackPaint.setStrokeWidth(1.0f);
-    	//blackPaint.setColor(Color.GRAY);
-
-    	
+    	    	
     	
     	// Draw lines 
     	int numVerticalLines = (int) Math.ceil(screenWidth / xScale);
@@ -138,7 +147,6 @@ public class GraphView extends ImageView implements OnTouchListener{
 	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		
 		
 		switch(event.getAction() & MotionEvent.ACTION_MASK)
 		{
@@ -197,8 +205,11 @@ public class GraphView extends ImageView implements OnTouchListener{
 					float distdx = distanceX - oldDistanceX;
 					float distdy = distanceY - oldDistanceY;
 					
-					xScale+=(dx1-dx2)/10.0f;
-					yScale+=(dy1-dy2)/1000.0f;
+					xScale-=(dx1-dx2)/10.0f;
+					yScale-=(dy1-dy2)/10000.0f;
+					
+					xScale = clamp(xScale, xScaleMin, xScaleMax);
+					yScale = clamp(yScale, yScaleMin, yScaleMax);
 					
 					oldDistanceX = distanceX;
 					oldDistanceY = distanceY;
@@ -261,6 +272,23 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 		this.invalidate();
 		return true;
+	}
+	
+	/**
+	 * Clamp a value between two values
+	 * @param x - The value to clamp
+	 * @param a - Lower limit
+	 * @param b - Upper limit
+	 * @return - Clamped value between a and b
+	 */
+	private float clamp(float x, float a, float b)
+	{
+		if(x < a)
+			x = a;
+		if(x > b)
+			x = b;
+		
+		return x;
 	}
 
 }

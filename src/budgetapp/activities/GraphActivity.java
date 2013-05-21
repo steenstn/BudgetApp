@@ -54,7 +54,11 @@ public class GraphActivity extends Activity
         	//System.out.println("x["+i+"]: " + x[i] + "y["+i+"]: " + days.get(i).getValue());
         }
         lineGraph = new LineGraphRenderer(x,y,values,legends);
+        
         setContentView(view);
+        
+        // Move the view to the end of the graph
+        view.offsetX = -(entries.size() - 8) * view.xScale;
     }
     
     

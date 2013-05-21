@@ -155,7 +155,6 @@ public class LineGraphRenderer implements IGraphRenderer{
 		}
 		c.drawLines(drawingValues, paint);
 		
-		//c.drawCircle(40, 40, 30, paint);
 		
 	}
 	@Override
