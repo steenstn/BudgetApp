@@ -184,7 +184,7 @@ public class LineGraphRenderer implements IGraphRenderer{
 	}
 	
 	/**
-	 * Prints values
+	 * Prints all the values
 	 */
 	@Override
 	public void drawValues(float x, float y, float xScale, float yScale, Canvas c) {
@@ -203,6 +203,7 @@ public class LineGraphRenderer implements IGraphRenderer{
 		c.drawText(values[j], drawingValues[drawingValues.length-2], drawingValues[drawingValues.length-1], textPaint);
 		
 	}
+	
 
 
 }

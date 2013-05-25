@@ -1,5 +1,7 @@
 package budgetapp.activities;
 
+import java.io.IOException;
+
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import android.app.Activity;
@@ -27,9 +29,25 @@ public class BackupActivity extends Activity{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		String temp = prefs.getString("backupFolder", Environment.getExternalStorageDirectory().getPath() + "mrcashbackup.txt");
-		System.out.println("Backing up to " + temp);
-		System.out.println("env: " + Environment.getExternalStorageDirectory().getPath());
-		model.saveBackup(temp);
+		
+		try
+		{
+			model.saveBackup(temp);
+			Toast.makeText(this, "Successfully wrote backup file", Toast.LENGTH_LONG).show();
+		}
+		catch(NumberFormatException e)
+		{
+			Toast.makeText(this, "Error: Error parsing value", Toast.LENGTH_LONG).show();
+		}
+		catch(IOException e)
+		{
+			Toast.makeText(this, "Error: Could not open file", Toast.LENGTH_LONG).show();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			Toast.makeText(this, "Unknown Error: Could not complete backup", Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	public void readBackup(View v)
@@ -37,13 +55,23 @@ public class BackupActivity extends Activity{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String temp = prefs.getString("backupFolder", Environment.getExternalStorageDirectory().getPath() + "mrcashbackup.txt");
 		
-		if(model.readAndMergeBackup(temp))
+		try
 		{
+			model.readAndMergeBackup(temp);
 			Toast.makeText(this, "Successfully read backup file", Toast.LENGTH_LONG).show();
 		}
-		else
+		catch(NumberFormatException e)
 		{
-			Toast.makeText(this, "Could not read backup file", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Error: Error parsing value", Toast.LENGTH_LONG).show();
+		}
+		catch(IOException e)
+		{
+			Toast.makeText(this, "Error: Could not open file", Toast.LENGTH_LONG).show();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			Toast.makeText(this, "Unknown Error: Could not complete backup", Toast.LENGTH_LONG).show();
 		}
 	}
 }

@@ -4,30 +4,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
+import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-
-import android.view.View;
-import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.main.R;
-import budgetapp.models.BudgetModel;
 
 public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
 	
-	private BudgetModel model;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        model = new BudgetModel(this);
         addPreferencesFromResource(R.xml.preferences);
         
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -71,7 +63,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 		if(key.equalsIgnoreCase("backupFolder"))
 		{
 			EditTextPreference backupFolder = (EditTextPreference) findPreference("backupFolder");
-			backupFolder.setSummary(preferences.getString("backupFolder", "/sdcard/"));
+			backupFolder.setSummary(preferences.getString("backupFolder", Environment.getExternalStorageDirectory().getPath()));
 			
 		}
 		
