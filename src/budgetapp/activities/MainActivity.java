@@ -16,7 +16,6 @@ import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.view.Menu;
@@ -26,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
-import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
 
 	public ArrayList<String> allCategories = new ArrayList<String>();
@@ -180,10 +178,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
-            /*case R.id.menu_showgraph: // Wait for it!
+            case R.id.menu_showgraph:
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;*/
+                return true;
             case R.id.menu_preferences:
             	intent = new Intent(this,PreferencesActivity.class);
             	startActivity(intent);
