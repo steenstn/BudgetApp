@@ -19,6 +19,9 @@ public class LineGraphRenderer implements IGraphRenderer{
     float originX;
     float originY;
     float[] drawingValues;
+    
+    public String[] legends;
+    
     public LineGraphRenderer(float[] theX, float[] theY) {
         
         arrangeValues(theX,theY);
@@ -35,7 +38,22 @@ public class LineGraphRenderer implements IGraphRenderer{
             values = new String[theValues.length];
             for(int i=0;i<theValues.length;i++)
             	values[i] = theValues[i];
-      }
+    }
+    
+    public LineGraphRenderer(float[] theX, float[] theY,String[] theValues, String[] theLegends) {
+        
+        arrangeValues(theX,theY);
+        setStandardPaint();
+        setStandardTextPaint();
+        
+          values = new String[theValues.length];
+          legends = new String[theLegends.length];
+          for(int i=0;i<theValues.length;i++)
+          {
+        	  values[i] = theValues[i];
+        	  legends[i] = theLegends[i];
+          }
+  }
     
     public LineGraphRenderer(float[] theX, float[] theY, Paint p) {
         
@@ -137,7 +155,6 @@ public class LineGraphRenderer implements IGraphRenderer{
 		}
 		c.drawLines(drawingValues, paint);
 		
-		//c.drawCircle(40, 40, 30, paint);
 		
 	}
 	@Override
@@ -167,23 +184,26 @@ public class LineGraphRenderer implements IGraphRenderer{
 	}
 	
 	/**
-	 * Prints values
+	 * Prints all the values
 	 */
 	@Override
 	public void drawValues(float x, float y, float xScale, float yScale, Canvas c) {
 		int j=0;
+		//c.drawText(values[0], drawingValues[0], drawingValues[1], textPaint);
 		for(int i=0;i<drawingValues.length-2;i+=4)
 		{
 			drawingValues[i]=arrangedValues[i]*xScale+x;
 			// Flip the graph upside down to have negative values down and positive up
 			drawingValues[i+1]=-1*(arrangedValues[i+1]*yScale+y); 
-			
+
 			c.drawText(values[j], drawingValues[i], drawingValues[i+1], textPaint);
+			
 			j++;
 		}
 		c.drawText(values[j], drawingValues[drawingValues.length-2], drawingValues[drawingValues.length-1], textPaint);
 		
 	}
+	
 
 
 }

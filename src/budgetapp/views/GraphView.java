@@ -9,10 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-public class GraphView extends ImageView implements OnTouchListener{
+public class GraphView extends ImageView implements OnTouchListener, OnScaleGestureListener{
 	
 	private static final int INVALID_POINTER_ID = -1;
 	// The ‘active pointer’ is the one currently moving our object.
@@ -20,24 +22,34 @@ public class GraphView extends ImageView implements OnTouchListener{
 
 	private Context mContext;
 	GraphActivity host;
+	ScaleGestureDetector scaleDetector = new ScaleGestureDetector(getContext(), this);
 	
 	Paint blackPaint;
 	int sx;
 	int sy;
 	int pointerIndex = INVALID_POINTER_ID;
 	int pointerIndex2 = INVALID_POINTER_ID;
-    float offsetX;
-    float offsetY;
+    public float offsetX;
+    public float offsetY;
+    // Old offset to be able to zoom in without moving around
+    float oldOffsetX;
+    float oldOffsetY;
     float oldX;
 	float oldY;
 	float oldX2, oldY2;
-	float xScale = 40;
-	float yScale = 0.1f;
+	public float xScale = 50;
+	public float yScale = 0.12f;
 	float oldDistanceX;
 	float oldDistanceY;
 	float originX;
 	float originY;
 	String[] values;
+	float globalScale = 100.0f;
+	// Number of pixels to scale maximum
+	float xScaleMax = 200.0f;
+	float yScaleMax = 0.2f;
+	float xScaleMin = 20.0f;
+	float yScaleMin = 0.05f;
 	
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {
@@ -50,7 +62,7 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 		sx = display.getWidth();
 		sy = display.getHeight();
-		offsetX = 40.0f;
+		offsetX = 0.0f;
 		offsetY = -sy/2;
 		originX = offsetX;
 		originY = offsetY;
@@ -62,16 +74,13 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
         setOnTouchListener(this);
 
-        
 	}
 	
 	protected void onDraw(Canvas c) {
 		blackPaint.setColor(Color.BLACK);
 		if(getResources().getConfiguration().orientation==1)
 		{
-			
 	    	drawBackground(offsetX,offsetY,sx,sy,c);
-	    	
 		}
 		else
 		{
@@ -83,6 +92,14 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
 	}
 	
+	/**
+	 * Clears the screen, draws the background (lines and  dates)
+	 * @param offsetX
+	 * @param offsetY
+	 * @param screenWidth
+	 * @param screenHeight
+	 * @param c
+	 */
 	public void drawBackground(float offsetX,float offsetY,int screenWidth,int screenHeight,Canvas c)
 	{
 		blackPaint.setColor(Color.BLACK);
@@ -95,20 +112,45 @@ public class GraphView extends ImageView implements OnTouchListener{
 		
     	c.drawLine(offsetX, 0, offsetX, 2*sx, blackPaint);
     	c.drawLine(0, -offsetY, 2*sy, -offsetY, blackPaint);
-    	blackPaint.setStrokeWidth(1.0f);
-    	blackPaint.setColor(Color.GRAY);
-    	for(int i = 0; i<100;i++)
+    	    	
+    	
+    	// Draw lines on the bottom of the graph
+    	// This draws only the amount of lines necessary to fill the screen
+    	int numVerticalLines = (int) Math.ceil(screenWidth / xScale);
+    	for(float i = 0; i<numVerticalLines;i++)
     	{
-    		c.drawLine(offsetX+i*xScale, 0, offsetX+i*xScale, 2*sy, blackPaint);
+    		float drawingX;
     		
-    		c.drawLine(0, -offsetY-i/(yScale/10), 2*sx, -offsetY-i/(yScale/10), blackPaint);
+    		// Loop around so that the lines are reused
+    		drawingX = (offsetX+i*xScale)%(numVerticalLines*xScale);
     		
+    		if(drawingX < 0.0f) // Loop around the screen
+    		{
+    			drawingX+=((float)(numVerticalLines)*xScale);
+    		}
+    		c.drawLine(drawingX, -offsetY, drawingX, -offsetY+10, blackPaint);
+    		
+    	}
+    	
+    	blackPaint.setColor(Color.WHITE);
+		blackPaint.setStyle(Style.STROKE);
+		blackPaint.setStrokeWidth(1.0f);
+		
+		// We dont want to display all dates all the time
+		// so scale the increment depending on xScale
+		float scale = globalScale / xScale;
+
+    	for(int i = 0; i < host.lineGraph.legends.length; i+= 1 + scale)
+    	{
+    		c.drawText(host.lineGraph.legends[i], offsetX+i*xScale, -offsetY+25.0f, blackPaint);
     	}
 	}
 
 	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		scaleDetector.onTouchEvent(event);
 		
 		
 		switch(event.getAction() & MotionEvent.ACTION_MASK)
@@ -144,41 +186,6 @@ public class GraphView extends ImageView implements OnTouchListener{
 					oldY = y;
 					
 				}
-				else if(numTouch == 2)
-				{
-
-					int id1 = event.getPointerId(0);
-					int id2 = event.getPointerId(1);
-					float x1 = event.getX(id1);
-					float y1 = event.getY(id1);
-					float x2 = event.getX(id2);
-					float y2 = event.getY(id2);
-					
-					float dx1 = x1 - oldX;
-					float dy1 = y1 - oldY;
-					
-					float dx2 = x2 - oldX2;
-					float dy2 = y2 - oldY2;
-					
-					
-					
-					float distanceX =(x1-x2)/200.0f;
-					float distanceY =(y1-y2)/20000.0f;
-					
-					float distdx = distanceX - oldDistanceX;
-					float distdy = distanceY - oldDistanceY;
-					
-					xScale+=(dx1-dx2)/10.0f;
-					yScale+=(dx1-dx2)/1000.0f;
-					
-					oldDistanceX = distanceX;
-					oldDistanceY = distanceY;
-					oldX = x1;
-					oldY = y1;
-					oldX2 = x2;
-					oldY2 = y2;
-					//System.out.println("Multitouch!");
-				}
 			break;
 			
 			case MotionEvent.ACTION_UP:
@@ -205,33 +212,55 @@ public class GraphView extends ImageView implements OnTouchListener{
 		        pointerIndex2 = INVALID_POINTER_ID;
 		        break;
 		    }
-
-			
-				
-		}
-		/*switch(event.getAction() & MotionEvent.ACTION_MASK)
-		{
-			case MotionEvent.ACTION_DOWN:
-				oldX = (event.getX());
-				oldY = (event.getY());
-			break;
-			
-			case MotionEvent.ACTION_MOVE:
-				offsetX+= event.getX() - oldX;
-				offsetY-= event.getY() - oldY;
-				oldX = (event.getX());
-				oldY = (event.getY());
-			break;
-			
-			case MotionEvent.ACTION_UP:
-			
-			break;
-				
-		}*/
 		
+		}
 		
 		this.invalidate();
 		return true;
 	}
+	
 
+
+	@Override
+	public boolean onScale(ScaleGestureDetector detector) {
+		
+		//Change the xScale and yScale to zoom
+		
+		xScale += (detector.getCurrentSpan() - detector.getPreviousSpan()) / 10.0f;
+		yScale += (detector.getCurrentSpan() - detector.getPreviousSpan()) / 2000.0f;
+		
+		xScale = clamp(xScale, xScaleMin, xScaleMax);
+		yScale = clamp(yScale, yScaleMin, yScaleMax);
+		
+		offsetX = oldOffsetX * xScale;
+		return true;
+	}
+
+	@Override
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
+		oldOffsetX = offsetX / xScale;
+		return true;
+	}
+
+	@Override
+	public void onScaleEnd(ScaleGestureDetector detector) {
+		
+	}
+	
+	/**
+	 * Clamp a value between two values
+	 * @param x - The value to clamp
+	 * @param a - Lower limit
+	 * @param b - Upper limit
+	 * @return - Clamped value between a and b
+	 */
+	private float clamp(float x, float a, float b)
+	{
+		if(x < a)
+			x = a;
+		if(x > b)
+			x = b;
+		
+		return x;
+	}
 }

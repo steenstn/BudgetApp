@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.widget.Toast;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
@@ -50,7 +51,7 @@ public class BudgetModel {
 		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
 		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
 		
-		backup = new BudgetBackup();
+		backup = new BudgetBackup(context);
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
 		stateChanged = true;
@@ -289,17 +290,21 @@ public class BudgetModel {
 		config.saveToFile();
 	}
 	
-	public void saveBackup(String filename)
+	public boolean saveBackup(String filename) throws Exception
 	{
 		ArrayList<BudgetEntry> entries = (ArrayList<BudgetEntry>) getSomeTransactions(0,"desc");
-		backup.writeBackupFile(entries, filename);
+		if(backup.writeBackupFile(entries, filename))
+			return true;
+		else
+			return false;
+		
 	}
 	
 	/**
 	 * Reads a backup file and merges it with the current database if successful
 	 * @param filename - Name of file to read
 	 */
-	public boolean readAndMergeBackup(String filename)
+	public boolean readAndMergeBackup(String filename) throws Exception
 	{
 		ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
 		
@@ -313,7 +318,6 @@ public class BudgetModel {
 		
 		// Merge the two lists, sorting them 
 		currentList.addAll(backupList);
-		
 		// Sort the list
 		for(int i = 0; i < currentList.size() - 1; i++)
 		{
@@ -327,10 +331,8 @@ public class BudgetModel {
 				}
 			}
 		}
-		
 		// Reset all the transaction tables
 		datasource.resetTransactionTables();
-		
 		// Add all transactions again
 		for(int i = 0; i < currentList.size(); i++)
 		{
@@ -338,6 +340,7 @@ public class BudgetModel {
 		}
 		
 		return true;
+		
 	}
 	
 	

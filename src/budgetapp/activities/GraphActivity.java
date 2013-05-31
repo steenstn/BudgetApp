@@ -21,6 +21,8 @@ public class GraphActivity extends Activity
     float[] y;// = {200, 100, 350, 100};
     float offsetX = 0;
     float offsetY = 0;
+    
+    String[] legends;
     private BudgetModel model;
     
     public LineGraphRenderer lineGraph;
@@ -41,17 +43,22 @@ public class GraphActivity extends Activity
         x = new float[entries.size()];
         y = new float[entries.size()];
         values = new String[entries.size()];
-        
+        legends = new String[entries.size()];
     	
         for(int i=0;i<entries.size();i++)
         {
         	x[i] = i;
         	y[i] = (float)entries.get(i).getValue().get();
         	values[i] = ""+entries.get(i).getValue();
+        	legends[i] = entries.get(i).getDate();
         	//System.out.println("x["+i+"]: " + x[i] + "y["+i+"]: " + days.get(i).getValue());
         }
-        lineGraph = new LineGraphRenderer(x,y,values);
+        lineGraph = new LineGraphRenderer(x,y,values,legends);
+        
         setContentView(view);
+        
+        // Move the view to the end of the graph
+        view.offsetX = -(entries.size() - 8) * view.xScale;
     }
     
     

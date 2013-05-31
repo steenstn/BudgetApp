@@ -23,7 +23,6 @@
         <EditTextPreference
             android:key="backupFolder"
             android:title="Backup file"
-            android:defaultValue="/sdcard/mrcashbackup.txt"
             android:summary="/sdcard/mrcashbackup.txt"
             />
             
