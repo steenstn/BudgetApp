@@ -306,44 +306,40 @@ public class BudgetModel {
 	 */
 	public boolean readAndMergeBackup(String filename) throws Exception
 	{
+		ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
 		
-			ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
-			
-			if(backupList.isEmpty() || backupList == null)
+		if(backupList.isEmpty() || backupList == null)
+		{
+			return false;
+		}
+		// Save current entries
+		List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
+		currentList = datasource.getAllTransactions("asc");
+		
+		// Merge the two lists, sorting them 
+		currentList.addAll(backupList);
+		// Sort the list
+		for(int i = 0; i < currentList.size() - 1; i++)
+		{
+			for(int j = i+1; j < currentList.size();j++)
 			{
-				return false;
-			}
-			// Save current entries
-			List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
-			currentList = datasource.getAllTransactions("asc");
-			
-			// Merge the two lists, sorting them 
-			currentList.addAll(backupList);
-			
-			// Sort the list
-			for(int i = 0; i < currentList.size() - 1; i++)
-			{
-				for(int j = i+1; j < currentList.size();j++)
-				{
-					if(currentList.get(i).getDate().compareTo(currentList.get(j).getDate())>0)
-					{	
-						BudgetEntry temp = new BudgetEntry(currentList.get(i));
-						currentList.set(i, new BudgetEntry(currentList.get(j)));
-						currentList.set(j, new BudgetEntry(temp));
-					}
+				if(currentList.get(i).getDate().compareTo(currentList.get(j).getDate())>0)
+				{	
+					BudgetEntry temp = new BudgetEntry(currentList.get(i));
+					currentList.set(i, new BudgetEntry(currentList.get(j)));
+					currentList.set(j, new BudgetEntry(temp));
 				}
 			}
-			
-			// Reset all the transaction tables
-			datasource.resetTransactionTables();
-			
-			// Add all transactions again
-			for(int i = 0; i < currentList.size(); i++)
-			{
-				datasource.createTransactionEntry(currentList.get(i));
-			}
-			
-			return true;
+		}
+		// Reset all the transaction tables
+		datasource.resetTransactionTables();
+		// Add all transactions again
+		for(int i = 0; i < currentList.size(); i++)
+		{
+			datasource.createTransactionEntry(currentList.get(i));
+		}
+		
+		return true;
 		
 	}
 	
