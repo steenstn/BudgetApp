@@ -2,6 +2,7 @@ package budgetapp.views;
 
 
 import budgetapp.activities.GraphActivity;
+import budgetapp.models.BudgetModel;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -47,9 +48,12 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	float globalScale = 100.0f;
 	// Number of pixels to scale maximum
 	float xScaleMax = 200.0f;
-	float yScaleMax = 0.2f;
 	float xScaleMin = 20.0f;
-	float yScaleMin = 0.05f;
+	
+	BudgetModel model = new BudgetModel(this.getContext());
+	// Fix this
+	float yScaleMin = (float) (0.05f * model.getDailyBudget().get());
+	float yScaleMax = (float) (0.2f * model.getDailyBudget().get());
 	
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {

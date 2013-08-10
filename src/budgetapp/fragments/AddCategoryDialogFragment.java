@@ -36,10 +36,10 @@ public class AddCategoryDialogFragment extends DialogFragment {
 				EditText category = (EditText)view.findViewById(R.id.dialog_category_name);
 				if(activity.addCategory(category.getText().toString())==true)
 				{
-				    Toast.makeText(view.getContext(), "Successfully added "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+				    Toast.makeText(view.getContext(), "Successfully added category" , Toast.LENGTH_LONG).show();
 				}
 				else
-					Toast.makeText(view.getContext(), "Failed to add "+ category.getText().toString() , Toast.LENGTH_LONG).show();
+					Toast.makeText(view.getContext(), "Failed to add category" , Toast.LENGTH_LONG).show();
 			activity.updateList();
 			}
 		})

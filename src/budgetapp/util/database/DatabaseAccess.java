@@ -55,7 +55,8 @@ public class DatabaseAccess {
 	public boolean addCategory(String theCategory)
 	{
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
+		String fixedCategory = theCategory.replaceAll("['\"]", "\'");
+		values.put(BudgetDatabase.COLUMN_CATEGORY, fixedCategory);
 		long insertID = database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		
 		if(insertID==-1)
@@ -71,7 +72,7 @@ public class DatabaseAccess {
 	 */
 	public boolean removeCategory(String theCategory)
 	{
-		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "'"+theCategory+"'", null) > 0;
+		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""+theCategory+"\"", null) > 0;
 	} 
 	
 	/**
@@ -85,8 +86,8 @@ public class DatabaseAccess {
 		// Put in the values
 		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
-		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory());
-		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment());
+		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
+		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment().replaceAll("['\"]", "\'"));
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_CASHFLOW, null,values);
 		
@@ -146,7 +147,7 @@ public class DatabaseAccess {
 		//COLUMN_DATE
 		//COLUMN_VALUE
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
 		
 		// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
 		double newValue = theEntry.getValue().get();
@@ -173,7 +174,7 @@ public class DatabaseAccess {
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_VALUE, total);
 		
-		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
+		database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = \"" + theEntry.getDate().substring(0, 10) + "\"", null);
 		cursor.close();
 		return true;
 	}
@@ -187,7 +188,7 @@ public class DatabaseAccess {
 	public boolean updateDayTotal(BudgetEntry theEntry, BudgetEntry newEntry)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+", " + BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"'"+theEntry.getDate().substring(0,10)+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+", " + BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
 		double newValue = theEntry.getValue().get();
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
 		{		
@@ -284,7 +285,7 @@ public class DatabaseAccess {
 	{
 		
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"\""+theCategory+"\"",null);
 		
 		if(cursor.getCount()!=0) // The category already has transactions
 		{
@@ -318,7 +319,7 @@ public class DatabaseAccess {
 	public void removeFromCategory(String theCategory,double value)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"'"+theCategory+"'",null);
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_NUM+","+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_CATEGORIES+" where "+BudgetDatabase.COLUMN_CATEGORY+"="+"\""+theCategory+"\"",null);
 		if(cursor.getCount()!=0)
 		{
 			cursor.moveToFirst();
@@ -327,7 +328,7 @@ public class DatabaseAccess {
 			
 			if(num==0 && newTotal==0) // No transactions left here, remove
 			{
-				database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = '" + theCategory + "'", null);
+				database.delete(BudgetDatabase.TABLE_CATEGORIES, BudgetDatabase.COLUMN_CATEGORY + " = \"" + theCategory + "\"", null);
 			}
 			else // Update the transaction entry
 			{
