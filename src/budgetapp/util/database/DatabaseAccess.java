@@ -363,6 +363,60 @@ public class DatabaseAccess {
 	}
 	
 	/**
+	 * Adds a value to the autocomplete table, if the table is full,
+	 * the oldest value is replaces, queue-style
+	 * @param theValue - The value to add
+	 */
+	public void addAutocompleteValue(double theValue)
+	{
+		
+		
+		Cursor cursor;
+		// See if value already exists
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
+		
+		if(cursor.getCount() == 0) // It does not exist, see how many values are in the table
+		{
+			cursor = database.rawQuery("select count(*) from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null);
+			cursor.moveToFirst();
+			int numValues = cursor.getInt(0);
+			
+			
+			if(numValues >= 10) // Too many entries, delete the oldest one
+			{
+				database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, 
+					BudgetDatabase.COLUMN_ID + 
+					" = (select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " order by " 
+					+ BudgetDatabase.COLUMN_ID + " limit 1)", null);
+			}
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_VALUE, theValue);
+			database.insert(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null, values);
+		}
+		cursor.close();
+		
+	}
+	
+	/**
+	 * Gets all the autocomplete values
+	 * @return - All autocomplete values
+	 */
+	public List<Double> getAutocompleteValues()
+	{
+		List<Double> values = new ArrayList<Double>();
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			values.add(cursor.getDouble(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return values;
+	}
+	
+	/**
 	 *  Get n number of transactions. If n = 0, returns all transactions
 	 * @param n - Number of transactions
 	 * @param mode Ascending/descending by id

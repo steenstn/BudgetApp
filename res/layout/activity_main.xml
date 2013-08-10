@@ -30,14 +30,15 @@
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal" >
 
-	      <EditText
+	      <AutoCompleteTextView
 	          android:id="@+id/editTextSubtract"
 	          android:layout_width="120dip"
 	          android:layout_height="wrap_content"
 	          android:ems="10"
+	          android:completionThreshold="1"
 	          android:inputType="numberDecimal|numberSigned">
 			  
-	      </EditText>
+	      </AutoCompleteTextView>
 	      <Button
             android:id="@+id/button_choose_category"
             android:background="@drawable/spinner_default_holo_dark"

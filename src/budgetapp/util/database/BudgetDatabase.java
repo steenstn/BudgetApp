@@ -54,6 +54,9 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String COLUMN_SYMBOL = "symbol"; // The symbol used when printing
 	public static final String COLUMN_RATE = "rate"; // The exchange rate of the currency
 	//COLUMN_FLAGS
+	
+	// Autocomplete values for the AutoCompleteEditText
+	public static final String TABLE_AUTOCOMPLETE_VALUES = "autocompletevalues";
 
 	private static final String DATABASE_CREATE_TABLE_CURRENCIES = "create table if not exists "
 			+ TABLE_CURRENCIES + "(" + COLUMN_ID
@@ -62,7 +65,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ COLUMN_FLAGS + " integer);";
 	
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 10;
+	private static final int DATABASE_VERSION = 11;
 	
 	public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
@@ -88,7 +91,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ TABLE_DAYTOTAL + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_DATE
 			+ " text, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);";
-
+	
+	public static final String DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES = "create table "
+			+ TABLE_AUTOCOMPLETE_VALUES + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, " + COLUMN_VALUE
+			+ " double);";
+	
 	public BudgetDatabase(Context context)
 	{
 		super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -103,6 +111,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 		database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+		database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
 		
 		
 		// Put in initial categories
@@ -285,6 +294,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			//db.execSQL("ALTER TABLE " + TABLE_DAYTOTAL + " MODIFY total DOUBLE");
 		case 9:
 			db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+		case 10:
+			db.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
 		}
 		/*
 		 * cash flow
@@ -303,8 +314,4 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	    
 	}
 	
-	private void createTransactionTables()
-	{
-		
-	}
 }

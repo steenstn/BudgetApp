@@ -20,6 +20,8 @@ import android.graphics.Color;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -74,6 +76,32 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 		updateColor();
 		updateCurrentBudget();
 		updateButtons();
+	}
+	
+	
+	/**
+	 * Gets the autocomplete values and sets them for the editTextSubtract
+	 */
+	public void setUpAutocompleteValues()
+	{
+
+    	// Get a reference to the AutoCompleteTextView in the layout
+    	AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.editTextSubtract);
+    	
+    	ArrayList<Double> values = (ArrayList<Double>) model.getAutocompleteValues();
+    	ArrayList<String> stringValues = new ArrayList<String>();
+    	
+    	for(int i = 0; i < values.size(); i++)
+    	{
+    		stringValues.add(""+values.get(i)*-1); // Flip the value, transactions are stored as negative
+    		System.out.println("value: " + values.get(i));
+    	}
+    	// Create the adapter and set it to the AutoCompleteTextView 
+    	
+    	ArrayAdapter<String> adapter = 
+        new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, stringValues);
+    	textView.setAdapter(adapter);
+		
 	}
 	
 	private void updateCurrentBudget()
@@ -166,25 +194,12 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	
     	int coloringFactor = BudgetFunctions.min(255,Math.abs((int)floatDerivative));
     	int start = 255;
-    	/*int currentapiVersion = android.os.Build.VERSION.SDK_INT;
     	
-    	 // If the user has old android, the theme is light. Color accordingly
-    	if(currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
-    	{
-    		start = 0;
-    	 	if(derivative.get()<0)
-	    		newBudget.setTextColor(Color.rgb(coloringFactor,start,start));
-	    	else
-	    		newBudget.setTextColor(Color.rgb(start,coloringFactor,start));
-    	
-    	}
-    	else
-    	{*/
 	    	if(derivative.get()<0)
 	    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
 	    	else
 	    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
-    	//}
+    	
     }
 
     private void setUpListeners()

@@ -39,7 +39,6 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	float oldY;
 	float oldX2, oldY2;
 	public float xScale = 50;
-	public float yScale = 0.12f;
 	float oldDistanceX;
 	float oldDistanceY;
 	float originX;
@@ -51,9 +50,12 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	float xScaleMin = 20.0f;
 	
 	BudgetModel model = new BudgetModel(this.getContext());
+	public float yScale = (float) (0.2f * 50/model.getDailyBudget().get());
+	
 	// Fix this
-	float yScaleMin = (float) (0.05f * model.getDailyBudget().get());
-	float yScaleMax = (float) (0.2f * model.getDailyBudget().get());
+	float yScaleMin = (float) (0.05f * 50/model.getDailyBudget().get());
+	float yScaleMax = (float) (0.3f * 50/model.getDailyBudget().get());
+	
 	
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {

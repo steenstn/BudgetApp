@@ -63,6 +63,8 @@ public class BudgetDataSource {
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
+			addToAutocompleteValues(result.getValue().get());
+			
 			addToCategory(workingEntry.getCategory(),workingEntry.getValue().get());
 	    	addToDaySum(workingEntry);
 	    	addToDayTotal(workingEntry);
@@ -71,6 +73,7 @@ public class BudgetDataSource {
 		return result;
 		
 	}
+	
 	/**
 	 * Removes a transaction entry from the database and updates the affected tables
 	 * @param theEntry The entry to remove
@@ -236,6 +239,14 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public List<Double> getAutocompleteValues()
+	{
+		List<Double> result;
+		open();
+		result = dbAccess.getAutocompleteValues();
+		close();
+		return result;
+	}
 	/**
 	 * Adds a category
 	 * @param theCategory - Name of the new category
@@ -273,6 +284,10 @@ public class BudgetDataSource {
 	
 	
 	// Helper functions to update different tables correctly
+	private void addToAutocompleteValues(double value)
+	{
+		dbAccess.addAutocompleteValue(value);
+	}
 	private void addToCategory(String theCategory,double value)
 	{
 		dbAccess.addToCategory(theCategory,value);

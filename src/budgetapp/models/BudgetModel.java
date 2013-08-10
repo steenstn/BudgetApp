@@ -143,6 +143,10 @@ public class BudgetModel {
 		return datasource.getCategoryNames();
 	}
 	
+	public List<Double> getAutocompleteValues()
+	{
+		return datasource.getAutocompleteValues();
+	}
 	/**
 	 * Sets the daily budget and saves to config and config file.
 	 * Notifies observers.
