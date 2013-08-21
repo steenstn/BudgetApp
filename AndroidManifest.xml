@@ -67,6 +67,15 @@
                 android:value="budgetapp.activities.MainActivity" />
         </activity>
         <activity
+            android:name="budgetapp.activities.InstallmentsActivity"
+            android:label="@string/title_activity_installments"
+            android:parentActivityName="budgetapp.activities.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="budgetapp.activities.MainActivity" />
+        </activity>
+        <activity
             android:name="budgetapp.activities.BackupActivity"
             android:label="@string/title_activity_backup"
             android:parentActivityName="budgetapp.activities.MainActivity"

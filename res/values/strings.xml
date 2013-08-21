@@ -12,6 +12,7 @@
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_categories">Manage categories</string>
     <string name="title_activity_backup">Backup</string>
+    <string name="title_activity_installments">Installments</string>
     <string name="menu_statistics">Show statistics</string>
     <string name="all_years">All years</string>
     <string name="all_months">All months</string>

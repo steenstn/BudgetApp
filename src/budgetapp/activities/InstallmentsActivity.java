@@ -1,7 +1,6 @@
 package budgetapp.activities;
 
 import budgetapp.main.R;
-import budgetapp.models.BudgetModel;
 import budgetapp.views.InstallmentsView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
