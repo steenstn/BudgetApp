@@ -49,6 +49,12 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	// Currencies and their exhange values
 	public static final String TABLE_CURRENCIES = "currencies";
 	
+	public static final String TABLE_INSTALLMENTS = "installments";
+	public static final String COLUMN_TRANSACTION_ID = "transaction_id";
+	public static final String COLUMN_DATE_LAST_PAYED = "date_last_payed";
+	public static final String COLUMN_REMAINING_AMOUNT = "remaining_amount";
+	
+	
 	//COLUMN_ID
 	public static final String COLUMN_NAME = "name"; // The name of the currency
 	public static final String COLUMN_SYMBOL = "symbol"; // The symbol used when printing
@@ -65,7 +71,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ COLUMN_FLAGS + " integer);";
 	
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 11;
+	private static final int DATABASE_VERSION = 12;
 	
 	public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
@@ -95,7 +101,20 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES = "create table "
 			+ TABLE_AUTOCOMPLETE_VALUES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_VALUE
-			+ " double);";
+			+ " double, " + COLUMN_NUM + " integer);";
+	
+	public static final String DATABASE_CREATE_TABLE_INSTALLMENTS = "create table "
+			+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, "
+			+ COLUMN_TRANSACTION_ID + " integer, "
+			+ COLUMN_VALUE + " double, " + COLUMN_DATE_LAST_PAYED + " text, "
+			+ COLUMN_REMAINING_AMOUNT + " double);";
+			
+			/*transaction_id
+			total
+			last_day_paid
+			remaining_amount
+			*/
 	
 	public BudgetDatabase(Context context)
 	{
@@ -110,17 +129,17 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
 		database.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
 		database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
-		database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
-		database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
 		
+		database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
+		database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
 		
 		// Put in initial categories
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Income");
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
-		values.put(BudgetDatabase.COLUMN_CATEGORY, "Food");
-		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		values.put(BudgetDatabase.COLUMN_CATEGORY, "Groceries");
+		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
+		values.put(BudgetDatabase.COLUMN_CATEGORY, "Entertainment");
 		database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null,values);
 		
 		
@@ -293,9 +312,11 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			
 			//db.execSQL("ALTER TABLE " + TABLE_DAYTOTAL + " MODIFY total DOUBLE");
 		case 9:
-			db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+			//db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
 		case 10:
 			db.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
+		case 11:
+			db.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
 		}
 		/*
 		 * cash flow
