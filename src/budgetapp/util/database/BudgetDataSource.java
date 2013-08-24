@@ -184,10 +184,8 @@ public class BudgetDataSource {
 		close();
 		BudgetEntry newEntry = oldEntry.clone();
 		double dailyPay = installment.getDailyPayment().get();
-		System.out.println("dailypay: "+dailyPay);
 		
 		double remainingValue = installment.getRemainingValue().get();
-		System.out.println("remaining value: "+remainingValue);
 		
 		if(Math.abs(remainingValue) < Math.abs(dailyPay)) // Don't pay too much
 			dailyPay = remainingValue;
