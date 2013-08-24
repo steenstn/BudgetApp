@@ -195,8 +195,7 @@ public class BudgetDataSource {
 		open();
 		Installment newInstallment = getInstallment(installment.getId());
 		close();
-		
-		if(Math.abs(newInstallment.getRemainingValue().get()) > 0.001)
+		if(Math.abs(newInstallment.getRemainingValue().get()) < 0.001)
 		{
 			open();
 			if(dbAccess.removeInstallment(installment.getId()))
