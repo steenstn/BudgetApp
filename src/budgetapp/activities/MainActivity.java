@@ -101,6 +101,7 @@ public class MainActivity extends FragmentActivity {
     	
     	// Add daily budget and Toast the result if anything was added
     	int daysAdded = model.addDailyBudget();
+    	model.payOffInstallments();
     	if(daysAdded>0)
     	{
     		Money result = new Money();
@@ -151,7 +152,6 @@ public class MainActivity extends FragmentActivity {
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.createTransaction(entry);
-	    	System.out.println("value after insert "+entry.getValue().get());
 	    	resultText.setText("");
     	}
     	catch(NumberFormatException e)

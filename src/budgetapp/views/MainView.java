@@ -53,8 +53,8 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	{
 		this.model = model;
 		model.addObserver(this);
-		
 	}
+	
 	@Override
     protected void onFinishInflate()
     {

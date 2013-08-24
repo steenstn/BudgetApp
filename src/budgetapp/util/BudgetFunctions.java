@@ -1,5 +1,7 @@
 package budgetapp.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -20,6 +22,18 @@ public class BudgetFunctions {
 		if(a<b)
 			return a;
 		return b;
+	}
+	
+	/**
+	 * Gets today's date in a string format
+	 * @return - Todays date in "yyyy/MM/dd HH:mm"
+	 */
+	public static String getDateString()
+	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    	Calendar cal = Calendar.getInstance();
+    	String dateString = dateFormat.format(cal.getTime());
+    	return dateString;
 	}
 	
 	/**

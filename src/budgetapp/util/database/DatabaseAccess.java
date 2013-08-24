@@ -6,6 +6,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 
 
@@ -75,6 +76,10 @@ public class DatabaseAccess {
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""+theCategory+"\"", null) > 0;
 	} 
 	
+	public boolean removeInstallment(long id)
+	{
+		return database.delete(BudgetDatabase.TABLE_INSTALLMENTS, BudgetDatabase.COLUMN_ID + " = " + id, null) > 0;
+	}
 	/**
 	 * Adds a transaction entry to the cash flow table in the dataase
 	 * @param theEntry - The BudgetEntry to add
@@ -275,6 +280,20 @@ public class DatabaseAccess {
 		return false;
 	}
 	
+	public boolean updateInstallment(long id, double newTotalValue, double newDailyPayment, String newDateLastPaid)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_VALUE, newTotalValue);
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, newDailyPayment);
+		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, newDateLastPaid);
+		
+		int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+		if(res != 0)
+			return true;
+		else
+			return false;
+	}
+	
 	
 	/**
 	 * Add a value to a category in the category table
@@ -369,8 +388,6 @@ public class DatabaseAccess {
 	 */
 	public void addAutocompleteValue(double theValue)
 	{
-		
-		
 		Cursor cursor;
 		// See if value already exists
 		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
@@ -395,6 +412,23 @@ public class DatabaseAccess {
 		}
 		cursor.close();
 		
+	}
+	
+	/**
+	 * Add an installment to the database
+	 * @param installment - The installment to add
+	 * @return - The resulting id of the installment
+	 */
+	public long addInstallment(Installment installment)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID, installment.getTransactionId());
+		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());
+		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, installment.getDateLastPaid());
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
+		
+		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
+		return insertId;
 	}
 	
 	/**
@@ -440,6 +474,48 @@ public class DatabaseAccess {
 		}
 		cursor.close();
 		return entries;
+	}
+	
+	public BudgetEntry getTransaction(long id)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
+		cursor.moveToFirst();
+		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+		cursor.close();
+		return entry;
+	}
+	
+	public Installment getInstallment(long id)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select i.*, t.value, t.category, t.comment from " + BudgetDatabase.TABLE_INSTALLMENTS
+				+ " i join " + BudgetDatabase.TABLE_CASHFLOW + " t on i." + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " = t." + BudgetDatabase.COLUMN_ID + " where i." + BudgetDatabase.COLUMN_ID + " = " + id, null);
+		
+		/*
+		select i.*, t.value, t.category, t.comment from installments i
+		join cash_flow t on i.transactionId = t._id
+		where i._id = :id
+		*/
+		cursor.moveToFirst();
+		if(cursor.getCount()==1)
+		{
+			
+			Installment installment = new Installment(cursor.getLong(0),
+													  cursor.getLong(1),
+												  	  new Money(cursor.getDouble(2)),
+												  	  new Money(cursor.getDouble(3)),
+												  	  cursor.getString(4),
+												  	  new Money(cursor.getDouble(5)),
+												  	  cursor.getString(6),
+												  	  cursor.getString(7));
+
+			cursor.close();
+			return installment;
+		}
+		else
+			return new Installment(-1,-1,new Money(-1),new Money(-1),"ERROR",new Money(-1),"ERROR","ERROR");
 	}
 	
 	
@@ -510,6 +586,39 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			entries.add(cursor.getString(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
+	public List<Installment> getInstallments()
+	{
+		List<Installment> entries = new ArrayList<Installment>();
+		
+		Cursor cursor;
+		cursor = database.rawQuery("select i.*, t.value, t.category, t.comment from " + BudgetDatabase.TABLE_INSTALLMENTS
+				+ " i join " + BudgetDatabase.TABLE_CASHFLOW + " t on i." + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " = t." + BudgetDatabase.COLUMN_ID, null);
+		
+		/*
+		select i.*, t.value, t.category, t.comment from installments i
+		join cash_flow t on i.transactionId = t._id
+		*/
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			
+			Installment installment = new Installment(cursor.getLong(0),
+													  cursor.getLong(1),
+												  	  new Money(cursor.getDouble(2)),
+												  	  new Money(cursor.getDouble(3)),
+												  	  cursor.getString(4),
+												  	  new Money(cursor.getDouble(5)),
+												  	  cursor.getString(6),
+												  	  cursor.getString(7));
+			
+			entries.add(installment);
 			cursor.moveToNext();
 		}
 		cursor.close();

@@ -15,6 +15,7 @@ import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
@@ -203,7 +204,36 @@ public class BudgetModel {
 			return false;
 	}
 	
+	public boolean addInstallment(Installment installment)
+	{
+		boolean result = datasource.createInstallment(installment);
+		if(result == true)
+		{
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		else
+			return false;
+	}
 	
+	public boolean removeInstallment(long id)
+	{
+		boolean result = datasource.removeInstallment(id);
+		if(result == true)
+		{
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public List<Installment> getInstallments()
+	{
+		return datasource.getInstallments();
+	}
 	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
@@ -234,7 +264,6 @@ public class BudgetModel {
     	if(!lastDay.isEmpty())
     	{
     		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
-    		
     		
 	    	String lastDayString = lastDay.get(0).getDate();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
@@ -278,6 +307,51 @@ public class BudgetModel {
     	return daysAdded;
     }
 	
+	public void payOffInstallments()
+	{
+		List<Installment> installments = datasource.getInstallments();
+		if(installments.isEmpty())
+			return;
+		
+		//List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
+    	//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    	
+		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
+		for(int i = 0; i < installments.size(); i++)
+		{
+	    	String lastDayString = installments.get(i).getDateLastPaid();
+	    	Calendar lastDayCalendar = Calendar.getInstance();
+	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
+	    	// Set HH:mm to 00:00
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
+	    	
+	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
+	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
+
+	    	// Step up to the day before tomorrow
+	    	Calendar nextDay = Calendar.getInstance();
+	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
+	    	
+	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
+	    	
+	    	while(tempDate.before(nextDay))
+	    	{
+	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
+	    		{
+	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
+	    			//datasource
+	    			//BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
+		        	//datasource.createTransactionEntry(entry);
+	    			datasource.payOffInstallment(installments.get(i));
+		    		stateChanged = true;
+	    		}
+	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
+	    	}
+		}
+    	
+    	notifyObservers();
+	}
 	public List<CategoryEntry> getCategoriesSortedByNum() {
 		return datasource.getCategoriesSortedByNum();
 	}

@@ -51,9 +51,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	
 	public static final String TABLE_INSTALLMENTS = "installments";
 	public static final String COLUMN_TRANSACTION_ID = "transaction_id";
-	public static final String COLUMN_DATE_LAST_PAYED = "date_last_payed";
-	public static final String COLUMN_REMAINING_AMOUNT = "remaining_amount";
-	
+	public static final String COLUMN_DATE_LAST_PAID = "date_last_paid";
+	public static final String COLUMN_DAILY_PAYMENT = "daily_payment";
 	
 	//COLUMN_ID
 	public static final String COLUMN_NAME = "name"; // The name of the currency
@@ -107,13 +106,11 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, "
 			+ COLUMN_TRANSACTION_ID + " integer, "
-			+ COLUMN_VALUE + " double, " + COLUMN_DATE_LAST_PAYED + " text, "
-			+ COLUMN_REMAINING_AMOUNT + " double);";
-			
+			+ COLUMN_VALUE + " double, " + COLUMN_DAILY_PAYMENT + " double, "
+			+ COLUMN_DATE_LAST_PAID + " text); ";
 			/*transaction_id
 			total
 			last_day_paid
-			remaining_amount
 			*/
 	
 	public BudgetDatabase(Context context)

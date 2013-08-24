@@ -11,8 +11,10 @@ package budgetapp.util.database;
 import java.util.List;
 
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 
 
@@ -49,7 +51,8 @@ public class BudgetDataSource {
 	}
 	
 	/**
-	 * Creates a transaction entry and updates the affected tables
+	 * Creates a transaction entry and updates the affected tables. 
+	 * Multiplies value with exchange rate.
 	 * @param theEntry The entry to add
 	 * @return The entry that was added
 	 */
@@ -100,7 +103,8 @@ public class BudgetDataSource {
 	}
 	
 	/** 
-	 * Changes the fields that are changeable of the transaction entry
+	 * Changes the fields that are changeable of the transaction entry.
+	 * Multiplies with exchange rate.
 	 * @param oldEntry - The entry to change
 	 * @param newEntry - Entry containing the new values
 	 */
@@ -139,6 +143,74 @@ public class BudgetDataSource {
 		result = dbAccess.addEntry(theEntry);
 		close();
 		return result;
+	}
+	
+	/**
+	 * Creates a transaction in the database, an installment and links them together
+	 * @param installment
+	 * @return
+	 */
+	public boolean createInstallment(Installment installment)
+	{
+		Money dailyPayment = installment.getDailyPayment();
+		String dateLastPaid = installment.getDateLastPaid();
+		String category = installment.getCategory();
+		String comment = installment.getComment();
+		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment);
+		
+		initialPayment = createTransactionEntry(initialPayment);
+		
+		installment.setTransactionId(initialPayment.getId());
+		
+		open();
+		long result = dbAccess.addInstallment(installment);
+		close();
+		
+		if(result != -1)
+			return true;
+		else
+			return false;
+		
+	}
+	
+	/**
+	 * Do a payment on an installment
+	 * @param installment - The installment to pay off
+	 */
+	public void payOffInstallment(Installment installment)
+	{
+		open();
+		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
+		close();
+		BudgetEntry newEntry = oldEntry.clone();
+		double dailyPay = installment.getDailyPayment().get();
+		System.out.println("dailypay: "+dailyPay);
+		
+		double remainingValue = installment.getRemainingValue().get();
+		System.out.println("remaining value: "+remainingValue);
+		
+		if(Math.abs(remainingValue) < Math.abs(dailyPay)) // Don't pay too much
+			dailyPay = remainingValue;
+		
+		newEntry.setValue(new Money(oldEntry.getValue().add(dailyPay)));
+		editTransactionEntry(oldEntry, newEntry);
+		open();
+		Installment newInstallment = getInstallment(installment.getId());
+		close();
+		
+		if(Math.abs(newInstallment.getRemainingValue().get()) > 0.001)
+		{
+			open();
+			if(dbAccess.removeInstallment(installment.getId()))
+				System.out.println("Deleted installment!");
+			close();
+		}
+		else
+		{
+			open();
+			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
+			close();
+		}
 	}
 	
 	/**
@@ -247,6 +319,15 @@ public class BudgetDataSource {
 		close();
 		return result;
 	}
+	
+	public List<Installment> getInstallments()
+	{
+		List<Installment> result;
+		open();
+		result = dbAccess.getInstallments();
+		close();
+		return result;
+	}
 	/**
 	 * Adds a category
 	 * @param theCategory - Name of the new category
@@ -271,6 +352,15 @@ public class BudgetDataSource {
 		boolean result;
 		open();
 		result = dbAccess.removeCategory(theCategory);
+		close();
+		return result;
+	}
+	
+	public boolean removeInstallment(long id)
+	{
+		boolean result;
+		open();
+		result = dbAccess.removeInstallment(id);
 		close();
 		return result;
 	}
@@ -316,6 +406,18 @@ public class BudgetDataSource {
 	private void updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		dbAccess.updateTransaction(oldEntry, newEntry);
+	}
+	private BudgetEntry getTransaction(long id)
+	{
+		return dbAccess.getTransaction(id);
+	}
+	private Installment getInstallment(long id)
+	{
+		return dbAccess.getInstallment(id);
+	}
+	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)
+	{
+		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid);
 	}
 	
 }
