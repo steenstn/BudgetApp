@@ -15,6 +15,7 @@ import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -100,15 +101,7 @@ public class MainActivity extends FragmentActivity {
     	super.onResume();
     	
     	// Add daily budget and Toast the result if anything was added
-    	int daysAdded = model.addDailyBudget();
-    	model.payOffInstallments();
-    	if(daysAdded>0)
-    	{
-    		Money result = new Money();
-    		result.set(daysAdded*getDailyBudget().get());
-    		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
-    	}
-    	
+    	new DailyBudgetAddTask().execute();
         view.setUpAutocompleteValues();
     	view.update();
     }
@@ -224,5 +217,45 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 	
+	private class DailyBudgetAddTask extends AsyncTask<Void,Void,Integer>
+	{
+		@Override
+		protected void onPreExecute()
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(false);
+		}
+		@Override
+		protected Integer doInBackground(Void... params) {
+			int result = model.addDailyBudget();
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer daysAdded)
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(true);
+			if(daysAdded>0)
+	    	{
+	    		Money result = new Money();
+	    		result.set(daysAdded * getDailyBudget().get());
+	    		Toast.makeText(getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
+	    	}
+			view.update();
+
+	    	new PayInstallmentsTask().execute();
+		}
+	}
+	
+	private class PayInstallmentsTask extends AsyncTask<Void,Void,Void>
+	{
+		@Override
+		protected Void doInBackground(Void... params) {
+			model.payOffInstallments();
+			return null;
+		}
+	}
+		
     
 }

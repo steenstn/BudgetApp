@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.IBudgetObserver;
@@ -37,7 +38,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	
 	public InstallmentsView(Context context, AttributeSet attrs) {
 		super(context,attrs);
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public void setViewListener(ViewListener viewListener)
@@ -53,6 +54,8 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	
 	@Override
 	public void update() {
+		
+		double totalDailyPayments = 0;
 		List<Installment> allInstallments = new ArrayList<Installment>();
 		
 		allInstallments = model.getInstallments();
@@ -64,10 +67,14 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 			if(allInstallments.get(i).getRemainingValue().get() > 0) // This installment is paid for
 				model.removeInstallment(allInstallments.get(i).getId());
 			else
+			{
 				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
+				totalDailyPayments += allInstallments.get(i).getDailyPayment().get();
+			}
 		}
 		installmentsListView.setAdapter(listAdapter); 
-        
+        TextView totalDailyPaymentsTextView = (TextView)findViewById(R.id.textViewTotalDailyPayment);
+        totalDailyPaymentsTextView.setText("Total daily payments: " + new Money(totalDailyPayments));
 		
 	}
 	@Override

@@ -113,7 +113,17 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			last_day_paid
 			*/
 	
-	public BudgetDatabase(Context context)
+	private static BudgetDatabase instance;
+	
+	public static synchronized BudgetDatabase getInstance(Context context)
+	{
+		if(instance == null)
+			instance = new BudgetDatabase(context);
+		
+		return instance;
+	}
+	
+	private BudgetDatabase(Context context)
 	{
 		super(context,DATABASE_NAME,null,DATABASE_VERSION);
 	}

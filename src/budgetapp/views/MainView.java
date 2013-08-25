@@ -94,7 +94,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	for(int i = 0; i < values.size(); i++)
     	{
     		stringValues.add(""+values.get(i)*-1); // Flip the value, transactions are stored as negative
-    		System.out.println("value: " + values.get(i));
+    		
     	}
     	// Create the adapter and set it to the AutoCompleteTextView 
     	
@@ -167,7 +167,7 @@ public class MainView extends LinearLayout implements IBudgetObserver{
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");
-        		left.append(days.get(i).getTotal()+"\n");
+    		left.append(days.get(i).getTotal()+"\n");
         }
         
     }
@@ -239,7 +239,8 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	favButt2.setOnLongClickListener(new View.OnLongClickListener() {
 			
 			@Override
-			public boolean onLongClick(View v) {
+			public boolean onLongClick(
+					View v) {
 				viewListener.favButtLongClick(favButt2);
 				return true;
 			}

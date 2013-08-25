@@ -60,7 +60,6 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     			try
     			{
     				String category = categoryEditText.getText().toString();
-    				System.out.println(category);
     				if(category.equalsIgnoreCase(""))
     					throw new Exception("Must add category");
     				

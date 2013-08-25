@@ -34,7 +34,7 @@ public class BudgetDataSource {
 	
 	public BudgetDataSource(Context context)
 	{
-		dbHelper = new BudgetDatabase(context);
+		dbHelper = BudgetDatabase.getInstance(context);
 		open();
 		close();
 	}
@@ -47,7 +47,7 @@ public class BudgetDataSource {
 	
 	private void close()
 	{
-		dbHelper.close();
+		//dbHelper.close();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class BudgetDataSource {
 		// Add the exchange rate to the entry
 		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
 		
-		open();
+		////open();
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
@@ -84,7 +84,7 @@ public class BudgetDataSource {
 	 */
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
-		open();
+		//open();
 		// Get the entry from the database, it may have been edited
 		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
@@ -113,7 +113,7 @@ public class BudgetDataSource {
 		BudgetEntry workingEntry = newEntry.clone();
 		// Add the exchange rate to the entry
 		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
-		open();
+		//open();
 		updateTransaction(oldEntry, workingEntry);
 		
 		// New category, move the entry from old category to new
@@ -138,7 +138,7 @@ public class BudgetDataSource {
 	 */
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
-		open();
+		//open();
 		CategoryEntry result;
 		result = dbAccess.addEntry(theEntry);
 		close();
@@ -162,7 +162,7 @@ public class BudgetDataSource {
 		
 		installment.setTransactionId(initialPayment.getId());
 		
-		open();
+		//open();
 		long result = dbAccess.addInstallment(installment);
 		close();
 		
@@ -179,7 +179,7 @@ public class BudgetDataSource {
 	 */
 	public void payOffInstallment(Installment installment)
 	{
-		open();
+		//open();
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
 		close();
 		BudgetEntry newEntry = oldEntry.clone();
@@ -193,7 +193,7 @@ public class BudgetDataSource {
 		
 		newEntry.setValue(new Money(oldEntry.getValue().add(dailyPay)));
 		editTransactionEntry(oldEntry, newEntry);
-		open();
+		//open();
 		Installment newInstallment = getInstallment(installment.getId());
 		close();
 		
@@ -201,13 +201,13 @@ public class BudgetDataSource {
 		// If the installment has gone positive or is small enough, delete it
 		if(newRemainingValue >= 0 || Math.abs(newRemainingValue) < 0.0001)
 		{
-			open();
+			//open();
 			dbAccess.removeInstallment(installment.getId());
 			close();
 		}
 		else
 		{
-			open();
+			//open();
 			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
 			close();
 		}
@@ -222,7 +222,7 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
-		open();
+		//open();
 		result = dbAccess.getTransactions(0,orderBy);
 		close();
 		return result;
@@ -237,7 +237,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		open();
+		//open();
 		result = dbAccess.getDaySum(n, orderBy);
 		close();
 		return result;
@@ -252,7 +252,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		open();
+		//open();
 		result = dbAccess.getDayTotal(n, orderBy);
 		close();
 		return result;
@@ -267,7 +267,7 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		List<BudgetEntry> result;
-		open();
+		//open();
 		result = dbAccess.getTransactions(n,orderBy);
 		close();
 		return result;
@@ -280,7 +280,7 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
-		open();
+		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
 		close();
 		return result;
@@ -293,7 +293,7 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
 		List<CategoryEntry> result;
-		open();
+		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
 		close();
 		return result;
@@ -306,7 +306,7 @@ public class BudgetDataSource {
 	public List<String> getCategoryNames()
 	{
 		List<String> result;
-		open();
+		//open();
 		result = dbAccess.getCategoryNames();
 		close();
 		return result;
@@ -315,7 +315,7 @@ public class BudgetDataSource {
 	public List<Double> getAutocompleteValues()
 	{
 		List<Double> result;
-		open();
+		//open();
 		result = dbAccess.getAutocompleteValues();
 		close();
 		return result;
@@ -324,7 +324,7 @@ public class BudgetDataSource {
 	public List<Installment> getInstallments()
 	{
 		List<Installment> result;
-		open();
+		//open();
 		result = dbAccess.getInstallments();
 		close();
 		return result;
@@ -337,7 +337,7 @@ public class BudgetDataSource {
 	public boolean addCategory(String theCategory)
 	{
 		boolean result;
-		open();
+		//open();
 		result = dbAccess.addCategory(theCategory);
 		close();
 		return result;
@@ -351,7 +351,7 @@ public class BudgetDataSource {
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
-		open();
+		//open();
 		result = dbAccess.removeCategory(theCategory);
 		close();
 		return result;
@@ -360,7 +360,7 @@ public class BudgetDataSource {
 	public boolean removeInstallment(long id)
 	{
 		boolean result;
-		open();
+		//open();
 		result = dbAccess.removeInstallment(id);
 		close();
 		return result;
@@ -368,7 +368,7 @@ public class BudgetDataSource {
 	
 	public void resetTransactionTables()
 	{
-		open();
+		//open();
 		dbAccess.resetTransactionTables();
 		close();
 	}
