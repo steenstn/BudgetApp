@@ -255,6 +255,12 @@ public class MainActivity extends FragmentActivity {
 			model.payOffInstallments();
 			return null;
 		}
+		
+		@Override
+		protected void onPostExecute(Void params)
+		{
+			view.update();
+		}
 	}
 		
     
