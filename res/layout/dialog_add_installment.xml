@@ -3,33 +3,37 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    
-    <EditText 
-        android:id="@+id/dialog_installment_total_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal|numberSigned"
-        android:hint="Price" />
-    
-    <EditText 
-        android:id="@+id/dialog_installment_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textCapSentences"
-        android:hint="Category" />
-    
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+	    <EditText 
+	        android:id="@+id/dialog_installment_total_value"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:inputType="numberDecimal|numberSigned"
+	        android:hint="Price" />
+	    
+	    <EditText 
+	        android:id="@+id/dialog_installment_category"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:inputType="textCapSentences"
+	        android:hint="Category" />
+    </LinearLayout>
     <EditText 
         android:id="@+id/dialog_installment_daily_payment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal|numberSigned"
         android:hint="Daily payment" />
-    <!-- 
+    
     <DatePicker
-        android:id="@+id/datePicker1"
+        android:id="@+id/dialog_installment_date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:calendarViewShown="false" /> -->
+        android:calendarViewShown="false" />
+
 
        	<EditText
         android:id="@+id/dialog_installment_comment"

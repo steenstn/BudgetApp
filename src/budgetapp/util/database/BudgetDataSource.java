@@ -187,6 +187,7 @@ public class BudgetDataSource {
 		
 		double remainingValue = installment.getRemainingValue().get();
 		
+		
 		if(Math.abs(remainingValue) < Math.abs(dailyPay)) // Don't pay too much
 			dailyPay = remainingValue;
 		
@@ -195,11 +196,13 @@ public class BudgetDataSource {
 		open();
 		Installment newInstallment = getInstallment(installment.getId());
 		close();
-		if(Math.abs(newInstallment.getRemainingValue().get()) < 0.001)
+		
+		double newRemainingValue = newInstallment.getRemainingValue().get();
+		// If the installment has gone positive or is small enough, delete it
+		if(newRemainingValue >= 0 || Math.abs(newRemainingValue) < 0.0001)
 		{
 			open();
-			if(dbAccess.removeInstallment(installment.getId()))
-				System.out.println("Deleted installment!");
+			dbAccess.removeInstallment(installment.getId());
 			close();
 		}
 		else
@@ -208,6 +211,7 @@ public class BudgetDataSource {
 			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
 			close();
 		}
+	
 	}
 	
 	/**

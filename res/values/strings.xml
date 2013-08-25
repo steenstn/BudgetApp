@@ -18,6 +18,9 @@
     <string name="all_months">All months</string>
     <string name="all_categories">All categories</string>
     <string name="menu_editcurrency">Edit currency</string>
+    <string name="installments_info_text">Installments are a way to spread a large transaction out over
+        multiple days and are meant to be used for larger transactions e.g. rent, new TV, etc. The
+        installments are paid off every day until the whole transaction is done.</string>
     
     <string-array name="months_array">
         <item>January</item>

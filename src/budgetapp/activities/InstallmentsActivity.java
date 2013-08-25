@@ -56,7 +56,7 @@ public class InstallmentsActivity extends FragmentActivity {
 
 		@Override
 		public void listViewClick(InstallmentViewHolder listItem) {
-			Toast.makeText(getBaseContext(), "Daily pay: " + listItem.getEntry().getDailyPayment() + ", Remaining: " + listItem.getEntry().getRemainingValue(), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + " - Daily pay: " + listItem.getEntry().getDailyPayment().multiply(-1), Toast.LENGTH_LONG).show();
 		}
 
 		@Override

@@ -61,21 +61,13 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		
 		for(int i = 0; i < allInstallments.size(); i++)
 		{
-			listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
+			if(allInstallments.get(i).getRemainingValue().get() > 0) // This installment is paid for
+				model.removeInstallment(allInstallments.get(i).getId());
+			else
+				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
 		}
 		installmentsListView.setAdapter(listAdapter); 
         
-		/*
-		ArrayList<String> temp = new ArrayList<String>();
-		for(int i = 0; i < allInstallments.size(); i++)
-		{
-			temp.add(""+allInstallments.get(i).getDateLastPaid());
-		}
-		
-		ArrayAdapter<String> arrayAdapter =      
-		         new ArrayAdapter<String>(this.getContext(),android.R.layout.simple_list_item_1, temp);
-		         
-		         */
 		
 	}
 	@Override

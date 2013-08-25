@@ -61,7 +61,7 @@ public class InstallmentAdapter extends BaseAdapter {
 		InstallmentViewHolder holder = null;
 		if(convertView == null)
 		{
-			convertView = inflater.inflate(R.layout.stats_listitem,null);
+			convertView = inflater.inflate(R.layout.installment_listitem,null);
 			holder = new InstallmentViewHolder(data.get(position));
 			holder.setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
 			holder.setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
@@ -79,8 +79,8 @@ public class InstallmentAdapter extends BaseAdapter {
 		}
 		
 		
-		holder.getLeftTextView().setText(holder.getEntry().getCategory() + holder.getEntry().getDateLastPaid());
-		holder.getCenterTextView().setText(""+holder.getEntry().getRemainingValue());
+		holder.getLeftTextView().setText(holder.getEntry().getCategory());
+		holder.getCenterTextView().setText(""+holder.getEntry().getRemainingValue().multiply(-1));
 		// Add a star after the categoryt if this entry has a comment
 		double daysLeft = (holder.getEntry().getRemainingValue().divide(holder.getEntry().getDailyPayment())).get();
 		int numDaysLeft = (int) Math.ceil(daysLeft);
