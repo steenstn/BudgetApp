@@ -18,6 +18,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
@@ -34,6 +36,8 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	EditText dailyPaymentEditText;
 	EditText commentEditText;
 	DatePicker datePicker;
+	Button getDateButton;
+	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		final InstallmentsActivity activity = (InstallmentsActivity) getActivity();
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -74,7 +78,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     				dailyPayment *= -1;
     				
     				if(dailyPayment < totalValue)
-    					throw new Exception("dailyayment larger than total value");
+    					throw new Exception("daily payment larger than total value");
     				
     				String comment = commentEditText.getText().toString();
     				activity.addInstallment(new Money(totalValue), new Money(dailyPayment), category, comment);
@@ -104,61 +108,91 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 		totalValueEditText = (EditText)view.findViewById(R.id.dialog_installment_total_value);
 		dailyPaymentEditText = (EditText)view.findViewById(R.id.dialog_installment_daily_payment);
 		commentEditText = (EditText)view.findViewById(R.id.dialog_installment_comment);
-		
+		getDateButton = (Button)view.findViewById(R.id.dialog_installment_get_date);
+		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
 		
 		setUpWatchers();		
 	}
 	
 	private void setUpWatchers()
 	{
-		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
 		datePicker.init(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(),
 			new OnDateChangedListener(){
 
 				@Override
 				public void onDateChanged(DatePicker datePicker, int year,
 						int month, int day) {
+					Calendar today = Calendar.getInstance();
 					
+					Calendar date = Calendar.getInstance();
+					date.set(year, month, day);
+					long targetDateMillisecs = date.getTimeInMillis();
+					long todayMillisecs = today.getTimeInMillis();
+					
+					int days = (int) Math.ceil(((targetDateMillisecs - todayMillisecs) / (1000 * 60 * 60 * 24)));
+					try
+					{
+						double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
+						double dailyPay = totalValue / days;
+						dailyPay = (double)Math.round(dailyPay * 100) / 100;
+						String dailyPayString = String.valueOf(dailyPay);
+						if(!dailyPayString.contains("-") && !dailyPayString.contains("E"))
+							dailyPaymentEditText.setText(String.valueOf(dailyPay));
+						else
+							dailyPaymentEditText.setText("");
+					}
+					catch(NumberFormatException e)
+					{
+					
+					}
 				}
 			});
 		TextWatcher dailyPaymentWatcher = new TextWatcher(){
 
 			@Override
-			public void afterTextChanged(Editable s) {}
+			public void afterTextChanged(Editable s) {
+				
+				
+			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				try
-				{
-					double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
-					double dailyPayment = Double.parseDouble(dailyPaymentEditText.getText().toString());
-				
-					int daysLeft = calculateDaysLeft(totalValue, dailyPayment);
-					
-					Calendar today = Calendar.getInstance();
-					long todayInMillisecs = today.getTimeInMillis();
-					long endTimeInMillisecs = todayInMillisecs + (daysLeft * 1000 * 60 * 60 * 24);
-					Calendar endDate = Calendar.getInstance();
-					endDate.setTimeInMillis(endTimeInMillisecs);
-					
-					datePicker.updateDate(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH));
-				}
-				catch(NumberFormatException e)
-				{
-					
-				}
+				updateDatePicker();
 			}
 			
 		};
 		
+		getDateButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View view) {
+				updateDatePicker();
+			}});
+		
 		totalValueEditText.addTextChangedListener(dailyPaymentWatcher);
-		dailyPaymentEditText.addTextChangedListener(dailyPaymentWatcher);
-		
-		
 	}
 	
+	private void updateDatePicker()
+	{
+		try
+		{
+			double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
+			double dailyPayment = Double.parseDouble(dailyPaymentEditText.getText().toString());
+			
+			
+			int daysLeft = calculateDaysLeft(totalValue, dailyPayment);
+			
+			Calendar date = Calendar.getInstance();
+			date.setLenient(true);
+			date.add(Calendar.DATE, daysLeft);
+			datePicker.updateDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+		}
+		catch(NumberFormatException e)
+		{
+			
+		}
+	}
 	private int calculateDaysLeft(double totalValue, double dailyPayment)
 	{
 		return (int)Math.ceil(totalValue / dailyPayment);
