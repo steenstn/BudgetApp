@@ -36,7 +36,8 @@
 	          android:layout_height="wrap_content"
 	          android:ems="10"
 	          android:completionThreshold="1"
-	          android:inputType="numberDecimal|numberSigned">
+	          android:inputType="numberDecimal|numberSigned"
+	          android:hint="Price">
 			  
 	      </AutoCompleteTextView>
 	      <Button

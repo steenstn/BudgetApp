@@ -36,6 +36,23 @@ public class BudgetFunctions {
     	return dateString;
 	}
 	
+	public static int getYear()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(0, 4));
+	}
+	
+	public static int getMonth()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(5, 7))-1; // January = 0 in calendar
+	}
+	
+	public static int getDay()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(8,10));
+	}
 	/**
 	 * Calculates the mean value for n entries or as many as are available if less
 	 * @param theEntries - List of the entries to calculate
