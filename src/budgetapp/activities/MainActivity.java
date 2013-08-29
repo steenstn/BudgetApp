@@ -12,6 +12,7 @@ import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
@@ -34,6 +35,7 @@ public class MainActivity extends FragmentActivity {
 	private String chosenCategory = "";
 	private MainView view;
 	private BudgetModel model;
+	public Money dailyFlow = new Money();
 	
 	public String getChosenCategory()
 	{
@@ -224,6 +226,7 @@ public class MainActivity extends FragmentActivity {
 		{
 			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
 			editText.setEnabled(false);
+			dailyFlow = new Money();
 		}
 		@Override
 		protected Integer doInBackground(Void... params) {
@@ -238,9 +241,7 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(true);
 			if(daysAdded>0)
 	    	{
-	    		Money result = new Money();
-	    		result.set(daysAdded * getDailyBudget().get());
-	    		Toast.makeText(getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
+	    		dailyFlow.set(daysAdded * getDailyBudget().get());
 	    	}
 			view.update();
 
@@ -251,14 +252,27 @@ public class MainActivity extends FragmentActivity {
 	private class PayInstallmentsTask extends AsyncTask<Void,Void,Void>
 	{
 		@Override
+		protected void onPreExecute()
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(false);
+		}
+		@Override
 		protected Void doInBackground(Void... params) {
-			model.payOffInstallments();
+			Money temp = model.payOffInstallments();
+			dailyFlow = dailyFlow.add(temp);
 			return null;
 		}
 		
 		@Override
 		protected void onPostExecute(Void params)
 		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(true);
+			if(!BudgetFunctions.almostEquals(dailyFlow.get(),0.0))
+			{
+				Toast.makeText(getApplicationContext(), "Cash flow since last time: " + dailyFlow, Toast.LENGTH_LONG).show();
+			}
 			view.update();
 		}
 	}

@@ -24,6 +24,14 @@ public class BudgetFunctions {
 		return b;
 	}
 	
+	public static boolean almostEquals(double a, double b)
+	{
+		if(Math.abs(a-b) < 0.00001)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * Gets today's date in a string format
 	 * @return - Todays date in "yyyy/MM/dd HH:mm"
