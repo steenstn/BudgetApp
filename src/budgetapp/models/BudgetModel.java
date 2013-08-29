@@ -341,8 +341,8 @@ public class BudgetModel {
 	    	{
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			moneyPaid = moneyPaid.add(installments.get(i).getDailyPayment());
-	    			datasource.payOffInstallment(installments.get(i));
+	    			moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i)));
+	    			
 		    		stateChanged = true;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	

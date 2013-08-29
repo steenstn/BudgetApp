@@ -24,6 +24,20 @@ public class BudgetFunctions {
 		return b;
 	}
 	
+	public static double min(double a, double b) {
+		
+		if(a<b)
+			return a;
+		return b;
+	}
+	
+public static double max(double a, double b) {
+		
+		if(a>b)
+			return a;
+		return b;
+	}
+	
 	public static boolean almostEquals(double a, double b)
 	{
 		if(Math.abs(a-b) < 0.00001)
@@ -125,4 +139,5 @@ public class BudgetFunctions {
 		double res = weight * d.get();
 		return new Money(res);
 	}
+
 }

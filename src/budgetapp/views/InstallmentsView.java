@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.InstallmentAdapter;
@@ -69,7 +70,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 			else
 			{
 				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
-				totalDailyPayments += allInstallments.get(i).getDailyPayment().get();
+				totalDailyPayments += BudgetFunctions.max(allInstallments.get(i).getRemainingValue().get(),allInstallments.get(i).getDailyPayment().get());
 			}
 		}
 		installmentsListView.setAdapter(listAdapter); 

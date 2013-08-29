@@ -177,7 +177,7 @@ public class BudgetDataSource {
 	 * Do a payment on an installment
 	 * @param installment - The installment to pay off
 	 */
-	public void payOffInstallment(Installment installment)
+	public Money payOffInstallment(Installment installment)
 	{
 		//open();
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
@@ -211,7 +211,7 @@ public class BudgetDataSource {
 			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
 			close();
 		}
-	
+		return new Money(dailyPay);
 	}
 	
 	/**
