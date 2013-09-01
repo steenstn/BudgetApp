@@ -31,7 +31,7 @@ public class BudgetFunctions {
 		return b;
 	}
 	
-public static double max(double a, double b) {
+	public static double max(double a, double b) {
 		
 		if(a>b)
 			return a;

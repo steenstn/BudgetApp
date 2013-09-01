@@ -3,6 +3,7 @@ package budgetapp.fragments;
  * Dialog Fragment for adding a new category
  * 
  */
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
@@ -31,15 +34,16 @@ import android.text.TextWatcher;
 public class AddInstallmentDialogFragment extends DialogFragment {
 
 	View view;
-	EditText categoryEditText;
+	AutoCompleteTextView categoryEditText;
 	EditText totalValueEditText;
 	EditText dailyPaymentEditText;
 	EditText commentEditText;
 	DatePicker datePicker;
 	Button getDateButton;
+	InstallmentsActivity activity;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		final InstallmentsActivity activity = (InstallmentsActivity) getActivity();
+		activity = (InstallmentsActivity) getActivity();
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	    // Get the layout inflater
 	    LayoutInflater inflater = activity.getLayoutInflater();
@@ -103,14 +107,26 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 		super.onResume();
 		
 
-		categoryEditText = (EditText)view.findViewById(R.id.dialog_installment_category);
+		categoryEditText = (AutoCompleteTextView)view.findViewById(R.id.dialog_installment_category);
 		totalValueEditText = (EditText)view.findViewById(R.id.dialog_installment_total_value);
 		dailyPaymentEditText = (EditText)view.findViewById(R.id.dialog_installment_daily_payment);
 		commentEditText = (EditText)view.findViewById(R.id.dialog_installment_comment);
 		getDateButton = (Button)view.findViewById(R.id.dialog_installment_get_date);
 		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
 		
+		setUpAutoCompleteValues();
 		setUpWatchers();		
+	}
+	
+	private void setUpAutoCompleteValues()
+	{
+		List<String> categories = activity.getModel().getCategoryNames();
+		// Get a reference to the AutoCompleteTextView in the layout
+    	
+		
+    	ArrayAdapter<String> adapter = 
+        new ArrayAdapter<String>(activity.getBaseContext(), android.R.layout.simple_list_item_1, categories);
+    	categoryEditText.setAdapter(adapter);
 	}
 	
 	private void setUpWatchers()

@@ -44,6 +44,11 @@ public class InstallmentsActivity extends FragmentActivity {
 		else
 			return false;
 	}
+	
+	public BudgetModel getModel()
+	{
+		return model;
+	}
 	// Set up a ViewListener for the view
 	private InstallmentsView.ViewListener viewListener = new InstallmentsView.ViewListener() {
 
