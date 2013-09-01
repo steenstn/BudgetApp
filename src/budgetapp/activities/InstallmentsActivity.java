@@ -1,6 +1,7 @@
 package budgetapp.activities;
 
 import budgetapp.fragments.AddInstallmentDialogFragment;
+import budgetapp.fragments.RemoveInstallmentDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetFunctions;
@@ -49,6 +50,12 @@ public class InstallmentsActivity extends FragmentActivity {
 	{
 		return model;
 	}
+	
+	public boolean removeInstallment(long id)
+	{
+		return model.removeInstallment(id);
+	}
+	
 	// Set up a ViewListener for the view
 	private InstallmentsView.ViewListener viewListener = new InstallmentsView.ViewListener() {
 
@@ -61,12 +68,17 @@ public class InstallmentsActivity extends FragmentActivity {
 
 		@Override
 		public void listViewClick(InstallmentViewHolder listItem) {
-			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + " - Daily pay: " + listItem.getEntry().getDailyPayment().multiply(-1), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + "  Daily pay: " + listItem.getEntry().getDailyPayment().multiply(-1), Toast.LENGTH_LONG).show();
 		}
 
 		@Override
 		public void listViewLongClick(InstallmentViewHolder theEntry) {
-			model.removeInstallment(theEntry.getEntry().getId());
+			Bundle bundle = new Bundle();
+			bundle.putLong("id", theEntry.getEntry().getId());
+			DialogFragment newFragment = new RemoveInstallmentDialogFragment();
+			newFragment.setArguments(bundle);
+        	newFragment.show(getSupportFragmentManager(), "add_installment");
+			
 		}
 
 		
