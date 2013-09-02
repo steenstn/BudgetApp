@@ -36,7 +36,6 @@ public class BudgetDataSource {
 	{
 		dbHelper = BudgetDatabase.getInstance(context);
 		open();
-		close();
 	}
 	
 	private void open() throws SQLException
@@ -132,6 +131,37 @@ public class BudgetDataSource {
 	}
 	
 	/**
+	 * Edit transaction and add the value to today's daily flow
+	 * @param oldEntry
+	 * @param newEntry
+	 */
+	public void editTransactionEntryToday(BudgetEntry oldEntry, BudgetEntry newEntry)
+	{
+		BudgetEntry workingEntry = newEntry.clone();
+		// Add the exchange rate to the entry
+		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
+		//open();
+		updateTransaction(oldEntry, workingEntry);
+		
+		// New category, move the entry from old category to new
+		if(!oldEntry.getCategory().equalsIgnoreCase(workingEntry.getCategory()))
+		{
+			removeFromCategory(oldEntry.getCategory(),oldEntry.getValue().get()*-1);
+			addToCategory(workingEntry.getCategory(),oldEntry.getValue().get());
+		}
+		
+		if(oldEntry.getValue().get()!=workingEntry.getValue().get())
+		{
+			updateDayTotal(oldEntry,workingEntry);
+			
+			BudgetEntry oldEntryClone = oldEntry.clone();
+			oldEntryClone.setDate(BudgetFunctions.getDateString());
+			updateDaySum(oldEntryClone,workingEntry);
+		}
+		close();
+	}
+	
+	/**
 	 * Creates and returns a new CategoryEntry
 	 * @param theEntry - The CategoryEntry to add
 	 * @return The created CategoryEntry
@@ -192,7 +222,8 @@ public class BudgetDataSource {
 			dailyPay = remainingValue;
 		
 		newEntry.setValue(new Money(oldEntry.getValue().add(dailyPay)));
-		editTransactionEntry(oldEntry, newEntry);
+		editTransactionEntryToday(oldEntry, newEntry);
+		
 		//open();
 		Installment newInstallment = getInstallment(installment.getId());
 		close();
@@ -209,6 +240,11 @@ public class BudgetDataSource {
 		{
 			//open();
 			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
+
+			BudgetEntry entryForDaySum = oldEntry.clone();
+		//	entryForDaySum.setValue(dailyPay);
+		//	entryForDaySum.setDate(BudgetFunctions.getDateString());
+		//	addToDaySum(entryForDaySum);
 			close();
 		}
 		return new Money(dailyPay);

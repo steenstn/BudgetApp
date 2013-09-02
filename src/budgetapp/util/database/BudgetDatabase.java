@@ -325,19 +325,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		case 11:
 			db.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
 		}
-		/*
-		 * cash flow
-		 * column_vale
-		 * 
-		 * categories
-		 * column_total
-		 * 
-		 * daysum
-		 * column_total
-		 * 
-		 * daytotal
-		 * column_total
-		 */
+		
 		System.out.println("Updated database from " + oldVersion + " to " + newVersion);
 	    
 	}
