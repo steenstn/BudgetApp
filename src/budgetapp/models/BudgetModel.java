@@ -9,9 +9,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.DayEntry;
@@ -257,6 +259,7 @@ public class BudgetModel {
 	 */
 	public int addDailyBudget()
     {
+		System.out.println("Adding daily budget");
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -277,9 +280,11 @@ public class BudgetModel {
 
 	    	// Step up to the day before tomorrow
 	    	Calendar nextDay = Calendar.getInstance();
+	    	
+	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0,0);
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
-	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	
 	    	while(tempDate.before(nextDay))
@@ -332,6 +337,7 @@ public class BudgetModel {
 
 	    	// Step up to the day before tomorrow
 	    	Calendar nextDay = Calendar.getInstance();
+	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(),BudgetFunctions.getDay(),0,0);
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
 	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));

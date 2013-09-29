@@ -42,6 +42,11 @@ public class Money {
 	{
 		exchangeRate = val;
 	}
+	/*
+	public double getValue()
+	{
+		return value * exchangeRate;
+	}*/
 	
 	public void set(double val)
 	{
@@ -51,6 +56,7 @@ public class Money {
 	{
 		value = val.get();
 	}
+	
 	public double get()
 	{
 		return value;

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class BudgetFunctions {
 	
+	public static String theDate = "2012/01/01 00:00";
+	public static boolean TESTING = false;
 	/**
 	 * Returns the lowest value of a and b
 	 * @param a - First int to compare
@@ -52,12 +54,19 @@ public class BudgetFunctions {
 	 */
 	public static String getDateString()
 	{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-    	Calendar cal = Calendar.getInstance();
-    	String dateString = dateFormat.format(cal.getTime());
-    	return dateString;
+		if(TESTING == true)
+		{
+	    	return theDate;			
+		}
+		else
+		{
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	    	Calendar cal = Calendar.getInstance();
+	    	String dateString = dateFormat.format(cal.getTime());
+	    	return dateString;
+		}
 	}
-	
+		
 	public static int getYear()
 	{
 		String dateString = getDateString();

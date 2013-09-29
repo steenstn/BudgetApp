@@ -182,7 +182,7 @@ public class BudgetDataSource {
 	 */
 	public boolean createInstallment(Installment installment)
 	{
-		Money dailyPayment = installment.getDailyPayment();
+		Money dailyPayment = installment.getDailyPayment().multiply(Money.getExchangeRate());
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
 		String comment = installment.getComment();
@@ -213,9 +213,9 @@ public class BudgetDataSource {
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
 		close();
 		BudgetEntry newEntry = oldEntry.clone();
-		double dailyPay = installment.getDailyPayment().get();
+		double dailyPay = installment.getDailyPayment().divide(Money.getExchangeRate()).get();
 		
-		double remainingValue = installment.getRemainingValue().get();
+		double remainingValue = installment.getRemainingValue().divide(Money.getExchangeRate()).get();
 		
 		
 		if(Math.abs(remainingValue) < Math.abs(dailyPay)) // Don't pay too much
