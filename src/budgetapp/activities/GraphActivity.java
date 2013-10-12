@@ -51,7 +51,6 @@ public class GraphActivity extends Activity
         	y[i] = (float)entries.get(i).getValue().get();
         	values[i] = ""+entries.get(i).getValue();
         	legends[i] = entries.get(i).getDate();
-        	//System.out.println("x["+i+"]: " + x[i] + "y["+i+"]: " + days.get(i).getValue());
         }
         lineGraph = new LineGraphRenderer(x,y,values,legends);
         

@@ -87,7 +87,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		in.readStringArray(data);
 		
 		setId(Long.parseLong(data[0]));
-		this.setValue(new Money(Double.parseDouble(data[1])));
+		this.setValue(new Money(Double.parseDouble(data[1]) / Money.getExchangeRate()));
 		this.date=data[2];
 		this.category=data[3];
 		this.flags=Integer.parseInt(data[4]);

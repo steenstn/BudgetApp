@@ -179,7 +179,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		
 		CategoryEntry entry;
 		int length = 0;
-		System.out.println("size: " + categoryStats.size());
 		for(int i=0;i<categoryStats.size();i++) // Get longest name
 		{
 			entry = categoryStats.get(i);

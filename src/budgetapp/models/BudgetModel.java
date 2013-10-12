@@ -320,8 +320,6 @@ public class BudgetModel {
 		if(installments.isEmpty())
 			return new Money(0);
 		
-		//List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
-    	//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     	
 		Money moneyPaid = new Money(0);
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -346,18 +344,19 @@ public class BudgetModel {
 	    	
 	    	while(tempDate.before(nextDay))
 	    	{
-	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
+	    		String tempDateString = compareFormat.format(tempDate.getTime());
+	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i)));
+	    			
+	    			moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
 	    			
 		    		stateChanged = true;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
 		}
-    	
+		//notifyObservers();
 		return moneyPaid;
-    	//notifyObservers();
 	}
 	public List<CategoryEntry> getCategoriesSortedByNum() {
 		return datasource.getCategoriesSortedByNum();

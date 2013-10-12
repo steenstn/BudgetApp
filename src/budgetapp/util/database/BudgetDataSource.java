@@ -90,10 +90,10 @@ public class BudgetDataSource {
 		{
 			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
-			workingEntry.setValue(workingEntry.getValue().makeNegative());
+			workingEntry.setValue(workingEntry.getValue().multiply(-1));
 			addToDaySum(workingEntry);
 			addToDayTotal(workingEntry);
-			workingEntry.setValue(workingEntry.getValue().makePositive());
+			workingEntry.setValue(workingEntry.getValue().multiply(-1));
 		}
 		return result;
 	}
@@ -129,7 +129,7 @@ public class BudgetDataSource {
 	 * @param oldEntry
 	 * @param newEntry
 	 */
-	public void editTransactionEntryToday(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public void editTransactionEntryToday(BudgetEntry oldEntry, BudgetEntry newEntry, String date)
 	{
 		BudgetEntry workingEntry = newEntry.clone();
 		// Add the exchange rate to the entry
@@ -144,12 +144,12 @@ public class BudgetDataSource {
 			addToCategory(workingEntry.getCategory(),oldEntry.getValue().get());
 		}
 		
-		if(oldEntry.getValue().get()!=workingEntry.getValue().get())
+		if(!oldEntry.getValue().equals(workingEntry.getValue()))
 		{
 			updateDayTotal(oldEntry,workingEntry);
 			
 			BudgetEntry oldEntryClone = oldEntry.clone();
-			oldEntryClone.setDate(BudgetFunctions.getDateString());
+			oldEntryClone.setDate(date);
 			updateDaySum(oldEntryClone,workingEntry);
 		}
 	}
@@ -200,8 +200,9 @@ public class BudgetDataSource {
 	/**
 	 * Do a payment on an installment
 	 * @param installment - The installment to pay off
+	 * @param dateToEdit - The date to change daily flow for
 	 */
-	public Money payOffInstallment(Installment installment)
+	public Money payOffInstallment(Installment installment, String dateToEdit)
 	{
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
 		
@@ -214,7 +215,7 @@ public class BudgetDataSource {
 			dailyPay = remainingValue;
 		
 		newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
-		editTransactionEntryToday(oldEntry, newEntry);
+		editTransactionEntryToday(oldEntry, newEntry, dateToEdit);
 		
 		Installment newInstallment = getInstallment(installment.getId());
 		
