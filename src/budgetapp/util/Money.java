@@ -51,11 +51,11 @@ public class Money {
 	{
 		return new Money((this.value + x.get()) / exchangeRate);
 	}
-	
+	/*
 	public Money subtract(double x)
 	{
 		return new Money(this.value - x);
-	}
+	}*/
 	public Money subtract(Money x)
 	{
 		return new Money((this.value - x.get()) / exchangeRate);
@@ -67,11 +67,6 @@ public class Money {
 		else
 			return new Money();
 	}
-	/*
-	public double divide(Money x)
-	{
-		return this.value()/x.value();
-	}*/
 	
 	public Money divide(Money x)
 	{
@@ -88,9 +83,9 @@ public class Money {
 		return new Money(Math.abs(value) / exchangeRate);
 	}
 	
-	public Money multiply(int x)
+	public Money multiply(double x)
 	{
-		return new Money((value * (double)x) / exchangeRate);
+		return new Money((value * x) / exchangeRate);
 	}
 	
 	public Money multiply(Money x)

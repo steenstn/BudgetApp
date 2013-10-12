@@ -133,7 +133,7 @@ public class BudgetDataSource {
 	{
 		BudgetEntry workingEntry = newEntry.clone();
 		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue());//.multiply(Money.getExchangeRate()));
+		workingEntry.setValue(workingEntry.getValue());
 		//open();
 		updateTransaction(oldEntry, workingEntry);
 		
@@ -175,7 +175,7 @@ public class BudgetDataSource {
 	 */
 	public boolean createInstallment(Installment installment)
 	{
-		Money dailyPayment = installment.getDailyPayment();//.multiply(Money.getExchangeRate());
+		Money dailyPayment = installment.getDailyPayment();
 		
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
@@ -206,9 +206,9 @@ public class BudgetDataSource {
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
 		
 		BudgetEntry newEntry = oldEntry.clone();
-		Money dailyPay = installment.getDailyPayment();//.multiply(Money.getExchangeRate()).get();
+		Money dailyPay = installment.getDailyPayment();
 		
-		Money remainingValue = installment.getRemainingValue();//.multiply(Money.getExchangeRate()).get();
+		Money remainingValue = installment.getRemainingValue();
 		
 		if(remainingValue.makePositive().smallerThan(dailyPay)) // Don't pay too much
 			dailyPay = remainingValue;
@@ -218,7 +218,7 @@ public class BudgetDataSource {
 		
 		Installment newInstallment = getInstallment(installment.getId());
 		
-		Money newRemainingValue = newInstallment.getRemainingValue();//.multiply(Money.getExchangeRate()).get();
+		Money newRemainingValue = newInstallment.getRemainingValue();
 		// If the installment has gone positive or is small enough, delete it
 		if(newRemainingValue.biggerThanOrEquals(new Money(0)) || newRemainingValue.makePositive().almostZero())
 		{

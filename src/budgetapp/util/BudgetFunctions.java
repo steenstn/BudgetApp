@@ -33,9 +33,23 @@ public class BudgetFunctions {
 		return b;
 	}
 	
+public static Money min(Money a, Money b) {
+		
+		if(a.smallerThan(b))
+			return a;
+		return b;
+	}
+	
 	public static double max(double a, double b) {
 		
 		if(a>b)
+			return a;
+		return b;
+	}
+	
+	public static Money max(Money a, Money b) {
+		
+		if(a.biggerThan(b))
 			return a;
 		return b;
 	}
@@ -145,8 +159,8 @@ public class BudgetFunctions {
 	private static Money weight(int n,Money d)
 	{
 		double weight = Math.exp(-0.5*(double)n);
-		double res = weight * d.get();
-		return new Money(res);
+		Money res = d.multiply(weight);
+		return res;
 	}
 
 }

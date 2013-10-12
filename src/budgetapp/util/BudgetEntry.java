@@ -103,7 +103,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.flags=0;
 		this.comment = "";
 	}
-	@Override
+		@Override
 	public int describeContents()
 	{
 		return 0;

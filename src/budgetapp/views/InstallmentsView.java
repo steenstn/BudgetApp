@@ -56,7 +56,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	@Override
 	public void update() {
 		
-		double totalDailyPayments = 0;
+		Money totalDailyPayments = new Money(0);
 		List<Installment> allInstallments = new ArrayList<Installment>();
 		
 		allInstallments = model.getInstallments();
@@ -65,12 +65,12 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		
 		for(int i = 0; i < allInstallments.size(); i++)
 		{
-			if(allInstallments.get(i).getRemainingValue().get() > 0) // This installment is paid for
+			if(allInstallments.get(i).getRemainingValue().biggerThan(new Money(0))) // This installment is paid for
 				model.removeInstallment(allInstallments.get(i).getId());
 			else
 			{
 				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
-				totalDailyPayments += BudgetFunctions.max(allInstallments.get(i).getRemainingValue().get(),allInstallments.get(i).getDailyPayment().get());
+				totalDailyPayments = totalDailyPayments.add(BudgetFunctions.max(allInstallments.get(i).getRemainingValue(),allInstallments.get(i).getDailyPayment()));
 			}
 		}
 		installmentsListView.setAdapter(listAdapter); 

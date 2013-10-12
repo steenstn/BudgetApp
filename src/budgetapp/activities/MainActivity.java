@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity {
 	
 	public void setDailyBudget(double budget)
 	{
-		model.setDailyBudget(new Money(budget / Money.getExchangeRate()));
+		model.setDailyBudget(new Money(budget));
 	}
 	
 	public Money getDailyBudget()

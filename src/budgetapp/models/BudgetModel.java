@@ -51,7 +51,7 @@ public class BudgetModel {
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
 		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
-		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
+		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget) / Money.getExchangeRate());
 		
 		backup = new BudgetBackup(context);
 		transactions = new ArrayList<TransactionCommand>();
@@ -156,7 +156,7 @@ public class BudgetModel {
 	 */
 	public void setDailyBudget(Money budget)
 	{
-		dailyBudget = budget;//.multiply(Money.getExchangeRate());
+		dailyBudget = budget;
 		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
 		stateChanged = true;

@@ -89,7 +89,7 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		// Put in the values
-		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());///Money.getExchangeRate());
+		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
 		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment().replaceAll("['\"]", "\'"));
@@ -155,10 +155,10 @@ public class DatabaseAccess {
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
 		
 		// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
-		double newValue = theEntry.getValue().get();// / Money.getExchangeRate();
+		double newValue = theEntry.getValue().get();
 		if(newEntry != null)
 		{
-			newValue = (newEntry.getValue().get()-theEntry.getValue().get());// / Money.getExchangeRate();
+			newValue = (newEntry.getValue().get()-theEntry.getValue().get());
 		}
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
@@ -194,7 +194,7 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+", " + BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
-		double newValue = theEntry.getValue().get();// / Money.getExchangeRate();
+		double newValue = theEntry.getValue().get();
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
 		{		
 			ContentValues values = new ContentValues();
@@ -227,7 +227,7 @@ public class DatabaseAccess {
 			// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
 			if(newEntry != null)
 			{
-				newValue = (newEntry.getValue().get()-theEntry.getValue().get());// / Money.getExchangeRate();
+				newValue = (newEntry.getValue().get()-theEntry.getValue().get());
 			}
 			total += newValue;
 			ContentValues values = new ContentValues();
@@ -266,7 +266,7 @@ public class DatabaseAccess {
 			cursor.moveToFirst();
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory());
-			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());// / Money.getExchangeRate());
+			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());
 			values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment());
 			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + oldEntry.getId(), null);
 			
@@ -423,9 +423,9 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID, installment.getTransactionId());
-		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());// / Money.getExchangeRate());
+		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());
 		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, installment.getDateLastPaid());
-		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());// / Money.getExchangeRate());
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
 		return insertId;

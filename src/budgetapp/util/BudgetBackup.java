@@ -181,6 +181,6 @@ public class BudgetBackup {
 	{
 		double theValue = Double.parseDouble(value);
 		int theFlags = Integer.parseInt(flags);
-		return new BudgetEntry(new Money(theValue), date, category, comment, theFlags);
+		return new BudgetEntry(new Money(theValue / Money.getExchangeRate()), date, category, comment, theFlags);
 	}
 }
