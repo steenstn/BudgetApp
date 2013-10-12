@@ -89,7 +89,7 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		// Put in the values
-		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());
+		values.put(BudgetDatabase.COLUMN_VALUE, theEntry.getValue().get());///Money.getExchangeRate());
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
 		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment().replaceAll("['\"]", "\'"));
@@ -101,7 +101,7 @@ public class DatabaseAccess {
 				null, null, null);
 		cursor.moveToFirst();
 		
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 		cursor.close();
 		return entry;
 	}
@@ -118,7 +118,7 @@ public class DatabaseAccess {
 		if(cursor.getCount()==1)
 		{
 			cursor.moveToFirst();
-			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 			return entry;
 		}
 		else
@@ -155,10 +155,10 @@ public class DatabaseAccess {
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+" from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
 		
 		// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
-		double newValue = theEntry.getValue().get();
+		double newValue = theEntry.getValue().get();// / Money.getExchangeRate();
 		if(newEntry != null)
 		{
-			newValue = newEntry.getValue().get()-theEntry.getValue().get();
+			newValue = (newEntry.getValue().get()-theEntry.getValue().get());// / Money.getExchangeRate();
 		}
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
@@ -194,7 +194,7 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_VALUE+", " + BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYTOTAL+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+theEntry.getDate().substring(0,10)+"\"",null);
-		double newValue = theEntry.getValue().get();
+		double newValue = theEntry.getValue().get();// / Money.getExchangeRate();
 		if(cursor.getCount()<=0) // No entry for today, search for last entry
 		{		
 			ContentValues values = new ContentValues();
@@ -227,14 +227,14 @@ public class DatabaseAccess {
 			// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
 			if(newEntry != null)
 			{
-				newValue = newEntry.getValue().get()-theEntry.getValue().get();
+				newValue = (newEntry.getValue().get()-theEntry.getValue().get());// / Money.getExchangeRate();
 			}
 			total += newValue;
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
-			addValueToRemaindingDays(newValue, theId);
+			addValueToRemainingDays(newValue, theId);
 			
 			return true;
 		}
@@ -245,7 +245,7 @@ public class DatabaseAccess {
 	 * @param theValue - The value to add
 	 * @param theId - The id
 	 */
-	private void addValueToRemaindingDays(double theValue, long theId)
+	private void addValueToRemainingDays(double theValue, long theId)
 	{
 		database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
 	}
@@ -253,7 +253,7 @@ public class DatabaseAccess {
 	/**
 	 * Updates a transaction entry in the cash flow table
 	 * @param oldEntry - The entry to edit
-	 * @param newEntry - Entry containging the new values
+	 * @param newEntry - Entry containing the new values
 	 * @return - If te editing was successful
 	 */
 	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
@@ -266,7 +266,7 @@ public class DatabaseAccess {
 			cursor.moveToFirst();
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory());
-			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());
+			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());// / Money.getExchangeRate());
 			values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment());
 			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + oldEntry.getId(), null);
 			
@@ -423,9 +423,9 @@ public class DatabaseAccess {
 	{
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID, installment.getTransactionId());
-		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());
+		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());// / Money.getExchangeRate());
 		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, installment.getDateLastPaid());
-		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());// / Money.getExchangeRate());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
 		return insertId;
@@ -468,7 +468,7 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -481,7 +481,7 @@ public class DatabaseAccess {
 		Cursor cursor;
 		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
 		cursor.moveToFirst();
-		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 		cursor.close();
 		return entry;
 	}
@@ -504,10 +504,10 @@ public class DatabaseAccess {
 			
 			Installment installment = new Installment(cursor.getLong(0),
 													  cursor.getLong(1),
-												  	  new Money(cursor.getDouble(2)),
-												  	  new Money(cursor.getDouble(3)),
+												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
+												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(5)),
+												  	  new Money(cursor.getDouble(5) / Money.getExchangeRate()),
 												  	  cursor.getString(6),
 												  	  cursor.getString(7));
 
@@ -531,7 +531,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -552,7 +552,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -570,7 +570,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3)),cursor.getInt(4)));
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3) / Money.getExchangeRate()),cursor.getInt(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -611,10 +611,10 @@ public class DatabaseAccess {
 			
 			Installment installment = new Installment(cursor.getLong(0),
 													  cursor.getLong(1),
-												  	  new Money(cursor.getDouble(2)),
-												  	  new Money(cursor.getDouble(3)),
+												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
+												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(5)),
+												  	  new Money(cursor.getDouble(5) / Money.getExchangeRate()),
 												  	  cursor.getString(6),
 												  	  cursor.getString(7));
 			

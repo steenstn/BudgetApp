@@ -35,10 +35,8 @@ public class InstallmentsActivity extends FragmentActivity {
 	
 	public boolean addInstallment(Money totalValue, Money dailyPayment, String category, String comment)
 	{
-		//(Money totalValue, Money dailyPayment,
-		//		String dateLastPaid, Money remainingValue, String category, String comment)
 		Installment installment = new Installment(totalValue, dailyPayment, BudgetFunctions.getDateString(),
-			new Money(totalValue.get()-dailyPayment.get()), category, comment);
+			totalValue.subtract(dailyPayment), category, comment);
 		
 		if(model.addInstallment(installment) == true)
 			return true;
@@ -68,7 +66,7 @@ public class InstallmentsActivity extends FragmentActivity {
 
 		@Override
 		public void listViewClick(InstallmentViewHolder listItem) {
-			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + "  Daily pay: " + listItem.getEntry().getDailyPayment().multiply(-1), Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + "  Daily pay: " + listItem.getEntry().getDailyPayment().makePositive(), Toast.LENGTH_LONG).show();
 		}
 
 		@Override

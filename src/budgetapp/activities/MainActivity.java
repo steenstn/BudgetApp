@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity {
 	
 	public void setDailyBudget(double budget)
 	{
-		model.setDailyBudget(new Money(budget));
+		model.setDailyBudget(new Money(budget / Money.getExchangeRate()));
 	}
 	
 	public Money getDailyBudget()
@@ -241,7 +241,7 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(true);
 			if(daysAdded>0)
 	    	{
-	    		dailyFlow.set(daysAdded * getDailyBudget().get());
+	    		dailyFlow = getDailyBudget().multiply(daysAdded);
 	    	}
 			view.update();
 
@@ -269,7 +269,7 @@ public class MainActivity extends FragmentActivity {
 		{
 			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
 			editText.setEnabled(true);
-			if(!BudgetFunctions.almostEquals(dailyFlow.get(),0.0))
+			if(!dailyFlow.almostZero())
 			{
 				Toast.makeText(getApplicationContext(), "Cash flow since last time: " + dailyFlow, Toast.LENGTH_LONG).show();
 			}

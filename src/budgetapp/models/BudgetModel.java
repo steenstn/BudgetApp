@@ -156,7 +156,7 @@ public class BudgetModel {
 	 */
 	public void setDailyBudget(Money budget)
 	{
-		dailyBudget = budget.multiply(Money.getExchangeRate());
+		dailyBudget = budget;//.multiply(Money.getExchangeRate());
 		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
 		stateChanged = true;
@@ -259,7 +259,7 @@ public class BudgetModel {
 	 */
 	public int addDailyBudget()
     {
-		System.out.println("Adding daily budget");
+		//System.out.println("Adding daily budget");
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -284,7 +284,7 @@ public class BudgetModel {
 	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0,0);
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
-	    	System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	
 	    	while(tempDate.before(nextDay))
@@ -292,8 +292,9 @@ public class BudgetModel {
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
-		        	datasource.createTransactionEntry(entry);
+	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
+		        	
+	    			datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
 		    		daysAdded++;
 	    		}
@@ -426,6 +427,10 @@ public class BudgetModel {
 		
 	}
 	
+	public void clearDatabaseInstance()
+	{
+		datasource.clearDatabaseInstance();
+	}
 	
 	public void addObserver(IBudgetObserver observer)
 	{

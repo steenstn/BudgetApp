@@ -123,6 +123,11 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		return instance;
 	}
 	
+	public static synchronized void clearInstance()
+	{
+		instance = null;
+	}
+	
 	private BudgetDatabase(Context context)
 	{
 		super(context,DATABASE_NAME,null,DATABASE_VERSION);

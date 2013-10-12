@@ -38,16 +38,16 @@ public class BudgetDataSource {
 		open();
 	}
 	
+	public void clearDatabaseInstance()
+	{
+		BudgetDatabase.clearInstance();
+	}
 	private void open() throws SQLException
 	{
 		database = dbHelper.getWritableDatabase();
 		dbAccess = new DatabaseAccess(database);
 	}
 	
-	private void close()
-	{
-		//dbHelper.close();
-	}
 	
 	/**
 	 * Creates a transaction entry and updates the affected tables. 
@@ -59,9 +59,8 @@ public class BudgetDataSource {
 	{
 		BudgetEntry workingEntry = theEntry.clone();
 		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
+		workingEntry.setValue(workingEntry.getValue());
 		
-		////open();
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
@@ -71,7 +70,6 @@ public class BudgetDataSource {
 	    	addToDaySum(workingEntry);
 	    	addToDayTotal(workingEntry);
 		}
-		close();
 		return result;
 		
 	}
@@ -92,12 +90,11 @@ public class BudgetDataSource {
 		{
 			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
 			//Update daysum and daytotal by adding the negative value that was added
-			workingEntry.setValue(workingEntry.getValue().get()*-1);
+			workingEntry.setValue(workingEntry.getValue().makeNegative());
 			addToDaySum(workingEntry);
 			addToDayTotal(workingEntry);
-			workingEntry.setValue(workingEntry.getValue().get()*-1);
+			workingEntry.setValue(workingEntry.getValue().makePositive());
 		}
-		close();
 		return result;
 	}
 	
@@ -110,9 +107,7 @@ public class BudgetDataSource {
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		BudgetEntry workingEntry = newEntry.clone();
-		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
-		//open();
+		
 		updateTransaction(oldEntry, workingEntry);
 		
 		// New category, move the entry from old category to new
@@ -127,7 +122,6 @@ public class BudgetDataSource {
 			updateDaySum(oldEntry,workingEntry);
 			updateDayTotal(oldEntry,workingEntry);
 		}
-		close();
 	}
 	
 	/**
@@ -139,7 +133,7 @@ public class BudgetDataSource {
 	{
 		BudgetEntry workingEntry = newEntry.clone();
 		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
+		workingEntry.setValue(workingEntry.getValue());//.multiply(Money.getExchangeRate()));
 		//open();
 		updateTransaction(oldEntry, workingEntry);
 		
@@ -158,7 +152,6 @@ public class BudgetDataSource {
 			oldEntryClone.setDate(BudgetFunctions.getDateString());
 			updateDaySum(oldEntryClone,workingEntry);
 		}
-		close();
 	}
 	
 	/**
@@ -171,7 +164,7 @@ public class BudgetDataSource {
 		//open();
 		CategoryEntry result;
 		result = dbAccess.addEntry(theEntry);
-		close();
+		
 		return result;
 	}
 	
@@ -182,7 +175,8 @@ public class BudgetDataSource {
 	 */
 	public boolean createInstallment(Installment installment)
 	{
-		Money dailyPayment = installment.getDailyPayment().multiply(Money.getExchangeRate());
+		Money dailyPayment = installment.getDailyPayment();//.multiply(Money.getExchangeRate());
+		
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
 		String comment = installment.getComment();
@@ -194,7 +188,7 @@ public class BudgetDataSource {
 		
 		//open();
 		long result = dbAccess.addInstallment(installment);
-		close();
+		
 		
 		if(result != -1)
 			return true;
@@ -209,43 +203,31 @@ public class BudgetDataSource {
 	 */
 	public Money payOffInstallment(Installment installment)
 	{
-		//open();
 		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
-		close();
+		
 		BudgetEntry newEntry = oldEntry.clone();
-		double dailyPay = installment.getDailyPayment().divide(Money.getExchangeRate()).get();
+		Money dailyPay = installment.getDailyPayment();//.multiply(Money.getExchangeRate()).get();
 		
-		double remainingValue = installment.getRemainingValue().divide(Money.getExchangeRate()).get();
+		Money remainingValue = installment.getRemainingValue();//.multiply(Money.getExchangeRate()).get();
 		
-		
-		if(Math.abs(remainingValue) < Math.abs(dailyPay)) // Don't pay too much
+		if(remainingValue.makePositive().smallerThan(dailyPay)) // Don't pay too much
 			dailyPay = remainingValue;
 		
-		newEntry.setValue(new Money(oldEntry.getValue().add(dailyPay)));
+		newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
 		editTransactionEntryToday(oldEntry, newEntry);
 		
-		//open();
 		Installment newInstallment = getInstallment(installment.getId());
-		close();
 		
-		double newRemainingValue = newInstallment.getRemainingValue().get();
+		Money newRemainingValue = newInstallment.getRemainingValue();//.multiply(Money.getExchangeRate()).get();
 		// If the installment has gone positive or is small enough, delete it
-		if(newRemainingValue >= 0 || Math.abs(newRemainingValue) < 0.0001)
+		if(newRemainingValue.biggerThanOrEquals(new Money(0)) || newRemainingValue.makePositive().almostZero())
 		{
-			//open();
 			dbAccess.removeInstallment(installment.getId());
-			close();
 		}
 		else
 		{
-			//open();
 			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
 
-			BudgetEntry entryForDaySum = oldEntry.clone();
-		//	entryForDaySum.setValue(dailyPay);
-		//	entryForDaySum.setDate(BudgetFunctions.getDateString());
-		//	addToDaySum(entryForDaySum);
-			close();
 		}
 		return new Money(dailyPay);
 	}
@@ -258,9 +240,7 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
-		//open();
 		result = dbAccess.getTransactions(0,orderBy);
-		close();
 		return result;
 	}
 	
@@ -273,9 +253,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		//open();
 		result = dbAccess.getDaySum(n, orderBy);
-		close();
 		return result;
 	}
 	
@@ -288,9 +266,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		//open();
 		result = dbAccess.getDayTotal(n, orderBy);
-		close();
 		return result;
 	}
 	
@@ -305,7 +281,7 @@ public class BudgetDataSource {
 		List<BudgetEntry> result;
 		//open();
 		result = dbAccess.getTransactions(n,orderBy);
-		close();
+		
 		return result;
 	}
 	
@@ -318,7 +294,7 @@ public class BudgetDataSource {
 		List<CategoryEntry> result;
 		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
-		close();
+		
 		return result;
 	}
 	
@@ -331,7 +307,7 @@ public class BudgetDataSource {
 		List<CategoryEntry> result;
 		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
-		close();
+		
 		return result;
 	}
 	
@@ -344,7 +320,7 @@ public class BudgetDataSource {
 		List<String> result;
 		//open();
 		result = dbAccess.getCategoryNames();
-		close();
+		
 		return result;
 	}
 	
@@ -353,7 +329,7 @@ public class BudgetDataSource {
 		List<Double> result;
 		//open();
 		result = dbAccess.getAutocompleteValues();
-		close();
+		
 		return result;
 	}
 	
@@ -362,7 +338,7 @@ public class BudgetDataSource {
 		List<Installment> result;
 		//open();
 		result = dbAccess.getInstallments();
-		close();
+		
 		return result;
 	}
 	/**
@@ -375,7 +351,7 @@ public class BudgetDataSource {
 		boolean result;
 		//open();
 		result = dbAccess.addCategory(theCategory);
-		close();
+		
 		return result;
 	}
 	
@@ -389,7 +365,7 @@ public class BudgetDataSource {
 		boolean result;
 		//open();
 		result = dbAccess.removeCategory(theCategory);
-		close();
+		
 		return result;
 	}
 	
@@ -398,7 +374,7 @@ public class BudgetDataSource {
 		boolean result;
 		//open();
 		result = dbAccess.removeInstallment(id);
-		close();
+		
 		return result;
 	}
 	
@@ -406,7 +382,7 @@ public class BudgetDataSource {
 	{
 		//open();
 		dbAccess.resetTransactionTables();
-		close();
+		
 	}
 	
 	

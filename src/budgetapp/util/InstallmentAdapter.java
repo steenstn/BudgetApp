@@ -80,7 +80,7 @@ public class InstallmentAdapter extends BaseAdapter {
 		
 		
 		holder.getLeftTextView().setText(holder.getEntry().getCategory());
-		holder.getCenterTextView().setText(""+holder.getEntry().getRemainingValue().multiply(-1));
+		holder.getCenterTextView().setText(""+holder.getEntry().getRemainingValue().makePositive());
 		// Add a star after the categoryt if this entry has a comment
 		double daysLeft = (holder.getEntry().getRemainingValue().divide(holder.getEntry().getDailyPayment())).get();
 		int numDaysLeft = (int) Math.ceil(daysLeft);

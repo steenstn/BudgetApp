@@ -63,7 +63,7 @@ public class Installment {
 	public Money getTotalValue() { return totalValue; }
 	public Money getDailyPayment() { return dailyPayment; }
 	public Money getAmountPaid() { return amountPaid; }
-	public Money getRemainingValue() { return new Money(totalValue.get() - amountPaid.get()); } 
+	public Money getRemainingValue() { return totalValue.subtract(amountPaid); } 
 	public String getCategory() { return category; }
 	public String getComment() { return comment; }
 	public String getDateLastPaid() { return dateLastPaid; }

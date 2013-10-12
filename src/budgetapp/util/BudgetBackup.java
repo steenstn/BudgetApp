@@ -114,7 +114,6 @@ public class BudgetBackup {
 					if(date == null)
 						break;
 					theList.add(createEntry(date, value, category, comment, flags));
-					System.out.println("Added entry");
 					progressStatus++;
 					progressHandler.post(new Runnable() {
 						public void run() {
@@ -126,7 +125,6 @@ public class BudgetBackup {
 			}
 		});
 		readingThread.start();
-		System.out.println("Current thread: " + Thread.currentThread());
 		readingThread.join();
 
 		progressBar.dismiss();
