@@ -50,16 +50,13 @@ public class BudgetDataSource {
 	
 	
 	/**
-	 * Creates a transaction entry and updates the affected tables. 
-	 * Multiplies value with exchange rate.
+	 * Creates a transaction entry and updates the affected tables.
 	 * @param theEntry The entry to add
 	 * @return The entry that was added
 	 */
 	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
 		BudgetEntry workingEntry = theEntry.clone();
-		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue());
 		
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)

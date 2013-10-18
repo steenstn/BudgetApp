@@ -16,14 +16,14 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	private String date; // The date it was done
 	private String category; // What category the transaction had
 	private String comment; // Possible comment for the transaction
-	private int flags;
+	
 	
 	public BudgetEntry(BudgetEntry other)
 	{
 		this.setValue(other.getValue());
 		this.date = other.getDate();
 		this.category = other.getCategory();
-		this.flags = other.getFlags();
+		setFlags(other.getFlags());
 		this.comment = other.getComment();
 	}
 	
@@ -32,7 +32,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(value);
 		this.date=date;
 		this.category=category;
-		this.flags=0;
+		setFlags(0);
 		this.comment = "";
 	}
 	public BudgetEntry(Money value,String date,String category,String comment)
@@ -40,7 +40,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(value);
 		this.date=date;
 		this.category=category;
-		this.flags=0;
+		setFlags(0);
 		this.comment = comment;
 	}
 	public BudgetEntry(Money value,String date,String category,String comment, int flags)
@@ -48,7 +48,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(value);
 		this.date=date;
 		this.category=category;
-		this.flags=flags;
+		setFlags(flags);
 		this.comment = comment;
 	}
 	public BudgetEntry(long id,Money value,String date,String category)
@@ -56,7 +56,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		setId(id);
 		this.setValue(value);
 		this.date=date;
-		this.flags=0;
+		setFlags(0);
 		this.category=category;
 		this.comment = "";
 	}
@@ -66,7 +66,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(value);
 		this.date=date;
 		this.category=category;
-		this.flags=flags;
+		setFlags(flags);
 		this.comment = "";
 	}
 	
@@ -76,7 +76,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(value);
 		this.date=date;
 		this.category=category;
-		this.flags=flags;
+		setFlags(flags);
 		this.comment = comment;
 	}
 	
@@ -90,7 +90,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(new Money(Double.parseDouble(data[1]) / Money.getExchangeRate()));
 		this.date=data[2];
 		this.category=data[3];
-		this.flags=Integer.parseInt(data[4]);
+		setFlags(Integer.parseInt(data[4]));
 		this.comment = data[5];
 		
 	}
@@ -100,10 +100,10 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		this.setValue(new Money(0));
 		this.date="";
 		this.category="";
-		this.flags=0;
+		setFlags(0);
 		this.comment = "";
 	}
-		@Override
+	@Override
 	public int describeContents()
 	{
 		return 0;
@@ -116,7 +116,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 			String.valueOf(this.getValue()),
 			this.date,
 			this.category,
-			String.valueOf(this.flags),
+			String.valueOf(getFlags()),
 			this.comment
 		});
 	}
@@ -192,6 +192,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	}
 	@Override
 	public String toString(){
-		return "ID: " + getId() + " val: "+ this.getValue() + " date: " + date + " cat: " + category + " flags: " +flags;
+		return "ID: " + getId() + " val: "+ this.getValue() + " date: " + date + " cat: " + category + " flags: " + getFlags();
 	}
 }

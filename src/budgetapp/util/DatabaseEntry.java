@@ -22,11 +22,7 @@ public abstract class DatabaseEntry {
 	public void setValue(Money value){
 		this.value = value;
 	}
-/*
-	public void setValue(double x){
-		this.value.set(x);
-	}
-	*/
+	
 	public Money getValue(){
 		return value;
 	}
