@@ -180,7 +180,7 @@ public class BudgetDataSource {
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
 		String comment = installment.getComment();
-		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment);
+		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, 1);
 		
 		initialPayment = createTransactionEntry(initialPayment);
 		
@@ -280,7 +280,6 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		List<BudgetEntry> result;
-		//open();
 		result = dbAccess.getTransactions(n,orderBy);
 		
 		return result;
@@ -293,7 +292,6 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
-		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
 		
 		return result;
@@ -306,7 +304,6 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
 		List<CategoryEntry> result;
-		//open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
 		
 		return result;
@@ -319,7 +316,6 @@ public class BudgetDataSource {
 	public List<String> getCategoryNames()
 	{
 		List<String> result;
-		//open();
 		result = dbAccess.getCategoryNames();
 		
 		return result;
@@ -328,7 +324,6 @@ public class BudgetDataSource {
 	public List<Double> getAutocompleteValues()
 	{
 		List<Double> result;
-		//open();
 		result = dbAccess.getAutocompleteValues();
 		
 		return result;
@@ -337,7 +332,6 @@ public class BudgetDataSource {
 	public List<Installment> getInstallments()
 	{
 		List<Installment> result;
-		//open();
 		result = dbAccess.getInstallments();
 		
 		return result;
@@ -350,7 +344,6 @@ public class BudgetDataSource {
 	public boolean addCategory(String theCategory)
 	{
 		boolean result;
-		//open();
 		result = dbAccess.addCategory(theCategory);
 		
 		return result;
@@ -364,7 +357,6 @@ public class BudgetDataSource {
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
-		//open();
 		result = dbAccess.removeCategory(theCategory);
 		
 		return result;

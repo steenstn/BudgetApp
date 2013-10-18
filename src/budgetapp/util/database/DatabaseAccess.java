@@ -93,6 +93,7 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
 		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment().replaceAll("['\"]", "\'"));
+		values.put(BudgetDatabase.COLUMN_FLAGS, theEntry.getFlags());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_CASHFLOW, null,values);
 		
@@ -254,7 +255,7 @@ public class DatabaseAccess {
 	 * Updates a transaction entry in the cash flow table
 	 * @param oldEntry - The entry to edit
 	 * @param newEntry - Entry containing the new values
-	 * @return - If te editing was successful
+	 * @return - If the editing was successful
 	 */
 	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
@@ -428,6 +429,24 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
+		return insertId;
+	}
+	
+	/**
+	 * Adds a link from the daily payment of the installment to a dayflow entry
+	 * @param installmentId - The id of the installment
+	 * @param dailyFlowId - The id of the dailyFlow entry 
+	 * @param value - The value of the payment
+	 * @return - The resulting id of the entry
+	 */
+	public long addInstallmentPayment(long installmentId, long dailyFlowId, double value)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_INSTALLMENT_ID, installmentId);
+		values.put(BudgetDatabase.COLUMN_DAYFLOW_ID, dailyFlowId);
+		values.put(BudgetDatabase.COLUMN_VALUE, value);
+		
+		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID, null, values);
 		return insertId;
 	}
 	
