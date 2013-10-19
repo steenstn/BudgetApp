@@ -66,8 +66,10 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		for(int i = 0; i < allInstallments.size(); i++)
 		{
 			if(allInstallments.get(i).getRemainingValue().biggerThan(new Money(0))) // This installment is paid for
+			{
 				model.removeInstallment(allInstallments.get(i).getId());
-			else
+			}
+			else if(allInstallments.get(i).getFlags() == Installment.INSTALLMENT_NOT_PAID)
 			{
 				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
 				totalDailyPayments = totalDailyPayments.add(BudgetFunctions.max(allInstallments.get(i).getRemainingValue(),allInstallments.get(i).getDailyPayment()));

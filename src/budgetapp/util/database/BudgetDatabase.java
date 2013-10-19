@@ -105,12 +105,11 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, "
 			+ COLUMN_TRANSACTION_ID + " integer, "
-			+ COLUMN_VALUE + " double, " + COLUMN_DAILY_PAYMENT + " double, "
-			+ COLUMN_DATE_LAST_PAID + " text); ";
-			/*transaction_id
-			total
-			last_day_paid
-			*/
+			+ COLUMN_VALUE + " double, " 
+			+ COLUMN_DAILY_PAYMENT + " double, "
+			+ COLUMN_DATE_LAST_PAID + " text, "
+			+ COLUMN_FLAGS + " integer); ";
+			
 	
 	public static final String DATABASE_CREATE_TABLE_INSTALLMENT_DAYFLOW_PAID = "create table "
 			+ TABLE_INSTALLMENT_DAYFLOW_PAID + "(" + COLUMN_ID

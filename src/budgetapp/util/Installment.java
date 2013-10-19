@@ -2,6 +2,8 @@ package budgetapp.util;
 
 public class Installment {
 	
+	public static final int INSTALLMENT_NOT_PAID = 0;
+	public static final int INSTALLMENT_PAID = 1;
 	private long id;
 	private long transactionId;
 	private Money totalValue;
@@ -10,6 +12,7 @@ public class Installment {
 	private String category;
 	private String comment; 
 	private String dateLastPaid;
+	private int flags;
 	
 	/*String DATABASE_CREATE_TABLE_INSTALLMENTS = "create table "
 	+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
@@ -29,6 +32,7 @@ public class Installment {
 		this.dateLastPaid = dateLastPaid;
 		this.category = category;
 		this.comment = comment;
+		this.flags = 0;
 	}
 	
 	public Installment(Money totalValue, Money dailyPayment,
@@ -42,6 +46,7 @@ public class Installment {
 		this.dateLastPaid = dateLastPaid;
 		this.category = category;
 		this.comment = comment;
+		this.flags = 0;
 	}
 	
 	public void setTransactionId(long id)
@@ -58,6 +63,11 @@ public class Installment {
 		this.dailyPayment = value;
 	}
 	
+	public void setFlags(int flags)
+	{
+		this.flags = flags;
+	}
+	
 	public long getId() { return id; }
 	public long getTransactionId() { return transactionId; }
 	public Money getTotalValue() { return totalValue; }
@@ -67,5 +77,6 @@ public class Installment {
 	public String getCategory() { return category; }
 	public String getComment() { return comment; }
 	public String getDateLastPaid() { return dateLastPaid; }
+	public int getFlags() { return flags; }
 	
 }

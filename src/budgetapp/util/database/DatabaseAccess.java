@@ -76,9 +76,19 @@ public class DatabaseAccess {
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""+theCategory+"\"", null) > 0;
 	} 
 	
-	public boolean removeInstallment(long id)
+	public boolean markInstallmentAsPaid(long id)
 	{
-		return database.delete(BudgetDatabase.TABLE_INSTALLMENTS, BudgetDatabase.COLUMN_ID + " = " + id, null) > 0;
+		
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_FLAGS, Installment.INSTALLMENT_PAID);
+		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+		
+		if(result==1)
+		{
+			return true;
+		}
+		else
+			return false;
 	}
 	/**
 	 * Adds a transaction entry to the cash flow table in the dataase
@@ -410,7 +420,6 @@ public class DatabaseAccess {
 			{
 				long dayFlowId = cursor2.getLong(0);
 				double value = cursor2.getDouble(1);
-				System.out.println("Id: + " + dayFlowId + " Value: " +  + value);
 				database.execSQL("update " +BudgetDatabase.TABLE_DAYSUM + " set " 
 						+ BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " - " + value + 
 						" where _id = " + dayFlowId);
@@ -492,6 +501,7 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());
 		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, installment.getDateLastPaid());
 		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
+		values.put(BudgetDatabase.COLUMN_FLAGS, installment.getFlags());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
 		return insertId;
@@ -591,10 +601,11 @@ public class DatabaseAccess {
 												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
 												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(5) / Money.getExchangeRate()),
-												  	  cursor.getString(6),
-												  	  cursor.getString(7));
-
+												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  cursor.getString(7),
+												  	  cursor.getString(8));
+			installment.setFlags(cursor.getInt(5));
+			
 			cursor.close();
 			return installment;
 		}
@@ -698,10 +709,20 @@ public class DatabaseAccess {
 												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
 												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(5) / Money.getExchangeRate()),
-												  	  cursor.getString(6),
-												  	  cursor.getString(7));
-			
+												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  cursor.getString(7),
+												  	  cursor.getString(8));
+			installment.setFlags(cursor.getInt(5));
+			/*id				0
+			 * transactionId 	1
+			 * value			2
+			 * dailyPay			3
+			 * dateLastPaid		4
+			 * flags			5
+			 * TransactionValue	6
+			 * category			7
+			 * commtn			8
+			*/
 			entries.add(installment);
 			cursor.moveToNext();
 		}

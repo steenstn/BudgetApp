@@ -221,7 +221,7 @@ public class BudgetModel {
 	
 	public boolean removeInstallment(long id)
 	{
-		boolean result = datasource.removeInstallment(id);
+		boolean result = datasource.markInstallmentAsPaid(id);
 		if(result == true)
 		{
 			stateChanged = true;

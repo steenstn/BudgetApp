@@ -7,7 +7,7 @@ package budgetapp.util;
 public abstract class DatabaseEntry {
 	
 	public static final int NORMAL_TRANSACTION = 0;
-	public static final int INSTALLMENT_FIRST_TRANSACTION = 1;
+	public static final int INSTALLMENT_TRANSACTION = 1;
 	private long id;
 	private int flags;
 

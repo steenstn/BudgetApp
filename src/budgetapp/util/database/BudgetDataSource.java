@@ -94,7 +94,7 @@ public class BudgetDataSource {
 					addToDaySum(workingEntry);
 					addToDayTotal(workingEntry);
 					break;
-				case DatabaseEntry.INSTALLMENT_FIRST_TRANSACTION:
+				case DatabaseEntry.INSTALLMENT_TRANSACTION:
 					removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
 					//Update daysum and daytotal by adding the negative value that was added
 					workingEntry.setValue(workingEntry.getValue().multiply(-1));
@@ -189,7 +189,7 @@ public class BudgetDataSource {
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
 		String comment = installment.getComment();
-		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, DatabaseEntry.INSTALLMENT_FIRST_TRANSACTION);
+		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, DatabaseEntry.INSTALLMENT_TRANSACTION);
 		
 		initialPayment = createTransactionEntry(initialPayment);
 		
@@ -214,7 +214,7 @@ public class BudgetDataSource {
 	public Money payOffInstallment(Installment installment, String dateToEdit)
 	{
 		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
-		if(dbInstallment.getId()==-1)
+		if(dbInstallment.getId()==-1 || dbInstallment.getFlags() == Installment.INSTALLMENT_PAID)
 			return new Money(0);
 		
 		Money dailyPay = dbInstallment.getDailyPayment();
@@ -374,12 +374,11 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	public boolean removeInstallment(long id)
+	public boolean markInstallmentAsPaid(long id)
 	{
 		boolean result;
-		//open();
-		result = dbAccess.removeInstallment(id);
-		
+		result = dbAccess.markInstallmentAsPaid(id);
+		System.out.println("flags after del: " + dbAccess.getInstallments().get(0).getFlags());
 		return result;
 	}
 	
