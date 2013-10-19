@@ -13,6 +13,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
+import budgetapp.util.DatabaseEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
@@ -78,20 +79,31 @@ public class BudgetDataSource {
 	 */
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
-		//open();
 		// Get the entry from the database, it may have been edited
 		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
 		
 		if(result == true)
 		{
-			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
-			//Update daysum and daytotal by adding the negative value that was added
-			workingEntry.setValue(workingEntry.getValue().multiply(-1));
-			addToDaySum(workingEntry);
-			addToDayTotal(workingEntry);
-			workingEntry.setValue(workingEntry.getValue().multiply(-1));
-		}
+			switch(workingEntry.getFlags())
+			{
+				case DatabaseEntry.NORMAL_TRANSACTION:
+					removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
+					//Update daysum and daytotal by adding the negative value that was added
+					workingEntry.setValue(workingEntry.getValue().multiply(-1));
+					addToDaySum(workingEntry);
+					addToDayTotal(workingEntry);
+					break;
+				case DatabaseEntry.INSTALLMENT_FIRST_TRANSACTION:
+					removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
+					//Update daysum and daytotal by adding the negative value that was added
+					workingEntry.setValue(workingEntry.getValue().multiply(-1));
+					addToDayTotal(workingEntry);
+					dbAccess.removeInstallmentPayments(workingEntry.getId());
+					break;
+					
+			}
+		}	
 		return result;
 	}
 	
@@ -177,15 +189,15 @@ public class BudgetDataSource {
 		String dateLastPaid = installment.getDateLastPaid();
 		String category = installment.getCategory();
 		String comment = installment.getComment();
-		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, 1);
+		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, DatabaseEntry.INSTALLMENT_FIRST_TRANSACTION);
 		
 		initialPayment = createTransactionEntry(initialPayment);
 		
 		installment.setTransactionId(initialPayment.getId());
 		
-		//open();
 		long result = dbAccess.addInstallment(installment);
-		
+		long dailyFlowId = dbAccess.getIdFromDayFlow(initialPayment.getDate());
+		dbAccess.addInstallmentPayment(result, dailyFlowId, dailyPayment.get());
 		
 		if(result != -1)
 			return true;
@@ -201,33 +213,36 @@ public class BudgetDataSource {
 	 */
 	public Money payOffInstallment(Installment installment, String dateToEdit)
 	{
-		BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
+		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
+		if(dbInstallment.getId()==-1)
+			return new Money(0);
 		
-		BudgetEntry newEntry = oldEntry.clone();
-		Money dailyPay = installment.getDailyPayment();
+		Money dailyPay = dbInstallment.getDailyPayment();
 		
-		Money remainingValue = installment.getRemainingValue();
-		
-		if(remainingValue.makePositive().smallerThan(dailyPay)) // Don't pay too much
-			dailyPay = remainingValue;
-		
-		newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
-		editTransactionEntryToday(oldEntry, newEntry, dateToEdit);
-		
-		Installment newInstallment = getInstallment(installment.getId());
-		
-		Money newRemainingValue = newInstallment.getRemainingValue();
-		// If the installment has gone positive or is small enough, delete it
-		if(newRemainingValue.biggerThanOrEquals(new Money(0)) || newRemainingValue.makePositive().almostZero())
+		Money remainingValue = dbInstallment.getRemainingValue();
+		if(remainingValue.makePositive().smallerThan(dailyPay.makePositive())) // Don't pay too much
 		{
-			dbAccess.removeInstallment(installment.getId());
+			dailyPay = remainingValue;
+		}
+		// If the installment has gone positive or is small enough, delete it
+		if(remainingValue.biggerThanOrEquals(new Money(0)) || remainingValue.makePositive().almostZero())
+		{
+			//dbAccess.removeInstallment(installment.getId());
+			return new Money(0);
 		}
 		else
 		{
-			updateInstallment(installment.getId(), installment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
+			BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
+			BudgetEntry newEntry = oldEntry.clone();
+			newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
+			editTransactionEntryToday(oldEntry, newEntry, dateToEdit);
+			
+			dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
+			
+			updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
 
+			return new Money(dailyPay);
 		}
-		return new Money(dailyPay);
 	}
 	
 	/**

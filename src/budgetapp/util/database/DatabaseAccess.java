@@ -186,6 +186,27 @@ public class DatabaseAccess {
 	}
 	
 	/**
+	 * Gets the id for a dayflow entry depending on the date
+	 * @param date - The date for the dayflow entry
+	 * @return - The id
+	 */
+	public long getIdFromDayFlow(String date)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+date.substring(0,10)+"\"",null);
+		if(cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			long id = cursor.getLong(0);
+			cursor.close();
+			return id;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	/**
 	 * Updates the daytotal table, goes through all daytotal entries when updating
 	 * @param theEntry - The entry to add
 	 * @param newEntry - Possible second entry. This means that an entry was edited
@@ -362,6 +383,50 @@ public class DatabaseAccess {
 		cursor.close();
 			
 	}
+	
+	/**
+	 * Removes all the daily payments from an installment from the linked dayflow entry
+	 * @param transactionId
+	 */
+	public void removeInstallmentPayments(long transactionId)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from "
+				+ BudgetDatabase.TABLE_INSTALLMENTS + " where "
+				+ BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
+		
+		if(cursor.getCount()!=0)
+		{
+			System.out.println("Found installment");
+			cursor.moveToFirst();
+			long installmentId = cursor.getLong(0);
+			
+			Cursor cursor2 = database.rawQuery("select " + BudgetDatabase.COLUMN_DAYFLOW_ID + ", " + BudgetDatabase.COLUMN_VALUE + " from "
+					+ BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID + " where "
+					+ BudgetDatabase.COLUMN_INSTALLMENT_ID + " = " + installmentId, null);
+			
+			cursor2.moveToFirst();
+			while(!cursor2.isAfterLast())
+			{
+				long dayFlowId = cursor2.getLong(0);
+				double value = cursor2.getDouble(1);
+				System.out.println("Id: + " + dayFlowId + " Value: " +  + value);
+				database.execSQL("update " +BudgetDatabase.TABLE_DAYSUM + " set " 
+						+ BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " - " + value + 
+						" where _id = " + dayFlowId);
+				cursor2.moveToNext();
+			}
+			cursor2.close();
+		}
+		cursor.close();
+		/*
+		 * curso
+		 * Get installment with transaction id
+		 * get all payments with this id
+		 * for each payment, add to dayflow the value
+		 */
+	}
+	
 	/**
 	 * Add a CategoryEntry to the database.
 	 * @param theEntry - The CategoryEntry to add
@@ -534,7 +599,7 @@ public class DatabaseAccess {
 			return installment;
 		}
 		else
-			return new Installment(-1,-1,new Money(-1),new Money(-1),"ERROR",new Money(-1),"ERROR","ERROR");
+			return new Installment(-1,-1,new Money(),new Money(),"ERROR",new Money(),"ERROR","ERROR");
 	}
 	
 	

@@ -142,6 +142,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		result.setCategory(this.getCategory());
 		result.setValue(this.getValue());
 		result.setComment(this.getComment());
+		result.setFlags(this.getFlags());
 		return result;
 		
 	}

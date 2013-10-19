@@ -75,7 +75,7 @@ public class Money {
 	
 	public Money makeNegative()
 	{
-		return new Money((Math.abs(value) * -1) / exchangeRate);
+		return new Money((Math.abs(value) / exchangeRate) * -1);
 	}
 	
 	public Money makePositive()
