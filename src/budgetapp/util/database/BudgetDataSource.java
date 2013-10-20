@@ -268,6 +268,11 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public BudgetEntry getTransaction(long id)
+	{
+		return dbAccess.getTransaction(id);
+	}
+	
 	/**
 	 * Gets n number of DayEntries from daily cash flow table sorted by id
 	 * @param n - Number of transactions to fetch. Fetches all if n <= 0
@@ -439,10 +444,6 @@ public class BudgetDataSource {
 	private void updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		dbAccess.updateTransaction(oldEntry, newEntry);
-	}
-	private BudgetEntry getTransaction(long id)
-	{
-		return dbAccess.getTransaction(id);
 	}
 	
 	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)

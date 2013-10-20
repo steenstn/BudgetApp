@@ -250,6 +250,11 @@ public class BudgetModel {
 		return datasource.getInstallment(id);
 	}
 	
+	public BudgetEntry getTransaction(long id)
+	{
+		return datasource.getTransaction(id);
+	}
+	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		return datasource.getSomeTransactions(n, orderBy);

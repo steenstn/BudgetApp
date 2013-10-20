@@ -87,10 +87,11 @@ public class EditInstallmentDialogFragment extends DialogFragment {
     				String comment = commentEditText.getText().toString();
     				
     				Money amountPaid = installment.getAmountPaid();
-    				BudgetEntry oldEntry = new BudgetEntry();
+    				BudgetEntry oldEntry = activity.getModel().getTransaction(installment.getTransactionId());
     				oldEntry.setId(installment.getTransactionId());
     				BudgetEntry newEntry = new BudgetEntry(amountPaid, BudgetFunctions.getDateString(), category, comment);
     				Installment newInstallment = new Installment(new Money(totalValue), new Money(dailyPayment), installment.getDateLastPaid(), new Money(0) , "", "");
+    				
     				activity.getModel().editInstallment(installment.getId(), newInstallment);
     				activity.getModel().editTransaction(oldEntry, newEntry);
     			}
