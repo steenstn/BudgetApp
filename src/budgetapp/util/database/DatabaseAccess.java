@@ -466,7 +466,9 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		// See if value already exists
-		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + ", " + BudgetDatabase.COLUMN_NUM 
+				+ " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES 
+				+ " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
 		
 		if(cursor.getCount() == 0) // It does not exist, see how many values are in the table
 		{
@@ -475,16 +477,30 @@ public class DatabaseAccess {
 			int numValues = cursor.getInt(0);
 			
 			
-			if(numValues >= 10) // Too many entries, delete the oldest one
+			if(numValues > 10) // Too many entries, delete the oldest one
 			{
-				database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, 
-					BudgetDatabase.COLUMN_ID + 
-					" = (select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " order by " 
-					+ BudgetDatabase.COLUMN_ID + " limit 1)", null);
+				database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES,
+						BudgetDatabase.COLUMN_ID +
+						" = (select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES +
+						" where " + BudgetDatabase.COLUMN_NUM + " = (select min(" + BudgetDatabase.COLUMN_NUM + ")" +
+						" from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + "))", null);
+				
+				/*
+				 * id = (select id from autocomplete 
+				 * where num = (select min(num) from autocomplete) limit 1)
+				 */
 			}
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, theValue);
+			values.put(BudgetDatabase.COLUMN_NUM, 1);
 			database.insert(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null, values);
+		}
+		else
+		{
+			cursor.moveToFirst();
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_NUM, cursor.getInt(1) + 1);
+			database.update(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, values, BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
 		}
 		cursor.close();
 		
