@@ -81,7 +81,7 @@ public class DatabaseAccess {
 		
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_FLAGS, Installment.INSTALLMENT_PAID);
-		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id + " and " + BudgetDatabase.COLUMN_FLAGS + " != " + Installment.INSTALLMENT_PAID, null);
 		
 		if(result==1)
 		{
