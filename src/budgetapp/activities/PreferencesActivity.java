@@ -11,9 +11,11 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v4.app.DialogFragment;
+import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.main.R;
 
-public class PreferencesActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
+public class PreferencesActivity extends PreferenceActivity /*implements OnSharedPreferenceChangeListener*/{
 	
 	
     @Override
@@ -41,7 +43,7 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 				return true;
 			}
         });
-    	
+    	/*
     	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
     	backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
        
@@ -52,10 +54,11 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 				return true;
 			}
         });
-    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     	
+    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    	*/
     }
-
+/*
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		
 		if(key.equalsIgnoreCase("backupFolder"))
@@ -65,6 +68,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 			
 		}
 		
-	}
+	}*/
     
 }
