@@ -429,12 +429,7 @@ public class DatabaseAccess {
 			cursor2.close();
 		}
 		cursor.close();
-		/*
-		 * curso
-		 * Get installment with transaction id
-		 * get all payments with this id
-		 * for each payment, add to dayflow the value
-		 */
+		
 	}
 	
 	/**
