@@ -134,6 +134,17 @@ public class BudgetDataSource {
 	}
 	
 	/**
+	 * Changes the daily payment and total value of an installment
+	 * @param id - The id of the installment to change
+	 * @param newInstallment - Installment with the new values
+	 */
+	public void editInstallment(long id, Installment newInstallment)
+	{
+		String date = getInstallment(id).getDateLastPaid();
+		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), date);
+	}
+	
+	/**
 	 * Edit transaction and add the value to today's daily flow
 	 * @param oldEntry
 	 * @param newEntry
@@ -227,7 +238,7 @@ public class BudgetDataSource {
 		// If the installment has gone positive or is small enough, delete it
 		if(remainingValue.biggerThanOrEquals(new Money(0)) || remainingValue.makePositive().almostZero())
 		{
-			//dbAccess.removeInstallment(installment.getId());
+			dbAccess.markInstallmentAsPaid(installment.getId());
 			return new Money(0);
 		}
 		else
@@ -348,6 +359,11 @@ public class BudgetDataSource {
 		
 		return result;
 	}
+	
+	public Installment getInstallment(long id)
+	{
+		return dbAccess.getInstallment(id);
+	}
 	/**
 	 * Adds a category
 	 * @param theCategory - Name of the new category
@@ -428,10 +444,7 @@ public class BudgetDataSource {
 	{
 		return dbAccess.getTransaction(id);
 	}
-	private Installment getInstallment(long id)
-	{
-		return dbAccess.getInstallment(id);
-	}
+	
 	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)
 	{
 		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid);

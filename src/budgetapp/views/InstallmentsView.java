@@ -75,6 +75,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 				totalDailyPayments = totalDailyPayments.add(BudgetFunctions.max(allInstallments.get(i).getRemainingValue(),allInstallments.get(i).getDailyPayment()));
 			}
 		}
+		
 		installmentsListView.setAdapter(listAdapter); 
         TextView totalDailyPaymentsTextView = (TextView)findViewById(R.id.textViewTotalDailyPayment);
         totalDailyPaymentsTextView.setText("Total daily payments: " + new Money(totalDailyPayments));

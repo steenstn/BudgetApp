@@ -319,6 +319,7 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, newDailyPayment);
 		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, newDateLastPaid);
 		
+		
 		int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
 		if(res != 0)
 			return true;

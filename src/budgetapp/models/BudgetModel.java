@@ -219,6 +219,14 @@ public class BudgetModel {
 			return false;
 	}
 	
+	public void editInstallment(long id, Installment newInstallment)
+	{
+		datasource.editInstallment(id, newInstallment);
+		stateChanged = true;
+		notifyObservers();
+		
+	}
+	
 	public boolean removeInstallment(long id)
 	{
 		boolean result = datasource.markInstallmentAsPaid(id);
@@ -235,6 +243,11 @@ public class BudgetModel {
 	public List<Installment> getInstallments()
 	{
 		return datasource.getInstallments();
+	}
+	
+	public Installment getInstallment(long id)
+	{
+		return datasource.getInstallment(id);
 	}
 	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)

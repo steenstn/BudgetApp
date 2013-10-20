@@ -3,13 +3,14 @@ package budgetapp.fragments;
  * Dialog Fragment for adding a new category
  * 
  */
-
 import java.util.Calendar;
 import java.util.List;
 
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
+import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,7 +29,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public class AddInstallmentDialogFragment extends DialogFragment {
+public class EditInstallmentDialogFragment extends DialogFragment {
 
 	View view;
 	AutoCompleteTextView categoryEditText;
@@ -38,6 +39,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	DatePicker datePicker;
 	Button getDateButton;
 	InstallmentsActivity activity;
+	Installment installment;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		activity = (InstallmentsActivity) getActivity();
@@ -46,11 +48,13 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	    LayoutInflater inflater = activity.getLayoutInflater();
 	    // Inflate and set the layout for the dialog
 	    view = inflater.inflate(R.layout.dialog_add_installment, null);
-	 
+	    
+	    Bundle bundle = this.getArguments();
+	    final long installmentId = bundle.getLong("id", -1);
+	    
+	    installment = activity.getModel().getInstallment(installmentId);
 	    builder.setView(view);
 	    
-	   
-		
 	    // Add action buttons
     	builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
     	   
@@ -81,8 +85,14 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     					throw new Exception("daily payment larger than total value");
     				
     				String comment = commentEditText.getText().toString();
-    				activity.addInstallment(new Money(totalValue), new Money(dailyPayment), category, comment);
     				
+    				Money amountPaid = installment.getAmountPaid();
+    				BudgetEntry oldEntry = new BudgetEntry();
+    				oldEntry.setId(installment.getTransactionId());
+    				BudgetEntry newEntry = new BudgetEntry(amountPaid, BudgetFunctions.getDateString(), category, comment);
+    				Installment newInstallment = new Installment(new Money(totalValue), new Money(dailyPayment), installment.getDateLastPaid(), new Money(0) , "", "");
+    				activity.getModel().editInstallment(installment.getId(), newInstallment);
+    				activity.getModel().editTransaction(oldEntry, newEntry);
     			}
     			catch(Exception e)
     			{
@@ -92,7 +102,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
         })
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                AddInstallmentDialogFragment.this.getDialog().cancel();
+                EditInstallmentDialogFragment.this.getDialog().cancel();
             }
         });   
     	
@@ -111,8 +121,17 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 		getDateButton = (Button)view.findViewById(R.id.dialog_installment_get_date);
 		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
 		
+		loadValues();
 		setUpAutoCompleteValues();
 		setUpWatchers();		
+	}
+	
+	private void loadValues()
+	{
+		categoryEditText.setText(installment.getCategory());
+		totalValueEditText.setText(""+installment.getTotalValue().makePositive().get()/Money.getExchangeRate());
+		dailyPaymentEditText.setText(""+installment.getDailyPayment().makePositive().get()/Money.getExchangeRate());
+		commentEditText.setText(installment.getComment());
 	}
 	
 	private void setUpAutoCompleteValues()

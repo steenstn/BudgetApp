@@ -1,6 +1,7 @@
 package budgetapp.activities;
 
 import budgetapp.fragments.AddInstallmentDialogFragment;
+import budgetapp.fragments.EditInstallmentDialogFragment;
 import budgetapp.fragments.RemoveInstallmentDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
@@ -24,7 +25,6 @@ public class InstallmentsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         view = (InstallmentsView)View.inflate(this, R.layout.activity_installments, null);
         view.setViewListener(viewListener);
-        //model = new BudgetModel(this);
         
         setContentView(view);
         model = new BudgetModel(this);
@@ -73,9 +73,9 @@ public class InstallmentsActivity extends FragmentActivity {
 		public void listViewLongClick(InstallmentViewHolder theEntry) {
 			Bundle bundle = new Bundle();
 			bundle.putLong("id", theEntry.getEntry().getId());
-			DialogFragment newFragment = new RemoveInstallmentDialogFragment();
+			DialogFragment newFragment = new EditInstallmentDialogFragment();
 			newFragment.setArguments(bundle);
-        	newFragment.show(getSupportFragmentManager(), "add_installment");
+        	newFragment.show(getSupportFragmentManager(), "edit_installment");
 			
 		}
 

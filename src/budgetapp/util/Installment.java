@@ -14,12 +14,6 @@ public class Installment {
 	private String dateLastPaid;
 	private int flags;
 	
-	/*String DATABASE_CREATE_TABLE_INSTALLMENTS = "create table "
-	+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
-	+ " integer primary key autoincrement, "
-	+ COLUMN_TRANSACTION_ID + " integer, "
-	+ COLUMN_VALUE + " double, " + COLUMN_DATE_LAST_PAID + " text, "
-	+ COLUMN_REMAINING_AMOUNT + " double);";*/
 	
 	public Installment(long id, long transactionId, Money totalValue, Money dailyPayment,
 			String dateLastPaid, Money amountPaid, String category, String comment)
