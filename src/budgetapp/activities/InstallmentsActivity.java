@@ -66,16 +66,20 @@ public class InstallmentsActivity extends FragmentActivity {
 
 		@Override
 		public void listViewClick(InstallmentViewHolder listItem) {
-			Toast.makeText(getBaseContext(), listItem.getEntry().getComment() + "  Daily pay: " + listItem.getEntry().getDailyPayment().makePositive(), Toast.LENGTH_LONG).show();
-		}
-
-		@Override
-		public void listViewLongClick(InstallmentViewHolder theEntry) {
 			Bundle bundle = new Bundle();
-			bundle.putLong("id", theEntry.getEntry().getId());
+			bundle.putLong("id", listItem.getEntry().getId());
 			DialogFragment newFragment = new EditInstallmentDialogFragment();
 			newFragment.setArguments(bundle);
         	newFragment.show(getSupportFragmentManager(), "edit_installment");
+		}
+
+		@Override
+		public void listViewLongClick(InstallmentViewHolder listItem) {
+			Bundle bundle = new Bundle();
+			bundle.putLong("id", listItem.getEntry().getId());
+			DialogFragment newFragment = new RemoveInstallmentDialogFragment();
+			newFragment.setArguments(bundle);
+        	newFragment.show(getSupportFragmentManager(), "delete_installment");
 			
 		}
 
