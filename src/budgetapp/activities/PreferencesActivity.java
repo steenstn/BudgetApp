@@ -2,10 +2,7 @@ package budgetapp.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -26,8 +23,6 @@ public class PreferencesActivity extends PreferenceActivity /*implements OnShare
         
         setUpListeners();
         
-        
-        
     }
     
     private void setUpListeners()
@@ -44,7 +39,9 @@ public class PreferencesActivity extends PreferenceActivity /*implements OnShare
 			}
         });
     	
-    /*	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
+    	/*
+    	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
+
     	backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
        
 			@Override
@@ -53,11 +50,13 @@ public class PreferencesActivity extends PreferenceActivity /*implements OnShare
 	    		startActivity(intent);
 				return true;
 			}
-        });*/
-    	//getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        });
+    	
+    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    	*/
     }
-    /*
-	@Override
+/*
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		
 		if(key.equalsIgnoreCase("backupFolder"))

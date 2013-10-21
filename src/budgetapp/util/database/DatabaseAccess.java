@@ -6,6 +6,7 @@ import java.util.List;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 
 
@@ -75,6 +76,20 @@ public class DatabaseAccess {
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""+theCategory+"\"", null) > 0;
 	} 
 	
+	public boolean markInstallmentAsPaid(long id)
+	{
+		
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_FLAGS, Installment.INSTALLMENT_PAID);
+		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id + " and " + BudgetDatabase.COLUMN_FLAGS + " != " + Installment.INSTALLMENT_PAID, null);
+		
+		if(result==1)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
 	/**
 	 * Adds a transaction entry to the cash flow table in the dataase
 	 * @param theEntry - The BudgetEntry to add
@@ -88,6 +103,7 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_DATE,theEntry.getDate());
 		values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
 		values.put(BudgetDatabase.COLUMN_COMMENT, theEntry.getComment().replaceAll("['\"]", "\'"));
+		values.put(BudgetDatabase.COLUMN_FLAGS, theEntry.getFlags());
 		
 		long insertId = database.insert(BudgetDatabase.TABLE_CASHFLOW, null,values);
 		
@@ -96,7 +112,7 @@ public class DatabaseAccess {
 				null, null, null);
 		cursor.moveToFirst();
 		
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 		cursor.close();
 		return entry;
 	}
@@ -113,7 +129,7 @@ public class DatabaseAccess {
 		if(cursor.getCount()==1)
 		{
 			cursor.moveToFirst();
-			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 			return entry;
 		}
 		else
@@ -153,7 +169,7 @@ public class DatabaseAccess {
 		double newValue = theEntry.getValue().get();
 		if(newEntry != null)
 		{
-			newValue = newEntry.getValue().get()-theEntry.getValue().get();
+			newValue = (newEntry.getValue().get()-theEntry.getValue().get());
 		}
 		if(cursor.getCount()<=0) // No entry yet this day, create a new entry
 		{
@@ -179,6 +195,27 @@ public class DatabaseAccess {
 		return true;
 	}
 	
+	/**
+	 * Gets the id for a dayflow entry depending on the date
+	 * @param date - The date for the dayflow entry
+	 * @return - The id
+	 */
+	public long getIdFromDayFlow(String date)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select "+BudgetDatabase.COLUMN_ID + " from "+BudgetDatabase.TABLE_DAYSUM+" where "+BudgetDatabase.COLUMN_DATE+"="+"\""+date.substring(0,10)+"\"",null);
+		if(cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			long id = cursor.getLong(0);
+			cursor.close();
+			return id;
+		}
+		else
+		{
+			return -1;
+		}
+	}
 	/**
 	 * Updates the daytotal table, goes through all daytotal entries when updating
 	 * @param theEntry - The entry to add
@@ -222,14 +259,14 @@ public class DatabaseAccess {
 			// If two entries was sent in, the new value should be newValue - oldValue to get the correct result
 			if(newEntry != null)
 			{
-				newValue = newEntry.getValue().get()-theEntry.getValue().get();
+				newValue = (newEntry.getValue().get()-theEntry.getValue().get());
 			}
 			total += newValue;
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, total);
 			database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '" + theEntry.getDate().substring(0, 10) + "'", null);
 			cursor.close();
-			addValueToRemaindingDays(newValue, theId);
+			addValueToRemainingDays(newValue, theId);
 			
 			return true;
 		}
@@ -240,7 +277,7 @@ public class DatabaseAccess {
 	 * @param theValue - The value to add
 	 * @param theId - The id
 	 */
-	private void addValueToRemaindingDays(double theValue, long theId)
+	private void addValueToRemainingDays(double theValue, long theId)
 	{
 		database.execSQL("update " +BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
 	}
@@ -248,8 +285,8 @@ public class DatabaseAccess {
 	/**
 	 * Updates a transaction entry in the cash flow table
 	 * @param oldEntry - The entry to edit
-	 * @param newEntry - Entry containging the new values
-	 * @return - If te editing was successful
+	 * @param newEntry - Entry containing the new values
+	 * @return - If the editing was successful
 	 */
 	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
@@ -273,6 +310,21 @@ public class DatabaseAccess {
 		}
 		cursor.close();
 		return false;
+	}
+	
+	public boolean updateInstallment(long id, double newTotalValue, double newDailyPayment, String newDateLastPaid)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_VALUE, newTotalValue);
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, newDailyPayment);
+		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, newDateLastPaid);
+		
+		
+		int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+		if(res != 0)
+			return true;
+		else
+			return false;
 	}
 	
 	
@@ -342,6 +394,44 @@ public class DatabaseAccess {
 		cursor.close();
 			
 	}
+	
+	/**
+	 * Removes all the daily payments from an installment from the linked dayflow entry
+	 * @param transactionId
+	 */
+	public void removeInstallmentPayments(long transactionId)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from "
+				+ BudgetDatabase.TABLE_INSTALLMENTS + " where "
+				+ BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
+		
+		if(cursor.getCount()!=0)
+		{
+			System.out.println("Found installment");
+			cursor.moveToFirst();
+			long installmentId = cursor.getLong(0);
+			
+			Cursor cursor2 = database.rawQuery("select " + BudgetDatabase.COLUMN_DAYFLOW_ID + ", " + BudgetDatabase.COLUMN_VALUE + " from "
+					+ BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID + " where "
+					+ BudgetDatabase.COLUMN_INSTALLMENT_ID + " = " + installmentId, null);
+			
+			cursor2.moveToFirst();
+			while(!cursor2.isAfterLast())
+			{
+				long dayFlowId = cursor2.getLong(0);
+				double value = cursor2.getDouble(1);
+				database.execSQL("update " +BudgetDatabase.TABLE_DAYSUM + " set " 
+						+ BudgetDatabase.COLUMN_VALUE + " = " + BudgetDatabase.COLUMN_VALUE + " - " + value + 
+						" where _id = " + dayFlowId);
+				cursor2.moveToNext();
+			}
+			cursor2.close();
+		}
+		cursor.close();
+		
+	}
+	
 	/**
 	 * Add a CategoryEntry to the database.
 	 * @param theEntry - The CategoryEntry to add
@@ -363,6 +453,110 @@ public class DatabaseAccess {
 	}
 	
 	/**
+	 * Adds a value to the autocomplete table, if the table is full,
+	 * the oldest value is replaces, queue-style
+	 * @param theValue - The value to add
+	 */
+	public void addAutocompleteValue(double theValue)
+	{
+		Cursor cursor;
+		// See if value already exists
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + ", " + BudgetDatabase.COLUMN_NUM 
+				+ " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES 
+				+ " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
+		
+		if(cursor.getCount() == 0) // It does not exist, see how many values are in the table
+		{
+			cursor = database.rawQuery("select count(*) from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null);
+			cursor.moveToFirst();
+			int numValues = cursor.getInt(0);
+			
+			
+			if(numValues > 10) // Too many entries, delete the oldest one
+			{
+				database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES,
+						BudgetDatabase.COLUMN_ID +
+						" = (select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES +
+						" where " + BudgetDatabase.COLUMN_NUM + " = (select min(" + BudgetDatabase.COLUMN_NUM + ")" +
+						" from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + "))", null);
+				
+				/*
+				 * id = (select id from autocomplete 
+				 * where num = (select min(num) from autocomplete) limit 1)
+				 */
+			}
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_VALUE, theValue);
+			values.put(BudgetDatabase.COLUMN_NUM, 1);
+			database.insert(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null, values);
+		}
+		else
+		{
+			cursor.moveToFirst();
+			ContentValues values = new ContentValues();
+			values.put(BudgetDatabase.COLUMN_NUM, cursor.getInt(1) + 1);
+			database.update(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, values, BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
+		}
+		cursor.close();
+		
+	}
+	
+	/**
+	 * Add an installment to the database
+	 * @param installment - The installment to add
+	 * @return - The resulting id of the installment
+	 */
+	public long addInstallment(Installment installment)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID, installment.getTransactionId());
+		values.put(BudgetDatabase.COLUMN_VALUE,installment.getTotalValue().get());
+		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, installment.getDateLastPaid());
+		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, installment.getDailyPayment().get());
+		values.put(BudgetDatabase.COLUMN_FLAGS, installment.getFlags());
+		
+		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENTS,  null,  values);
+		return insertId;
+	}
+	
+	/**
+	 * Adds a link from the daily payment of the installment to a dayflow entry
+	 * @param installmentId - The id of the installment
+	 * @param dailyFlowId - The id of the dailyFlow entry 
+	 * @param value - The value of the payment
+	 * @return - The resulting id of the entry
+	 */
+	public long addInstallmentPayment(long installmentId, long dailyFlowId, double value)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_INSTALLMENT_ID, installmentId);
+		values.put(BudgetDatabase.COLUMN_DAYFLOW_ID, dailyFlowId);
+		values.put(BudgetDatabase.COLUMN_VALUE, value);
+		
+		long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID, null, values);
+		return insertId;
+	}
+	
+	/**
+	 * Gets all the autocomplete values
+	 * @return - All autocomplete values
+	 */
+	public List<Double> getAutocompleteValues()
+	{
+		List<Double> values = new ArrayList<Double>();
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			values.add(cursor.getDouble(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return values;
+	}
+	
+	/**
 	 *  Get n number of transactions. If n = 0, returns all transactions
 	 * @param n - Number of transactions
 	 * @param mode Ascending/descending by id
@@ -380,12 +574,55 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
 		cursor.close();
 		return entries;
+	}
+	
+	public BudgetEntry getTransaction(long id)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
+		cursor.moveToFirst();
+		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+		cursor.close();
+		return entry;
+	}
+	
+	public Installment getInstallment(long id)
+	{
+		Cursor cursor;
+		cursor = database.rawQuery("select i.*, t.value, t.category, t.comment from " + BudgetDatabase.TABLE_INSTALLMENTS
+				+ " i join " + BudgetDatabase.TABLE_CASHFLOW + " t on i." + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " = t." + BudgetDatabase.COLUMN_ID + " where i." + BudgetDatabase.COLUMN_ID + " = " + id, null);
+		
+		/*
+		select i.*, t.value, t.category, t.comment from installments i
+		join cash_flow t on i.transactionId = t._id
+		where i._id = :id
+		*/
+		cursor.moveToFirst();
+		if(cursor.getCount()==1)
+		{
+			
+			Installment installment = new Installment(cursor.getLong(0),
+													  cursor.getLong(1),
+												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
+												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
+												  	  cursor.getString(4),
+												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  cursor.getString(7),
+												  	  cursor.getString(8));
+			installment.setFlags(cursor.getInt(5));
+			
+			cursor.close();
+			return installment;
+		}
+		else
+			return new Installment(-1,-1,new Money(),new Money(),"ERROR",new Money(),"ERROR","ERROR");
 	}
 	
 	
@@ -401,7 +638,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -422,7 +659,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2)),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -440,7 +677,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3)),cursor.getInt(4)));
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3) / Money.getExchangeRate()),cursor.getInt(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -456,6 +693,49 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			entries.add(cursor.getString(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
+	public List<Installment> getInstallments()
+	{
+		List<Installment> entries = new ArrayList<Installment>();
+		
+		Cursor cursor;
+		cursor = database.rawQuery("select i.*, t.value, t.category, t.comment from " + BudgetDatabase.TABLE_INSTALLMENTS
+				+ " i join " + BudgetDatabase.TABLE_CASHFLOW + " t on i." + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " = t." + BudgetDatabase.COLUMN_ID, null);
+		
+		/*
+		select i.*, t.value, t.category, t.comment from installments i
+		join cash_flow t on i.transactionId = t._id
+		*/
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			
+			Installment installment = new Installment(cursor.getLong(0),
+													  cursor.getLong(1),
+												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
+												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
+												  	  cursor.getString(4),
+												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  cursor.getString(7),
+												  	  cursor.getString(8));
+			installment.setFlags(cursor.getInt(5));
+			/*id				0
+			 * transactionId 	1
+			 * value			2
+			 * dailyPay			3
+			 * dateLastPaid		4
+			 * flags			5
+			 * TransactionValue	6
+			 * category			7
+			 * commtn			8
+			*/
+			entries.add(installment);
 			cursor.moveToNext();
 		}
 		cursor.close();

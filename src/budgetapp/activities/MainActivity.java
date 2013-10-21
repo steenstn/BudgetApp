@@ -12,9 +12,11 @@ import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
@@ -31,6 +33,7 @@ public class MainActivity extends FragmentActivity {
 	private String chosenCategory = "";
 	private MainView view;
 	private BudgetModel model;
+	public Money dailyFlow = new Money();
 	
 	public String getChosenCategory()
 	{
@@ -98,13 +101,8 @@ public class MainActivity extends FragmentActivity {
     	super.onResume();
     	
     	// Add daily budget and Toast the result if anything was added
-    	int daysAdded = model.addDailyBudget();
-    	if(daysAdded>0)
-    	{
-    		Money result = new Money();
-    		result.set(daysAdded*getDailyBudget().get());
-    		Toast.makeText(this.getBaseContext(), "Added " + result + " to budget (" + daysAdded + " day"+((daysAdded>1)? "s" : "") +")" , Toast.LENGTH_LONG).show();	
-    	}
+    	new DailyBudgetAddTask().execute();
+        view.setUpAutocompleteValues();
     	view.update();
     }
     
@@ -147,7 +145,6 @@ public class MainActivity extends FragmentActivity {
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.createTransaction(entry);
-	    	System.out.println("value after insert "+entry.getValue().get());
 	    	resultText.setText("");
     	}
     	catch(NumberFormatException e)
@@ -178,6 +175,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.menu_installments:
+            	intent = new Intent(this,InstallmentsActivity.class);
+            	startActivity(intent);
+            	return true;
             case R.id.menu_showgraph:
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
@@ -216,5 +217,63 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 	
+	private class DailyBudgetAddTask extends AsyncTask<Void,Void,Integer>
+	{
+		@Override
+		protected void onPreExecute()
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(false);
+			dailyFlow = new Money();
+		}
+		@Override
+		protected Integer doInBackground(Void... params) {
+			int result = model.addDailyBudget();
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer daysAdded)
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(true);
+			if(daysAdded>0)
+	    	{
+	    		dailyFlow = getDailyBudget().multiply(daysAdded);
+	    	}
+			view.update();
+
+	    	new PayInstallmentsTask().execute();
+		}
+	}
+	
+	private class PayInstallmentsTask extends AsyncTask<Void,Void,Void>
+	{
+		@Override
+		protected void onPreExecute()
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(false);
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			Money temp = model.payOffInstallments();
+			dailyFlow = dailyFlow.add(temp);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void params)
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(true);
+			if(!dailyFlow.almostZero())
+			{
+				Toast.makeText(getApplicationContext(), "Cash flow since last time: " + dailyFlow, Toast.LENGTH_LONG).show();
+			}
+			view.update();
+		}
+	}
+		
     
 }

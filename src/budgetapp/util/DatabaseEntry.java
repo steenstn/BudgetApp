@@ -6,6 +6,8 @@ package budgetapp.util;
  */
 public abstract class DatabaseEntry {
 	
+	public static final int NORMAL_TRANSACTION = 0;
+	public static final int INSTALLMENT_TRANSACTION = 1;
 	private long id;
 	private int flags;
 
@@ -21,10 +23,6 @@ public abstract class DatabaseEntry {
 	
 	public void setValue(Money value){
 		this.value = value;
-	}
-
-	public void setValue(double x){
-		this.value.set(x);
 	}
 	
 	public Money getValue(){

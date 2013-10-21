@@ -9,13 +9,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
@@ -49,7 +51,7 @@ public class BudgetModel {
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
 		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
-		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
+		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget) / Money.getExchangeRate());
 		
 		backup = new BudgetBackup(context);
 		transactions = new ArrayList<TransactionCommand>();
@@ -143,6 +145,10 @@ public class BudgetModel {
 		return datasource.getCategoryNames();
 	}
 	
+	public List<Double> getAutocompleteValues()
+	{
+		return datasource.getAutocompleteValues();
+	}
 	/**
 	 * Sets the daily budget and saves to config and config file.
 	 * Notifies observers.
@@ -150,7 +156,7 @@ public class BudgetModel {
 	 */
 	public void setDailyBudget(Money budget)
 	{
-		dailyBudget = budget.multiply(Money.getExchangeRate());
+		dailyBudget = budget;
 		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
 		stateChanged = true;
@@ -200,7 +206,54 @@ public class BudgetModel {
 			return false;
 	}
 	
+	public boolean addInstallment(Installment installment)
+	{
+		boolean result = datasource.createInstallment(installment);
+		if(result == true)
+		{
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		else
+			return false;
+	}
 	
+	public void editInstallment(long id, Installment newInstallment)
+	{
+		datasource.editInstallment(id, newInstallment);
+		stateChanged = true;
+		notifyObservers();
+		
+	}
+	
+	public boolean removeInstallment(long id)
+	{
+		boolean result = datasource.markInstallmentAsPaid(id);
+		if(result == true)
+		{
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public List<Installment> getInstallments()
+	{
+		return datasource.getInstallments();
+	}
+	
+	public Installment getInstallment(long id)
+	{
+		return datasource.getInstallment(id);
+	}
+	
+	public BudgetEntry getTransaction(long id)
+	{
+		return datasource.getTransaction(id);
+	}
 	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
@@ -224,14 +277,15 @@ public class BudgetModel {
 	 */
 	public int addDailyBudget()
     {
+		//System.out.println("Adding daily budget");
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
+    	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		
     	int daysAdded = 0;
     	if(!lastDay.isEmpty())
     	{
     		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
-    		
     		
 	    	String lastDayString = lastDay.get(0).getDate();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
@@ -244,6 +298,8 @@ public class BudgetModel {
 
 	    	// Step up to the day before tomorrow
 	    	Calendar nextDay = Calendar.getInstance();
+	    	
+	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0,0);
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
 	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
@@ -254,8 +310,9 @@ public class BudgetModel {
 	    		if(!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
 	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
-	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget.divide(Money.getExchangeRate())), dateFormat.format(tempDate.getTime()),"Income");
-		        	datasource.createTransactionEntry(entry);
+	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
+		        	
+	    			datasource.createTransactionEntry(entry);
 		    		stateChanged = true;
 		    		daysAdded++;
 	    		}
@@ -271,10 +328,54 @@ public class BudgetModel {
     		stateChanged = true;
     		daysAdded = 1;
     	}
-    	notifyObservers();
+    	//notifyObservers();
     	return daysAdded;
     }
 	
+	public Money payOffInstallments()
+	{
+		List<Installment> installments = datasource.getInstallments();
+		if(installments.isEmpty())
+			return new Money(0);
+		
+    	
+		Money moneyPaid = new Money(0);
+		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
+		for(int i = 0; i < installments.size(); i++)
+		{
+	    	String lastDayString = installments.get(i).getDateLastPaid();
+	    	Calendar lastDayCalendar = Calendar.getInstance();
+	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
+	    	// Set HH:mm to 00:00
+	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
+	    	
+	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
+	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
+
+	    	// Step up to the day before tomorrow
+	    	Calendar nextDay = Calendar.getInstance();
+	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(),BudgetFunctions.getDay(),0,0);
+	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
+	    	
+	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
+	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
+	    	
+	    	while(tempDate.before(nextDay))
+	    	{
+	    		String tempDateString = compareFormat.format(tempDate.getTime());
+	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
+	    		{
+	    			
+	    			moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
+	    			
+		    		stateChanged = true;
+	    		}
+	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
+	    	}
+		}
+		//notifyObservers();
+		return moneyPaid;
+	}
 	public List<CategoryEntry> getCategoriesSortedByNum() {
 		return datasource.getCategoriesSortedByNum();
 	}
@@ -343,6 +444,10 @@ public class BudgetModel {
 		
 	}
 	
+	public void clearDatabaseInstance()
+	{
+		datasource.clearDatabaseInstance();
+	}
 	
 	public void addObserver(IBudgetObserver observer)
 	{

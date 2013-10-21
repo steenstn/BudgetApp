@@ -114,7 +114,6 @@ public class BudgetBackup {
 					if(date == null)
 						break;
 					theList.add(createEntry(date, value, category, comment, flags));
-					System.out.println("Added entry");
 					progressStatus++;
 					progressHandler.post(new Runnable() {
 						public void run() {
@@ -126,7 +125,6 @@ public class BudgetBackup {
 			}
 		});
 		readingThread.start();
-		System.out.println("Current thread: " + Thread.currentThread());
 		readingThread.join();
 
 		progressBar.dismiss();
@@ -183,6 +181,6 @@ public class BudgetBackup {
 	{
 		double theValue = Double.parseDouble(value);
 		int theFlags = Integer.parseInt(flags);
-		return new BudgetEntry(new Money(theValue), date, category, comment, theFlags);
+		return new BudgetEntry(new Money(theValue / Money.getExchangeRate()), date, category, comment, theFlags);
 	}
 }

@@ -11,8 +11,11 @@ package budgetapp.util.database;
 import java.util.List;
 
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
+import budgetapp.util.DatabaseEntry;
 import budgetapp.util.DayEntry;
+import budgetapp.util.Installment;
 import budgetapp.util.Money;
 
 
@@ -32,45 +35,43 @@ public class BudgetDataSource {
 	
 	public BudgetDataSource(Context context)
 	{
-		dbHelper = new BudgetDatabase(context);
+		dbHelper = BudgetDatabase.getInstance(context);
 		open();
-		close();
 	}
 	
+	public void clearDatabaseInstance()
+	{
+		BudgetDatabase.clearInstance();
+	}
 	private void open() throws SQLException
 	{
 		database = dbHelper.getWritableDatabase();
 		dbAccess = new DatabaseAccess(database);
 	}
 	
-	private void close()
-	{
-		dbHelper.close();
-	}
 	
 	/**
-	 * Creates a transaction entry and updates the affected tables
+	 * Creates a transaction entry and updates the affected tables.
 	 * @param theEntry The entry to add
 	 * @return The entry that was added
 	 */
 	public BudgetEntry createTransactionEntry(BudgetEntry theEntry)
 	{
 		BudgetEntry workingEntry = theEntry.clone();
-		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
 		
-		open();
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
+			addToAutocompleteValues(result.getValue().get());
+			
 			addToCategory(workingEntry.getCategory(),workingEntry.getValue().get());
 	    	addToDaySum(workingEntry);
 	    	addToDayTotal(workingEntry);
 		}
-		close();
 		return result;
 		
 	}
+	
 	/**
 	 * Removes a transaction entry from the database and updates the affected tables
 	 * @param theEntry The entry to remove
@@ -78,35 +79,44 @@ public class BudgetDataSource {
 	 */
 	public boolean removeTransactionEntry(BudgetEntry theEntry)
 	{
-		open();
 		// Get the entry from the database, it may have been edited
 		BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
 		boolean result = dbAccess.removeEntry(theEntry);
 		
 		if(result == true)
 		{
-			removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
-			//Update daysum and daytotal by adding the negative value that was added
-			workingEntry.setValue(workingEntry.getValue().get()*-1);
-			addToDaySum(workingEntry);
-			addToDayTotal(workingEntry);
-			workingEntry.setValue(workingEntry.getValue().get()*-1);
-		}
-		close();
+			switch(workingEntry.getFlags())
+			{
+				case DatabaseEntry.NORMAL_TRANSACTION:
+					removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
+					//Update daysum and daytotal by adding the negative value that was added
+					workingEntry.setValue(workingEntry.getValue().multiply(-1));
+					addToDaySum(workingEntry);
+					addToDayTotal(workingEntry);
+					break;
+				case DatabaseEntry.INSTALLMENT_TRANSACTION:
+					removeFromCategory(workingEntry.getCategory(),workingEntry.getValue().get()*-1);
+					//Update daysum and daytotal by adding the negative value that was added
+					workingEntry.setValue(workingEntry.getValue().multiply(-1));
+					addToDayTotal(workingEntry);
+					dbAccess.removeInstallmentPayments(workingEntry.getId());
+					break;
+					
+			}
+		}	
 		return result;
 	}
 	
 	/** 
-	 * Changes the fields that are changeable of the transaction entry
+	 * Changes the fields that are changeable of the transaction entry.
+	 * Multiplies with exchange rate.
 	 * @param oldEntry - The entry to change
 	 * @param newEntry - Entry containing the new values
 	 */
 	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		BudgetEntry workingEntry = newEntry.clone();
-		// Add the exchange rate to the entry
-		workingEntry.setValue(workingEntry.getValue().multiply(Money.getExchangeRate()));
-		open();
+		
 		updateTransaction(oldEntry, workingEntry);
 		
 		// New category, move the entry from old category to new
@@ -121,7 +131,47 @@ public class BudgetDataSource {
 			updateDaySum(oldEntry,workingEntry);
 			updateDayTotal(oldEntry,workingEntry);
 		}
-		close();
+	}
+	
+	/**
+	 * Changes the daily payment and total value of an installment
+	 * @param id - The id of the installment to change
+	 * @param newInstallment - Installment with the new values
+	 */
+	public void editInstallment(long id, Installment newInstallment)
+	{
+		String date = getInstallment(id).getDateLastPaid();
+		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), date);
+	}
+	
+	/**
+	 * Edit transaction and add the value to today's daily flow
+	 * @param oldEntry
+	 * @param newEntry
+	 */
+	public void editTransactionEntryToday(BudgetEntry oldEntry, BudgetEntry newEntry, String date)
+	{
+		BudgetEntry workingEntry = newEntry.clone();
+		// Add the exchange rate to the entry
+		workingEntry.setValue(workingEntry.getValue());
+		//open();
+		updateTransaction(oldEntry, workingEntry);
+		
+		// New category, move the entry from old category to new
+		if(!oldEntry.getCategory().equalsIgnoreCase(workingEntry.getCategory()))
+		{
+			removeFromCategory(oldEntry.getCategory(),oldEntry.getValue().get()*-1);
+			addToCategory(workingEntry.getCategory(),oldEntry.getValue().get());
+		}
+		
+		if(!oldEntry.getValue().equals(workingEntry.getValue()))
+		{
+			updateDayTotal(oldEntry,workingEntry);
+			
+			BudgetEntry oldEntryClone = oldEntry.clone();
+			oldEntryClone.setDate(date);
+			updateDaySum(oldEntryClone,workingEntry);
+		}
 	}
 	
 	/**
@@ -131,11 +181,79 @@ public class BudgetDataSource {
 	 */
 	public CategoryEntry createCategoryEntry(CategoryEntry theEntry)
 	{
-		open();
+		//open();
 		CategoryEntry result;
 		result = dbAccess.addEntry(theEntry);
-		close();
+		
 		return result;
+	}
+	
+	/**
+	 * Creates a transaction in the database, an installment and links them together
+	 * @param installment
+	 * @return
+	 */
+	public boolean createInstallment(Installment installment)
+	{
+		Money dailyPayment = installment.getDailyPayment();
+		
+		String dateLastPaid = installment.getDateLastPaid();
+		String category = installment.getCategory();
+		String comment = installment.getComment();
+		BudgetEntry initialPayment = new BudgetEntry(dailyPayment, dateLastPaid, category, comment, DatabaseEntry.INSTALLMENT_TRANSACTION);
+		
+		initialPayment = createTransactionEntry(initialPayment);
+		
+		installment.setTransactionId(initialPayment.getId());
+		
+		long result = dbAccess.addInstallment(installment);
+		long dailyFlowId = dbAccess.getIdFromDayFlow(initialPayment.getDate());
+		dbAccess.addInstallmentPayment(result, dailyFlowId, dailyPayment.get());
+		
+		if(result != -1)
+			return true;
+		else
+			return false;
+		
+	}
+	
+	/**
+	 * Do a payment on an installment
+	 * @param installment - The installment to pay off
+	 * @param dateToEdit - The date to change daily flow for
+	 */
+	public Money payOffInstallment(Installment installment, String dateToEdit)
+	{
+		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
+		if(dbInstallment.getId()==-1 || dbInstallment.getFlags() == Installment.INSTALLMENT_PAID)
+			return new Money(0);
+		
+		Money dailyPay = dbInstallment.getDailyPayment();
+		
+		Money remainingValue = dbInstallment.getRemainingValue();
+		if(remainingValue.makePositive().smallerThan(dailyPay.makePositive())) // Don't pay too much
+		{
+			dailyPay = remainingValue;
+		}
+		// If the installment has gone positive or is small enough, delete it
+		if(remainingValue.biggerThanOrEquals(new Money(0)) || remainingValue.makePositive().almostZero())
+		{
+			dbAccess.markInstallmentAsPaid(installment.getId());
+			return new Money(0);
+		}
+		else
+		{
+			BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
+			BudgetEntry newEntry = oldEntry.clone();
+			newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
+			editTransactionEntryToday(oldEntry, newEntry, dateToEdit);
+			
+			dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
+			
+			updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
+
+			return new Money(dailyPay);
+		}
 	}
 	
 	/**
@@ -146,10 +264,13 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getAllTransactions(String orderBy)
 	{
 		List<BudgetEntry> result;
-		open();
 		result = dbAccess.getTransactions(0,orderBy);
-		close();
 		return result;
+	}
+	
+	public BudgetEntry getTransaction(long id)
+	{
+		return dbAccess.getTransaction(id);
 	}
 	
 	/**
@@ -161,9 +282,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDays(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		open();
 		result = dbAccess.getDaySum(n, orderBy);
-		close();
 		return result;
 	}
 	
@@ -176,9 +295,7 @@ public class BudgetDataSource {
 	public List<DayEntry> getSomeDaysTotal(int n,String orderBy)
 	{
 		List<DayEntry> result;
-		open();
 		result = dbAccess.getDayTotal(n, orderBy);
-		close();
 		return result;
 	}
 	
@@ -191,9 +308,8 @@ public class BudgetDataSource {
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		List<BudgetEntry> result;
-		open();
 		result = dbAccess.getTransactions(n,orderBy);
-		close();
+		
 		return result;
 	}
 	
@@ -204,9 +320,8 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByValue()
 	{
 		List<CategoryEntry> result;
-		open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
-		close();
+		
 		return result;
 	}
 	
@@ -217,9 +332,8 @@ public class BudgetDataSource {
 	public List<CategoryEntry> getCategoriesSortedByNum()
 	{
 		List<CategoryEntry> result;
-		open();
 		result = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
-		close();
+		
 		return result;
 	}
 	
@@ -230,12 +344,31 @@ public class BudgetDataSource {
 	public List<String> getCategoryNames()
 	{
 		List<String> result;
-		open();
 		result = dbAccess.getCategoryNames();
-		close();
+		
 		return result;
 	}
 	
+	public List<Double> getAutocompleteValues()
+	{
+		List<Double> result;
+		result = dbAccess.getAutocompleteValues();
+		
+		return result;
+	}
+	
+	public List<Installment> getInstallments()
+	{
+		List<Installment> result;
+		result = dbAccess.getInstallments();
+		
+		return result;
+	}
+	
+	public Installment getInstallment(long id)
+	{
+		return dbAccess.getInstallment(id);
+	}
 	/**
 	 * Adds a category
 	 * @param theCategory - Name of the new category
@@ -244,9 +377,8 @@ public class BudgetDataSource {
 	public boolean addCategory(String theCategory)
 	{
 		boolean result;
-		open();
 		result = dbAccess.addCategory(theCategory);
-		close();
+		
 		return result;
 	}
 	
@@ -258,21 +390,32 @@ public class BudgetDataSource {
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
-		open();
 		result = dbAccess.removeCategory(theCategory);
-		close();
+		
+		return result;
+	}
+	
+	public boolean markInstallmentAsPaid(long id)
+	{
+		boolean result;
+		result = dbAccess.markInstallmentAsPaid(id);
+		System.out.println("flags after del: " + dbAccess.getInstallments().get(0).getFlags());
 		return result;
 	}
 	
 	public void resetTransactionTables()
 	{
-		open();
+		//open();
 		dbAccess.resetTransactionTables();
-		close();
+		
 	}
 	
 	
 	// Helper functions to update different tables correctly
+	private void addToAutocompleteValues(double value)
+	{
+		dbAccess.addAutocompleteValue(value);
+	}
 	private void addToCategory(String theCategory,double value)
 	{
 		dbAccess.addToCategory(theCategory,value);
@@ -301,6 +444,11 @@ public class BudgetDataSource {
 	private void updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
 	{
 		dbAccess.updateTransaction(oldEntry, newEntry);
+	}
+	
+	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)
+	{
+		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid);
 	}
 	
 }

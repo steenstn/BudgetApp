@@ -1,6 +1,6 @@
 package budgetapp.util;
 /**
- * Money class. Instead of using doubles directly, this class is used to get more flexibility
+ * Money class. Instead of using doubles directly, this class is used to get more flexibility.
  * @author Steen
  *
  */
@@ -15,9 +15,10 @@ public class Money {
 	{
 		value = 0;
 	}
+	
 	public Money(double x)
 	{
-		value = x;
+		value = x * exchangeRate;
 	}
 	public Money(Money m)
 	{
@@ -42,59 +43,103 @@ public class Money {
 	{
 		exchangeRate = val;
 	}
-	
-	public void set(double val)
-	{
-		value = val;
-	}
-	public void set(Money val)
-	{
-		value = val.get();
-	}
 	public double get()
 	{
 		return value;
 	}
-	
-	public Money add(double x)
-	{
-		return new Money(this.value+x);
-	}
 	public Money add(Money x)
 	{
-		return new Money(this.value + x.get());
+		return new Money((this.value + x.get()) / exchangeRate);
 	}
+	/*
 	public Money subtract(double x)
 	{
 		return new Money(this.value - x);
-	}
+	}*/
 	public Money subtract(Money x)
 	{
-		return new Money(this.value - x.get());
+		return new Money((this.value - x.get()) / exchangeRate);
 	}
 	public Money divide(double x)
 	{
 		if(x!=0)
-			return new Money(this.value/x);
+			return new Money((this.value/x) / exchangeRate);
 		else
 			return new Money();
-	}
-	public Money divide(Money x)
-	{
-		if(x.get()!=0)
-			return new Money(this.value/x.get());
-		else
-			return new Money();
-	}
-	public Money multiply(double x)
-	{
-		return new Money(this.value*x);
-	}
-	public Money multiply(Money x)
-	{
-		return new Money(this.value*x.get());
 	}
 	
+	public Money divide(Money x)
+	{
+		return new Money((value / x.get()) / exchangeRate);
+	}
+	
+	public Money makeNegative()
+	{
+		return new Money((Math.abs(value) / exchangeRate) * -1);
+	}
+	
+	public Money makePositive()
+	{
+		return new Money(Math.abs(value) / exchangeRate);
+	}
+	
+	public Money multiply(double x)
+	{
+		return new Money((value * x) / exchangeRate);
+	}
+	
+	public Money multiply(Money x)
+	{
+		return new Money((this.value * x.get()) / exchangeRate);
+	}
+	
+	public boolean biggerThan(Money x)
+	{
+		if(value > x.get())
+			return true;
+		else 
+			return false;
+	}
+	
+	public boolean biggerThanOrEquals(Money x)
+	{
+		if(value >= x.get())
+			return true;
+		else 
+			return false;
+	}
+	
+	public boolean smallerThan(Money x)
+	{
+		if(value < x.get())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean smallerThanOrEquals(Money x)
+	{
+		if(value <= x.get())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean equals(Money x)
+	{
+		if(value == x.get())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean almostZero()
+	{
+		if(value < 0.000001)
+			return true;
+		else
+			return false;
+	}
 	/**
 	 * Returns a string of the value with some formatting to get the minus sign
 	 * at the right place and not print out decimals where it's not needed.
@@ -118,7 +163,7 @@ public class Money {
 		}
 	}
 	
-	double frac(double d)
+	private double frac(double d)
 	{
 		return d-Math.floor(d);
 	}

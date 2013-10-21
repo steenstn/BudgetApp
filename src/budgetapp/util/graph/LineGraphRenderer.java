@@ -143,10 +143,9 @@ public class LineGraphRenderer implements IGraphRenderer{
 	@Override
 	public void drawGraph(float x, float y, float xScale, float yScale, Canvas c) {
 		
-		//arrangedValues = arrangedValues;
-		//Put in the offset
-		if(drawingValues==null)
+		if(drawingValues == null)
 			return;
+		
 		for(int i=0;i<drawingValues.length;i+=2)
 		{
 			drawingValues[i]=arrangedValues[i]*xScale+x;
@@ -193,6 +192,10 @@ public class LineGraphRenderer implements IGraphRenderer{
 		if(drawingValues==null)
 			return;
 		//c.drawText(values[0], drawingValues[0], drawingValues[1], textPaint);
+		
+		if(drawingValues == null)
+			return;
+		
 		for(int i=0;i<drawingValues.length-2;i+=4)
 		{
 			drawingValues[i]=arrangedValues[i]*xScale+x;

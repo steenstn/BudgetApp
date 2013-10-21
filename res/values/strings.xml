@@ -12,11 +12,16 @@
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_categories">Manage categories</string>
     <string name="title_activity_backup">Backup</string>
+    <string name="title_activity_installments">Installments</string>
     <string name="menu_statistics">Show statistics</string>
     <string name="all_years">All years</string>
     <string name="all_months">All months</string>
     <string name="all_categories">All categories</string>
     <string name="menu_editcurrency">Edit currency</string>
+    <string name="installments_info_text">Installments are a way to spread a large transaction out over
+        multiple days and are meant to be used for e.g. rent, a new TV, etc. The
+        installments are paid off every day until the whole transaction is done. Longpress 
+        an installment to delete it.</string>
     
     <string-array name="months_array">
         <item>January</item>
@@ -39,7 +44,9 @@
     	<item>printCurrencyAfter</item>
     	<item>exchangeRate</item>
     </string-array>
+    
         
+    
         
 
 </resources>

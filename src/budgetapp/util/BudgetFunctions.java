@@ -1,5 +1,7 @@
 package budgetapp.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -9,6 +11,8 @@ import java.util.List;
  */
 public class BudgetFunctions {
 	
+	public static String theDate = "2012/01/01 00:00";
+	public static boolean TESTING = false;
 	/**
 	 * Returns the lowest value of a and b
 	 * @param a - First int to compare
@@ -22,6 +26,78 @@ public class BudgetFunctions {
 		return b;
 	}
 	
+	public static double min(double a, double b) {
+		
+		if(a<b)
+			return a;
+		return b;
+	}
+	
+public static Money min(Money a, Money b) {
+		
+		if(a.smallerThan(b))
+			return a;
+		return b;
+	}
+	
+	public static double max(double a, double b) {
+		
+		if(a>b)
+			return a;
+		return b;
+	}
+	
+	public static Money max(Money a, Money b) {
+		
+		if(a.biggerThan(b))
+			return a;
+		return b;
+	}
+	
+	public static boolean almostEquals(double a, double b)
+	{
+		if(Math.abs(a-b) < 0.00001)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Gets today's date in a string format
+	 * @return - Todays date in "yyyy/MM/dd HH:mm"
+	 */
+	public static String getDateString()
+	{
+		if(TESTING == true)
+		{
+	    	return theDate;			
+		}
+		else
+		{
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	    	Calendar cal = Calendar.getInstance();
+	    	String dateString = dateFormat.format(cal.getTime());
+	    	return dateString;
+		}
+	}
+		
+	public static int getYear()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(0, 4));
+	}
+	
+	public static int getMonth()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(5, 7))-1; // January = 0 in calendar
+	}
+	
+	public static int getDay()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(8,10));
+	}
 	/**
 	 * Calculates the mean value for n entries or as many as are available if less
 	 * @param theEntries - List of the entries to calculate
@@ -83,7 +159,8 @@ public class BudgetFunctions {
 	private static Money weight(int n,Money d)
 	{
 		double weight = Math.exp(-0.5*(double)n);
-		double res = weight * d.get();
-		return new Money(res);
+		Money res = d.multiply(weight);
+		return res;
 	}
+
 }

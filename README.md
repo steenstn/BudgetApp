@@ -6,6 +6,11 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.0
+- Installments. Pay of big transactions over a period of time
+- Auto-complete. The most used transaction amounts are remembered
+- Graph scales depending on daily budget
+
 v2.4
 - Possibility to change currency symbol and exchange rate
 - Better looking layout
