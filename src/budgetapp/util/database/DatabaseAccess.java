@@ -699,6 +699,11 @@ public class DatabaseAccess {
 		return entries;
 	}
 	
+	public void clearAutocompleteValues()
+	{
+		database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, BudgetDatabase.COLUMN_ID + " > 0", null);
+	}
+	
 	public List<Installment> getInstallments()
 	{
 		List<Installment> entries = new ArrayList<Installment>();

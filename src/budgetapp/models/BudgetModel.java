@@ -449,6 +449,11 @@ public class BudgetModel {
 		datasource.clearDatabaseInstance();
 	}
 	
+	public void clearAutocompleteValues()
+	{
+		datasource.clearAutocompleteValues();
+	}
+	
 	public void addObserver(IBudgetObserver observer)
 	{
 		observers.add(observer);

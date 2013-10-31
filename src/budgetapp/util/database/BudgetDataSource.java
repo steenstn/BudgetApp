@@ -405,11 +405,13 @@ public class BudgetDataSource {
 	
 	public void resetTransactionTables()
 	{
-		//open();
 		dbAccess.resetTransactionTables();
-		
 	}
 	
+	public void clearAutocompleteValues()
+	{
+		dbAccess.clearAutocompleteValues();
+	}
 	
 	// Helper functions to update different tables correctly
 	private void addToAutocompleteValues(double value)

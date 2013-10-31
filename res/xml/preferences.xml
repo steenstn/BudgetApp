@@ -18,6 +18,19 @@
             
         </CheckBoxPreference>
     </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Autocomplete">
+        <EditTextPreference
+            android:key="numAutocompleteValues"
+            android:title="Number of autocomplete values"
+            android:summary="How many values to store for autocomplete suggestions"
+            />
+        <PreferenceScreen
+            android:key="clearAutocompleteValues"
+            android:title="Clear autocomplete values"
+            android:summary="Clears all current autocomplete values"
+        />
+    </PreferenceCategory>
     <!-- 
     <PreferenceCategory android:title="Backup" >
         <EditTextPreference

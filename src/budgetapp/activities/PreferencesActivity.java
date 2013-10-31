@@ -9,10 +9,12 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import budgetapp.main.R;
+import budgetapp.models.BudgetModel;
+import budgetapp.util.Money;
 
 public class PreferencesActivity extends PreferenceActivity /*implements OnSharedPreferenceChangeListener*/{
 	
-	
+	BudgetModel model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,15 @@ public class PreferencesActivity extends PreferenceActivity /*implements OnShare
 			}
         });
     	
+    	PreferenceScreen clearAutocomplete = (PreferenceScreen) findPreference("clearAutocompleteValues");
+    	clearAutocomplete.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference arg0) {
+				model = new BudgetModel(getBaseContext());
+				model.clearAutocompleteValues();
+				return true;
+			}});
     	/*
     	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
 
