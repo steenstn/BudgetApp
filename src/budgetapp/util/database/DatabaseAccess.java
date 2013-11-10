@@ -545,7 +545,7 @@ public class DatabaseAccess {
 	{
 		List<Double> values = new ArrayList<Double>();
 		Cursor cursor;
-		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null);
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " where " + BudgetDatabase.COLUMN_NUM + " > 1", null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
