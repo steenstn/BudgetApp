@@ -113,11 +113,11 @@ public class BudgetDataSource {
 	 * @param oldEntry - The entry to change
 	 * @param newEntry - Entry containing the new values
 	 */
-	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public void editTransactionEntry(long id, BudgetEntry newEntry)
 	{
 		BudgetEntry workingEntry = newEntry.clone();
-		
-		updateTransaction(oldEntry, workingEntry);
+		BudgetEntry oldEntry = getTransaction(id);
+		updateTransaction(oldEntry.getId(), workingEntry);
 		
 		// New category, move the entry from old category to new
 		if(!oldEntry.getCategory().equalsIgnoreCase(workingEntry.getCategory()))
@@ -149,13 +149,13 @@ public class BudgetDataSource {
 	 * @param oldEntry
 	 * @param newEntry
 	 */
-	public void editTransactionEntryToday(BudgetEntry oldEntry, BudgetEntry newEntry, String date)
+	public void editTransactionEntryToday(long id, BudgetEntry newEntry, String date)
 	{
 		BudgetEntry workingEntry = newEntry.clone();
 		// Add the exchange rate to the entry
 		workingEntry.setValue(workingEntry.getValue());
-		//open();
-		updateTransaction(oldEntry, workingEntry);
+		BudgetEntry oldEntry = getTransaction(id);
+		updateTransaction(oldEntry.getId(), workingEntry);
 		
 		// New category, move the entry from old category to new
 		if(!oldEntry.getCategory().equalsIgnoreCase(workingEntry.getCategory()))
@@ -246,7 +246,7 @@ public class BudgetDataSource {
 			BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
 			BudgetEntry newEntry = oldEntry.clone();
 			newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
-			editTransactionEntryToday(oldEntry, newEntry, dateToEdit);
+			editTransactionEntryToday(oldEntry.getId(), newEntry, dateToEdit);
 			
 			dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
 			
@@ -443,9 +443,9 @@ public class BudgetDataSource {
 	{
 		dbAccess.updateDayTotal(theEntry, null);
 	}
-	private void updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	private void updateTransaction(long id, BudgetEntry newEntry)
 	{
-		dbAccess.updateTransaction(oldEntry, newEntry);
+		dbAccess.updateTransaction(id, newEntry);
 	}
 	
 	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)

@@ -93,7 +93,7 @@ public class EditInstallmentDialogFragment extends DialogFragment {
     				Installment newInstallment = new Installment(new Money(totalValue), new Money(dailyPayment), installment.getDateLastPaid(), new Money(0) , "", "");
     				
     				activity.getModel().editInstallment(installment.getId(), newInstallment);
-    				activity.getModel().editTransaction(oldEntry, newEntry);
+    				activity.getModel().editTransaction(oldEntry.getId(), newEntry);
     			}
     			catch(Exception e)
     			{

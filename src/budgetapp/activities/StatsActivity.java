@@ -34,9 +34,9 @@ public class StatsActivity extends FragmentActivity{
 	 * @param oldEntry - The entry to edit
 	 * @param newEntry - The entry to replace the old with
 	 */
-	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public void editTransactionEntry(long id, BudgetEntry newEntry)
 	{
-		model.editTransaction(oldEntry, newEntry);
+		model.editTransaction(id, newEntry);
 	}
 	
 	public void onCreate(Bundle savedInstanceState) {

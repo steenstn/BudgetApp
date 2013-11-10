@@ -91,9 +91,9 @@ public class BudgetModel {
 	 * @param oldEntry - The entry to edit
 	 * @param newEntry - Entry with new information
 	 */
-	public void editTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public void editTransaction(long id, BudgetEntry newEntry)
 	{
-		datasource.editTransactionEntry(oldEntry, newEntry);
+		datasource.editTransactionEntry(id, newEntry);
 		stateChanged = true;
 		notifyObservers();
 	}

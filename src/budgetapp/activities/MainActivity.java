@@ -73,9 +73,9 @@ public class MainActivity extends FragmentActivity {
 		model.removeTransaction(entry);
 	}
 	
-	public void editTransactionEntry(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public void editTransactionEntry(long id, BudgetEntry newEntry)
 	{
-		model.editTransaction(oldEntry, newEntry);
+		model.editTransaction(id, newEntry);
 	}
 	
 	public void updateView()

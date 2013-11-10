@@ -101,7 +101,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 								new Money(newValue), newDate, newCategory,
 								newFlags, newComment);
 
-						activity.editTransactionEntry(theEntry, newEntry);
+						activity.editTransactionEntry(theEntry.getId(), newEntry);
 
 						Toast.makeText(view.getContext(),
 								"Successfully edited transaction",

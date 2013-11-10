@@ -288,10 +288,10 @@ public class DatabaseAccess {
 	 * @param newEntry - Entry containing the new values
 	 * @return - If the editing was successful
 	 */
-	public boolean updateTransaction(BudgetEntry oldEntry, BudgetEntry newEntry)
+	public boolean updateTransaction(long id, BudgetEntry newEntry)
 	{
 		Cursor cursor;
-		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + oldEntry.getId(), null);
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id, null);
 		
 		if(cursor.getCount()==1)
 		{
@@ -300,7 +300,7 @@ public class DatabaseAccess {
 			values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory());
 			values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());
 			values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment());
-			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + oldEntry.getId(), null);
+			int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
 			
 			if(res!=0)
 			{
