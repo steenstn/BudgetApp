@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.Money;
 
 public class PreferencesActivity extends PreferenceActivity /*implements OnSharedPreferenceChangeListener*/{
 	

@@ -20,10 +20,11 @@
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Autocomplete">
-        <EditTextPreference
-            android:key="numAutocompleteValues"
-            android:title="Number of autocomplete values"
-            android:summary="How many values to store for autocomplete suggestions"
+        <CheckBoxPreference
+            android:key="enableAutoCompleteValues"
+            android:title="Enable autocomplete"
+            android:summary="Turn autocomplete values on/off."
+            android:defaultValue="true"
             />
         <PreferenceScreen
             android:key="clearAutocompleteValues"

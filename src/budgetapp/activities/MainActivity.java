@@ -12,12 +12,12 @@ import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
-import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
 import budgetapp.views.MainView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.view.Menu;
@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
 
 	public ArrayList<String> allCategories = new ArrayList<String>();
@@ -92,6 +93,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(view);
         view.setModel(model);
         view.update();
+       
         
     }
     
@@ -102,7 +104,17 @@ public class MainActivity extends FragmentActivity {
     	
     	// Add daily budget and Toast the result if anything was added
     	new DailyBudgetAddTask().execute();
-        view.setUpAutocompleteValues();
+
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+    	boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
+    	if(autoComplete)
+    	{
+    		view.setUpAutocompleteValues();
+    	}
+    	else
+    	{
+    		view.setUpEmptyAutocompleteValues();
+    	}
     	view.update();
     }
     

@@ -2,7 +2,6 @@ package budgetapp.fragments;
 /**
  * Dialog fragment for removing a category
  */
-import budgetapp.activities.CategoriesActivity;
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
 import android.app.AlertDialog;
@@ -12,9 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RemoveInstallmentDialogFragment extends DialogFragment {
 	

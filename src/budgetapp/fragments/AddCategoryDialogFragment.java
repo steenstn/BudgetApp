@@ -4,7 +4,6 @@ package budgetapp.fragments;
  * 
  */
 import budgetapp.activities.CategoriesActivity;
-import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
 import android.app.AlertDialog;
 import android.app.Dialog;

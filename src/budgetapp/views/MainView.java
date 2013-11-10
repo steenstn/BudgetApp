@@ -104,6 +104,16 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 		
 	}
 	
+	public void setUpEmptyAutocompleteValues()
+	{
+		AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.editTextSubtract);
+	
+		ArrayAdapter<String> adapter = 
+		        new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+		    	textView.setAdapter(adapter);
+	
+	}
+	
 	private void updateCurrentBudget()
     {
     	TextView curr = (TextView)findViewById(R.id.textViewCurrentBudget);

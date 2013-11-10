@@ -7,7 +7,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,8 +19,6 @@ import budgetapp.util.Installment;
 import budgetapp.util.InstallmentAdapter;
 import budgetapp.util.InstallmentViewHolder;
 import budgetapp.util.Money;
-import budgetapp.util.ViewHolder;
-import budgetapp.views.MainView.ViewListener;
 
 public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 

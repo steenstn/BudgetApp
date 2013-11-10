@@ -17,8 +17,6 @@ import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.stats.CompositeStats;
 import budgetapp.util.stats.Stats;
 import android.content.Context;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
