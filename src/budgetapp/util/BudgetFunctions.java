@@ -98,6 +98,19 @@ public static Money min(Money a, Money b) {
 		String dateString = getDateString();
 		return Integer.parseInt(dateString.substring(8,10));
 	}
+	
+	public static int getHours()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(11,13));
+	}
+	
+	public static int getMinutes()
+	{
+		String dateString = getDateString();
+		return Integer.parseInt(dateString.substring(14,16));
+		
+	}
 	/**
 	 * Calculates the mean value for n entries or as many as are available if less
 	 * @param theEntries - List of the entries to calculate

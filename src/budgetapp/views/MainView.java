@@ -172,9 +172,9 @@ public class MainView extends LinearLayout implements IBudgetObserver{
         }
         
         List<DayEntry> days = model.getSomeDays(7,BudgetDataSource.DESCENDING);
-        //left.append("\n");
-        left = (TextView)findViewById(R.id.dailyCashFlowTextView);
-        left.setText(Html.fromHtml("<b>Daily cash flow</b><br />"));
+        left.append("\n");
+        //left = (TextView)findViewById(R.id.dailyCashFlowTextView);
+        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");
@@ -190,7 +190,6 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	List<BudgetEntry> days = model.getSomeTransactions(numEntries,BudgetDataSource.DESCENDING);//getSomeDays(numEntries,BudgetDataSource.DESCENDING);
     	Money derivative = (BudgetFunctions.getWeightedMean(days,numEntries));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
-    	
     	
     	double maxValue = (double)model.getDailyBudget().get();
     	double floatDerivative = derivative.get() / maxValue;
