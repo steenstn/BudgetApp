@@ -172,8 +172,9 @@ public class MainView extends LinearLayout implements IBudgetObserver{
         }
         
         List<DayEntry> days = model.getSomeDays(7,BudgetDataSource.DESCENDING);
-        left.append("\n");
-        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
+        //left.append("\n");
+        left = (TextView)findViewById(R.id.dailyCashFlowTextView);
+        left.setText(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");
@@ -185,9 +186,9 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	// Colors the currentBudget text depending on the size of the current budget
     private void updateColor()
     {
-    	int numDays = 30;
-    	List<DayEntry> days = model.getSomeDays(numDays,BudgetDataSource.DESCENDING);
-    	Money derivative = (BudgetFunctions.getWeightedMean(days,numDays));
+    	int numEntries = 30;
+    	List<BudgetEntry> days = model.getSomeTransactions(numEntries,BudgetDataSource.DESCENDING);//getSomeDays(numEntries,BudgetDataSource.DESCENDING);
+    	Money derivative = (BudgetFunctions.getWeightedMean(days,numEntries));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
     	
