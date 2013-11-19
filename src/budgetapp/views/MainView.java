@@ -187,7 +187,17 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     private void updateColor()
     {
     	int numEntries = 30;
-    	List<BudgetEntry> days = model.getSomeTransactions(numEntries,BudgetDataSource.DESCENDING);//getSomeDays(numEntries,BudgetDataSource.DESCENDING);
+    	List<DayEntry> days = model.getSomeDays(numEntries,BudgetDataSource.DESCENDING);
+    	
+    	Money tempValue = days.get(0).getValue();
+    	String tempDate = days.get(0).getDate();
+    	double hoursWeight = (double)(BudgetFunctions.getHours() * 60);
+    	double dayWeight = (double)(hoursWeight + BudgetFunctions.getMinutes());
+    	double totalWeight = dayWeight / (24.0 * 60.0);
+    	
+    	tempValue = tempValue.multiply(totalWeight);
+    	days.set(0, new DayEntry(tempDate, tempValue));
+    	
     	Money derivative = (BudgetFunctions.getWeightedMean(days,numEntries));
     	TextView newBudget = (TextView)findViewById(R.id.textViewCurrentBudget);
     	
@@ -205,10 +215,10 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	int coloringFactor = BudgetFunctions.min(255,Math.abs((int)floatDerivative));
     	int start = 255;
     	
-	    	if(derivative.get()<0)
-	    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
-	    	else
-	    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
+    	if(derivative.get()<0)
+    		newBudget.setTextColor(Color.rgb(start,start-coloringFactor,start-coloringFactor));
+    	else
+    		newBudget.setTextColor(Color.rgb(start-coloringFactor,start,start-coloringFactor));
     	
     }
 
