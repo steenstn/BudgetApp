@@ -17,6 +17,7 @@ public class BudgetAdapter extends BaseAdapter {
 	
 	private ArrayList<StatEntryViewHolder> data = new ArrayList<StatEntryViewHolder>();
 	private LayoutInflater inflater;
+	ViewHolder holder;
 	
 	public BudgetAdapter(Context theContext ) {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

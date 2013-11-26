@@ -1,6 +1,5 @@
 package budgetapp.util;
 
-import android.widget.TextView;
 
 /**
  * Class used in the ListView. Contains a TextView and a BudgetEntry that is printed in 
@@ -8,11 +7,8 @@ import android.widget.TextView;
  * @author Steen
  *
  */
-public class StatEntryViewHolder {
+public class StatEntryViewHolder extends ViewHolder {
 	
-    private TextView leftTextView;
-    private TextView centerTextView;
-    private TextView rightTextView;
     private BudgetEntry entry;
     private Type flag;
     private String title;
@@ -48,21 +44,6 @@ public class StatEntryViewHolder {
     	return entry;
     }
     
-    public TextView getLeftTextView()
-    {
-    	return leftTextView;
-    }
-    
-    public TextView getCenterTextView()
-    {
-    	return centerTextView;
-    }
-    
-    public TextView getRightTextView()
-    {
-    	return rightTextView;
-    }
-    
     public Type getType()
     {
     	return flag;
@@ -71,19 +52,6 @@ public class StatEntryViewHolder {
     public String getTitle()
     {
     	return title;
-    }
-    
-    public void setLeftTextView(TextView textView)
-    {
-    	this.leftTextView = textView;
-    }
-    public void setCenterTextView(TextView textView)
-    {
-    	this.centerTextView = textView;
-    }
-    public void setRightTextView(TextView textView)
-    {
-    	this.rightTextView = textView;
     }
     
     public void setEntry(BudgetEntry entry)
