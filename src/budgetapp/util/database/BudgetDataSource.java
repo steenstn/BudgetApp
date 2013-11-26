@@ -10,7 +10,6 @@ package budgetapp.util.database;
 
 import java.util.List;
 
-import budgetapp.activities.MainActivity;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
@@ -21,10 +20,8 @@ import budgetapp.util.Money;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 
 public class BudgetDataSource {
 

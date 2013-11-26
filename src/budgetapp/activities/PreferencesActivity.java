@@ -1,12 +1,10 @@
 package budgetapp.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
@@ -14,19 +12,19 @@ import budgetapp.models.BudgetModel;
 public class PreferencesActivity extends PreferenceActivity /*implements OnSharedPreferenceChangeListener*/{
 	
 	BudgetModel model;
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         addPreferencesFromResource(R.xml.preferences);
         
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        
         setUpListeners();
         
     }
     
-    private void setUpListeners()
+    @SuppressWarnings("deprecation")
+	private void setUpListeners()
     {
     	
     	PreferenceScreen categories = (PreferenceScreen) findPreference("manageCategories");

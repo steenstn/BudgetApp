@@ -12,7 +12,7 @@ import budgetapp.util.CategoryEntry;
 import budgetapp.util.DayEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Money;
-import budgetapp.util.ViewHolder;
+import budgetapp.util.StatEntryViewHolder;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.stats.CompositeStats;
 import budgetapp.util.stats.Stats;
@@ -32,8 +32,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	public static interface ViewListener
 	{
 		public void spinnerItemSelected(AdapterView<?> parent, View view, int pos, long id);
-		public void listViewClick(ViewHolder theEntry);
-		public void listViewLongClick(ViewHolder theEntry);
+		public void listViewClick(StatEntryViewHolder theEntry);
+		public void listViewLongClick(StatEntryViewHolder theEntry);
 	}
 	
 	private int selectedYear=0;
@@ -222,7 +222,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	private void addYear(int index)
 	{
 		ArrayList<Stats> months = (ArrayList<Stats>) years.get(index).getChildren();
-		listAdapter.add(new ViewHolder(years.get(index).getName(),ViewHolder.Type.year));
+		listAdapter.add(new StatEntryViewHolder(years.get(index).getName(),StatEntryViewHolder.Type.year));
     	if(selectedMonth>-1) // A specific month is chosen
     	{
     		addMonth(months,selectedMonth);
@@ -258,7 +258,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 					if(!monthPrinted)
 					{
 						//list.add(monthToString(months.get(index).getName()));
-						listAdapter.add(new ViewHolder(monthToString(months.get(index).getName()),ViewHolder.Type.month));
+						listAdapter.add(new StatEntryViewHolder(monthToString(months.get(index).getName()),StatEntryViewHolder.Type.month));
 						monthPrinted = true;
 					}
 					addEntry(entry);
@@ -276,7 +276,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 */
 	private void addEntry(BudgetEntry entry)
 	{
-		listAdapter.add(new ViewHolder(entry));
+		listAdapter.add(new StatEntryViewHolder(entry));
 	}
 	
 	/**
@@ -434,7 +434,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		entryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 		    public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-		       ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
+		       StatEntryViewHolder listItem = (StatEntryViewHolder)entryList.getItemAtPosition(position);
 		       viewListener.listViewClick(listItem);
 		    }
 	 	});
@@ -443,7 +443,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view,int position, long arg)
 			{
-				ViewHolder listItem = (ViewHolder)entryList.getItemAtPosition(position);
+				StatEntryViewHolder listItem = (StatEntryViewHolder)entryList.getItemAtPosition(position);
 				viewListener.listViewLongClick(listItem);					 
 			     
 				return true;

@@ -5,7 +5,7 @@ import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
-import budgetapp.util.ViewHolder;
+import budgetapp.util.StatEntryViewHolder;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -73,9 +73,9 @@ public class StatsActivity extends FragmentActivity{
 		}
 		
 		@Override
-		public void listViewLongClick(ViewHolder theEntry) {
-			 ViewHolder listItem = theEntry;
-			 if(listItem.getType() == ViewHolder.Type.entry)
+		public void listViewLongClick(StatEntryViewHolder theEntry) {
+			 StatEntryViewHolder listItem = theEntry;
+			 if(listItem.getType() == StatEntryViewHolder.Type.entry)
 			 {
 		    	 DialogFragment newFragment = new EditTransactionDialogFragment();
 		    	 Bundle bundle = new Bundle();
@@ -88,7 +88,7 @@ public class StatsActivity extends FragmentActivity{
 		}
 		
 		@Override
-		public void listViewClick(ViewHolder theEntry) {
+		public void listViewClick(StatEntryViewHolder theEntry) {
 			if(!theEntry.getEntry().getComment().equalsIgnoreCase(""))
 			{	
 				Toast.makeText(getBaseContext(), theEntry.getEntry().getComment(), Toast.LENGTH_LONG).show();

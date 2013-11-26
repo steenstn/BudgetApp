@@ -8,7 +8,7 @@ import android.widget.TextView;
  * @author Steen
  *
  */
-public class ViewHolder {
+public class StatEntryViewHolder {
 	
     private TextView leftTextView;
     private TextView centerTextView;
@@ -24,19 +24,19 @@ public class ViewHolder {
     	year,
     	month
     }
-	public ViewHolder(BudgetEntry entry)
+	public StatEntryViewHolder(BudgetEntry entry)
 	{
 		this.entry = entry;
 		flag = Type.entry;
 		this.title = "";
 	}
-	public ViewHolder(ViewHolder viewHolder)
+	public StatEntryViewHolder(StatEntryViewHolder viewHolder)
 	{
 		this.entry = viewHolder.getEntry();
 		this.title = viewHolder.getTitle();
 		this.flag = viewHolder.getType();
 	}
-	public ViewHolder(String theString,Type theType)
+	public StatEntryViewHolder(String theString,Type theType)
 	{
 		this.entry = new BudgetEntry(-1, new Money(), "", "");
 		this.title = theString;

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class BudgetAdapter extends BaseAdapter {
 	
-	private ArrayList<ViewHolder> data = new ArrayList<ViewHolder>();
+	private ArrayList<StatEntryViewHolder> data = new ArrayList<StatEntryViewHolder>();
 	private LayoutInflater inflater;
 	
 	public BudgetAdapter(Context theContext ) {
@@ -23,7 +23,7 @@ public class BudgetAdapter extends BaseAdapter {
 	}
 	
 	
-	public void add(ViewHolder item)
+	public void add(StatEntryViewHolder item)
 	{
 		data.add(item);
 	}
@@ -58,11 +58,11 @@ public class BudgetAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		
-		ViewHolder holder = null;
+		StatEntryViewHolder holder = null;
 		if(convertView == null)
 		{
 			convertView = inflater.inflate(R.layout.stats_listitem,null);
-			holder = new ViewHolder(data.get(position));
+			holder = new StatEntryViewHolder(data.get(position));
 			holder.setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
 			holder.setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
 			holder.setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
@@ -71,8 +71,8 @@ public class BudgetAdapter extends BaseAdapter {
 		}
 		else
 		{
-			ViewHolder tempEntry = data.get(position);
-			holder = (ViewHolder)convertView.getTag();
+			StatEntryViewHolder tempEntry = data.get(position);
+			holder = (StatEntryViewHolder)convertView.getTag();
 			holder.setEntry(tempEntry.getEntry());
 			holder.setTitle(tempEntry.getTitle());
 			holder.setType(tempEntry.getType());
@@ -80,7 +80,7 @@ public class BudgetAdapter extends BaseAdapter {
 		}
 		
 		// If this is an entry, print info in all the textviews
-		if(holder.getType()==ViewHolder.Type.entry)
+		if(holder.getType()==StatEntryViewHolder.Type.entry)
 		{
 			
 			holder.getLeftTextView().setText("Date: " + holder.getEntry().getDate().substring(8));

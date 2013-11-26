@@ -156,7 +156,7 @@ public class BudgetBackup {
 		streamReader = new InputStreamReader(is);
 		bufferedReader = new BufferedReader(streamReader);
 		
-		String temp = "";
+		String temp;
 		while((temp = bufferedReader.readLine()) != null)
 		{
 			numRows++;
