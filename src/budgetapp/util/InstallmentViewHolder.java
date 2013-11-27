@@ -1,5 +1,7 @@
 package budgetapp.util;
 
+import android.view.View;
+
 
 /**
  * Class used in the ListView. Contains a TextView and a BudgetEntry that is printed in 
@@ -42,6 +44,33 @@ public class InstallmentViewHolder extends ViewHolder {
     {
     	this.title = title;
     }
-    
+	@Override
+	public void printInfo() {
+		getLeftTextView().setText(getEntry().getCategory());
+		getCenterTextView().setText(""+getEntry().getRemainingValue().makePositive() + "/"
+				+ getEntry().getTotalValue().makePositive());
+		
+		double daysLeft = (getEntry().getRemainingValue().divide(getEntry().getDailyPayment())).get();
+		int numDaysLeft = (int) Math.ceil(daysLeft);
+		getRightTextView().setText(""+numDaysLeft);
+		
+	}
+	
+	@Override
+	public void recycle(IViewHolder tempEntry) {
+		setEntry(((InstallmentViewHolder) tempEntry).getEntry());
+		setTitle(((InstallmentViewHolder) tempEntry).getTitle());
+				
+	}
+	@Override
+	public void setUpConvertView(View convertView) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public IViewHolder copy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
    
 }

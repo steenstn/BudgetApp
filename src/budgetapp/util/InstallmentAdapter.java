@@ -22,7 +22,6 @@ public class InstallmentAdapter extends BaseAdapter {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
-	
 	public void add(InstallmentViewHolder item)
 	{
 		data.add(item);
@@ -73,20 +72,11 @@ public class InstallmentAdapter extends BaseAdapter {
 		{
 			InstallmentViewHolder tempEntry = data.get(position);
 			holder = (InstallmentViewHolder)convertView.getTag();
-			holder.setEntry(tempEntry.getEntry());
-			holder.setTitle(tempEntry.getTitle());
-			
+			holder.recycle(tempEntry);
 		}
 		
+		holder.printInfo();
 		
-		holder.getLeftTextView().setText(holder.getEntry().getCategory());
-		holder.getCenterTextView().setText(""+holder.getEntry().getRemainingValue().makePositive() + "/"
-				+ holder.getEntry().getTotalValue().makePositive());
-		
-		double daysLeft = (holder.getEntry().getRemainingValue().divide(holder.getEntry().getDailyPayment())).get();
-		int numDaysLeft = (int) Math.ceil(daysLeft);
-		holder.getRightTextView().setText(""+numDaysLeft);
-			
 		return convertView;
 		
 	}

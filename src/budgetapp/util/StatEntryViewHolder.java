@@ -1,5 +1,9 @@
 package budgetapp.util;
 
+import budgetapp.main.R;
+import android.view.View;
+import android.widget.TextView;
+
 
 /**
  * Class used in the ListView. Contains a TextView and a BudgetEntry that is printed in 
@@ -67,35 +71,47 @@ public class StatEntryViewHolder extends ViewHolder {
     	this.title = title;
     }
     
+	@Override
+	public void printInfo()
+	{
+		// If this is an entry, print info in all the textviews
+		if(getType()==StatEntryViewHolder.Type.entry)
+		{
+			
+			getLeftTextView().setText("Date: " + getEntry().getDate().substring(8));
+			getCenterTextView().setText(""+getEntry().getValue());
+			// Add a star after the category if this entry has a comment
+			getRightTextView().setText(getEntry().getCategory() + (getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));
+			
+		}
+		else
+		{
+			getLeftTextView().setText(getTitle());
+			getCenterTextView().setText("");
+			getRightTextView().setText("");
+		}
+	}
+	
+	
+	@Override
+	public void recycle(IViewHolder tempEntry) {
+		setEntry(((StatEntryViewHolder) tempEntry).getEntry());
+		setTitle(((StatEntryViewHolder) tempEntry).getTitle());
+		setType(((StatEntryViewHolder) tempEntry).getType());
+		
+	}
+	@Override
+	public void setUpConvertView(View convertView) {
+		setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
+		setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
+		setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
+		
+	}
+	@Override
+	public IViewHolder copy() {
+		return new StatEntryViewHolder(this);
+
+	}
     
-    public String toString(){
-    	switch(flag)
-    	{
-    	case year:
-    	case month:
-    		return title;
-    	case entry:
-    		if(this.entry!=null)
-    		{
-	    		String temp = "Date: " + this.entry.getDate().substring(8) + "\t\t" + this.entry.getValue();
-	    		
-	    		if(this.entry.getValue().get()>-100 && this.entry.getValue().get()<1000)
-	    			temp+="\t";
-	    		if(this.entry.getValue().get()<=-1000)
-	    			temp+="\t";
-	    		//view.append("\t" + entry.getCategory());
-	    		temp+="\t"+this.entry.getCategory();
-	    		// Add comment if there is one
-	    		// But only print max 20 characters
-	    		String comment = this.entry.getComment();
-	    		if(comment!=null && !comment.equalsIgnoreCase(""))
-	    		{
-	    			temp+=" *";
-	    		}
-	    		return temp;
-    		}
-    	}
-    	return "Error in ViewHolder.toString()";
-    }
    
 }
