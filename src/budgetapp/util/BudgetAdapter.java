@@ -1,6 +1,6 @@
 package budgetapp.util;
 /**
- * Adapter class for adding a transaction entry to a ListView
+ * Adapter class for putting classes that implements IViewHolder to a listview
  */
 import java.util.ArrayList;
 
@@ -16,7 +16,6 @@ public class BudgetAdapter extends BaseAdapter {
 	
 	private ArrayList<IViewHolder> data = new ArrayList<IViewHolder>();
 	private LayoutInflater inflater;
-	ViewHolder holder;
 	
 	public BudgetAdapter(Context theContext ) {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

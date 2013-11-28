@@ -6,8 +6,7 @@ import android.widget.TextView;
 
 
 /**
- * Class used in the ListView. Contains a TextView and a BudgetEntry that is printed in 
- * the TextView
+ * ViewHolder for displaying info about an Installment
  * @author Steen
  *
  */
