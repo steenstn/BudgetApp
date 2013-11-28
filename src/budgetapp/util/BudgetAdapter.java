@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 public class BudgetAdapter extends BaseAdapter {
 	
@@ -74,10 +73,8 @@ public class BudgetAdapter extends BaseAdapter {
 			holder.recycle(tempEntry);
 			
 		}
+		
 		holder.printInfo();
-		
-		
-		
 		return convertView;
 		
 	}

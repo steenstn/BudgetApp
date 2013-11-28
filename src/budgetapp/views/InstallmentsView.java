@@ -13,10 +13,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
-import budgetapp.util.InstallmentAdapter;
 import budgetapp.util.InstallmentViewHolder;
 import budgetapp.util.Money;
 
@@ -58,7 +58,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		
 		allInstallments = model.getInstallments();
 		
-		InstallmentAdapter listAdapter = new InstallmentAdapter(this.getContext()); 
+		BudgetAdapter listAdapter = new BudgetAdapter(this.getContext()); 
 		
 		for(int i = 0; i < allInstallments.size(); i++)
 		{

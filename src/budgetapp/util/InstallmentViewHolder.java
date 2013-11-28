@@ -1,6 +1,8 @@
 package budgetapp.util;
 
+import budgetapp.main.R;
 import android.view.View;
+import android.widget.TextView;
 
 
 /**
@@ -64,13 +66,14 @@ public class InstallmentViewHolder extends ViewHolder {
 	}
 	@Override
 	public void setUpConvertView(View convertView) {
-		// TODO Auto-generated method stub
+		setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
+		setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
+		setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
 		
 	}
 	@Override
 	public IViewHolder copy() {
-		// TODO Auto-generated method stub
-		return null;
+		return new InstallmentViewHolder(this);
 	}
    
 }

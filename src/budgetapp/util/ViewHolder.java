@@ -1,6 +1,5 @@
 package budgetapp.util;
 
-import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -14,30 +13,30 @@ public abstract class ViewHolder implements IViewHolder {
     private TextView centerTextView;
     private TextView rightTextView;
     
-    public TextView getLeftTextView()
+    protected TextView getLeftTextView()
     {
     	return leftTextView;
     }
     
-    public TextView getCenterTextView()
+    protected TextView getCenterTextView()
     {
     	return centerTextView;
     }
     
-    public TextView getRightTextView()
+    protected TextView getRightTextView()
     {
     	return rightTextView;
     }
     
-    public void setLeftTextView(TextView textView)
+    protected void setLeftTextView(TextView textView)
     {
     	this.leftTextView = textView;
     }
-    public void setCenterTextView(TextView textView)
+    protected void setCenterTextView(TextView textView)
     {
     	this.centerTextView = textView;
     }
-    public void setRightTextView(TextView textView)
+    protected void setRightTextView(TextView textView)
     {
     	this.rightTextView = textView;
     }
