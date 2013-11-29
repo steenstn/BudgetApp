@@ -16,14 +16,21 @@ public class BudgetAdapter extends BaseAdapter {
 	
 	private ArrayList<IViewHolder> data = new ArrayList<IViewHolder>();
 	private LayoutInflater inflater;
+	private int resource;
 	
 	public BudgetAdapter(Context theContext ) {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		resource = R.layout.listitem3textviews;
 	}
 	
 	public void add(IViewHolder item)
 	{
 		data.add(item);
+	}
+	
+	public void setResource(int newResource)
+	{
+		resource = newResource;
 	}
 	
 	public void remove(int pos)
@@ -59,7 +66,7 @@ public class BudgetAdapter extends BaseAdapter {
 		IViewHolder holder = null;
 		if(convertView == null)
 		{
-			convertView = inflater.inflate(R.layout.stats_listitem,null);
+			convertView = inflater.inflate(resource,null);
 			holder = data.get(position).copy();
 			
 			holder.setUpConvertView(convertView);

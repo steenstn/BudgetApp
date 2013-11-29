@@ -39,8 +39,8 @@ public class MainActivity extends FragmentActivity {
 	private String chosenCategory = "";
 	private MainView view;
 	private BudgetModel model;
+	private SharedPreferences settings;
 	public Money dailyFlow = new Money();
-	private Handler mHandler;
 	
 	public String getChosenCategory()
 	{
@@ -107,12 +107,12 @@ public class MainActivity extends FragmentActivity {
     public void onResume()
     {
     	super.onResume();
+    	settings = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	// Add daily budget and Toast the result if anything was added
     	new DailyBudgetAddTask().execute();
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-    	boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
+		boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
     	if(autoComplete)
     	{
     		view.setUpAutocompleteValues();
@@ -122,23 +122,8 @@ public class MainActivity extends FragmentActivity {
     		view.setUpEmptyAutocompleteValues();
     	}
     	
-    	boolean autoKeyboard = settings.getBoolean("enableAutoShowKeyboard", false);
-    	if(autoKeyboard)
-    	{
-	    	final EditText et =  (EditText)findViewById(R.id.editTextSubtract);  
-		    Timer timer = new Timer();
-	        TimerTask task = new TimerTask() {
-	
-	            @Override
-	            public void run() {
-	                InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-	                inputMethodManager.toggleSoftInputFromWindow(et.getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
-	
-	            }
-	        };
-	        timer.schedule(task, 200);
-    	}
-    	view.update();
+    	
+    	
     }
     
     public void saveConfig()
@@ -307,6 +292,23 @@ public class MainActivity extends FragmentActivity {
 				Toast.makeText(getApplicationContext(), "Cash flow since last time: " + dailyFlow, Toast.LENGTH_LONG).show();
 			}
 			view.update();
+			
+			boolean autoKeyboard = settings.getBoolean("enableAutoShowKeyboard", false);
+	    	if(autoKeyboard)
+	    	{
+		    	final EditText et =  (EditText)findViewById(R.id.editTextSubtract);  
+			    Timer timer = new Timer();
+		        TimerTask task = new TimerTask() {
+		
+		            @Override
+		            public void run() {
+		                InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		                inputMethodManager.toggleSoftInputFromWindow(et.getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
+		
+		            }
+		        };
+		        timer.schedule(task, 300);
+	    	}
 		}
 	}
 		
