@@ -18,19 +18,19 @@ public class BudgetAdapter extends BaseAdapter {
 	private LayoutInflater inflater;
 	private int resource;
 	
-	public BudgetAdapter(Context theContext ) {
+	public BudgetAdapter(Context theContext) {
 		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		resource = R.layout.listitem3textviews;
+	}
+	
+	public BudgetAdapter(Context theContext, int theResource) {
+		inflater = (LayoutInflater) theContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		resource = theResource;
 	}
 	
 	public void add(IViewHolder item)
 	{
 		data.add(item);
-	}
-	
-	public void setResource(int newResource)
-	{
-		resource = newResource;
 	}
 	
 	public void remove(int pos)
