@@ -52,7 +52,7 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_weight="3"
 	        android:textStyle="bold"
-	        android:gravity="center"
+	        android:gravity="left"
 	        android:text="Transactions" />
 	    <TextView
 	        android:id="@+id/textViewHeaderTotal"
@@ -67,12 +67,14 @@
           android:id="@+id/listViewCategoryStats"
           android:layout_width="match_parent"
           android:layout_height="0dip"
-          android:layout_marginTop="1dip"
-          android:paddingTop="0dip"
-          android:paddingBottom="0dip"
+          android:layout_margin="0dip"
+          android:padding="0dip"
           android:layout_weight="3"
           android:divider="@null"
-		  android:dividerHeight="0.0dp"
+		  android:dividerHeight="-4dip"
+		  android:focusable="false"
+		  android:focusableInTouchMode="false"
+		  android:listSelector="@android:color/transparent"
           android:text="" />
     
 	    <TextView
