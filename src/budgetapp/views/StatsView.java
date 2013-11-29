@@ -9,6 +9,7 @@ import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
+import budgetapp.util.CategoryStatsViewHolder;
 import budgetapp.util.DayEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Money;
@@ -47,8 +48,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	private Spinner monthSpinner;
 	private Spinner categorySpinner;
 	private ListView entryList;
+	private ListView categoryStatsList;
 	private BudgetModel model;
-	BudgetAdapter listAdapter;
+	private BudgetAdapter listAdapter;
+	private BudgetAdapter categoryAdapter;
 	
 	public StatsView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -126,8 +129,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
     	monthSpinner = (Spinner)findViewById(R.id.spinnerMonth);
     	categorySpinner = (Spinner)findViewById(R.id.spinnerCategory);
     	entryList = (ListView)findViewById(R.id.ListViewLogTop);
-		
+		categoryStatsList = (ListView)findViewById(R.id.listViewCategoryStats);
+    	
     	listAdapter = new BudgetAdapter(this.getContext());
+    	categoryAdapter = new BudgetAdapter(this.getContext());
     	setUpListeners();
 
     }
@@ -165,40 +170,16 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		List<DayEntry> days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
         List<DayEntry> dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
         
-        TextView categoryTextView = (TextView)findViewById(R.id.textViewLogStats);
-        TextView numTextView = (TextView)findViewById(R.id.textViewLogStats2);
-        TextView totalTextView = (TextView)findViewById(R.id.textViewLogStats3);
+        categoryAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_category_stats);
+        Money sum = new Money();
+        for(int i = 0; i < categoryStats.size(); i++)
+        {
+        	categoryAdapter.add(new CategoryStatsViewHolder(categoryStats.get(i)));
+        	sum = sum.add(categoryStats.get(i).getValue());
+        }
+        categoryStatsList.setAdapter(categoryAdapter);
         
-		//categoryTextView.setMovementMethod(new ScrollingMovementMethod());
-		
-        categoryTextView.setText("");
-        numTextView.setText("");
-        totalTextView.setText("");
-		
-		CategoryEntry entry;
-		int length = 0;
-		for(int i=0;i<categoryStats.size();i++) // Get longest name
-		{
-			entry = categoryStats.get(i);
-			if(entry.getCategory().length()>length)
-			{
-				length = entry.getCategory().length();
-			}
-		}
-		length++;
-		Money sum = new Money(); // Calculate the total cash flow for the selected time span
-		for(int i=0;i<categoryStats.size();i++)
-		{
-			entry = categoryStats.get(i);
-			
-			categoryTextView.append(entry.getCategory()+"\n");
-			
-			numTextView.append(""+entry.getNum() + "\n");
-			totalTextView.append(entry.getValue() + "\n");
-			sum = sum.add(entry.getValue());
-			
-		}
-		
+        
 		TextView middleTextView = (TextView)findViewById(R.id.textViewLogTopHead);
 		middleTextView.setText("");
 		if(days.size()<2)
@@ -419,10 +400,10 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	 */
 	public void scrollToTop()
 	{
-		ListView listView = (ListView) findViewById(R.id.ListViewLogTop);
-		listView.scrollTo(0,0);
-		TextView textView = (TextView)findViewById(R.id.textViewLogStats);
-		textView.scrollTo(0,0);
+		ListView transactionList = (ListView) findViewById(R.id.ListViewLogTop);
+		transactionList.scrollTo(0,0);
+		ListView categoryList = (ListView)findViewById(R.id.listViewCategoryStats);
+		categoryList.scrollTo(0,0);
 	}
 	
 	/**
