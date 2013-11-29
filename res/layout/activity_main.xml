@@ -42,7 +42,7 @@
 	      </AutoCompleteTextView>
 	      <Button
             android:id="@+id/button_choose_category"
-            android:background="@drawable/spinner_default_holo_dark"
+            android:background="@drawable/custom_spinner"
             android:layout_width="wrap_content"
             android:layout_height="40dip"
             android:layout_marginEnd="1dip"
