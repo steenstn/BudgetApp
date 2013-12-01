@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listTableLayout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="0dip"
+    android:paddingEnd="0dip"
+    android:padding="0dip"
+    android:layout_margin="0dip"
+    android:gravity="left" >
+    
+		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/listLeftTextView"
+	    android:layout_width="0dip"
+	    android:layout_height="wrap_content"
+	    android:padding="0dip"
+	    android:layout_marginRight="6dip"
+	    android:textSize="7pt" 
+	    android:layout_weight="2">
+	    </TextView>
+	    
+	    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/listCenterTextView"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:padding="0dip"
+	    android:paddingStart="0dip"
+    	android:paddingEnd="0dip"
+	    android:layout_margin="0dip"
+	    android:textSize="7pt" 
+	    android:gravity="left">
+	    </TextView>
+	    
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/listRightTextView"
+	    android:layout_width="0dip"
+	    android:layout_height="wrap_content"
+	    android:padding="0dip"
+	    android:paddingStart="0dip"
+    	android:paddingEnd="0dip"
+	    android:layout_margin="0dip"
+	    android:textSize="7pt" 
+	    android:layout_weight="1"
+	    android:gravity="left" >
+    	</TextView>
+	    	
+</LinearLayout>
