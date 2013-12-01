@@ -17,8 +17,8 @@ import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
-import budgetapp.util.InstallmentViewHolder;
 import budgetapp.util.Money;
+import budgetapp.viewholders.InstallmentViewHolder;
 
 public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 

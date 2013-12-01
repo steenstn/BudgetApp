@@ -8,6 +8,7 @@ import java.util.List;
 
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.CategoryEntry;
@@ -15,6 +16,7 @@ import budgetapp.util.DayEntry;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
+import budgetapp.viewholders.TransactionViewHolder;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
@@ -24,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainView extends LinearLayout implements IBudgetObserver{
@@ -160,21 +163,31 @@ public class MainView extends LinearLayout implements IBudgetObserver{
 	private void updateLog()
     {
     	List<BudgetEntry> entries = model.getSomeTransactions(5,BudgetDataSource.DESCENDING);
+    	BudgetAdapter transactionAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_transaction);
+    	
+        for(int i = 0; i < entries.size(); i++)
+        {
+        	transactionAdapter.add(new TransactionViewHolder(entries.get(i)));
+        }
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
         TextView right = (TextView)findViewById(R.id.textViewLogRight);
-        left.setText(Html.fromHtml("<b>Latest transactions</b><br />"));
-        right.setText(Html.fromHtml("<b>Category</><br />"));
+        left.setText(Html.fromHtml("<b>Latest transactions</b>"));
+        right.setText(Html.fromHtml("<b>Category</>"));
+        /*
         for(int i=0;i<entries.size();i++)
         {	
         		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
         		right.append(entries.get(i).getCategory() + "\n");
         		
         }
+        */
+        ListView transactionListView = (ListView)findViewById(R.id.listViewLatestTransactions);
+        transactionListView.setAdapter(transactionAdapter);
+        
         
         List<DayEntry> days = model.getSomeDays(7,BudgetDataSource.DESCENDING);
-        left.append("\n");
-        //left = (TextView)findViewById(R.id.dailyCashFlowTextView);
-        left.append(Html.fromHtml("<b>Daily cash flow</b><br />"));
+        left = (TextView)findViewById(R.id.textViewDailyCashFlow);
+        left.setText(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for(int i=0;i<days.size();i++) 
         {	
         	left.append(days.get(i).getDate()+ ": ");

@@ -5,6 +5,7 @@ package budgetapp.util;
 import java.util.ArrayList;
 
 import budgetapp.main.R;
+import budgetapp.viewholders.IViewHolder;
 
 import android.content.Context;
 import android.view.LayoutInflater;

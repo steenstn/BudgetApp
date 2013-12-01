@@ -5,7 +5,6 @@ import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
-import budgetapp.util.StatEntryViewHolder;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import budgetapp.viewholders.StatEntryViewHolder;
 import budgetapp.views.StatsView;
 public class StatsActivity extends FragmentActivity{
 	

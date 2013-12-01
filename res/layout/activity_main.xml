@@ -84,6 +84,7 @@
 	        android:text="Top 3"/>
 	
 	</LinearLayout>
+	
 	<LinearLayout 
 	    android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,7 +94,7 @@
 	          android:layout_width="wrap_content"
 	          android:layout_height="wrap_content"
 	          android:layout_marginTop="10dip"
-	          android:layout_weight="1"
+	          android:layout_weight="2"
 	          android:text="Log" />
 		    <TextView
 	          android:id="@+id/textViewLogRight"
@@ -105,9 +106,22 @@
 		    
 	    
 	</LinearLayout>
+    <ListView
+        android:id="@+id/listViewLatestTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+	    android:dividerHeight="-4dip"
+	    android:focusable="false"
+	    android:focusableInTouchMode="false"
+	    android:listSelector="@android:color/transparent" />
     
-
-    
+    <TextView
+        android:id="@+id/textViewDailyCashFlow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dip"
+        android:layout_weight="2"/>
 
 </budgetapp.views.MainView>
 
