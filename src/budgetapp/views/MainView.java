@@ -202,6 +202,8 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	int numEntries = 30;
     	List<DayEntry> days = model.getSomeDays(numEntries,BudgetDataSource.DESCENDING);
     	
+    	if(days.size()==0)
+    		return;
     	Money tempValue = days.get(0).getValue();
     	String tempDate = days.get(0).getDate();
     	double hoursWeight = (double)(BudgetFunctions.getHours() * 60);

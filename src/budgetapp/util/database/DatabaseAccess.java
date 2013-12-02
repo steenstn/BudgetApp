@@ -568,7 +568,8 @@ public class DatabaseAccess {
 		Cursor cursor;
 		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES
 				+ " where " 
-				+ BudgetDatabase.COLUMN_CATEGORY + " = '" + category + "'", null);
+				+ BudgetDatabase.COLUMN_CATEGORY + " = '" + category + "' order by "
+				+ BudgetDatabase.COLUMN_NUM, null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
