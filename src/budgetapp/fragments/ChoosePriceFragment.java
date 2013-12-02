@@ -84,7 +84,7 @@ public class ChoosePriceFragment extends DialogFragment {
 			public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
 				Object listItem = theList.getItemAtPosition(position);
 				
-				String valueWithoutCurrency = listItem.toString().substring(0, listItem.toString().length() - Money.getCurrency().length());
+				String valueWithoutCurrency = listItem.toString();
 				((MainActivity)getActivity()).subtractFromBudget(listItem.toString(), category, null);
 				ChoosePriceFragment.this.getDialog().cancel();
 				
