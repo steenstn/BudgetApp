@@ -4,7 +4,6 @@ package budgetapp.fragments;
  * 
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.activities.MainActivity;
@@ -20,29 +19,35 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
-public class ChooseCategoryFragment extends DialogFragment {
+public class ChoosePriceFragment extends DialogFragment {
 	
 	private ListView theList;
 	private View view;
+	private String category;
+	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    view = inflater.inflate(R.layout.dialog_choose_category, null);
+	    view = inflater.inflate(R.layout.dialog_choose_price, null);
+	    category = getArguments().getString("category");
 	    
 	    builder.setView(view);
-	    theList = (ListView) view.findViewById(R.id.dialog_choose_category_listview);
-
+	    theList = (ListView) view.findViewById(R.id.dialog_choose_price_listview);
+	    
+	    TextView textView = (TextView)view.findViewById(R.id.dialog_choose_price_textview);
+	    textView.append(" '" + category + "'");
 	    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() 
 	    {
 	        public void onClick(DialogInterface dialog, int id) {
-	    	    ChooseCategoryFragment.this.getDialog().cancel(); 
+	    	    ChoosePriceFragment.this.getDialog().cancel(); 
 	        }
         });   
 	   
-	    updateCategories();
+	    updatePrices();
 	    setUpListeners();
 	    return builder.create();
 	}
@@ -50,15 +55,16 @@ public class ChooseCategoryFragment extends DialogFragment {
 	/**
 	 * Adds all categories to the ListView and the "Other..." option
 	 */
-	private void updateCategories()
+	private void updatePrices()
     {
-        List<String> categories = ((MainActivity)getActivity()).getCategoryNames();
-        String temp[] = new String[categories.size()+1];
-        for(int i=0;i<categories.size();i++)
+		List<Double> prices = ((MainActivity)getActivity()).getAutoCompleteValues(category);
+		
+		
+        String temp[] = new String[prices.size()];
+        for(int i=0;i<prices.size();i++)
         {
-        	temp[i] = categories.get(i);
+        	temp[i] = ""+Math.abs(prices.get(i));
         }
-        temp[categories.size()] = "Other...";
        
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
         		  android.R.layout.simple_list_item_1, android.R.id.text1, temp);
@@ -76,39 +82,10 @@ public class ChooseCategoryFragment extends DialogFragment {
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
 				Object listItem = theList.getItemAtPosition(position);
-				if(position!=adapter.getCount()-1)
-				{
-					String enteredValue = ((MainActivity)getActivity()).getEnteredValue();
-					if(enteredValue.equalsIgnoreCase(""))
-					{
-						String category = listItem.toString();
-						List<Double> prices = ((MainActivity)getActivity()).getAutoCompleteValues(category);
-						if(prices.size()!=0)
-						{
-					    	 
-							Bundle bundle = new Bundle();
-					    	bundle.putString("category",category);
-					    	 
-							DialogFragment newFragment = new ChoosePriceFragment();
-					    	newFragment.setArguments(bundle);
-					    	newFragment.show(((MainActivity)getActivity()).getSupportFragmentManager(), "choose_price");
-					    	
-					    	ChooseCategoryFragment.this.getDialog().cancel();
-						}
-				    	
-					}
-					else
-					{
-						((MainActivity)getActivity()).subtractFromBudget(enteredValue, listItem.toString(),null);
-						ChooseCategoryFragment.this.getDialog().cancel();
-					}
-				}
-				else if(position==adapter.getCount()-1)
-				{
-					DialogFragment newFragment = new OtherCategoryDialogFragment();
-					newFragment.show(((MainActivity)getActivity()).getSupportFragmentManager(), "other_category");
-					ChooseCategoryFragment.this.getDialog().cancel();
-				}
+				
+				((MainActivity)getActivity()).subtractFromBudget(listItem.toString(), category, null);
+				ChoosePriceFragment.this.getDialog().cancel();
+				
 			}
 	 	});
 	    
@@ -122,7 +99,7 @@ public class ChooseCategoryFragment extends DialogFragment {
 					((MainActivity)getActivity()).setChosenCategory(listItem.toString());
 					DialogFragment newFragment = new OtherCategoryDialogFragment();
 		            newFragment.show(((MainActivity)getActivity()).getSupportFragmentManager(), "other_category");
-		            ChooseCategoryFragment.this.getDialog().cancel();
+		            ChoosePriceFragment.this.getDialog().cancel();
 			    }
 				
 				return true;

@@ -49,7 +49,9 @@ public class OtherCategoryDialogFragment extends DialogFragment {
         	    	if(autoAdd)
         	    		addCategory(theCategory);
         	    	
-        		    ((MainActivity) getActivity()).subtractFromBudget(theCategory,comment.getText().toString()); 
+        	    	String enteredValue = ((MainActivity) getActivity()).getEnteredValue();
+        	    	if(!enteredValue.equalsIgnoreCase(""))
+        	    		((MainActivity) getActivity()).subtractFromBudget(enteredValue, theCategory,comment.getText().toString()); 
         	    }
     		    else
     		    Toast.makeText(view.getContext(), "Please enter category name" , Toast.LENGTH_LONG).show();

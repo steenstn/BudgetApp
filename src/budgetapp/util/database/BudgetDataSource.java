@@ -62,7 +62,7 @@ public class BudgetDataSource {
 		BudgetEntry result = dbAccess.addEntry(workingEntry);
 		if(result != null)
 		{
-			addToAutocompleteValues(result.getValue().get());
+			addToAutocompleteValues(result.getValue().get(), workingEntry.getCategory());
 			
 			addToCategory(workingEntry.getCategory(),workingEntry.getValue().get());
 	    	addToDaySum(workingEntry);
@@ -357,6 +357,14 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public List<Double> getAutocompleteValues(String category)
+	{
+		List<Double> result;
+		result = dbAccess.getAutocompleteValues(category);
+		
+		return result;
+	}
+	
 	public List<Installment> getInstallments()
 	{
 		List<Installment> result;
@@ -414,9 +422,9 @@ public class BudgetDataSource {
 	}
 	
 	// Helper functions to update different tables correctly
-	private void addToAutocompleteValues(double value)
+	private void addToAutocompleteValues(double value, String category)
 	{
-		dbAccess.addAutocompleteValue(value);
+		dbAccess.addAutocompleteValue(value, category);
 	}
 	private void addToCategory(String theCategory,double value)
 	{

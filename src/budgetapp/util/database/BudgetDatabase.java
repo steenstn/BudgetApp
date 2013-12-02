@@ -69,7 +69,7 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 
 	
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 13;
+	private static final int DATABASE_VERSION = 14;
 	
 	public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
@@ -99,7 +99,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES = "create table "
 			+ TABLE_AUTOCOMPLETE_VALUES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_VALUE
-			+ " double, " + COLUMN_NUM + " integer);";
+			+ " double, " + COLUMN_NUM + " integer, " + COLUMN_CATEGORY
+			+ " text);";
 	
 	public static final String DATABASE_CREATE_TABLE_INSTALLMENTS = "create table "
 			+ TABLE_INSTALLMENTS + "(" + COLUMN_ID
@@ -284,6 +285,9 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			db.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
 		case 12:
 			db.execSQL(DATABASE_CREATE_TABLE_INSTALLMENT_DAYFLOW_PAID);
+		case 13:
+			db.execSQL("drop table " + TABLE_AUTOCOMPLETE_VALUES);
+			db.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
 		}
 		
 		System.out.println("Updated database from " + oldVersion + " to " + newVersion);

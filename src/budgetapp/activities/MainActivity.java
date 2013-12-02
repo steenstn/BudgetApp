@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import budgetapp.fragments.ChooseCategoryFragment;
+import budgetapp.fragments.ChoosePriceFragment;
 import budgetapp.fragments.DailyBudgetFragment;
 import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
@@ -20,6 +21,7 @@ import budgetapp.views.MainView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
@@ -73,6 +75,11 @@ public class MainActivity extends FragmentActivity {
 	public List<String> getCategoryNames()
 	{
 		return model.getCategoryNames();
+	}
+	
+	public List<Double> getAutoCompleteValues(String category)
+	{
+		return model.getAutocompleteValues(category);
 	}
 	
 	public void removeTransactionEntry(BudgetEntry entry)
@@ -152,20 +159,21 @@ public class MainActivity extends FragmentActivity {
      * @param theCategory - The category to add to the entry
      * @param theComment - The comment to add to the entry
      */
-    public void subtractFromBudget(String theCategory, String theComment) {
+    public void subtractFromBudget(String theValue, String theCategory, String theComment) {
        
-    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
-    	String result = resultText.getText().toString();
+    	
     	try
     	{
-    		double value = Double.parseDouble(result);
+    		double value = Double.parseDouble(theValue);
 		
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	    	Calendar cal = Calendar.getInstance();
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.createTransaction(entry);
+	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");
+	    	
     	}
     	catch(NumberFormatException e)
     	{
@@ -173,6 +181,14 @@ public class MainActivity extends FragmentActivity {
     	}
 		
     }
+    
+    public String getEnteredValue()
+    {
+    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
+    	String result = resultText.getText().toString();
+    	return result;
+    }
+    
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -227,7 +243,25 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void favButtClick(Button id) {
 			Button pressedButton = id;
-	    	subtractFromBudget(pressedButton.getText().toString(),null);
+			String enteredValue = getEnteredValue();
+			if(enteredValue.equalsIgnoreCase(""))
+			{
+				String category = pressedButton.getText().toString();
+				List<Double> prices = getAutoCompleteValues(category);
+				if(prices.size()!=0)
+				{
+					Bundle bundle = new Bundle();
+			    	bundle.putString("category", category);
+			    	 
+					DialogFragment newFragment = new ChoosePriceFragment();
+			    	newFragment.setArguments(bundle);
+			    	newFragment.show(getSupportFragmentManager(), "choose_price");
+				}
+			}
+			else
+			{
+				subtractFromBudget(enteredValue, pressedButton.getText().toString(),null);
+			}
 		}
 		
 		@Override

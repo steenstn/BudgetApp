@@ -457,13 +457,14 @@ public class DatabaseAccess {
 	 * the oldest value is replaces, queue-style
 	 * @param theValue - The value to add
 	 */
-	public void addAutocompleteValue(double theValue)
+	public void addAutocompleteValue(double theValue, String theCategory)
 	{
 		Cursor cursor;
 		// See if value already exists
 		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + ", " + BudgetDatabase.COLUMN_NUM 
 				+ " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES 
-				+ " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue, null);
+				+ " where " + BudgetDatabase.COLUMN_VALUE + " = " + theValue
+				+ " and " + BudgetDatabase.COLUMN_CATEGORY + " = '" + theCategory + "'", null);
 		
 		if(cursor.getCount() == 0) // It does not exist, see how many values are in the table
 		{
@@ -472,7 +473,7 @@ public class DatabaseAccess {
 			int numValues = cursor.getInt(0);
 			
 			
-			if(numValues > 10) // Too many entries, delete the oldest one
+			if(numValues > 40) // Too many entries, delete the oldest one
 			{
 				database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES,
 						BudgetDatabase.COLUMN_ID +
@@ -488,6 +489,7 @@ public class DatabaseAccess {
 			ContentValues values = new ContentValues();
 			values.put(BudgetDatabase.COLUMN_VALUE, theValue);
 			values.put(BudgetDatabase.COLUMN_NUM, 1);
+			values.put(BudgetDatabase.COLUMN_CATEGORY, theCategory);
 			database.insert(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, null, values);
 		}
 		else
@@ -546,6 +548,27 @@ public class DatabaseAccess {
 		List<Double> values = new ArrayList<Double>();
 		Cursor cursor;
 		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES + " where " + BudgetDatabase.COLUMN_NUM + " > 1", null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			values.add(cursor.getDouble(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return values;
+	}
+	
+	/**
+	 * Gets all the autocomplete values for a specific category
+	 * @return - All autocomplete values
+	 */
+	public List<Double> getAutocompleteValues(String category)
+	{
+		List<Double> values = new ArrayList<Double>();
+		Cursor cursor;
+		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES
+				+ " where " + BudgetDatabase.COLUMN_NUM + " > 1 and " 
+				+ BudgetDatabase.COLUMN_CATEGORY + " = '" + category + "'", null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
