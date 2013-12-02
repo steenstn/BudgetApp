@@ -32,14 +32,6 @@
             android:summary="Clears all current autocomplete values"
         />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Other">
-        <CheckBoxPreference
-            android:key="enableAutoShowKeyboard"
-            android:title="Auto show keyboard"
-            android:summary="Automatically pulls up the keyboard in the main view"
-            android:defaultValue="false"
-            />
-    </PreferenceCategory>
     <!-- 
     <PreferenceCategory android:title="Backup" >
         <EditTextPreference

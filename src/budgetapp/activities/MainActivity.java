@@ -327,22 +327,6 @@ public class MainActivity extends FragmentActivity {
 			}
 			view.update();
 			
-			boolean autoKeyboard = settings.getBoolean("enableAutoShowKeyboard", false);
-	    	if(autoKeyboard)
-	    	{
-		    	final EditText et =  (EditText)findViewById(R.id.editTextSubtract);  
-			    Timer timer = new Timer();
-		        TimerTask task = new TimerTask() {
-		
-		            @Override
-		            public void run() {
-		                InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		                inputMethodManager.toggleSoftInputFromWindow(et.getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
-		
-		            }
-		        };
-		        timer.schedule(task, 300);
-	    	}
 		}
 	}
 		
