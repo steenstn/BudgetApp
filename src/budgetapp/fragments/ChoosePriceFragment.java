@@ -4,6 +4,7 @@ package budgetapp.fragments;
  * 
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.activities.MainActivity;
@@ -62,9 +63,11 @@ public class ChoosePriceFragment extends DialogFragment {
 		
 		
         String temp[] = new String[prices.size()];
+        
         for(int i=0;i<prices.size();i++)
         {
-        	temp[i] = ""+Math.abs(prices.get(i));
+        	Money displayedValue = new Money(prices.get(i) * -1).divide(Money.getExchangeRate());
+        	temp[i] = displayedValue.toString();
         }
        
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
@@ -85,7 +88,10 @@ public class ChoosePriceFragment extends DialogFragment {
 				Object listItem = theList.getItemAtPosition(position);
 				
 				String valueWithoutCurrency = listItem.toString();
-				((MainActivity)getActivity()).subtractFromBudget(listItem.toString(), category, null);
+				valueWithoutCurrency = valueWithoutCurrency.replaceAll(Money.getCurrency(),"");
+				valueWithoutCurrency = valueWithoutCurrency.replaceAll(",",".");
+				
+				((MainActivity)getActivity()).subtractFromBudget(valueWithoutCurrency, category, null);
 				ChoosePriceFragment.this.getDialog().cancel();
 				
 			}

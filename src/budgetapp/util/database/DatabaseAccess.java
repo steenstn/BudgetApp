@@ -569,7 +569,7 @@ public class DatabaseAccess {
 		cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES
 				+ " where " 
 				+ BudgetDatabase.COLUMN_CATEGORY + " = '" + category + "' order by "
-				+ BudgetDatabase.COLUMN_NUM, null);
+				+ BudgetDatabase.COLUMN_NUM + " desc limit 0,5", null);
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
