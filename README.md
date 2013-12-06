@@ -6,6 +6,13 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.1
+- Cost suggestion when clicking favourite button and no price present in the input field
+- Fixed bug where long category names would screw up lists
+- The color of the current budget now changes during the day
+- The 'choose category' spinner now blinks when clicking on it
+- Clearing autocomplete values now possible
+
 v3.0
 - Installments. Pay of big transactions over a period of time
 - Auto-complete. The most used transaction amounts are remembered
