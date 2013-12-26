@@ -44,10 +44,10 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	float originX;
 	float originY;
 	String[] values;
-	float globalScale = 300.0f;
+	float globalScale = 200.0f;
 	// Number of pixels to scale maximum
-	float xScaleMax = 200.0f;
-	float xScaleMin = 20.0f;
+	float xScaleMax = 500.0f;
+	float xScaleMin = 10.0f;
 	
 	BudgetModel model = new BudgetModel(this.getContext());
 	
@@ -71,9 +71,9 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 		dailyBudgetScale = Math.abs((float) model.getDailyBudget().get());
 		if(dailyBudgetScale < 1)
 			dailyBudgetScale = 1;
-		yScale = (float) (1.2f * 50/dailyBudgetScale);
-		yScaleMin = (float) (1.05f * 50/dailyBudgetScale);
-		yScaleMax = (float) (1.3f * 50/dailyBudgetScale);
+		yScale = (float) (1.2f * 45/dailyBudgetScale);
+		yScaleMin = (float) (1.02f * 45/dailyBudgetScale);
+		yScaleMax = (float) (1.5f * 45/dailyBudgetScale);
 		sx = display.getWidth();
 		sy = display.getHeight();
 		offsetX = 0.0f;

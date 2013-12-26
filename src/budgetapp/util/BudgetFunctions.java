@@ -1,5 +1,6 @@
 package budgetapp.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -111,6 +112,23 @@ public static Money min(Money a, Money b) {
 		return Integer.parseInt(dateString.substring(14,16));
 		
 	}
+	
+	/**
+     * Format a time from a given format to given target format
+     * 
+     * @param inputFormat
+     * @param inputTimeStamp
+     * @param outputFormat
+     * @return
+     * @throws ParseException
+     */
+    public static String timeStampConverter(final String inputFormat,
+            String inputTimeStamp, final String outputFormat)
+            throws ParseException {
+        return new SimpleDateFormat(outputFormat).format(new SimpleDateFormat(
+                inputFormat).parse(inputTimeStamp));
+    }
+    
 	/**
 	 * Calculates the mean value for n entries or as many as are available if less
 	 * @param theEntries - List of the entries to calculate

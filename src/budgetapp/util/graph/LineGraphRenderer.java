@@ -198,11 +198,12 @@ public class LineGraphRenderer implements IGraphRenderer{
 			drawingValues[i]=arrangedValues[i]*xScale+x;
 			// Flip the graph upside down to have negative values down and positive up
 			drawingValues[i+1]=-1*(arrangedValues[i+1]*yScale+y); 
-
+			
 			c.drawText(values[j], drawingValues[i], drawingValues[i+1], textPaint);
 			
 			j++;
 		}
+		
 		c.drawText(values[j], drawingValues[drawingValues.length-2], drawingValues[drawingValues.length-1], textPaint);
 		
 	}

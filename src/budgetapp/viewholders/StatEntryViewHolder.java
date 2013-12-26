@@ -1,7 +1,13 @@
 package budgetapp.viewholders;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import budgetapp.main.R;
 import budgetapp.util.BudgetEntry;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
 import android.view.View;
 import android.widget.TextView;
@@ -78,8 +84,22 @@ public class StatEntryViewHolder extends ViewHolder {
 		// If this is an entry, print info in all the textviews
 		if(getType()==StatEntryViewHolder.Type.entry)
 		{
-			
-			getLeftTextView().setText("Date: " + getEntry().getDate().substring(8));
+
+			String dateString = "";
+			try {
+		        String inputTimeStamp = getEntry().getDate();
+
+		        final String inputFormat = "yyyy/MM/dd HH:mm";
+		        final String outputFormat = "EEE dd HH:mm";
+
+		        dateString = BudgetFunctions.timeStampConverter(inputFormat, inputTimeStamp,
+		                outputFormat);
+
+		    } catch (ParseException e) {
+		        e.printStackTrace();
+		    }
+			String outputDateString = dateString.substring(0, 1).toUpperCase() + dateString.substring(1);
+			getLeftTextView().setText(outputDateString);
 			getCenterTextView().setText(""+getEntry().getValue());
 			// Add a star after the category if this entry has a comment
 			getRightTextView().setText(getEntry().getCategory() + (getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));
