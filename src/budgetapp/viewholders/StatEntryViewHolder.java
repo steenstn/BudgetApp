@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import budgetapp.main.R;
 import budgetapp.util.BudgetEntry;
@@ -98,7 +99,7 @@ public class StatEntryViewHolder extends ViewHolder {
 		    } catch (ParseException e) {
 		        e.printStackTrace();
 		    }
-			String outputDateString = dateString.substring(0, 1).toUpperCase() + dateString.substring(1);
+			String outputDateString = dateString.substring(0, 1).toUpperCase(Locale.US) + dateString.substring(1);
 			getLeftTextView().setText(outputDateString);
 			getCenterTextView().setText(""+getEntry().getValue());
 			// Add a star after the category if this entry has a comment
