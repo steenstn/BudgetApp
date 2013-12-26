@@ -18,6 +18,7 @@ import budgetapp.util.IBudgetObserver;
 import budgetapp.util.DayEntry;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
+import budgetapp.util.TransactionQueue;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
 public class BudgetModel {
@@ -33,8 +34,10 @@ public class BudgetModel {
 	// The observers of this BudgetModel
 	private ArrayList<IBudgetObserver> observers;
 	
-	// Flag wether or not the model has been altered
+	// Flag whether or not the model has been altered
 	private boolean stateChanged;
+	
+	private TransactionQueue transactionQueue;
 	
 	// Class containing config values
 	private BudgetConfig config;
@@ -66,6 +69,7 @@ public class BudgetModel {
 	public void createTransaction(BudgetEntry entry)
 	{
 		addDailyBudget();
+		
 		transactions.add(new TransactionCommand(datasource,entry));
 		transactions.get(transactions.size()-1).execute();
 		stateChanged = true;
