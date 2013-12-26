@@ -32,6 +32,17 @@
             android:summary="Clears all current autocomplete values"
         />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Feedback">
+        <PreferenceScreen
+            android:key="sendFeedback"
+            android:title="Send feedback"
+            android:summary="Send a mail with feedback/feature request" />
+        <PreferenceScreen
+            android:key="rateApp"
+            android:title="Rate app"
+            android:summary="Go to the Play Store to rate MrCashManager" />
+        
+    </PreferenceCategory>
     <!-- 
     <PreferenceCategory android:title="Backup" >
         <EditTextPreference
