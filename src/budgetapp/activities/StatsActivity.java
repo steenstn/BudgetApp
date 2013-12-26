@@ -1,14 +1,19 @@
 package budgetapp.activities;
 
 
+import budgetapp.fragments.DailyBudgetFragment;
+import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -52,6 +57,26 @@ public class StatsActivity extends FragmentActivity{
         
         
 	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_stats, menu);
+        return true;
+    }
+    
+    
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.menu_show_linegraph:
+            	intent = new Intent(this,GraphActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 	
 	private StatsView.ViewListener viewListener = new StatsView.ViewListener() {
 		

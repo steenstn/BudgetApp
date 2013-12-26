@@ -39,7 +39,7 @@
             android:summary="Send a mail with feedback/feature request" />
         <PreferenceScreen
             android:key="rateApp"
-            android:title="Rate app"
+            android:title="Rate MrCashManager"
             android:summary="Go to the Play Store to rate MrCashManager" />
         
     </PreferenceCategory>

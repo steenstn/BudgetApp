@@ -215,10 +215,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,InstallmentsActivity.class);
             	startActivity(intent);
             	return true;
-            case R.id.menu_showgraph:
+            /*case R.id.menu_showgraph:
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
-                return true;
+                return true;*/
             case R.id.menu_preferences:
             	intent = new Intent(this,PreferencesActivity.class);
             	startActivity(intent);

@@ -116,10 +116,10 @@ public static Money min(Money a, Money b) {
 	/**
      * Format a time from a given format to given target format
      * 
-     * @param inputFormat
-     * @param inputTimeStamp
-     * @param outputFormat
-     * @return
+     * @param inputFormat - The format of the input time stamp
+     * @param inputTimeStamp - The time stamp to convert
+     * @param outputFormat - The wanted format for the time stamp
+     * @return - A time stamp with the new format
      * @throws ParseException
      */
     public static String timeStampConverter(final String inputFormat,
