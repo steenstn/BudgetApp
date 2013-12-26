@@ -63,6 +63,7 @@
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
 	        android:text="Top 1"
+	        android:singleLine="true"
 	        />
 	    <Button
 	        android:id="@+id/topCategoryButton1"
@@ -72,7 +73,8 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
-	        android:text="Top 2"/>
+	        android:text="Top 2"
+	        android:singleLine="true"/>
 	    <Button
 	        android:id="@+id/topCategoryButton3"
 	        android:layout_width="0dip"
@@ -81,7 +83,8 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_marginLeft="1dip"
 	        android:layout_marginRight="1dip"
-	        android:text="Top 3"/>
+	        android:text="Top 3"
+	        android:singleLine="true"/>
 	
 	</LinearLayout>
 	
