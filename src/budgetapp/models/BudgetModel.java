@@ -264,6 +264,11 @@ public class BudgetModel {
 		return datasource.getTransaction(id);
 	}
 	
+	public List<BudgetEntry> getNegativeTransactions()
+	{
+		return datasource.getNegativeTransactions();
+	}
+	
 	public List<BudgetEntry> getSomeTransactions(int n, String orderBy)
 	{
 		return datasource.getSomeTransactions(n, orderBy);

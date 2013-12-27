@@ -770,4 +770,21 @@ public class DatabaseAccess {
 		cursor.close();
 		return entries;
 	}
+
+	public List<BudgetEntry> getNegativeTransactions() {
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW +
+				" where " + BudgetDatabase.COLUMN_VALUE + " < 0",null);
+		cursor.moveToFirst();
+		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+		while(!cursor.isAfterLast())
+		{
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		
+		cursor.close();
+		return entries;
+	}
 }

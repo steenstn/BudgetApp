@@ -1,9 +1,8 @@
 package budgetapp.activities;
 
 
-import budgetapp.fragments.DailyBudgetFragment;
-import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.EditTransactionDialogFragment;
+import budgetapp.fragments.PieChartFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetEntry;
@@ -68,11 +67,16 @@ public class StatsActivity extends FragmentActivity{
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        DialogFragment newFragment;
         switch (item.getItemId()) {
             case R.id.menu_show_linegraph:
             	intent = new Intent(this,GraphActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.menu_show_piechart:
+            	newFragment = new PieChartFragment();
+            	newFragment.show(getSupportFragmentManager(), "show_piechart");
+            	return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

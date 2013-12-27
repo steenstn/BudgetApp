@@ -460,5 +460,9 @@ public class BudgetDataSource {
 	{
 		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid);
 	}
+
+	public List<BudgetEntry> getNegativeTransactions() {
+		return dbAccess.getNegativeTransactions();
+	}
 	
 }
