@@ -189,7 +189,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		else
 		{
 			middleTextView.append("Mean cash flow (" + BudgetFunctions.min(30,dayFlow.size()) + ") days: ");
-			Money dayDerivative = BudgetFunctions.getWeightedMean(dayFlow,30);
+			Money dayDerivative = BudgetFunctions.getMean(dayFlow,30);
 			middleTextView.append(""+dayDerivative + "\n");
 		}
 		

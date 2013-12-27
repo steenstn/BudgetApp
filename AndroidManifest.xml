@@ -30,23 +30,17 @@
             android:name="budgetapp.activities.GraphActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_graph"
-            android:parentActivityName="budgetapp.activities.MainActivity"
+            android:parentActivityName="budgetapp.activities.StatsActivity"
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="budgetapp.activities.MainActivity" />
+                android:value="budgetapp.activities.StatsActivity" />
         </activity>
         <activity
             android:name="budgetapp.activities.StatsActivity"
             android:label="@string/title_activity_stats"
             android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/AppTheme"  >
-            <intent-filter>
-				<data android:host="myactivity" android:scheme="stats" />
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-			</intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="budgetapp.activities.MainActivity" />

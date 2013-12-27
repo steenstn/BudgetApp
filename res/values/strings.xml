@@ -7,8 +7,8 @@
     <string name="menu_removecategory">Remove category</string>
     <string name="menu_undo">Undo transaction</string>
     <string name="menu_setdailybudget">Set daily budget</string>
-    <string name="title_activity_graph">MrCashManager Graph</string>
-    <string name="title_activity_stats">MrCashManager Stats</string>
+    <string name="title_activity_graph">History Graph</string>
+    <string name="title_activity_stats">Statistics &amp; History</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_categories">Manage categories</string>
     <string name="title_activity_backup">Backup</string>
@@ -45,8 +45,4 @@
     	<item>exchangeRate</item>
     </string-array>
     
-        
-    
-        
-
 </resources>
