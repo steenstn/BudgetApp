@@ -8,6 +8,7 @@ public class PieChartRenderer {
 	
 	Paint currentPaint;
 	Paint textPaint;
+	
 	public PieChartRenderer()
 	{
 		textPaint = new Paint();
