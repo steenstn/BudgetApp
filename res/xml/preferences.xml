@@ -36,7 +36,7 @@
         <PreferenceScreen
             android:key="sendFeedback"
             android:title="Send feedback"
-            android:summary="Send a mail with feedback/feature request" />
+            android:summary="Send a mail with feedback/feature requests" />
         <PreferenceScreen
             android:key="rateApp"
             android:title="Rate MrCashManager"

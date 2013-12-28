@@ -4,7 +4,6 @@ package budgetapp.fragments;
  * 
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.activities.MainActivity;
@@ -54,9 +53,6 @@ public class ChoosePriceFragment extends DialogFragment {
 	    return builder.create();
 	}
 	
-	/**
-	 * Adds all categories to the ListView and the "Other..." option
-	 */
 	private void updatePrices()
     {
 		List<Double> prices = ((MainActivity)getActivity()).getAutoCompleteValues(category);
@@ -76,9 +72,6 @@ public class ChoosePriceFragment extends DialogFragment {
 		 theList.setAdapter(adapter);
     }
 	
-	/**
-	 * Set up the listeners for the ListView, click and longclick listeners
-	 */
 	private void setUpListeners()
 	{
 		theList.setOnItemClickListener(new AdapterView.OnItemClickListener() 

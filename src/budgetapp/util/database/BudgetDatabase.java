@@ -75,12 +75,13 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CATEGORY
 			+ " text);";
-	// This is the table for transactions
+
 	public static final String DATABASE_CREATE_TABLE_CASHFLOW = "create table "
 			+ TABLE_CASHFLOW + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " +COLUMN_VALUE +
 			" double, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer, "
 			+ COLUMN_COMMENT + " text);";
+	
 	
 	public static final String DATABASE_CREATE_TABLE_CATEGORIES = "create table "
 			+ TABLE_CATEGORIES + "(" + COLUMN_ID
