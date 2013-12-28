@@ -1,9 +1,6 @@
 package budgetapp.viewholders;
 
-import budgetapp.main.R;
 import budgetapp.util.CategoryEntry;
-import android.view.View;
-import android.widget.TextView;
 
 
 /**
@@ -34,7 +31,7 @@ public class CategoryStatsViewHolder extends ViewHolder {
     }
     
 	@Override
-	public void printInfo()
+	public void populateViews()
 	{
 		getLeftTextView().setText(getEntry().getCategory());
 		getCenterTextView().setText(""+getEntry().getNum());
@@ -53,14 +50,6 @@ public class CategoryStatsViewHolder extends ViewHolder {
 	public IViewHolder copy() {
 		return new CategoryStatsViewHolder(this);
 
-	}
-
-    @Override
-	public void setUpConvertView(View convertView) {
-		setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
-		setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
-		setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
-		
 	}
    
 }

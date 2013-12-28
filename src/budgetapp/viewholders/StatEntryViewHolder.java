@@ -1,18 +1,11 @@
 package budgetapp.viewholders;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
-import budgetapp.main.R;
 import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
-import android.view.View;
-import android.widget.TextView;
-
 
 /**
  * ViewHolder for displaying info about a transaction in the Statistics view
@@ -80,7 +73,7 @@ public class StatEntryViewHolder extends ViewHolder {
     }
     
 	@Override
-	public void printInfo()
+	public void populateViews()
 	{
 		// If this is an entry, print info in all the textviews
 		if(getType()==StatEntryViewHolder.Type.entry)
@@ -126,15 +119,5 @@ public class StatEntryViewHolder extends ViewHolder {
 	@Override
 	public IViewHolder copy() {
 		return new StatEntryViewHolder(this);
-
 	}
-
-    @Override
-	public void setUpConvertView(View convertView) {
-		setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
-		setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
-		setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
-		
-	}
-   
 }

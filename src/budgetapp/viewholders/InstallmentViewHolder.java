@@ -1,9 +1,6 @@
 package budgetapp.viewholders;
 
-import budgetapp.main.R;
 import budgetapp.util.Installment;
-import android.view.View;
-import android.widget.TextView;
 
 
 /**
@@ -47,7 +44,7 @@ public class InstallmentViewHolder extends ViewHolder {
     	this.title = title;
     }
 	@Override
-	public void printInfo() {
+	public void populateViews() {
 		getLeftTextView().setText(getEntry().getCategory());
 		getCenterTextView().setText(""+getEntry().getRemainingValue().makePositive() + "/"
 				+ getEntry().getTotalValue().makePositive());
@@ -68,13 +65,5 @@ public class InstallmentViewHolder extends ViewHolder {
 	@Override
 	public IViewHolder copy() {
 		return new InstallmentViewHolder(this);
-	}
-
-    @Override
-	public void setUpConvertView(View convertView) {
-		setLeftTextView((TextView)convertView.findViewById(R.id.listLeftTextView));
-		setCenterTextView((TextView)convertView.findViewById(R.id.listCenterTextView));
-		setRightTextView((TextView)convertView.findViewById(R.id.listRightTextView));
-		
 	}
 }

@@ -81,7 +81,7 @@ public class BudgetAdapter extends BaseAdapter {
 			
 		}
 		
-		holder.printInfo();
+		holder.populateViews();
 		return convertView;
 		
 	}

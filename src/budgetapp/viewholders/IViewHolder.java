@@ -11,7 +11,7 @@ public interface IViewHolder {
 	
 	public abstract void setUpConvertView(View convertView);
 	
-    public abstract void printInfo();
+    public abstract void populateViews();
     
     public abstract void recycle(IViewHolder tempEntry);
     
