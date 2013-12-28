@@ -12,8 +12,11 @@ import java.util.List;
  */
 public class BudgetFunctions {
 	
+	//These variables are used in testing to be able to mock dates
 	public static String theDate = "2012/01/01 00:00";
 	public static boolean TESTING = false;
+	//--------
+	
 	/**
 	 * Returns the lowest value of a and b
 	 * @param a - First int to compare
@@ -34,7 +37,7 @@ public class BudgetFunctions {
 		return b;
 	}
 	
-public static Money min(Money a, Money b) {
+	public static Money min(Money a, Money b) {
 		
 		if(a.smallerThan(b))
 			return a;

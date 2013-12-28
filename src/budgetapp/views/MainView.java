@@ -172,15 +172,8 @@ public class MainView extends LinearLayout implements IBudgetObserver{
         TextView left = (TextView)findViewById(R.id.textViewLogLeft);
         TextView right = (TextView)findViewById(R.id.textViewLogRight);
         left.setText(Html.fromHtml("<b>Latest transactions</b>"));
-        right.setText(Html.fromHtml("<b>Category</>"));
-        /*
-        for(int i=0;i<entries.size();i++)
-        {	
-        		left.append(entries.get(i).getDate() + ":    " + entries.get(i).getValue() + "\n");
-        		right.append(entries.get(i).getCategory() + "\n");
-        		
-        }
-        */
+        right.setText(Html.fromHtml("<b>Category</b>"));
+        
         ListView transactionListView = (ListView)findViewById(R.id.listViewLatestTransactions);
         transactionListView.setAdapter(transactionAdapter);
         

@@ -226,7 +226,7 @@ public class BudgetConfig {
 			else
 				varPrintCurrencyAfter = false;
 		}
-		else if(in.startsWith(Fields.exchangeRate.name()+"=")) // Not yet implemented
+		else if(in.startsWith(Fields.exchangeRate.name()+"="))
 		{
 			varExchangeRate = Double.parseDouble(in.substring(Fields.exchangeRate.name().length()+1));
 		}

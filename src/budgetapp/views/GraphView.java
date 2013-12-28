@@ -21,7 +21,6 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	// The ‘active pointer’ is the one currently moving our object.
 	private int mActivePointerId = INVALID_POINTER_ID;
 
-	private Context mContext;
 	GraphActivity host;
 	ScaleGestureDetector scaleDetector = new ScaleGestureDetector(getContext(), this);
 	
@@ -62,7 +61,6 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	@SuppressWarnings("deprecation")
 	public GraphView(Context context) {
 		super(context);
-		mContext = context;
 		host = (GraphActivity) this.getContext();
 		Display display = host.getWindowManager().getDefaultDisplay();
 		//values = new String[host.values.length];
