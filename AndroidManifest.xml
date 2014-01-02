@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="budgetapp.main"
     android:versionCode="5"
-    android:versionName="3.2snapshot" >
+    android:versionName="3.1.1" >
 
 
     <uses-sdk
@@ -30,11 +30,11 @@
             android:name="budgetapp.activities.GraphActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_graph"
-            android:parentActivityName="budgetapp.activities.StatsActivity"
+            android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="budgetapp.activities.StatsActivity" />
+                android:value="budgetapp.activities.MainActivity" />
         </activity>
         <activity
             android:name="budgetapp.activities.StatsActivity"

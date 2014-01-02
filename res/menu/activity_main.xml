@@ -34,12 +34,12 @@
         android:showAsAction="never"
         android:title="Installments"/>
 
-    <!-- item
+    <item
         android:id="@+id/menu_showgraph"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Graph"
-        />  -->
+        />  
     <item 
         android:id="@+id/menu_preferences"
         android:orderInCategory="110"

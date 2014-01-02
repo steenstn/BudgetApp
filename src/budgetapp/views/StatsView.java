@@ -323,6 +323,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
         {
 	        if(selectedYear>-1)
 	        {
+	        	System.out.println("selected year: " + selectedYear);
 	        	ArrayList<Stats> months = new ArrayList<Stats>();
 	        	months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
 	        	
@@ -436,6 +437,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
 			{
 				viewListener.spinnerItemSelected(parent, view, pos, id);
+				updateMonthSpinner();
 			}
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {

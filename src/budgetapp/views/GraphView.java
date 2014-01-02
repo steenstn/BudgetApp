@@ -147,6 +147,7 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
     	blackPaint.setColor(Color.WHITE);
 		blackPaint.setStyle(Style.STROKE);
 		blackPaint.setStrokeWidth(1.0f);
+		blackPaint.setTextSize(15);
 		
 		// We dont want to display all dates all the time
 		// so scale the increment depending on xScale

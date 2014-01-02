@@ -1,8 +1,15 @@
 package budgetapp.util.graph;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import budgetapp.util.CategoryEntry;
+import budgetapp.util.Money;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 
 public class PieChartRenderer {
 	
@@ -19,9 +26,29 @@ public class PieChartRenderer {
 		currentPaint.setAntiAlias(true);
 	}
 	
-	public void drawGraph(Canvas c)
+	public void drawGraph(Canvas c, float x, float y, float width, float height,  double[] values, String[] legends)
 	{
-		c.drawCircle(50, 50, 40, currentPaint);
+		double sum = 0;
+		for(int i =0; i < values.length; i++) {
+			sum += values[i];
+		}
+
+		float startAngle = 0;
+		float sweepAngle;
+		for(int i = 0; i < values.length; i++) {
+			
+			currentPaint.setARGB(255, i*50, 100, 255-i*20);
+			sweepAngle = calculateSweepingAngle(values[i],sum);
+			c.drawArc(new RectF(x,y,width,height), startAngle, sweepAngle, true, currentPaint);
+			
+			startAngle += sweepAngle;
+			
+		}
 		c.drawText("Aw yeah", 30, 30, textPaint);
+	}
+	
+	private float calculateSweepingAngle(double value, double total)
+	{
+		return (float)((value/total) * 360);
 	}
 }
