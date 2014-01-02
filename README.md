@@ -6,6 +6,13 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.1.1
+- Fixed bug where the month spinner would not get updated when changing year in the statsview
+- Fixed bug where a long category name would mess up the FavButtz
+- Changed scaling of graph so that a fully saved daily budget will give a 45 degree rise
+- Added the weekday to the transaction lists in the statsview
+- Added the functionality to easier be able to send feedback and rate the app
+
 v3.1
 - Cost suggestion when clicking favourite button and no price present in the input field
 - Fixed bug where long category names would screw up lists
