@@ -22,7 +22,13 @@
         multiple days and are meant to be used for e.g. rent, a new TV, etc. The
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
-    
+    <string name="whats_new">
+    - Fixed bug where the month spinner would not get updated when changing year in the statistics view\n
+	- Fixed bug where a long category name would mess up the layout on the favorite buttons\n
+	- Changed scaling of graph so that a fully saved daily budget will give a 45 degree rise\n
+	- Added the weekday to the transaction lists in the statistics view\n
+	- Added the functionality to easier be able to send feedback and rate the app\n
+	</string>
     <string-array name="months_array">
         <item>January</item>
         <item>February</item>

@@ -56,7 +56,7 @@ public class StatsActivity extends FragmentActivity{
         
         
 	}
-	/*
+	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_stats, menu);
@@ -80,7 +80,7 @@ public class StatsActivity extends FragmentActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }*/
+    }
 	
 	private StatsView.ViewListener viewListener = new StatsView.ViewListener() {
 		

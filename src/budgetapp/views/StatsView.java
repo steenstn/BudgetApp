@@ -323,7 +323,6 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
         {
 	        if(selectedYear>-1)
 	        {
-	        	System.out.println("selected year: " + selectedYear);
 	        	ArrayList<Stats> months = new ArrayList<Stats>();
 	        	months = (ArrayList<Stats>) years.get(selectedYear).getChildren();
 	        	

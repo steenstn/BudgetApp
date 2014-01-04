@@ -37,6 +37,14 @@
                 android:value="budgetapp.activities.MainActivity" />
         </activity>
         <activity
+            android:name="budgetapp.activities.AboutActivity"
+            android:parentActivityName="budgetapp.activities.PreferencesActivity"
+             >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="budgetapp.activities.PreferencesActivity" />
+        </activity>
+        <activity
             android:name="budgetapp.activities.StatsActivity"
             android:label="@string/title_activity_stats"
             android:parentActivityName="budgetapp.activities.MainActivity"
@@ -48,7 +56,7 @@
         <activity
             android:name="budgetapp.activities.PreferencesActivity"
             android:label="@string/title_activity_preferences"
-            android:parentActivityName="budgetapp.activities.MainACtivity"
+            android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

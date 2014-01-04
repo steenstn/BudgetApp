@@ -95,6 +95,17 @@ public class PreferencesActivity extends PreferenceActivity /*implements OnShare
 				}
 				return true;
 			}});
+    	
+    	PreferenceScreen about = (PreferenceScreen) findPreference("about");
+    	about.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+       
+			@Override
+			public boolean onPreferenceClick(Preference arg0) {
+				Intent intent = new Intent(PreferencesActivity.this,AboutActivity.class);
+	    		startActivity(intent);
+				return true;
+			}
+        });
     	/*
     	PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
 

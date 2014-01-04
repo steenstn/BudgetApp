@@ -25,6 +25,7 @@ public class PieChartView extends ImageView{
 		BudgetModel model = new BudgetModel(context);
 		values = model.getCategoriesSortedByValue();
 		
+		// Remove all positive values, we only want spendings
 		for(int i = 0; i < values.size(); i++)
 		{
 			if(values.get(i).getValue().get()>0)
