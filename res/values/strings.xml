@@ -23,7 +23,9 @@
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
     <string name="versionName">Hayagriva</string>
-    <string name="versionNameExplanation">In Hinduism, Hayagriva is a horse-headed avatar of the god Vishnu.</string>
+    <string name="versionNameExplanation">This release was done in the beginning of 2014. 
+        In the Chinese Zodiac 2014 is the year of the horse. \nIn Hinduism, Hayagriva is a horse-headed avatar of the god Vishnu. 
+        Therefore this release is called Hayagriva</string>
     <string name="whats_new">
     - Fixed bug where the month spinner would not get updated when changing year in the statistics view\n
 	- Fixed bug where a long category name would mess up the layout on the favorite buttons\n
