@@ -22,6 +22,8 @@
         multiple days and are meant to be used for e.g. rent, a new TV, etc. The
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
+    <string name="versionName">Hayagriva</string>
+    <string name="versionNameExplanation">In Hinduism, Hayagriva is a horse-headed avatar of the god Vishnu.</string>
     <string name="whats_new">
     - Fixed bug where the month spinner would not get updated when changing year in the statistics view\n
 	- Fixed bug where a long category name would mess up the layout on the favorite buttons\n
@@ -29,6 +31,7 @@
 	- Added the weekday to the transaction lists in the statistics view\n
 	- Added the functionality to easier be able to send feedback and rate the app\n
 	</string>
+	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">
         <item>January</item>
         <item>February</item>

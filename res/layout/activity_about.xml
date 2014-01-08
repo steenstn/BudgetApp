@@ -13,7 +13,9 @@
         android:id="@+id/imageViewApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:onClick="showExplanation"
+         />
 	    
 	    <LinearLayout
 	        android:layout_width="wrap_content"
@@ -32,7 +34,8 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="Unknown version"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	         />
 	    </LinearLayout>
 	</LinearLayout>
     
@@ -40,7 +43,7 @@
         android:id="@+id/textViewAboutInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Made by Alexander Steen"/>
+        android:text="@string/about_info"/>
     <TextView
         android:id="@+id/textViewWhatsNew"
         android:layout_width="wrap_content"
