@@ -63,7 +63,6 @@ public class BudgetAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		
 		IViewHolder holder = null;
 		if(convertView == null)
 		{

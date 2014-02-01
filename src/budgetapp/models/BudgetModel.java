@@ -101,10 +101,6 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
-	/**
-	 * Unexecutes the latest TransactionCommand in the list.
-	 * Notifies observers.
-	 */
 	public void undoLatestTransaction()
 	{
 		if(transactions.size()>0){
@@ -115,56 +111,32 @@ public class BudgetModel {
 		}
 	}
 	
-	/**
-	 * Gets the current available budget.
-	 * @return - The current budget
-	 */
-	public Money getCurrentBudget()
-	{
+	public Money getCurrentBudget()	{
 		List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
-		if(dayTotal.size()==1)
-		{
+		if(dayTotal.size()==1) {
 			return new Money(dayTotal.get(0).getValue());
 		}
 		else
 			return new Money();
 	}
 	
-	/**
-	 * Gets the current daily budget.
-	 * @return - The models daily budget
-	 */
-	public Money getDailyBudget()
-	{
+	public Money getDailyBudget() {
 		return dailyBudget;
 	}
 	
-	/**
-	 * Gets all category names
-	 * @return - A list of all category names
-	 */
-	public List<String> getCategoryNames()
-	{
+	public List<String> getCategoryNames() {
 		return datasource.getCategoryNames();
 	}
 	
-	public List<Double> getAutocompleteValues()
-	{
+	public List<Double> getAutocompleteValues() {
 		return datasource.getAutocompleteValues();
 	}
 	
-	public List<Double> getAutocompleteValues(String category)
-	{
+	public List<Double> getAutocompleteValues(String category) {
 		return datasource.getAutocompleteValues(category);
 	}
 	
-	/**
-	 * Sets the daily budget and saves to config and config file.
-	 * Notifies observers.
-	 * @param budget
-	 */
-	public void setDailyBudget(Money budget)
-	{
+	public void setDailyBudget(Money budget) {
 		dailyBudget = budget;
 		config.writeValue(BudgetConfig.Fields.dailyBudget, dailyBudget.get());
 		config.saveToFile();
@@ -172,12 +144,6 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
-	/**
-	 * Adds a category to the database.
-	 * Notifies observers.
-	 * @param category - The category name to add
-	 * @return - If the adding was successful
-	 */
 	public boolean addCategory(String category)
 	{
 		if(!category.equalsIgnoreCase(""))
@@ -196,12 +162,6 @@ public class BudgetModel {
 			return false;
 	}
 	
-	/**
-	 * Removes a category name from the database.
-	 * Notifies observers.
-	 * @param category - The category to remove
-	 * @return - If the removal was successful
-	 */
 	public boolean removeCategory(String category)
 	{
 		boolean result = datasource.removeCategory(category);
@@ -346,6 +306,12 @@ public class BudgetModel {
     	return daysAdded;
     }
 	
+	public void pauseInstallment(long id) {
+		datasource.markInstallmentAsPaused(id, true);
+	}
+	public void unpauseInstallment(long id) {
+		datasource.markInstallmentAsPaused(id, false);
+	}
 	public Money payOffInstallments()
 	{
 		List<Installment> installments = datasource.getInstallments();

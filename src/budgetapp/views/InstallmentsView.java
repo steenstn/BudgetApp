@@ -5,9 +5,13 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,6 +37,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	private Button addInstallmentButton;
 	private ViewListener viewListener;
 	private ListView installmentsListView;
+	private BudgetAdapter listAdapter;
 	
 	public InstallmentsView(Context context, AttributeSet attrs) {
 		super(context,attrs);
@@ -50,6 +55,10 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		model.addObserver(this);
 	}
 	
+	public ListView getListView() {
+		return installmentsListView;
+	}
+	
 	@Override
 	public void update() {
 		
@@ -58,17 +67,15 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		
 		allInstallments = model.getInstallments();
 		
-		BudgetAdapter listAdapter = new BudgetAdapter(this.getContext(),R.layout.listitem_installment); 
+		listAdapter = new BudgetAdapter(this.getContext(),R.layout.listitem_installment); 
 		
-		for(int i = 0; i < allInstallments.size(); i++)
-		{
-			if(allInstallments.get(i).getRemainingValue().biggerThan(new Money(0))) // This installment is paid for
-			{
+		for(int i = 0; i < allInstallments.size(); i++) {
+			if(allInstallments.get(i).getRemainingValue().biggerThan(new Money(0))) {
 				model.removeInstallment(allInstallments.get(i).getId());
 			}
-			else if(!allInstallments.get(i).isPaidOff())
-			{
-				listAdapter.add(new InstallmentViewHolder(allInstallments.get(i)));
+			else if(!allInstallments.get(i).isPaidOff()) {
+				InstallmentViewHolder viewHolder = new InstallmentViewHolder(allInstallments.get(i));
+				listAdapter.add(viewHolder);
 				totalDailyPayments = totalDailyPayments.add(BudgetFunctions.max(allInstallments.get(i).getRemainingValue(),allInstallments.get(i).getDailyPayment()));
 			}
 		}
@@ -76,16 +83,25 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		installmentsListView.setAdapter(listAdapter); 
         TextView totalDailyPaymentsTextView = (TextView)findViewById(R.id.textViewTotalDailyPayment);
         totalDailyPaymentsTextView.setText("Total daily payments: " + new Money(totalDailyPayments));
-		
+        
+	}
+	
+	private void setUpCheckBoxListener(CheckBox checkBox) {
+		//viewHolder.getCheckBox().isChecked();
+		/*checkBox.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println("aiufhwuei");
+			}});*/
 	}
 	@Override
     protected void onFinishInflate()
     {
     	super.onFinishInflate();
-    	
     	addInstallmentButton = (Button)findViewById(R.id.buttonAddInstallment);
     	installmentsListView = (ListView)findViewById(R.id.listViewInstallments);
-    	
+
     	addInstallmentButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {

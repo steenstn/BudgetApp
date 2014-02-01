@@ -225,7 +225,7 @@ public class BudgetDataSource {
 	public Money payOffInstallment(Installment installment, String dateToEdit)
 	{
 		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
-		if(dbInstallment.getId()==-1 || dbInstallment.isPaidOff())//getFlags() == Installment.INSTALLMENT_PAID)
+		if(dbInstallment.getId()==-1 || dbInstallment.isPaidOff() || dbInstallment.isPaused())
 			return new Money(0);
 		
 		Money dailyPay = dbInstallment.getDailyPayment();
@@ -390,11 +390,6 @@ public class BudgetDataSource {
 		return result;
 	}
 	
-	/**
-	 * Removes a category
-	 * @param theCategory - The category to remove
-	 * @return - Wether or not the removal was successful
-	 */
 	public boolean removeCategory(String theCategory)
 	{
 		boolean result;
@@ -408,6 +403,17 @@ public class BudgetDataSource {
 		boolean result;
 		Installment temp = dbAccess.getInstallment(id);
 		temp.setPaidOff(true);
+		int flags = temp.getFlags();
+		
+		result = dbAccess.setFlags(id, flags);
+		return result;
+	}
+	
+	public boolean markInstallmentAsPaused(long id, boolean state)
+	{
+		boolean result;
+		Installment temp = dbAccess.getInstallment(id);
+		temp.setPaused(state);
 		int flags = temp.getFlags();
 		
 		result = dbAccess.setFlags(id, flags);

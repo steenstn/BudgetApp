@@ -58,6 +58,7 @@ public class GraphActivity extends Activity
         
         // Move the view to the end of the graph
         view.offsetX = -(entries.size() - 8) * view.xScale;
+        
     }
     
     

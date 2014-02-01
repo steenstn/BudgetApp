@@ -2,10 +2,9 @@ package budgetapp.viewholders;
 
 import budgetapp.main.R;
 import android.view.View;
-import android.widget.TextView;
 
 /**
- * Abstract class for ViewHolders, just contains three TextViews
+ * Abstract class for ViewHolders
  * @author Steen
  *
  */
@@ -34,6 +33,7 @@ public abstract class ViewHolder4 implements IViewHolder {
     protected View getFourthView()
     {
     	return fourthView;
+    	
     }
     
     protected void setFirstView(View view)
@@ -58,7 +58,7 @@ public abstract class ViewHolder4 implements IViewHolder {
 		setFirstView(convertView.findViewById(R.id.listFirstView));
 		setSecondView(convertView.findViewById(R.id.listSecondView));
 		setThirdView(convertView.findViewById(R.id.listThirdView));
-		setFourthView(convertView.findViewById(R.id.listFourthView));
+		//setFourthView(convertView.findViewById(R.id.listFourthView));
 	}
     
    

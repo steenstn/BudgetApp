@@ -51,7 +51,7 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 	BudgetModel model = new BudgetModel(this.getContext());
 	
 	float dailyBudgetScale;
-	float yScale;
+	public float yScale;
 	
 	// Fix this
 	float yScaleMin;
@@ -82,7 +82,6 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 		oldY=offsetY;
 		blackPaint = new Paint();
 		blackPaint.setColor(Color.BLACK);
-		
 		
         setOnTouchListener(this);
 
