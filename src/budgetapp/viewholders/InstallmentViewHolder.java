@@ -1,5 +1,7 @@
 package budgetapp.viewholders;
 
+import android.widget.CheckBox;
+import android.widget.TextView;
 import budgetapp.util.Installment;
 
 
@@ -8,20 +10,26 @@ import budgetapp.util.Installment;
  * @author Steen
  *
  */
-public class InstallmentViewHolder extends ViewHolder {
+public class InstallmentViewHolder extends ViewHolder4 {
 	
     private Installment entry;
     private String title;
+    private TextView leftTextView;
+    private TextView centerTextView;
+    private TextView rightTextView;
+    private CheckBox payOffCheckBox;
     
 	public InstallmentViewHolder(Installment entry)
 	{
 		this.entry = entry;
 		this.title = "";
+		
 	}
 	public InstallmentViewHolder(InstallmentViewHolder viewHolder)
 	{
 		this.entry = viewHolder.getEntry();
 		this.title = viewHolder.getTitle();
+		
 	}
 	
     public Installment getEntry()
@@ -45,13 +53,20 @@ public class InstallmentViewHolder extends ViewHolder {
     }
 	@Override
 	public void populateViews() {
-		getLeftTextView().setText(getEntry().getCategory());
-		getCenterTextView().setText(""+getEntry().getRemainingValue().makePositive() + "/"
+		
+
+		this.leftTextView = (TextView)getFirstView();
+		this.centerTextView = (TextView)getSecondView();
+		this.rightTextView = (TextView)getThirdView();
+		this.payOffCheckBox = (CheckBox)getFourthView();
+		leftTextView.setText(getEntry().getCategory());
+		centerTextView.setText(""+getEntry().getRemainingValue().makePositive() + "/"
 				+ getEntry().getTotalValue().makePositive());
 		
 		double daysLeft = (getEntry().getRemainingValue().divide(getEntry().getDailyPayment())).get();
 		int numDaysLeft = (int) Math.ceil(daysLeft);
-		getRightTextView().setText(""+numDaysLeft);
+		rightTextView.setText(""+numDaysLeft);
+		
 		
 	}
 	

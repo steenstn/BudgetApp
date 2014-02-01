@@ -58,7 +58,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		
 		allInstallments = model.getInstallments();
 		
-		BudgetAdapter listAdapter = new BudgetAdapter(this.getContext()); 
+		BudgetAdapter listAdapter = new BudgetAdapter(this.getContext(),R.layout.listitem_installment); 
 		
 		for(int i = 0; i < allInstallments.size(); i++)
 		{

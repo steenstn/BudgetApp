@@ -24,6 +24,7 @@ public class PieChartRenderer {
 		currentPaint = new Paint();
 		currentPaint.setColor(Color.GREEN);
 		currentPaint.setAntiAlias(true);
+		currentPaint.setTextSize(18);
 	}
 	
 	public void drawGraph(Canvas c, float x, float y, float width, float height,  double[] values, String[] legends)
@@ -40,11 +41,11 @@ public class PieChartRenderer {
 			currentPaint.setARGB(255, i*50, 100, 255-i*20);
 			sweepAngle = calculateSweepingAngle(values[i],sum);
 			c.drawArc(new RectF(x,y,width,height), startAngle, sweepAngle, true, currentPaint);
-			
+
+			c.drawText(legends[i], x+width, i*20, currentPaint);
 			startAngle += sweepAngle;
 			
 		}
-		c.drawText("Aw yeah", 30, 30, textPaint);
 	}
 	
 	private float calculateSweepingAngle(double value, double total)

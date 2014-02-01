@@ -1,9 +1,7 @@
 package budgetapp.activities;
 
-import budgetapp.fragments.ChoosePriceFragment;
 import budgetapp.fragments.VersionNameExplanationFragment;
 import budgetapp.main.R;
-import android.app.Activity;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
