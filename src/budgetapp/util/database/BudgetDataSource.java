@@ -225,7 +225,7 @@ public class BudgetDataSource {
 	public Money payOffInstallment(Installment installment, String dateToEdit)
 	{
 		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
-		if(dbInstallment.getId()==-1 || dbInstallment.getFlags() == Installment.INSTALLMENT_PAID)
+		if(dbInstallment.getId()==-1 || dbInstallment.isPaidOff())//getFlags() == Installment.INSTALLMENT_PAID)
 			return new Money(0);
 		
 		Money dailyPay = dbInstallment.getDailyPayment();
@@ -235,10 +235,10 @@ public class BudgetDataSource {
 		{
 			dailyPay = remainingValue;
 		}
-		// If the installment has gone positive or is small enough, delete it
+		// If the installment has gone positive or is small enough, mark it as paid
 		if(remainingValue.biggerThanOrEquals(new Money(0)) || remainingValue.makePositive().almostZero())
 		{
-			dbAccess.markInstallmentAsPaid(installment.getId());
+			markInstallmentAsPaid(dbInstallment.getId());
 			return new Money(0);
 		}
 		else
@@ -406,7 +406,11 @@ public class BudgetDataSource {
 	public boolean markInstallmentAsPaid(long id)
 	{
 		boolean result;
-		result = dbAccess.markInstallmentAsPaid(id);
+		Installment temp = dbAccess.getInstallment(id);
+		temp.setPaidOff(true);
+		int flags = temp.getFlags();
+		
+		result = dbAccess.setFlags(id, flags);
 		return result;
 	}
 	

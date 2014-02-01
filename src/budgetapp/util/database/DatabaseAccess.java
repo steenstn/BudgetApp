@@ -76,12 +76,13 @@ public class DatabaseAccess {
 		return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""+theCategory+"\"", null) > 0;
 	} 
 	
-	public boolean markInstallmentAsPaid(long id)
+	public boolean setFlags(long id, int flags)
 	{
 		
 		ContentValues values = new ContentValues();
-		values.put(BudgetDatabase.COLUMN_FLAGS, Installment.INSTALLMENT_PAID);
-		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id + " and " + BudgetDatabase.COLUMN_FLAGS + " != " + Installment.INSTALLMENT_PAID, null);
+		values.put(BudgetDatabase.COLUMN_FLAGS, flags);
+		int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, 
+				BudgetDatabase.COLUMN_ID + " = " + id, null);
 		
 		if(result==1)
 		{

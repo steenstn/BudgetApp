@@ -2,8 +2,8 @@ package budgetapp.util;
 
 public class Installment {
 	
-	public static final int INSTALLMENT_PAID = 1;
-	public static final int INSTALLMENT_ACTIVE = 2;
+	private static final int INSTALLMENT_PAID = 1;
+	private static final int INSTALLMENT_PAUSED = 2;
 	private long id;
 	private long transactionId;
 	private Money totalValue;
@@ -61,10 +61,27 @@ public class Installment {
 		return (flags & INSTALLMENT_PAID) == INSTALLMENT_PAID;
 	}
 	
-	public boolean isActive() {
-		return (flags & INSTALLMENT_ACTIVE) == INSTALLMENT_ACTIVE;
+	public boolean isPaused() {
+		return (flags & INSTALLMENT_PAUSED) == INSTALLMENT_PAUSED;
 	}
 	
+	public void setPaidOff(boolean value) {
+		if(value) {
+			flags = flags | INSTALLMENT_PAID;
+		}
+		else {
+			flags = flags & (flags ^ INSTALLMENT_PAID);
+		}
+	}
+	
+	public void setPaused(boolean value) {
+		if(value) {
+			flags = flags | INSTALLMENT_PAUSED;
+		}
+		else {
+			flags = flags & (flags ^ INSTALLMENT_PAUSED);
+		}
+	}
 	
 	public void setTransactionId(long id) {
 		this.transactionId = id;
