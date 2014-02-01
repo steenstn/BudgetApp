@@ -2,8 +2,8 @@ package budgetapp.util;
 
 public class Installment {
 	
-	public static final int INSTALLMENT_NOT_PAID = 0;
 	public static final int INSTALLMENT_PAID = 1;
+	public static final int INSTALLMENT_ACTIVE = 2;
 	private long id;
 	private long transactionId;
 	private Money totalValue;
@@ -29,6 +29,20 @@ public class Installment {
 		this.flags = 0;
 	}
 	
+	public Installment(long id, long transactionId, Money totalValue, Money dailyPayment,
+			String dateLastPaid, Money amountPaid, String category, String comment, int flags)
+	{
+		this.id = id;
+		this.transactionId = transactionId;
+		this.totalValue = totalValue;
+		this.dailyPayment = dailyPayment;
+		this.amountPaid = amountPaid;
+		this.dateLastPaid = dateLastPaid;
+		this.category = category;
+		this.comment = comment;
+		this.flags = flags;
+	}
+	
 	public Installment(Money totalValue, Money dailyPayment,
 			String dateLastPaid, Money amountPaid, String category, String comment)
 	{
@@ -43,22 +57,27 @@ public class Installment {
 		this.flags = 0;
 	}
 	
-	public void setTransactionId(long id)
-	{
+	public boolean isPaidOff() {
+		return (flags & INSTALLMENT_PAID) == INSTALLMENT_PAID;
+	}
+	
+	public boolean isActive() {
+		return (flags & INSTALLMENT_ACTIVE) == INSTALLMENT_ACTIVE;
+	}
+	
+	
+	public void setTransactionId(long id) {
 		this.transactionId = id;
 	}
-	public void setTotalValue(Money value) 
-	{
+	public void setTotalValue(Money value) {
 		this.totalValue = value; 
 	}
 	
-	public void setdailyPayment(Money value) 
-	{
+	public void setdailyPayment(Money value) {
 		this.dailyPayment = value;
 	}
 	
-	public void setFlags(int flags)
-	{
+	public void setFlags(int flags) {
 		this.flags = flags;
 	}
 	

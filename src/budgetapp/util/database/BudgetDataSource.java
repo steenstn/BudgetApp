@@ -407,7 +407,6 @@ public class BudgetDataSource {
 	{
 		boolean result;
 		result = dbAccess.markInstallmentAsPaid(id);
-		System.out.println("flags after del: " + dbAccess.getInstallments().get(0).getFlags());
 		return result;
 	}
 	
