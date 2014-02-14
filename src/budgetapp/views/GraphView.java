@@ -213,14 +213,12 @@ public class GraphView extends ImageView implements OnTouchListener, OnScaleGest
 		        pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) 
 		                >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 		        final int pointerId = event.getPointerId(pointerIndex);
-		        if (pointerId == mActivePointerId) {
-		            // This was our active pointer going up. Choose a new
-		            // active pointer and adjust accordingly.
-		            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-		            oldX = event.getX(newPointerIndex);
-		            oldY = event.getY(newPointerIndex);
-		            mActivePointerId = event.getPointerId(newPointerIndex);
-		        }
+	            // This was our active pointer going up. Choose a new
+	            // active pointer and adjust accordingly.
+	            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+	            oldX = event.getX(newPointerIndex);
+	            oldY = event.getY(newPointerIndex);
+	            mActivePointerId = event.getPointerId(newPointerIndex);
 		        pointerIndex2 = INVALID_POINTER_ID;
 		        break;
 		    }
