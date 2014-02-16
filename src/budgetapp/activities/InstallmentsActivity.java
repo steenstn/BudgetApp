@@ -7,7 +7,7 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
 import budgetapp.viewholders.InstallmentViewHolder;
 import budgetapp.views.InstallmentsView;
 import android.os.Bundle;

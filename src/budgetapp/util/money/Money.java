@@ -1,4 +1,4 @@
-package budgetapp.util;
+package budgetapp.util.money;
 /**
  * Money class. Instead of using doubles directly, this class is used to get more flexibility.
  * @author Steen
@@ -11,12 +11,12 @@ public class Money {
 	private static String currency = "kr";
 	private static double exchangeRate = 1;
 	
-	public Money()
+	Money()
 	{
 		value = 0;
 	}
 	
-	public Money(double x)
+	Money(double x)
 	{
 		value = x * exchangeRate;
 	}

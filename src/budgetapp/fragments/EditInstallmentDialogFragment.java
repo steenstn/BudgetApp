@@ -10,8 +10,9 @@ import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -90,7 +91,8 @@ public class EditInstallmentDialogFragment extends DialogFragment {
     				BudgetEntry oldEntry = activity.getModel().getTransaction(installment.getTransactionId());
     				oldEntry.setId(installment.getTransactionId());
     				BudgetEntry newEntry = new BudgetEntry(amountPaid, BudgetFunctions.getDateString(), category, comment);
-    				Installment newInstallment = new Installment(new Money(totalValue), new Money(dailyPayment), installment.getDateLastPaid(), new Money(0) , "", "");
+    				Installment newInstallment = new Installment(MoneyFactory.createMoneyFromNewDouble(totalValue),
+    						MoneyFactory.createMoneyFromNewDouble(dailyPayment), installment.getDateLastPaid(), MoneyFactory.createMoney() , "", "");
     				
     				activity.getModel().editInstallment(installment.getId(), newInstallment);
     				activity.getModel().editTransaction(oldEntry.getId(), newEntry);

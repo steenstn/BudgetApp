@@ -10,7 +10,8 @@ import java.util.List;
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
 import budgetapp.util.BudgetFunctions;
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -81,7 +82,8 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     					throw new Exception("daily payment larger than total value");
     				
     				String comment = commentEditText.getText().toString();
-    				activity.addInstallment(new Money(totalValue), new Money(dailyPayment), category, comment);
+    				activity.addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
+    						MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment);
     				
     			}
     			catch(Exception e)

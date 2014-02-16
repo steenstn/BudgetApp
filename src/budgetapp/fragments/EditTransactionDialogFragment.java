@@ -6,8 +6,9 @@ package budgetapp.fragments;
  */
 import budgetapp.activities.StatsActivity;
 import budgetapp.main.R;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -98,7 +99,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 																	// biggie
 
 						BudgetEntry newEntry = new BudgetEntry(newId,
-								new Money(newValue), newDate, newCategory,
+								MoneyFactory.createMoneyFromNewDouble(newValue), newDate, newCategory,
 								newFlags, newComment);
 
 						activity.editTransactionEntry(theEntry.getId(), newEntry);

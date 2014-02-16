@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import budgetapp.util.entries.DatabaseEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 /**
  * Class containing functions used throughout the application
@@ -144,10 +146,10 @@ public class BudgetFunctions {
 	{
 		
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
-			return new Money();
+			return MoneyFactory.createMoney();
 		int i=0;
 		
-		Money sum = new Money();
+		Money sum = MoneyFactory.createMoney();
 		
 		// Step through days, break if i reaches size or n
 		while(i<theEntries.size() && i<n) 
@@ -170,11 +172,11 @@ public class BudgetFunctions {
 	public static Money getWeightedMean(List<? extends DatabaseEntry> theEntries, int n)
 	{
 		if(theEntries.size()<2) // Just 0 or 1 entries, no derivative yet
-			return new Money();
+			return MoneyFactory.createMoney();
 		int i=0;
 		
 		double totalWeight = 0;
-		Money sum = new Money();
+		Money sum = MoneyFactory.createMoney();
 		while(i<theEntries.size() && i<n) 
 		{
 			totalWeight+= Math.exp(-0.5*(double)i);

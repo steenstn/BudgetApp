@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -182,6 +184,6 @@ public class BudgetBackup {
 	{
 		double theValue = Double.parseDouble(value);
 		int theFlags = Integer.parseInt(flags);
-		return new BudgetEntry(new Money(theValue / Money.getExchangeRate()), date, category, comment, theFlags);
+		return new BudgetEntry(MoneyFactory.convertDoubleToMoney(theValue), date, category, comment, theFlags);
 	}
 }

@@ -21,7 +21,8 @@ import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import budgetapp.viewholders.InstallmentViewHolder;
 
 public class InstallmentsView extends LinearLayout implements IBudgetObserver{
@@ -62,7 +63,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	@Override
 	public void update() {
 		
-		Money totalDailyPayments = new Money(0);
+		Money totalDailyPayments = MoneyFactory.createMoney();
 		List<Installment> allInstallments = new ArrayList<Installment>();
 		
 		allInstallments = model.getInstallments();
@@ -70,7 +71,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 		listAdapter = new BudgetAdapter(this.getContext(),R.layout.listitem_installment); 
 		
 		for(int i = 0; i < allInstallments.size(); i++) {
-			if(allInstallments.get(i).getRemainingValue().biggerThan(new Money(0))) {
+			if(allInstallments.get(i).getRemainingValue().biggerThan(MoneyFactory.createMoney())) {
 				model.removeInstallment(allInstallments.get(i).getId());
 			}
 			else if(!allInstallments.get(i).isPaidOff()) {

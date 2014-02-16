@@ -4,8 +4,9 @@ import java.text.ParseException;
 import java.util.Locale;
 
 import budgetapp.util.BudgetFunctions;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 /**
  * ViewHolder for displaying info about a transaction in the Statistics view
@@ -39,7 +40,7 @@ public class StatEntryViewHolder extends ViewHolder {
 	}
 	public StatEntryViewHolder(String theString,Type theType)
 	{
-		this.entry = new BudgetEntry(-1, new Money(), "", "");
+		this.entry = new BudgetEntry(-1, MoneyFactory.createMoney(), "", "");
 		this.title = theString;
 		this.flag = theType;
 	}

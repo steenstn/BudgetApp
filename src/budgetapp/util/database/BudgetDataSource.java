@@ -12,11 +12,12 @@ import java.util.List;
 
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DatabaseEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 
 import android.content.Context;
@@ -226,7 +227,7 @@ public class BudgetDataSource {
 	{
 		Installment dbInstallment = dbAccess.getInstallment(installment.getId());
 		if(dbInstallment.getId()==-1 || dbInstallment.isPaidOff() || dbInstallment.isPaused())
-			return new Money(0);
+			return MoneyFactory.createMoney();
 		
 		Money dailyPay = dbInstallment.getDailyPayment();
 		
@@ -236,10 +237,10 @@ public class BudgetDataSource {
 			dailyPay = remainingValue;
 		}
 		// If the installment has gone positive or is small enough, mark it as paid
-		if(remainingValue.biggerThanOrEquals(new Money(0)) || remainingValue.makePositive().almostZero())
+		if(remainingValue.biggerThanOrEquals(MoneyFactory.createMoney()) || remainingValue.makePositive().almostZero())
 		{
 			markInstallmentAsPaid(dbInstallment.getId());
-			return new Money(0);
+			return MoneyFactory.createMoney();
 		}
 		else
 		{

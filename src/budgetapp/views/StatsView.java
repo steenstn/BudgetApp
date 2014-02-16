@@ -8,11 +8,12 @@ import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
-import budgetapp.util.Money;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import budgetapp.util.stats.CompositeStats;
 import budgetapp.util.stats.Stats;
 import budgetapp.viewholders.CategoryStatsViewHolder;
@@ -171,7 +172,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
         List<DayEntry> dayFlow = model.getSomeDays(0,BudgetDataSource.DESCENDING);
         
         categoryAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_category_stats);
-        Money sum = new Money();
+        Money sum = MoneyFactory.createMoney();
         for(int i = 0; i < categoryStats.size(); i++)
         {
         	categoryAdapter.add(new CategoryStatsViewHolder(categoryStats.get(i)));

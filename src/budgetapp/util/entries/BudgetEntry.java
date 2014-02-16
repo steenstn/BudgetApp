@@ -1,6 +1,7 @@
 package budgetapp.util.entries;
 
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -88,7 +89,8 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		in.readStringArray(data);
 		
 		setId(Long.parseLong(data[0]));
-		this.setValue(new Money(Double.parseDouble(data[1]) / Money.getExchangeRate()));
+		//this.setValue(new Money(Double.parseDouble(data[1]) / Money.getExchangeRate()));
+		this.setValue(MoneyFactory.convertDoubleToMoney(Double.parseDouble(data[1])));
 		this.date=data[2];
 		this.category=data[3];
 		setFlags(Integer.parseInt(data[4]));
@@ -98,7 +100,7 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 	
 	public BudgetEntry() {
 		setId(-1);
-		this.setValue(new Money(0));
+		this.setValue(MoneyFactory.createMoney());
 		this.date="";
 		this.category="";
 		setFlags(0);

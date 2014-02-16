@@ -1,5 +1,7 @@
 package budgetapp.util;
 
+import budgetapp.util.money.Money;
+
 public class Installment {
 	
 	private static final int INSTALLMENT_PAID = 1;

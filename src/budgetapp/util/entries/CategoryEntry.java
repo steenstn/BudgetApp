@@ -1,6 +1,7 @@
 package budgetapp.util.entries;
 
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 
 /**
@@ -33,14 +34,14 @@ public class CategoryEntry extends DatabaseEntry {
 		setId(id);
 		this.category = category;
 		this.num=0;
-		this.value=new Money();
+		this.value=MoneyFactory.createMoney();
 		setFlags(0);
 	}
 	
 	public CategoryEntry(String category){
 		setId(0);
 		this.category = category;
-		this.value=new Money();
+		this.value=MoneyFactory.createMoney();
 		this.num=0;
 		setFlags(0);
 	}

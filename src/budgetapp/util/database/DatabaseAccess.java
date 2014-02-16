@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 
 import android.content.ContentValues;
@@ -113,7 +114,7 @@ public class DatabaseAccess {
 				null, null, null);
 		cursor.moveToFirst();
 		
-		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+		BudgetEntry entry = new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 		cursor.close();
 		return entry;
 	}
@@ -130,7 +131,7 @@ public class DatabaseAccess {
 		if(cursor.getCount()==1)
 		{
 			cursor.moveToFirst();
-			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
+			BudgetEntry entry = new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4));
 			return entry;
 		}
 		else
@@ -599,7 +600,7 @@ public class DatabaseAccess {
 		while(!cursor.isAfterLast())
 		{
 			
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -612,7 +613,7 @@ public class DatabaseAccess {
 		Cursor cursor;
 		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
 		cursor.moveToFirst();
-		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 		cursor.close();
 		return entry;
 	}
@@ -635,10 +636,10 @@ public class DatabaseAccess {
 			
 			Installment installment = new Installment(cursor.getLong(0),
 													  cursor.getLong(1),
-												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
-												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
+													  MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)),
+													  MoneyFactory.convertDoubleToMoney(cursor.getDouble(3)),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
 												  	  cursor.getString(7),
 												  	  cursor.getString(8));
 			installment.setFlags(cursor.getInt(5));
@@ -647,7 +648,7 @@ public class DatabaseAccess {
 			return installment;
 		}
 		else
-			return new Installment(-1,-1,new Money(),new Money(),"ERROR",new Money(),"ERROR","ERROR");
+			return new Installment(-1,-1,MoneyFactory.createMoney(),MoneyFactory.createMoney(),"ERROR",MoneyFactory.createMoney(),"ERROR","ERROR");
 	}
 	
 	
@@ -663,7 +664,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -684,7 +685,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),new Money(cursor.getDouble(2) / Money.getExchangeRate()),cursor.getInt(3));
+			DayEntry entry =  new DayEntry(cursor.getLong(0),cursor.getString(1),MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)),cursor.getInt(3));
 			entries.add(entry);
 			cursor.moveToNext();
 		}
@@ -702,7 +703,7 @@ public class DatabaseAccess {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast())
 		{
-			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),new Money(cursor.getDouble(3) / Money.getExchangeRate()),cursor.getInt(4)));
+			entries.add(new CategoryEntry(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),MoneyFactory.convertDoubleToMoney(cursor.getDouble(3)),cursor.getInt(4)));
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -748,10 +749,10 @@ public class DatabaseAccess {
 			
 			Installment installment = new Installment(cursor.getLong(0),
 													  cursor.getLong(1),
-												  	  new Money(cursor.getDouble(2) / Money.getExchangeRate()),
-												  	  new Money(cursor.getDouble(3) / Money.getExchangeRate()),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(3)),
 												  	  cursor.getString(4),
-												  	  new Money(cursor.getDouble(6) / Money.getExchangeRate()),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
 												  	  cursor.getString(7),
 												  	  cursor.getString(8));
 			installment.setFlags(cursor.getInt(5));
@@ -780,7 +781,7 @@ public class DatabaseAccess {
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
 		while(!cursor.isAfterLast())
 		{
-			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),new Money(cursor.getDouble(1) / Money.getExchangeRate()),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
 		}

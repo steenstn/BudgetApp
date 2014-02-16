@@ -8,7 +8,8 @@ import java.util.List;
 
 import budgetapp.activities.MainActivity;
 import budgetapp.main.R;
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -62,7 +63,7 @@ public class ChoosePriceFragment extends DialogFragment {
         
         for(int i=0;i<prices.size();i++)
         {
-        	Money displayedValue = new Money(prices.get(i) * -1).divide(Money.getExchangeRate());
+        	Money displayedValue = MoneyFactory.convertDoubleToMoney(prices.get(i) * -1);
         	temp[i] = displayedValue.toString();
         }
        

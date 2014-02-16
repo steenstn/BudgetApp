@@ -12,8 +12,9 @@ import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.Money;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 import budgetapp.views.MainView;
 
 import android.os.AsyncTask;
@@ -37,7 +38,7 @@ public class MainActivity extends FragmentActivity {
 	private MainView view;
 	private BudgetModel model;
 	private SharedPreferences settings;
-	public Money dailyFlow = new Money();
+	public Money dailyFlow = MoneyFactory.createMoney();
 	private ProcessQueueTask processQueueTask;
 	
 	public String getChosenCategory()
@@ -51,7 +52,7 @@ public class MainActivity extends FragmentActivity {
 	
 	public void setDailyBudget(double budget)
 	{
-		model.setDailyBudget(new Money(budget));
+		model.setDailyBudget(MoneyFactory.createMoneyFromNewDouble(budget));
 	}
 	
 	public Money getDailyBudget()
@@ -171,7 +172,7 @@ public class MainActivity extends FragmentActivity {
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	    	Calendar cal = Calendar.getInstance();
 	    	String dateString = dateFormat.format(cal.getTime());
-	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
+	    	BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value*-1), dateString,theCategory,theComment);
 	    	model.queueTransaction(entry);
 	    	processQueue();
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
@@ -317,64 +318,5 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 	}
-	private class DailyBudgetAddTask extends AsyncTask<Void,Void,Integer>
-	{
-		@Override
-		protected void onPreExecute()
-		{
-			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
-			editText.setEnabled(false);
-			dailyFlow = new Money();
-		}
-		@Override
-		protected Integer doInBackground(Void... params) {
-			int result = model.addDailyBudget();
-			return result;
-		}
-		
-		@Override
-		protected void onPostExecute(Integer daysAdded)
-		{
-			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
-			editText.setEnabled(true);
-			if(daysAdded>0)
-	    	{
-	    		dailyFlow = getDailyBudget().multiply(daysAdded);
-	    	}
-			view.update();
-
-	    	new PayInstallmentsTask().execute();
-		}
-	}
-	
-	private class PayInstallmentsTask extends AsyncTask<Void,Void,Void>
-	{
-		@Override
-		protected void onPreExecute()
-		{
-			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
-			editText.setEnabled(false);
-		}
-		@Override
-		protected Void doInBackground(Void... params) {
-			Money temp = model.payOffInstallments();
-			dailyFlow = dailyFlow.add(temp);
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void params)
-		{
-			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
-			editText.setEnabled(true);
-			if(!dailyFlow.almostZero())
-			{
-				Toast.makeText(getApplicationContext(), "Cash flow since last time: " + dailyFlow, Toast.LENGTH_LONG).show();
-			}
-			view.update();
-			
-		}
-	}
-		
     
 }

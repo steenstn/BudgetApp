@@ -18,7 +18,6 @@ import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
-import budgetapp.util.Money;
 import budgetapp.util.TransactionQueue;
 import budgetapp.util.commands.PayOffInstallmentCommand;
 import budgetapp.util.commands.TransactionCommand;
@@ -26,6 +25,8 @@ import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 public class BudgetModel {
 	
 	private BudgetDataSource datasource;
@@ -58,7 +59,7 @@ public class BudgetModel {
 		Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
 		Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
 		Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
-		dailyBudget = new Money(config.getDoubleValue(BudgetConfig.Fields.dailyBudget) / Money.getExchangeRate());
+		dailyBudget = MoneyFactory.convertDoubleToMoney(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
 		
 		backup = new BudgetBackup(context);
 		transactions = new ArrayList<TransactionCommand>();
@@ -137,7 +138,7 @@ public class BudgetModel {
 			return new Money(dayTotal.get(0).getValue());
 		}
 		else
-			return new Money();
+			return MoneyFactory.createMoney();
 	}
 	
 	public int getQueueSize() {
@@ -321,7 +322,7 @@ public class BudgetModel {
     	else // Add a transaction of 0
     	{
     		Calendar tempDate = Calendar.getInstance();
-    		BudgetEntry entry = new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income");
+    		BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),"Income");
     		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 			
     		//datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
@@ -342,10 +343,10 @@ public class BudgetModel {
 	{
 		List<Installment> installments = datasource.getInstallments();
 		if(installments.isEmpty())
-			return new Money(0);
+			return MoneyFactory.createMoney();
 		
     	
-		Money moneyPaid = new Money(0);
+		Money moneyPaid = MoneyFactory.createMoney();
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
 		{

@@ -1,6 +1,6 @@
 package budgetapp.util.entries;
 
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
 
 /**
  * The class for storing the total money spent/earned for a day.

@@ -1,6 +1,6 @@
 package budgetapp.util.entries;
 
-import budgetapp.util.Money;
+import budgetapp.util.money.Money;
 
 /**
  * The abstract class for all database entries in the tables. Just has an ID
