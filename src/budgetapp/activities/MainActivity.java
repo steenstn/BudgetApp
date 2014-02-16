@@ -111,7 +111,9 @@ public class MainActivity extends FragmentActivity {
     	settings = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	// Add daily budget and Toast the result if anything was added
-    	new DailyBudgetAddTask().execute();
+    	//new DailyBudgetAddTask().execute();
+    	model.addDailyBudget();
+    	model.payOffInstallments();
 
 		boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
     	if(autoComplete)
@@ -164,7 +166,7 @@ public class MainActivity extends FragmentActivity {
 	    	Calendar cal = Calendar.getInstance();
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
-	    	model.createTransaction(entry);
+	    	model.queueTransaction(entry);
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");
 	    	
@@ -216,6 +218,9 @@ public class MainActivity extends FragmentActivity {
             case R.id.menu_preferences:
             	intent = new Intent(this,PreferencesActivity.class);
             	startActivity(intent);
+            	return true;
+            case R.id.menu_processqueue:
+            	model.processQueue();
             	return true;
             default:
                 return super.onOptionsItemSelected(item);

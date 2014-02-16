@@ -1,5 +1,6 @@
-package budgetapp.util.database;
+package budgetapp.util.commands;
 
+import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 
 /**
@@ -11,18 +12,18 @@ import budgetapp.util.entries.BudgetEntry;
  *
  */
 
-public class TransactionCommand {
+public class TransactionCommand extends Command {
 
-	private BudgetDataSource datasource;
 	private BudgetEntry entry;
+	
 	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry)
 	{
+		executed = false;
 		datasource = theSource;
 		entry = theEntry;
 	}
 	
-	public BudgetEntry getEntry()
-	{
+	public BudgetEntry getEntry() {
 		return entry;
 	}
 	
@@ -34,6 +35,7 @@ public class TransactionCommand {
 	{
 		BudgetEntry temp = datasource.createTransactionEntry(entry);
 		entry.setId(temp.getId());
+		executed = true;
 	}
 	
 	public void unexecute()

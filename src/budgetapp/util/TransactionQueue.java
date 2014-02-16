@@ -2,18 +2,18 @@ package budgetapp.util;
 
 import java.util.ArrayList;
 
-import budgetapp.util.database.TransactionCommand;
+import budgetapp.util.commands.Command;
 
 public class TransactionQueue {
 	
-	private ArrayList<TransactionCommand> transactions;
+	private ArrayList<Command> transactions;
 	
 	public TransactionQueue()
 	{
-		transactions = new ArrayList<TransactionCommand>();
+		transactions = new ArrayList<Command>();
 	}
 	
-	public void queueTransaction(TransactionCommand transaction)
+	public void queueTransaction(Command transaction)
 	{
 		transactions.add(transaction);
 	}
@@ -22,7 +22,10 @@ public class TransactionQueue {
 	{
 		for(int i = 0; i < transactions.size(); i++)
 		{
-			transactions.get(i).execute();
+			if(!transactions.get(i).isExecuted()) {
+					System.out.println("Executing " + transactions.get(i).getClass().toString());
+					transactions.get(i).execute();
+				}
 		}
 	}
 	

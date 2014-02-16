@@ -16,8 +16,9 @@ import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
 import budgetapp.util.TransactionQueue;
+import budgetapp.util.commands.PayOffInstallmentCommand;
+import budgetapp.util.commands.TransactionCommand;
 import budgetapp.util.database.BudgetDataSource;
-import budgetapp.util.database.TransactionCommand;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
@@ -58,6 +59,7 @@ public class BudgetModel {
 		backup = new BudgetBackup(context);
 		transactions = new ArrayList<TransactionCommand>();
 		observers = new ArrayList<IBudgetObserver>();
+		transactionQueue = new TransactionQueue();
 		stateChanged = true;
 	}
 	
@@ -66,14 +68,10 @@ public class BudgetModel {
 	 * Notifies observers.
 	 * @param entry - The BudgetEntry to create
 	 */
-	public void createTransaction(BudgetEntry entry)
+	public void queueTransaction(BudgetEntry entry)
 	{
 		addDailyBudget();
-		
-		transactions.add(new TransactionCommand(datasource,entry));
-		transactions.get(transactions.size()-1).execute();
-		stateChanged = true;
-		notifyObservers();
+		transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
 	}
 	
 	/**
@@ -109,6 +107,12 @@ public class BudgetModel {
 			stateChanged = true;
 			notifyObservers();
 		}
+	}
+	
+	public void processQueue() {
+		transactionQueue.processQueue();
+		stateChanged = true;
+		notifyObservers();
 	}
 	
 	public Money getCurrentBudget()	{
@@ -284,9 +288,9 @@ public class BudgetModel {
 	    		{
 	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
-		        	
-	    			datasource.createTransactionEntry(entry);
-		    		stateChanged = true;
+		        	transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
+	    			//datasource.createTransactionEntry(entry);
+		    		//stateChanged = true;
 		    		daysAdded++;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
@@ -296,9 +300,11 @@ public class BudgetModel {
     	else // Add a transaction of 0
     	{
     		Calendar tempDate = Calendar.getInstance();
-    		
-    		datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
-    		stateChanged = true;
+    		BudgetEntry entry = new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income");
+    		transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
+			
+    		//datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
+    		//stateChanged = true;
     		daysAdded = 1;
     	}
     	//notifyObservers();
@@ -344,10 +350,11 @@ public class BudgetModel {
 	    		String tempDateString = compareFormat.format(tempDate.getTime());
 	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
+	    			transactionQueue.queueTransaction(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
 	    			
-	    			moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
+	    			//moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
 	    			
-		    		stateChanged = true;
+		    		//stateChanged = true;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
