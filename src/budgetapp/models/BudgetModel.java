@@ -9,6 +9,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.widget.EditText;
+import android.widget.Toast;
+import budgetapp.main.R;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
@@ -68,10 +72,9 @@ public class BudgetModel {
 	 * Notifies observers.
 	 * @param entry - The BudgetEntry to create
 	 */
-	public void queueTransaction(BudgetEntry entry)
-	{
+	public void queueTransaction(BudgetEntry entry)	{
 		addDailyBudget();
-		transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
+		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 	}
 	
 	/**
@@ -79,8 +82,7 @@ public class BudgetModel {
 	 * Notifies observers.
 	 * @param entry
 	 */
-	public void removeTransaction(BudgetEntry entry)
-	{
+	public void removeTransaction(BudgetEntry entry) {
 		datasource.removeTransactionEntry(entry);
 		stateChanged = true;
 		notifyObservers();
@@ -109,12 +111,25 @@ public class BudgetModel {
 		}
 	}
 	
-	public void processQueue() {
-		transactionQueue.processQueue();
+	/**
+	 * Used for testing to make sure transactions are in place before asserting
+	 */
+	public void processWholeQueue() {
+		for(int i = 0; i < transactionQueue.getSize(); i++) {
+			transactionQueue.processQueueItem();
+		}
 		stateChanged = true;
 		notifyObservers();
 	}
 	
+	public void processQueueItem() {
+		transactionQueue.processQueueItem();
+		stateChanged = true;
+	}
+	
+	public int getRemainingItemsInQueue() {
+		return transactionQueue.getRemainingItems();
+	}
 	public Money getCurrentBudget()	{
 		List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
 		if(dayTotal.size()==1) {
@@ -124,6 +139,9 @@ public class BudgetModel {
 			return new Money();
 	}
 	
+	public int getQueueSize() {
+		return transactionQueue.getSize();
+	}
 	public Money getDailyBudget() {
 		return dailyBudget;
 	}
@@ -182,6 +200,7 @@ public class BudgetModel {
 	public boolean addInstallment(Installment installment)
 	{
 		boolean result = datasource.createInstallment(installment);
+		
 		if(result == true)
 		{
 			stateChanged = true;
@@ -288,7 +307,8 @@ public class BudgetModel {
 	    		{
 	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
-		        	transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
+		        	transactionQueue.queueItem(new TransactionCommand(datasource, entry));
+		        	System.out.println("Queueing daily budget");
 	    			//datasource.createTransactionEntry(entry);
 		    		//stateChanged = true;
 		    		daysAdded++;
@@ -301,7 +321,7 @@ public class BudgetModel {
     	{
     		Calendar tempDate = Calendar.getInstance();
     		BudgetEntry entry = new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income");
-    		transactionQueue.queueTransaction(new TransactionCommand(datasource, entry));
+    		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 			
     		//datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
     		//stateChanged = true;
@@ -350,7 +370,8 @@ public class BudgetModel {
 	    		String tempDateString = compareFormat.format(tempDate.getTime());
 	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			transactionQueue.queueTransaction(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
+	    			System.out.println("ququeing installment");
+	    			transactionQueue.queueItem(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
 	    			
 	    			//moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
 	    			
@@ -435,18 +456,15 @@ public class BudgetModel {
 		datasource.clearDatabaseInstance();
 	}
 	
-	public void clearAutocompleteValues()
-	{
+	public void clearAutocompleteValues() {
 		datasource.clearAutocompleteValues();
 	}
 	
-	public void addObserver(IBudgetObserver observer)
-	{
+	public void addObserver(IBudgetObserver observer) {
 		observers.add(observer);
 	}
 	
-	private void notifyObservers()
-	{
+	public void notifyObservers() {
 		if(stateChanged)
 		{
 			for(int i = 0; i < observers.size(); i++)

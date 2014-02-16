@@ -15,6 +15,7 @@ public class PayOffInstallmentCommand extends Command {
 	@Override
 	public void execute() {
 		datasource.payOffInstallment(installment, dateToEdit);
+		executed = true;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +38,7 @@ public class MainActivity extends FragmentActivity {
 	private BudgetModel model;
 	private SharedPreferences settings;
 	public Money dailyFlow = new Money();
+	private ProcessQueueTask processQueueTask;
 	
 	public String getChosenCategory()
 	{
@@ -105,8 +107,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     @Override
-    public void onResume()
-    {
+    public void onResume() {
     	super.onResume();
     	settings = PreferenceManager.getDefaultSharedPreferences(this);
     	
@@ -116,19 +117,25 @@ public class MainActivity extends FragmentActivity {
     	model.payOffInstallments();
 
 		boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
-    	if(autoComplete)
-    	{
+    	if(autoComplete) {
     		view.setUpAutocompleteValues();
     	}
-    	else
-    	{
+    	else {
     		view.setUpEmptyAutocompleteValues();
     	}
     	
-    	
-    	
+    	//processQueue();
     }
     
+    public void processQueue() {
+    	if(model.getRemainingItemsInQueue() > 0)
+    	{
+    		if(processQueueTask == null || processQueueTask.getStatus()!= AsyncTask.Status.RUNNING) {
+    			processQueueTask = new ProcessQueueTask();
+    			processQueueTask.execute();
+    		}
+    	}
+    }
     public void saveConfig()
     {
     	model.saveConfig();
@@ -167,6 +174,7 @@ public class MainActivity extends FragmentActivity {
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(new Money(value*-1), dateString,theCategory,theComment);
 	    	model.queueTransaction(entry);
+	    	processQueue();
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");
 	    	
@@ -220,7 +228,7 @@ public class MainActivity extends FragmentActivity {
             	startActivity(intent);
             	return true;
             case R.id.menu_processqueue:
-            	model.processQueue();
+            	model.notifyObservers();
             	return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -270,6 +278,46 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 	
+	private class ProcessQueueTask extends AsyncTask<Void,Void,Void>
+	{
+		ProgressBar progressBar;
+		@Override
+		protected void onPreExecute()
+		{
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(false);
+			progressBar = (ProgressBar)findViewById(R.id.progressBarQueue);
+			progressBar.setMax(model.getQueueSize());
+			if(progressBar.getMax() > 10)
+			{
+				progressBar.setVisibility(View.VISIBLE);
+			}
+		}
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			for(int i = 0; i < model.getQueueSize(); i++) {
+				model.processQueueItem();
+				progressBar.incrementProgressBy(1);
+				publishProgress();
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onProgressUpdate(Void... arg0) {
+			model.notifyObservers();
+		}
+		
+		@Override
+		protected void onPostExecute(Void params) {
+			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
+			editText.setEnabled(true);
+			if(progressBar.getVisibility() == View.VISIBLE) {
+				progressBar.setVisibility(View.GONE);
+			}
+		}
+		
+	}
 	private class DailyBudgetAddTask extends AsyncTask<Void,Void,Integer>
 	{
 		@Override

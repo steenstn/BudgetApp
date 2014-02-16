@@ -21,6 +21,13 @@
 
        
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBarQueue"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="gone"/>
     
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"

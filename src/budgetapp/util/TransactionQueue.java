@@ -7,26 +7,41 @@ import budgetapp.util.commands.Command;
 public class TransactionQueue {
 	
 	private ArrayList<Command> transactions;
+	private int index;
 	
-	public TransactionQueue()
-	{
+	public TransactionQueue() {
+		index = 0;
 		transactions = new ArrayList<Command>();
 	}
 	
-	public void queueTransaction(Command transaction)
-	{
+	public void queueItem(Command transaction) {
 		transactions.add(transaction);
 	}
 	
-	public void processQueue()
-	{
-		for(int i = 0; i < transactions.size(); i++)
-		{
+	public int getSize() {
+		return transactions.size();
+	}
+	
+	public int getRemainingItems() {
+		int remainingItems = 0;
+		for(int i = 0; i < transactions.size(); i++) {
 			if(!transactions.get(i).isExecuted()) {
-					System.out.println("Executing " + transactions.get(i).getClass().toString());
-					transactions.get(i).execute();
-				}
+				remainingItems++;
+			}
 		}
+		return remainingItems;
+	}
+	
+	public void processQueueItem()
+	{
+		if(index >= transactions.size())
+			return;
+		
+		if(!transactions.get(index).isExecuted()) {
+			transactions.get(index).execute();
+			index++;
+		}
+		
 	}
 	
 }
