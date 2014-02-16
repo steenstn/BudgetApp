@@ -22,16 +22,12 @@
         multiple days and are meant to be used for e.g. rent, a new TV, etc. The
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
-    <string name="versionName">Hayagriva</string>
-    <string name="versionNameExplanation">This release was done in the beginning of 2014. 
-        In the Chinese Zodiac 2014 is the year of the horse. \nIn Hinduism, Hayagriva is a horse-headed avatar of the god Vishnu. 
-        Therefore this release is called Hayagriva</string>
+    <string name="versionName">Vishwakarma</string>
+    <string name="versionNameExplanation">Vishwakarma is the God of architecture in the Hindu faith. 
+        This release has had improvement of the inner architecture as the main goal and is therefore named
+         Vishwakarma.</string>
     <string name="whats_new">
-    - Fixed bug where the month spinner would not get updated when changing year in the statistics view\n
-	- Fixed bug where a long category name would mess up the layout on the favorite buttons\n
-	- Changed scaling of graph so that a fully saved daily budget will give a 45 degree rise\n
-	- Added the weekday to the transaction lists in the statistics view\n
-	- Added the functionality to easier be able to send feedback and rate the app\n
+    	- Fixed bug where the graph would sometimes jump around when zooming\n
 	</string>
 	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">
