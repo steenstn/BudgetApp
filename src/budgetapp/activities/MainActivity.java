@@ -163,7 +163,6 @@ public class MainActivity extends FragmentActivity {
      * @param theComment - The comment to add to the entry
      */
     public void subtractFromBudget(String theValue, String theCategory, String theComment) {
-       
     	
     	try
     	{
@@ -196,7 +195,6 @@ public class MainActivity extends FragmentActivity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
     	Intent intent;
     	DialogFragment newFragment;
         switch (item.getItemId()) {
@@ -226,9 +224,6 @@ public class MainActivity extends FragmentActivity {
             case R.id.menu_preferences:
             	intent = new Intent(this,PreferencesActivity.class);
             	startActivity(intent);
-            	return true;
-            case R.id.menu_processqueue:
-            	model.notifyObservers();
             	return true;
             default:
                 return super.onOptionsItemSelected(item);
