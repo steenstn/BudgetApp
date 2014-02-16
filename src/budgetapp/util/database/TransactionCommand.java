@@ -1,6 +1,6 @@
 package budgetapp.util.database;
 
-import budgetapp.util.BudgetEntry;
+import budgetapp.util.entries.BudgetEntry;
 
 /**
  * The class for executing a transaction. Uses the Command design pattern
@@ -13,17 +13,17 @@ import budgetapp.util.BudgetEntry;
 
 public class TransactionCommand {
 
-	private BudgetDataSource _datasource;
-	private BudgetEntry _entry;
+	private BudgetDataSource datasource;
+	private BudgetEntry entry;
 	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry)
 	{
-		_datasource = theSource;
-		_entry = theEntry;
+		datasource = theSource;
+		entry = theEntry;
 	}
 	
 	public BudgetEntry getEntry()
 	{
-		return _entry;
+		return entry;
 	}
 	
 	/**
@@ -32,12 +32,12 @@ public class TransactionCommand {
 	 */
 	public void execute()
 	{
-		BudgetEntry temp = _datasource.createTransactionEntry(_entry);
-		_entry.setId(temp.getId());
+		BudgetEntry temp = datasource.createTransactionEntry(entry);
+		entry.setId(temp.getId());
 	}
 	
 	public void unexecute()
 	{
-		_datasource.removeTransactionEntry(_entry);
+		datasource.removeTransactionEntry(entry);
 	}
 }

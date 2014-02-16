@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import budgetapp.util.entries.DatabaseEntry;
+
 /**
  * Class containing functions used throughout the application
  * @author Steen

@@ -12,8 +12,8 @@ import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
+import budgetapp.util.entries.BudgetEntry;
 import budgetapp.views.MainView;
 
 import android.os.AsyncTask;

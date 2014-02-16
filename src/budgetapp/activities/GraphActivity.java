@@ -8,6 +8,7 @@ import android.os.Bundle;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.*;
 import budgetapp.util.database.BudgetDataSource;
+import budgetapp.util.entries.DayEntry;
 import budgetapp.util.graph.LineGraphRenderer;
 import budgetapp.views.GraphView;
 

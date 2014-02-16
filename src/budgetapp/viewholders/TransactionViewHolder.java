@@ -1,6 +1,6 @@
 package budgetapp.viewholders;
 
-import budgetapp.util.BudgetEntry;
+import budgetapp.util.entries.BudgetEntry;
 
 public class TransactionViewHolder extends ViewHolder {
 

@@ -6,8 +6,8 @@ package budgetapp.fragments;
  */
 import budgetapp.activities.StatsActivity;
 import budgetapp.main.R;
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.Money;
+import budgetapp.util.entries.BudgetEntry;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

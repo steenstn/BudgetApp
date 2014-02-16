@@ -5,7 +5,7 @@ import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.fragments.PieChartFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
-import budgetapp.util.BudgetEntry;
+import budgetapp.util.entries.BudgetEntry;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;

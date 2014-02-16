@@ -4,7 +4,7 @@ package budgetapp.views;
 import java.util.List;
 
 import budgetapp.models.BudgetModel;
-import budgetapp.util.CategoryEntry;
+import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.graph.PieChartRenderer;
 import android.content.Context;
 import android.graphics.Canvas;

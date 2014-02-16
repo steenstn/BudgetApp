@@ -3,9 +3,9 @@ package budgetapp.viewholders;
 import java.text.ParseException;
 import java.util.Locale;
 
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Money;
+import budgetapp.util.entries.BudgetEntry;
 
 /**
  * ViewHolder for displaying info about a transaction in the Statistics view

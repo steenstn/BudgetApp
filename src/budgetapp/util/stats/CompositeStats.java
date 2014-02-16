@@ -3,7 +3,7 @@ package budgetapp.util.stats;
 import java.util.ArrayList;
 import java.util.List;
 
-import budgetapp.util.BudgetEntry;
+import budgetapp.util.entries.BudgetEntry;
 
 public class CompositeStats extends Stats {
 	

@@ -8,10 +8,10 @@ import java.util.List;
 
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
+import budgetapp.util.entries.BudgetEntry;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

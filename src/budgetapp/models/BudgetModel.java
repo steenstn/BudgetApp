@@ -11,16 +11,16 @@ import java.util.List;
 import android.content.Context;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
-import budgetapp.util.BudgetEntry;
 import budgetapp.util.BudgetFunctions;
-import budgetapp.util.CategoryEntry;
 import budgetapp.util.IBudgetObserver;
-import budgetapp.util.DayEntry;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
 import budgetapp.util.TransactionQueue;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.database.TransactionCommand;
+import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.entries.CategoryEntry;
+import budgetapp.util.entries.DayEntry;
 public class BudgetModel {
 	
 	private BudgetDataSource datasource;
@@ -251,7 +251,6 @@ public class BudgetModel {
 	 */
 	public int addDailyBudget()
     {
-		//System.out.println("Adding daily budget");
     	List<DayEntry> lastDay = datasource.getSomeDays(1,BudgetDataSource.DESCENDING);
     	
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");

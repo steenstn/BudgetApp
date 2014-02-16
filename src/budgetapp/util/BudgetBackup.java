@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import budgetapp.util.entries.BudgetEntry;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;

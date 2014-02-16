@@ -3,11 +3,11 @@ package budgetapp.util.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import budgetapp.util.BudgetEntry;
-import budgetapp.util.CategoryEntry;
-import budgetapp.util.DayEntry;
 import budgetapp.util.Installment;
 import budgetapp.util.Money;
+import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.entries.CategoryEntry;
+import budgetapp.util.entries.DayEntry;
 
 
 import android.content.ContentValues;

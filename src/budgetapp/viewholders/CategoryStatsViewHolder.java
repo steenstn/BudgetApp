@@ -1,6 +1,6 @@
 package budgetapp.viewholders;
 
-import budgetapp.util.CategoryEntry;
+import budgetapp.util.entries.CategoryEntry;
 
 
 /**

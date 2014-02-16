@@ -3,8 +3,8 @@ package budgetapp.util.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import budgetapp.util.CategoryEntry;
 import budgetapp.util.Money;
+import budgetapp.util.entries.CategoryEntry;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
