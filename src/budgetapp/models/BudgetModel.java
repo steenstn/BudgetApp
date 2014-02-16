@@ -75,6 +75,7 @@ public class BudgetModel {
 	public void queueTransaction(BudgetEntry entry)	{
 		addDailyBudget();
 		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
+		transactions.add(new TransactionCommand(datasource, entry));
 	}
 	
 	/**
