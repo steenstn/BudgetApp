@@ -111,8 +111,6 @@ public class MainActivity extends FragmentActivity {
     	super.onResume();
     	settings = PreferenceManager.getDefaultSharedPreferences(this);
     	
-    	// Add daily budget and Toast the result if anything was added
-    	//new DailyBudgetAddTask().execute();
     	model.addDailyBudget();
     	model.payOffInstallments();
 
@@ -124,7 +122,8 @@ public class MainActivity extends FragmentActivity {
     		view.setUpEmptyAutocompleteValues();
     	}
     	
-    	//processQueue();
+    	processQueue();
+    	view.update();
     }
     
     public void processQueue() {
