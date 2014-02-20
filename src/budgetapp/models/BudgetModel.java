@@ -9,10 +9,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.widget.EditText;
-import android.widget.Toast;
-import budgetapp.main.R;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;

@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
-import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 /**

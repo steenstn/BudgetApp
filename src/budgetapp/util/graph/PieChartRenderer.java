@@ -1,11 +1,5 @@
 package budgetapp.util.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import budgetapp.util.entries.CategoryEntry;
-import budgetapp.util.money.Money;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
