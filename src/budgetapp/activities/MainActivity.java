@@ -231,7 +231,7 @@ public class MainActivity extends FragmentActivity {
 
 
     // Set up a ViewListener for the MainView
-	private MainView.VieswListener viewListener = new MainView.ViewListener() {
+	private MainView.ViewListener viewListener = new MainView.ViewListener() {
 		
 		@Override
 		public void favButtLongClick(Button id) {
