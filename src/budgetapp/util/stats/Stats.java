@@ -7,8 +7,6 @@ package budgetapp.util.stats;
 import java.util.ArrayList;
 
 import java.util.List;
-
-import budgetapp.util.*;
 import budgetapp.util.entries.BudgetEntry;
 
 public class Stats {

@@ -7,7 +7,6 @@ import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
-import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 

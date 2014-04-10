@@ -10,7 +10,6 @@ import java.util.List;
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
 import budgetapp.util.BudgetFunctions;
-import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 import android.app.AlertDialog;
 import android.app.Dialog;

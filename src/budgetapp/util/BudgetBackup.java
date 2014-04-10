@@ -10,7 +10,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import budgetapp.util.entries.BudgetEntry;
-import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 import android.app.ProgressDialog;
