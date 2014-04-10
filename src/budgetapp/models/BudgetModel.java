@@ -323,6 +323,7 @@ public class BudgetModel {
     	{
     		Calendar tempDate = Calendar.getInstance();
     		BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),"Income");
+    		System.out.println("queuing daily budget");
     		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 			
     		//datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));

@@ -232,7 +232,7 @@ public class MainActivity extends FragmentActivity {
 
 
     // Set up a ViewListener for the MainView
-	private MainView.ViewListener viewListener = new MainView.ViewListener() {
+	private MainView.VieswListener viewListener = new MainView.ViewListener() {
 		
 		@Override
 		public void favButtLongClick(Button id) {
@@ -276,6 +276,7 @@ public class MainActivity extends FragmentActivity {
 	private class ProcessQueueTask extends AsyncTask<Void,Void,Void>
 	{
 		ProgressBar progressBar;
+		boolean progressBarVisible = false;
 		@Override
 		protected void onPreExecute()
 		{
@@ -283,17 +284,23 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(false);
 			progressBar = (ProgressBar)findViewById(R.id.progressBarQueue);
 			progressBar.setMax(model.getQueueSize());
+			System.out.println("size " + model.getQueueSize());
 			if(progressBar.getMax() > 10)
 			{
+				progressBarVisible = true;
 				progressBar.setVisibility(View.VISIBLE);
 			}
+			else
+				progressBar.setVisibility(View.GONE);
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			for(int i = 0; i < model.getQueueSize(); i++) {
 				model.processQueueItem();
-				progressBar.incrementProgressBy(1);
-				publishProgress();
+				if(progressBarVisible) {
+					progressBar.incrementProgressBy(1);
+					publishProgress();
+				}
 			}
 			return null;
 		}
