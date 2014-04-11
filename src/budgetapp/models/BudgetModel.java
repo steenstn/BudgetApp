@@ -342,7 +342,6 @@ public class BudgetModel {
 		if(installments.isEmpty())
 			return MoneyFactory.createMoney();
 		
-    	System.out.println("Got " + installments.size() + " installments");
 		Money moneyPaid = MoneyFactory.createMoney();
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
@@ -372,7 +371,6 @@ public class BudgetModel {
 	    		String tempDateString = compareFormat.format(tempDate.getTime());
 	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			System.out.println("ququeing installment");
 	    			transactionQueue.queueItem(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
 	    			
 	    			//moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));

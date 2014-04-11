@@ -23,9 +23,7 @@
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
     <string name="versionName">Vishwakarma</string>
-    <string name="versionNameExplanation">Vishwakarma is the God of architecture in the Hindu faith. 
-        This release has had improvement of the inner architecture as the main goal and is therefore named
-         Vishwakarma.</string>
+    <string name="versionNameExplanation">Vishwakarma is the God of architecture in the Hindu faith.</string>
     <string name="whats_new">
     	- Fixed bug where the graph would sometimes jump around when zooming\n
 	</string>

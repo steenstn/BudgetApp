@@ -283,14 +283,12 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(false);
 			progressBar = (ProgressBar)findViewById(R.id.progressBarQueue);
 			progressBar.setMax(model.getQueueSize());
-			System.out.println("size " + model.getQueueSize());
-			if(progressBar.getMax() > 10)
-			{
+			if(progressBar.getMax() > 10) {
 				progressBarVisible = true;
 				progressBar.setVisibility(View.VISIBLE);
-			}
-			else
+			} else {
 				progressBar.setVisibility(View.GONE);
+			}
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {

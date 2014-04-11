@@ -37,8 +37,6 @@ public class TransactionQueue {
 		if(index >= transactions.size())
 			return;
 		
-		System.out.println(transactions.get(index).toString());
-		
 		if(!transactions.get(index).isExecuted()) {
 			transactions.get(index).execute();
 			index++;
