@@ -309,6 +309,7 @@ public class MainActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPostExecute(Void params) {
+			updateView();
 			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
 			editText.setEnabled(true);
 			if(progressBar.getVisibility() == View.VISIBLE) {
