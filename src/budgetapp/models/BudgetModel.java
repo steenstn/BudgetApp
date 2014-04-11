@@ -15,6 +15,7 @@ import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.TransactionQueue;
+import budgetapp.util.commands.Command;
 import budgetapp.util.commands.PayOffInstallmentCommand;
 import budgetapp.util.commands.TransactionCommand;
 import budgetapp.util.database.BudgetDataSource;
@@ -120,9 +121,10 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
-	public void processQueueItem() {
-		transactionQueue.processQueueItem();
+	public Command processQueueItem() {
+		Command processedCommand = transactionQueue.processQueueItem();
 		stateChanged = true;
+		return processedCommand;
 	}
 	
 	public int getRemainingItemsInQueue() {

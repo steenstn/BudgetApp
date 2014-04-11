@@ -32,15 +32,17 @@ public class TransactionQueue {
 		return remainingItems;
 	}
 	
-	public void processQueueItem()
+	public Command processQueueItem()
 	{
 		if(index >= transactions.size())
-			return;
+			return null;
 		
 		if(!transactions.get(index).isExecuted()) {
 			transactions.get(index).execute();
 			index++;
 		}
+		
+		return transactions.get(index-1);
 		
 	}
 	
