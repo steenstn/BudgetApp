@@ -342,11 +342,14 @@ public class BudgetModel {
 		if(installments.isEmpty())
 			return MoneyFactory.createMoney();
 		
-    	
+    	System.out.println("Got " + installments.size() + " installments");
 		Money moneyPaid = MoneyFactory.createMoney();
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
 		{
+			if(installments.get(i).isPaidOff()) {
+				continue;
+			}
 	    	String lastDayString = installments.get(i).getDateLastPaid();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
 	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
