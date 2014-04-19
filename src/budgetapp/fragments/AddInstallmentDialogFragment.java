@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	EditText commentEditText;
 	DatePicker datePicker;
 	Button getDateButton;
+	CheckBox activeCheckBox;
 	InstallmentsActivity activity;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -80,9 +82,10 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     				if(dailyPayment < totalValue)
     					throw new Exception("daily payment larger than total value");
     				
+    				boolean active = activeCheckBox.isChecked();
     				String comment = commentEditText.getText().toString();
     				activity.addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
-    						MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment);
+    						MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment, active);
     				
     			}
     			catch(Exception e)
@@ -111,6 +114,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 		commentEditText = (EditText)view.findViewById(R.id.dialog_installment_comment);
 		getDateButton = (Button)view.findViewById(R.id.dialog_installment_get_date);
 		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
+		activeCheckBox = (CheckBox)view.findViewById(R.id.activeCheckBox);
 		
 		setUpAutoCompleteValues();
 		setUpWatchers();		

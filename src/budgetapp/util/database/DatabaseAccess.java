@@ -313,12 +313,13 @@ public class DatabaseAccess {
 		return false;
 	}
 	
-	public boolean updateInstallment(long id, double newTotalValue, double newDailyPayment, String newDateLastPaid)
+	public boolean updateInstallment(long id, double newTotalValue, double newDailyPayment, String newDateLastPaid, int newFlags)
 	{
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_VALUE, newTotalValue);
 		values.put(BudgetDatabase.COLUMN_DAILY_PAYMENT, newDailyPayment);
 		values.put(BudgetDatabase.COLUMN_DATE_LAST_PAID, newDateLastPaid);
+		values.put(BudgetDatabase.COLUMN_FLAGS, newFlags);
 		
 		
 		int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);

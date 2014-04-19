@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ public class EditInstallmentDialogFragment extends DialogFragment {
 	Button getDateButton;
 	InstallmentsActivity activity;
 	Installment installment;
+	CheckBox activeCheckBox;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		activity = (InstallmentsActivity) getActivity();
@@ -86,6 +88,7 @@ public class EditInstallmentDialogFragment extends DialogFragment {
     					throw new Exception("daily payment larger than total value");
     				
     				String comment = commentEditText.getText().toString();
+    				boolean active = activeCheckBox.isChecked();
     				
     				Money amountPaid = installment.getAmountPaid();
     				BudgetEntry oldEntry = activity.getModel().getTransaction(installment.getTransactionId());
@@ -93,6 +96,7 @@ public class EditInstallmentDialogFragment extends DialogFragment {
     				BudgetEntry newEntry = new BudgetEntry(amountPaid, BudgetFunctions.getDateString(), category, comment);
     				Installment newInstallment = new Installment(MoneyFactory.createMoneyFromNewDouble(totalValue),
     						MoneyFactory.createMoneyFromNewDouble(dailyPayment), installment.getDateLastPaid(), MoneyFactory.createMoney() , "", "");
+    				newInstallment.setPaused(!active);
     				
     				activity.getModel().editInstallment(installment.getId(), newInstallment);
     				activity.getModel().editTransaction(oldEntry.getId(), newEntry);
@@ -123,6 +127,7 @@ public class EditInstallmentDialogFragment extends DialogFragment {
 		commentEditText = (EditText)view.findViewById(R.id.dialog_installment_comment);
 		getDateButton = (Button)view.findViewById(R.id.dialog_installment_get_date);
 		datePicker = (DatePicker)view.findViewById(R.id.dialog_installment_date_picker);
+		activeCheckBox = (CheckBox)view.findViewById(R.id.activeCheckBox);
 		
 		loadValues();
 		setUpAutoCompleteValues();
@@ -135,6 +140,8 @@ public class EditInstallmentDialogFragment extends DialogFragment {
 		totalValueEditText.setText(""+installment.getTotalValue().makePositive().get()/Money.getExchangeRate());
 		dailyPaymentEditText.setText(""+installment.getDailyPayment().makePositive().get()/Money.getExchangeRate());
 		commentEditText.setText(installment.getComment());
+		activeCheckBox.setChecked(!installment.isPaused());
+		
 	}
 	
 	private void setUpAutoCompleteValues()

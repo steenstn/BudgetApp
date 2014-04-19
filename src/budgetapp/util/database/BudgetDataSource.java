@@ -142,7 +142,7 @@ public class BudgetDataSource {
 	public void editInstallment(long id, Installment newInstallment)
 	{
 		String date = getInstallment(id).getDateLastPaid();
-		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), date);
+		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), date, newInstallment.getFlags());
 	}
 	
 	/**
@@ -251,7 +251,7 @@ public class BudgetDataSource {
 			
 			dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
 			
-			updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString());
+			updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment.getDailyPayment().get(), BudgetFunctions.getDateString(), dbInstallment.getFlags());
 
 			return new Money(dailyPay);
 		}
@@ -474,9 +474,9 @@ public class BudgetDataSource {
 		dbAccess.updateTransaction(id, newEntry);
 	}
 	
-	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid)
+	private boolean updateInstallment(long id, double newTotalValue, double newDailyPay, String newDateLastPaid, int newFlags)
 	{
-		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid);
+		return dbAccess.updateInstallment(id, newTotalValue, newDailyPay, newDateLastPaid, newFlags);
 	}
 
 	public List<BudgetEntry> getNegativeTransactions() {

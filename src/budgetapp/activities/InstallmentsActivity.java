@@ -33,10 +33,15 @@ public class InstallmentsActivity extends FragmentActivity {
         view.update();
     }
 	
-	public boolean addInstallment(Money totalValue, Money dailyPayment, String category, String comment) {
+	public boolean addInstallment(Money totalValue, Money dailyPayment, String category, String comment, boolean active) {
+		int flags = 0;
+		if(!active) {
+			flags = Installment.INSTALLMENT_PAUSED;
+		}
 		Installment installment = new Installment(totalValue, dailyPayment, BudgetFunctions.getDateString(),
 			totalValue.subtract(dailyPayment), category, comment);
 		
+		installment.setFlags(flags);
 		if(model.addInstallment(installment) == true)
 			return true;
 		else
@@ -49,14 +54,6 @@ public class InstallmentsActivity extends FragmentActivity {
 	
 	public boolean removeInstallment(long id) {
 		return model.removeInstallment(id);
-	}
-	
-	public void changePauseState(View v) {
-		ListView listView = view.getListView();
-		for(int i = 0; i < listView.getCount(); i++) {
-			InstallmentViewHolder viewHolder = (InstallmentViewHolder)listView.getItemAtPosition(i);
-			System.out.println(viewHolder.getEntry().toString());
-		}
 	}
 	
 	private InstallmentsView.ViewListener viewListener = new InstallmentsView.ViewListener() {
