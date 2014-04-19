@@ -8,7 +8,7 @@ public class MoneyFactory {
 	 * @return
 	 */
 	public static Money createMoneyFromNewDouble(double d) {
-		return new Money(10);
+		return new Money(d);
 	}
 	
 	public static Money createMoney() {
