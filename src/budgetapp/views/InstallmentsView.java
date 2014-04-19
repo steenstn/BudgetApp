@@ -21,6 +21,7 @@ import budgetapp.util.Installment;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 import budgetapp.viewholders.InstallmentViewHolder;
+import budgetapp.viewholders.ViewHolder;
 
 public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 
@@ -39,11 +40,9 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
 	
 	public InstallmentsView(Context context, AttributeSet attrs) {
 		super(context,attrs);
-
 	}
 	
-	public void setViewListener(ViewListener viewListener)
-	{
+	public void setViewListener(ViewListener viewListener) {
 		this.viewListener = viewListener;
 	}
 	
@@ -83,16 +82,16 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
         totalDailyPaymentsTextView.setText("Total daily payments: " + new Money(totalDailyPayments));
         
 	}
-	
+	/*
 	private void setUpCheckBoxListener(CheckBox checkBox) {
-		//viewHolder.getCheckBox().isChecked();
-		/*checkBox.setOnClickListener(new OnClickListener() {
+		ViewHolder.getCheckBox().isChecked();
+		checkBox.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				System.out.println("aiufhwuei");
-			}});*/
-	}
+			}});
+	}*/
 	@Override
     protected void onFinishInflate()
     {
