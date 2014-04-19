@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity {
 	private BudgetModel model;
 	private SharedPreferences settings;
 	public Money dailyFlow = MoneyFactory.createMoney();
-	private ProcessQueueTask processssQueueTask;
+	private ProcessQueueTask processQueueTask;
 	
 	public String getChosenCategory()
 	{
