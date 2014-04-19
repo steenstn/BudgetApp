@@ -351,6 +351,7 @@ public class BudgetModel {
 			if(installments.get(i).isPaused()) {
 				installments.get(i).setDateLastPaid(BudgetFunctions.getDateString());
 				datasource.editInstallment(installments.get(i).getId(), installments.get(i));
+				continue;
 			}
 	    	String lastDayString = installments.get(i).getDateLastPaid();
 	    	Calendar lastDayCalendar = Calendar.getInstance();

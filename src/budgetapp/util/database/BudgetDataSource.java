@@ -142,7 +142,7 @@ public class BudgetDataSource {
 	public void editInstallment(long id, Installment newInstallment)
 	{
 		String date = getInstallment(id).getDateLastPaid();
-		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), date, newInstallment.getFlags());
+		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), newInstallment.getDateLastPaid(), newInstallment.getFlags());
 	}
 	
 	/**
