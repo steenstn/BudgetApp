@@ -163,8 +163,7 @@ public class MainActivity extends FragmentActivity {
      */
     public void subtractFromBudget(String theValue, String theCategory, String theComment) {
     	
-    	try
-    	{
+    	try	{
     		double value = Double.parseDouble(theValue);
 		
 	    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -176,16 +175,13 @@ public class MainActivity extends FragmentActivity {
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");
 	    	
-    	}
-    	catch(NumberFormatException e)
-    	{
+    	} catch(NumberFormatException e) {
     		// Bad/no input, don't do anything. No biggie.
     	}
 		
     }
     
-    public String getEnteredValue()
-    {
+    public String getEnteredValue() {
     	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
     	String result = resultText.getText().toString();
     	return result;
@@ -282,6 +278,7 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(false);
 			progressBar = (ProgressBar)findViewById(R.id.progressBarQueue);
 			progressBar.setMax(model.getQueueSize());
+			System.out.println("Queue size: " + model.getQueueSize());
 			if(progressBar.getMax() > 10)
 			{
 				progressBar.setVisibility(View.VISIBLE);

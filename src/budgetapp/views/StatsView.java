@@ -58,20 +58,17 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		super(context, attrs);
 	}
 	
-	public void setViewListener(ViewListener viewListener)
-	{
+	public void setViewListener(ViewListener viewListener) {
 		this.viewListener = viewListener;
 	}
 	
-	public void setModel(BudgetModel model)
-	{
+	public void setModel(BudgetModel model)	{
 		this.model = model;
 		this.model.addObserver(this);
 	}
-	public void setSelectedYear(int value)
-	{
-		if(value!=this.selectedYear)
-		{
+	
+	public void setSelectedYear(int value) {
+		if(value!=this.selectedYear) {
 			this.selectedYear = value;
 			updateViews();
 		}
@@ -95,7 +92,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		}
 	}
 	
-	public void setUpComposite()
+	private void setUpComposite()
 	{
 		years = new ArrayList<CompositeStats>();
         BudgetEntry entry;
