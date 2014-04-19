@@ -348,8 +348,9 @@ public class BudgetModel {
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
 		{
-			if(installments.get(i).isPaidOff()) {
-				continue;
+			if(installments.get(i).isPaused()) {
+				installments.get(i).setDateLastPaid(BudgetFunctions.getDateString());
+				datasource.editInstallment(installments.get(i).getId(), installments.get(i));
 			}
 	    	String lastDayString = installments.get(i).getDateLastPaid();
 	    	Calendar lastDayCalendar = Calendar.getInstance();

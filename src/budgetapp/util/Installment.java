@@ -100,6 +100,10 @@ public class Installment {
 		this.flags = flags;
 	}
 	
+	public void setDateLastPaid(String date) {
+		this.dateLastPaid = date;
+	}
+	
 	public long getId() { return id; }
 	public long getTransactionId() { return transactionId; }
 	public Money getTotalValue() { return totalValue; }
