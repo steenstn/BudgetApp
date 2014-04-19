@@ -45,17 +45,15 @@ public class MainActivity extends FragmentActivity {
 	public Money dailyFlow = MoneyFactory.createMoney();
 	private ProcessQueueTask processQueueTask;
 	
-	public String getChosenCategory()
-	{
+	public String getChosenCategory(){
 		return chosenCategory;
 	}
-	public void setChosenCategory(String c)
-	{
+	
+	public void setChosenCategory(String c) {
 		chosenCategory = c;
 	}
 	
-	public void setDailyBudget(double budget)
-	{
+	public void setDailyBudget(double budget) {
 		model.setDailyBudget(MoneyFactory.createMoneyFromNewDouble(budget));
 	}
 	
