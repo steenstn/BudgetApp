@@ -4,8 +4,8 @@ import budgetapp.util.money.Money;
 
 public class Installment {
 	
-	private static final int INSTALLMENT_PAID = 1;
-	private static final int INSTALLMENT_PAUSED = 2;
+	public static final int INSTALLMENT_PAID = 1;
+	public static final int INSTALLMENT_PAUSED = 2;
 	private long id;
 	private long transactionId;
 	private Money totalValue;

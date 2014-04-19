@@ -374,6 +374,14 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public List<Installment> getUnpaidInstallments()
+	{
+		List<Installment> result;
+		result = dbAccess.getUnpaidInstallments();
+		
+		return result;
+	}
+	
 	public Installment getInstallment(long id)
 	{
 		return dbAccess.getInstallment(id);

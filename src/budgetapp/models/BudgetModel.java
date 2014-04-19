@@ -340,7 +340,7 @@ public class BudgetModel {
 	}
 	public Money payOffInstallments()
 	{
-		List<Installment> installments = datasource.getInstallments();
+		List<Installment> installments = datasource.getUnpaidInstallments();
 		if(installments.isEmpty())
 			return MoneyFactory.createMoney();
 		

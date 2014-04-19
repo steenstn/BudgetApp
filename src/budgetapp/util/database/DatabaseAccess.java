@@ -771,6 +771,39 @@ public class DatabaseAccess {
 		cursor.close();
 		return entries;
 	}
+	
+	public List<Installment> getUnpaidInstallments()
+	{
+		List<Installment> entries = new ArrayList<Installment>();
+		
+		Cursor cursor;
+		cursor = database.rawQuery("select i.*, t.value, t.category, t.comment from " + BudgetDatabase.TABLE_INSTALLMENTS
+				+ " i join " + BudgetDatabase.TABLE_CASHFLOW + " t on i." + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " = t." + BudgetDatabase.COLUMN_ID + " where i." + BudgetDatabase.COLUMN_FLAGS + " != " + Installment.INSTALLMENT_PAID, null);
+		
+		/*
+		select i.*, t.value, t.category, t.comment from installments i
+		join cash_flow t on i.transactionId = t._id where i.flags != paid
+		*/
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast())
+		{
+			
+			Installment installment = new Installment(cursor.getLong(0),
+													  cursor.getLong(1),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(3)),
+												  	  cursor.getString(4),
+												  	  MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
+												  	  cursor.getString(7),
+												  	  cursor.getString(8));
+			installment.setFlags(cursor.getInt(5));
+			entries.add(installment);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
 
 	public List<BudgetEntry> getNegativeTransactions() {
 		Cursor cursor;
