@@ -96,4 +96,5 @@
 		<auxClasspath path="${android.jar}" />
 		<class location="${out.dir}" />
 	</findbugs>
+</target>
 </project>
