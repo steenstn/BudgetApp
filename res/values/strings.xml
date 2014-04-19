@@ -26,7 +26,7 @@
     <string name="versionNameExplanation">Vishwakarma is the God of architecture in the Hindu faith.</string>
     <string name="whats_new">
     	- Fixed bug where the graph would sometimes jump around when zooming\n
-    	- Fixed bug causing slow down of processing installments\n
+    	- Fixed bug causing unnecessary processing of installments\n
 	</string>
 	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">
