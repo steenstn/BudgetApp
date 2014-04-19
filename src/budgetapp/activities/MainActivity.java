@@ -12,6 +12,10 @@ import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.Installment;
+import budgetapp.util.commands.Command;
+import budgetapp.util.commands.PayOffInstallmentCommand;
+import budgetapp.util.commands.TransactionCommand;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
@@ -28,6 +32,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.content.Intent;
 import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
@@ -102,7 +107,6 @@ public class MainActivity extends FragmentActivity {
         setContentView(view);
         view.setModel(model);
         view.update();
-       
         
     }
     
@@ -270,7 +274,9 @@ public class MainActivity extends FragmentActivity {
 	
 	private class ProcessQueueTask extends AsyncTask<Void,Void,Void>
 	{
+		Money cashFlow = MoneyFactory.createMoney();
 		ProgressBar progressBar;
+		boolean progressBarVisible = false;
 		@Override
 		protected void onPreExecute()
 		{
@@ -278,18 +284,33 @@ public class MainActivity extends FragmentActivity {
 			editText.setEnabled(false);
 			progressBar = (ProgressBar)findViewById(R.id.progressBarQueue);
 			progressBar.setMax(model.getQueueSize());
-			System.out.println("Queue size: " + model.getQueueSize());
-			if(progressBar.getMax() > 10)
-			{
+
+			if(progressBar.getMax() > 10) {
+				progressBarVisible = true;
 				progressBar.setVisibility(View.VISIBLE);
+			} else {
+				progressBar.setVisibility(View.GONE);
 			}
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			for(int i = 0; i < model.getQueueSize(); i++) {
-				model.processQueueItem();
-				progressBar.incrementProgressBy(1);
-				publishProgress();
+				Command queueCommand = model.processQueueItem();
+				if(progressBarVisible) {
+					progressBar.incrementProgressBy(1);
+					publishProgress();
+				}
+				
+				if(queueCommand!= null) {
+					if(queueCommand instanceof TransactionCommand) {
+						BudgetEntry entry = ((TransactionCommand) queueCommand).getEntry();
+						cashFlow = cashFlow.add(entry.getValue());
+					}
+					else if(queueCommand instanceof PayOffInstallmentCommand) {
+						Installment installment = ((PayOffInstallmentCommand) queueCommand).getInstallment();
+						cashFlow = cashFlow.add(installment.getDailyPayment());
+					}
+				}
 			}
 			return null;
 		}
@@ -301,10 +322,15 @@ public class MainActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPostExecute(Void params) {
+			updateView();
 			EditText editText = (EditText)findViewById(R.id.editTextSubtract);
 			editText.setEnabled(true);
 			if(progressBar.getVisibility() == View.VISIBLE) {
 				progressBar.setVisibility(View.GONE);
+			}
+			
+			if(!cashFlow.almostZero()) {
+				Toast.makeText(editText.getContext(), "Cash flow since last time: " + cashFlow.toString(), Toast.LENGTH_LONG).show();
 			}
 		}
 		

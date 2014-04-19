@@ -15,6 +15,7 @@ import budgetapp.util.BudgetFunctions;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.TransactionQueue;
+import budgetapp.util.commands.Command;
 import budgetapp.util.commands.PayOffInstallmentCommand;
 import budgetapp.util.commands.TransactionCommand;
 import budgetapp.util.database.BudgetDataSource;
@@ -120,9 +121,10 @@ public class BudgetModel {
 		notifyObservers();
 	}
 	
-	public void processQueueItem() {
-		transactionQueue.processQueueItem();
+	public Command processQueueItem() {
+		Command processedCommand = transactionQueue.processQueueItem();
 		stateChanged = true;
+		return processedCommand;
 	}
 	
 	public int getRemainingItemsInQueue() {
@@ -319,6 +321,7 @@ public class BudgetModel {
     	{
     		Calendar tempDate = Calendar.getInstance();
     		BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),"Income");
+    		System.out.println("queuing daily budget");
     		transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 			
     		//datasource.createTransactionEntry(new BudgetEntry(new Money(), dateFormat.format(tempDate.getTime()),"Income"));
@@ -341,11 +344,13 @@ public class BudgetModel {
 		if(installments.isEmpty())
 			return MoneyFactory.createMoney();
 		
-    	
 		Money moneyPaid = MoneyFactory.createMoney();
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
 		{
+			if(installments.get(i).isPaidOff()) {
+				continue;
+			}
 	    	String lastDayString = installments.get(i).getDateLastPaid();
 	    	Calendar lastDayCalendar = Calendar.getInstance();
 	    	// Convert the string to a Calendar time. Subtract 1 from month because month 0 = January
@@ -368,7 +373,6 @@ public class BudgetModel {
 	    		String tempDateString = compareFormat.format(tempDate.getTime());
 	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
 	    		{
-	    			System.out.println("ququeing installment");
 	    			transactionQueue.queueItem(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
 	    			
 	    			//moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
