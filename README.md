@@ -6,6 +6,13 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.2 (Vishwakarma)
+- Added option to pause payment of installments
+- Fixed bug that caused unnecessary processing of installments, speeding up app start
+- Fixed bug where graph would jump around sometimes when zooming
+- Implemented queue to transactions so they can be run in a ASyncTask
+- StatsView now sets up the Composite in an ASyncTask
+
 v3.1.1
 - Fixed bug where the month spinner would not get updated when changing year in the statsview
 - Fixed bug where a long category name would mess up the FavButtz
