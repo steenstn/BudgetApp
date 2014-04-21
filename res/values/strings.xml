@@ -28,6 +28,7 @@
         - Added option to pause paying of installments\n
     	- Fixed bug where the graph would sometimes jump around when zooming\n
     	- Fixed bug causing unnecessary processing of installments\n
+    	- Behind the scenes architectural improvements
 	</string>
 	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">
