@@ -139,9 +139,7 @@ public class BudgetDataSource {
 	 * @param id - The id of the installment to change
 	 * @param newInstallment - Installment with the new values
 	 */
-	public void editInstallment(long id, Installment newInstallment)
-	{
-		String date = getInstallment(id).getDateLastPaid();
+	public void editInstallment(long id, Installment newInstallment) {
 		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), newInstallment.getDateLastPaid(), newInstallment.getFlags());
 	}
 	
