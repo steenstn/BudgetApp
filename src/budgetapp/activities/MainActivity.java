@@ -113,8 +113,8 @@ public class MainActivity extends FragmentActivity {
     	super.onResume();
     	settings = PreferenceManager.getDefaultSharedPreferences(this);
     	
-    	model.addDailyBudget();
-    	model.payOffInstallments();
+    	model.queueAddDailyBudget();
+    	model.queuePayOffInstallments();
 
 		boolean autoComplete = settings.getBoolean("enableAutoCompleteValues", false);
     	if(autoComplete) {

@@ -308,7 +308,6 @@ public class BudgetModel {
 	    			//System.out.println("Day to add: " + dateFormat.format(tempDate.getTime()));
 	    			BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),"Income");
 		        	transactionQueue.queueItem(new TransactionCommand(datasource, entry));
-		        	System.out.println("Queueing daily budget");
 	    			//datasource.createTransactionEntry(entry);
 		    		//stateChanged = true;
 		    		daysAdded++;
@@ -338,13 +337,10 @@ public class BudgetModel {
 	public void unpauseInstallment(long id) {
 		datasource.markInstallmentAsPaused(id, false);
 	}
-	public Money payOffInstallments()
+	public void queuePayOffInstallments()
 	{
 		List<Installment> installments = datasource.getUnpaidInstallments();
-		if(installments.isEmpty())
-			return MoneyFactory.createMoney();
 		
-		Money moneyPaid = MoneyFactory.createMoney();
 		SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 		for(int i = 0; i < installments.size(); i++)
 		{
@@ -359,7 +355,6 @@ public class BudgetModel {
 	    	// Set HH:mm to 00:00
 	    	lastDayCalendar.set(Integer.parseInt(lastDayString.substring(0, 4)),Integer.parseInt(lastDayString.substring(5, 7))-1,Integer.parseInt(lastDayString.substring(8, 10)),0,0);
 	    	
-	    	//System.out.println("Last day: " + dateFormat.format(lastDayCalendar.getTime()));
 	    	lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without transactions
 
 	    	// Step up to the day before tomorrow
@@ -367,25 +362,16 @@ public class BudgetModel {
 	    	nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(),BudgetFunctions.getDay(),0,0);
 	    	nextDay.add(Calendar.DAY_OF_MONTH,1);
 	    	
-	    	//System.out.println("Next day: " + dateFormat.format(nextDay.getTime()));
 	    	Calendar tempDate = (Calendar)lastDayCalendar.clone();
 	    	
-	    	while(tempDate.before(nextDay))
-	    	{
+	    	while(tempDate.before(nextDay)) {
 	    		String tempDateString = compareFormat.format(tempDate.getTime());
-	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime())))
-	    		{
+	    		if(!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime()))) {
 	    			transactionQueue.queueItem(new PayOffInstallmentCommand(datasource, installments.get(i), tempDateString));
-	    			
-	    			//moneyPaid = moneyPaid.add(datasource.payOffInstallment(installments.get(i), tempDateString));
-	    			
-		    		//stateChanged = true;
 	    		}
 	    		tempDate.add(Calendar.DAY_OF_MONTH,1);	
 	    	}
 		}
-		//notifyObservers();
-		return moneyPaid;
 	}
 	public List<CategoryEntry> getCategoriesSortedByNum() {
 		return datasource.getCategoriesSortedByNum();
