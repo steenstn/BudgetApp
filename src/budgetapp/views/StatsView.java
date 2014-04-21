@@ -19,6 +19,7 @@ import budgetapp.util.stats.Stats;
 import budgetapp.viewholders.CategoryStatsViewHolder;
 import budgetapp.viewholders.StatEntryViewHolder;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -378,9 +379,8 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 	
 	@Override
 	public void update() {
-		setUpComposite();
-		updateSpinners();
-		updateViews();
+		//setUpComposite();
+		new SetUpCompositeTask().execute();
 	}
 	
 	/**
@@ -403,6 +403,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		ListView categoryList = (ListView)findViewById(R.id.listViewCategoryStats);
 		categoryList.scrollTo(0,0);
 	}
+	
 	
 	/**
 	 * Set up listeners for the Spinners and the ListView
@@ -468,6 +469,22 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
 		});
 	}
 
+	private class SetUpCompositeTask extends AsyncTask<Void,Void,Void>
+	{
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			setUpComposite();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void params) { 
+			updateSpinners();
+			updateViews();
+		}
+		
+	}
+	
 	/**
 	 * Parses a string and gets the correct month from Resources. String must be
 	 * 1-12

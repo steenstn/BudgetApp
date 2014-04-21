@@ -29,10 +29,12 @@ import android.support.v4.app.DialogFragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 public class MainActivity extends FragmentActivity {
@@ -112,7 +114,6 @@ public class MainActivity extends FragmentActivity {
     public void onResume() {
     	super.onResume();
     	settings = PreferenceManager.getDefaultSharedPreferences(this);
-    	
     	model.queueAddDailyBudget();
     	model.queuePayOffInstallments();
 
