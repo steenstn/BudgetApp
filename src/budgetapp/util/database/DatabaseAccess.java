@@ -637,10 +637,13 @@ public class DatabaseAccess {
 	{
 		Cursor cursor;
 		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
-		cursor.moveToFirst();
-		BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
-		cursor.close();
-		return entry;
+		if(cursor.getCount()==1) {
+			cursor.moveToFirst();
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			cursor.close();
+			return entry;
+		}
+		return new BudgetEntry();
 	}
 	
 	public Installment getInstallment(long id)
@@ -762,18 +765,42 @@ public class DatabaseAccess {
 		
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()) {
+			List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
+			
 			Event event = new Event(cursor.getLong(0),
 							cursor.getString(1),
 							cursor.getString(2),
 							cursor.getString(3),
 							cursor.getString(4),
-							cursor.getInt(5));
+							cursor.getInt(5),
+							entries);
 			cursor.moveToNext();
+			
+			
 			events.add(event);
 		}
-		
+		cursor.close();
 		return events;
 	}
+	
+	private List<BudgetEntry> getEntriesForEvent(long eventId) {
+		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+
+		//select transaction_id from event_transaction where event_id = eventId
+		Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_TRANSACTION_ID
+				+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION
+				+ " where " + BudgetDatabase.COLUMN_EVENT_ID + " = " + eventId, null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
+			BudgetEntry entry = getTransaction(cursor.getLong(0));
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
 	public List<Installment> getInstallments()
 	{
 		List<Installment> entries = new ArrayList<Installment>();

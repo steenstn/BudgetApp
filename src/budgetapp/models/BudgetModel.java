@@ -77,6 +77,12 @@ public class BudgetModel {
 		transactions.add(new TransactionCommand(datasource, entry));
 	}
 	
+	public void queueTransaction(BudgetEntry entry, long eventId) {
+		queueAddDailyBudget();
+		transactionQueue.queueItem(new TransactionCommand(datasource, entry, eventId));
+		transactions.add(new TransactionCommand(datasource, entry, eventId));
+	}
+	
 	/**
 	 * Removes a transaction from the database.
 	 * Notifies observers.
