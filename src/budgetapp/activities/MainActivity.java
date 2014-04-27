@@ -173,7 +173,8 @@ public class MainActivity extends FragmentActivity {
 	    	Calendar cal = Calendar.getInstance();
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value*-1), dateString,theCategory,theComment);
-	    	long id = model.getEvents().get(0).getId();
+	    	
+	    	long id = model.getIdOfActiveEvent();
 	    	model.queueTransaction(entry,id);
 	    	processQueue();
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);

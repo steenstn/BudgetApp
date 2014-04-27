@@ -148,6 +148,14 @@ public class BudgetDataSource {
 		updateInstallment(id, newInstallment.getTotalValue().get(), newInstallment.getDailyPayment().get(), newInstallment.getDateLastPaid(), newInstallment.getFlags());
 	}
 	
+	public void editEvent(long id, Event newEvent) {
+		dbAccess.updateEvent(id, newEvent.getName(), newEvent.getStartDate(), newEvent.getEndDate(), newEvent.getComment(), newEvent.getFlags());
+	}
+	
+	public long getIdOfActiveEvent() {
+		return dbAccess.getIdOfActiveEvent();
+	}
+	
 	/**
 	 * Edit transaction and add the value to today's daily flow
 	 * @param oldEntry
@@ -392,6 +400,10 @@ public class BudgetDataSource {
 		List<Event> result;
 		result = dbAccess.getEvents();
 		return result;
+	}
+	
+	public Event getEvent(long id) {
+		return dbAccess.getEvent(id);
 	}
 	
 	public List<Installment> getUnpaidInstallments()

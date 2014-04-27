@@ -37,7 +37,7 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 	{
 		public void showEventDialog();
 		public void listViewLongClick(EventViewHolder listItem);
-		//public void listViewClick(InstallmentViewHolder listItem);
+		public void listViewClick(EventViewHolder listItem);
 	}
 	
 	private BudgetModel model;
@@ -96,8 +96,20 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 			     
 				return true;
 			}
-			
+    	});
+    	
+		eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> adapter, View view, int position,
+						long arg) {
+					EventViewHolder listItem = (EventViewHolder)eventListView.getItemAtPosition(position);
+					viewListener.listViewClick(listItem);					 
+				     
+				}
+	    		
 		});
+    	
     }
     	
 }

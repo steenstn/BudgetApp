@@ -166,6 +166,19 @@ public class DatabaseAccess {
 		database.insert(BudgetDatabase.TABLE_EVENT_TRANSACTION, null,values);
 	}
 	
+	public long getIdOfActiveEvent() {
+		Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from "
+						+ BudgetDatabase.TABLE_EVENTS + " where " + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
+		
+		if(cursor.getCount() != 0) {
+			cursor.moveToFirst();
+			long id = cursor.getLong(0);
+			cursor.close();
+			return id;
+		}
+		return -1;
+	}
+	
 	/**
 	 * Updates the daysum table
 	 * @param theEntry - The entry to add
@@ -336,6 +349,23 @@ public class DatabaseAccess {
 		
 		
 		int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+		if(res != 0)
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean updateEvent(long id, String newName, String newStartDate, String newEndDate, String newComment, int newFlags)
+	{
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_NAME, newName);
+		values.put(BudgetDatabase.COLUMN_START_DATE, newStartDate);
+		values.put(BudgetDatabase.COLUMN_END_DATE, newEndDate);
+		values.put(BudgetDatabase.COLUMN_COMMENT, newComment);
+		values.put(BudgetDatabase.COLUMN_FLAGS, newFlags);
+		
+		
+		int res = database.update(BudgetDatabase.TABLE_EVENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
 		if(res != 0)
 			return true;
 		else
@@ -781,6 +811,26 @@ public class DatabaseAccess {
 		}
 		cursor.close();
 		return events;
+	}
+	
+	public Event getEvent(long id) {
+		Cursor cursor = database.rawQuery("select * from " + 
+				BudgetDatabase.TABLE_EVENTS + " where " + BudgetDatabase.COLUMN_ID + " = " + id, null);
+		cursor.moveToFirst();
+		
+		if(cursor.getCount() == 1) {
+			List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
+			
+			Event event = new Event(cursor.getLong(0),
+							cursor.getString(1),
+							cursor.getString(2),
+							cursor.getString(3),
+							cursor.getString(4),
+							cursor.getInt(5),
+							entries);
+			return event;
+		}
+		return new Event();
 	}
 	
 	private List<BudgetEntry> getEntriesForEvent(long eventId) {

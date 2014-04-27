@@ -229,10 +229,20 @@ public class BudgetModel {
 		return false;
 	}
 	
+	public void editEvent(long id, Event newEvent) {
+		datasource.editEvent(id, newEvent);
+		stateChanged = true;
+		notifyObservers();
+	}
+	
 	public void removeEvent(long id) {
 		datasource.removeEvent(id);
 		stateChanged = true;
 		notifyObservers();
+	}
+	
+	public long getIdOfActiveEvent() {
+		return datasource.getIdOfActiveEvent();
 	}
 	
 	public void editInstallment(long id, Installment newInstallment)
@@ -263,6 +273,10 @@ public class BudgetModel {
 	
 	public List<Event> getEvents() {
 		return datasource.getEvents();
+	}
+	
+	public Event getEvent(long id) {
+		return datasource.getEvent(id);
 	}
 	
 	public Installment getInstallment(long id)
