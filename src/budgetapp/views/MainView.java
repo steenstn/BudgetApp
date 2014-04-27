@@ -10,6 +10,7 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Event;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class MainView extends LinearLayout implements IBudgetObserver{
 	
@@ -157,6 +159,21 @@ public class MainView extends LinearLayout implements IBudgetObserver{
     	{
     		theButtons.get(i).setVisibility(View.GONE);
     	}
+    	
+
+		ToggleButton eventButton = (ToggleButton)findViewById(R.id.toggleButtonEvent);
+    	if(model.getIdOfActiveEvent() != -1) {
+    		eventButton.setVisibility(View.VISIBLE);
+    		Event event = model.getEvent(model.getIdOfActiveEvent());
+    		eventButton.setText(event.getName());
+    		eventButton.setTextOff(event.getName());
+    		eventButton.setTextOn(event.getName());
+    		
+    	}
+    	else {
+    		eventButton.setVisibility(View.GONE);
+    	}
+    	
     	
     }
 	

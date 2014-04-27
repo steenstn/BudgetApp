@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -174,8 +175,16 @@ public class MainActivity extends FragmentActivity {
 	    	String dateString = dateFormat.format(cal.getTime());
 	    	BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value*-1), dateString,theCategory,theComment);
 	    	
-	    	long id = model.getIdOfActiveEvent();
-	    	model.queueTransaction(entry,id);
+	    	ToggleButton eventButton = (ToggleButton)findViewById(R.id.toggleButtonEvent);
+	    	if(eventButton.isChecked()) {
+		    	long id = model.getIdOfActiveEvent();
+		    	model.queueTransaction(entry,id);
+		    	Toast.makeText(eventButton.getContext(), entry.getValue() + " logged under " + model.getActiveEvent().getName(), Toast.LENGTH_SHORT).show();
+	    	}
+	    	else {
+	    		model.queueTransaction(entry);
+	    	}
+	    		
 	    	processQueue();
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");
