@@ -46,8 +46,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	//COLUMN_DATE
 	//COLUMN_TOTAL
 	
-	// Currencies and their exhange values
-	public static final String TABLE_CURRENCIES = "currencies";
 	
 	public static final String TABLE_INSTALLMENTS = "installments";
 	
@@ -62,9 +60,16 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	// Autocomplete values for the AutoCompleteEditText
 	public static final String TABLE_AUTOCOMPLETE_VALUES = "autocompletevalues";
 
+	public static final String TABLE_EVENTS = "events";
+	public static final String COLUMN_NAME="name";
+	public static final String COLUMN_START_DATE="start_date";
+	public static final String COLUMN_END_DATE="end_date";
+	
+	public static final String TABLE_EVENT_TRANSACTION = "event_transaction";
+	public static final String COLUMN_EVENT_ID = "event_id";
 	
 	private static final String DATABASE_NAME = "budget.db";
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 	
 	public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table "
 			+ TABLE_CATEGORY_NAMES + "(" + COLUMN_ID
@@ -115,6 +120,21 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 			+ COLUMN_DAYFLOW_ID + " integer, "
 			+ COLUMN_VALUE + " double);";
 	
+	public static final String DATABASE_CREATE_TABLE_EVENTS = "create table "
+			+ TABLE_EVENTS + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, "
+			+ COLUMN_NAME + " text,"
+			+ COLUMN_START_DATE + " text,"
+			+ COLUMN_END_DATE + " text,"
+			+ COLUMN_COMMENT + " text,"
+			+ COLUMN_FLAGS + " integer);";
+	
+	public static final String DATABASE_CREATE_TABLE_EVENT_TRANSACTION = "create table "
+			+ TABLE_EVENT_TRANSACTION + "("+ COLUMN_ID
+			+ " integer primary key autoincrement, "
+			+ COLUMN_EVENT_ID + " integer,"
+			+ COLUMN_TRANSACTION_ID + " integer);";
+	
 	
 	private static BudgetDatabase instance;
 	
@@ -148,6 +168,8 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
 		database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
 		database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENT_DAYFLOW_PAID);
+		database.execSQL(DATABASE_CREATE_TABLE_EVENTS);
+		database.execSQL(DATABASE_CREATE_TABLE_EVENT_TRANSACTION);
 		
 		// Put in initial categories
 		ContentValues values = new ContentValues();
@@ -284,6 +306,9 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 		case 13:
 			db.execSQL("drop table " + TABLE_AUTOCOMPLETE_VALUES);
 			db.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
+		case 14:
+			db.execSQL(DATABASE_CREATE_TABLE_EVENTS);
+			db.execSQL(DATABASE_CREATE_TABLE_EVENT_TRANSACTION);
 		}
 		
 		System.out.println("Updated database from " + oldVersion + " to " + newVersion);
