@@ -58,11 +58,6 @@ public class BudgetDatabase extends SQLiteOpenHelper{
 	public static final String TABLE_INSTALLMENT_DAYFLOW_PAID = "installment_dayflow_paid";
 	public static final String COLUMN_DAYFLOW_ID = "dayflow_id";
 	public static final String COLUMN_INSTALLMENT_ID = "installment_id";
-	//COLUMN_ID
-	public static final String COLUMN_NAME = "name"; // The name of the currency
-	public static final String COLUMN_SYMBOL = "symbol"; // The symbol used when printing
-	public static final String COLUMN_RATE = "rate"; // The exchange rate of the currency
-	//COLUMN_FLAGS
 	
 	// Autocomplete values for the AutoCompleteEditText
 	public static final String TABLE_AUTOCOMPLETE_VALUES = "autocompletevalues";
