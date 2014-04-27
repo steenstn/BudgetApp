@@ -1,12 +1,16 @@
 package budgetapp.activities;
 
+import budgetapp.fragments.AddEventDialogFragment;
+import budgetapp.fragments.AddInstallmentDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.Event;
 import budgetapp.viewholders.EventViewHolder;
 import budgetapp.viewholders.InstallmentViewHolder;
 import budgetapp.views.EventsView;
 import budgetapp.views.InstallmentsView;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
@@ -33,12 +37,16 @@ public class EventsActivity extends FragmentActivity {
 		return model;
 	}
 	
+	public void createEvent(Event event) {
+		model.addEvent(event);
+	}
+	
 	private EventsView.ViewListener viewListener = new EventsView.ViewListener() {
 
 		@Override
 		public void showEventDialog() {
-			// TODO Auto-generated method stub
-			
+			DialogFragment newFragment = new AddEventDialogFragment();
+        	newFragment.show(getSupportFragmentManager(), "add_event");
 		}
 
 		@Override
