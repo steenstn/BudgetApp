@@ -154,6 +154,18 @@ public class DatabaseAccess {
 			return false;
 	}
 	
+	public void removeEvent(long id) {
+		database.delete(BudgetDatabase.TABLE_EVENTS, BudgetDatabase.COLUMN_ID + " = " + id, null);
+	}
+	
+	public void linkTransactionToEvent(long transactionId, long eventId) {
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_EVENT_ID,eventId);
+		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID,transactionId);
+		
+		database.insert(BudgetDatabase.TABLE_EVENT_TRANSACTION, null,values);
+	}
+	
 	/**
 	 * Updates the daysum table
 	 * @param theEntry - The entry to add

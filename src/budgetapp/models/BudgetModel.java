@@ -223,6 +223,12 @@ public class BudgetModel {
 		return false;
 	}
 	
+	public void removeEvent(long id) {
+		datasource.removeEvent(id);
+		stateChanged = true;
+		notifyObservers();
+	}
+	
 	public void editInstallment(long id, Installment newInstallment)
 	{
 		datasource.editInstallment(id, newInstallment);

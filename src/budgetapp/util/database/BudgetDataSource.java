@@ -74,6 +74,10 @@ public class BudgetDataSource {
 		
 	}
 	
+	public void addTransactionToEvent(long transactionId, long eventId) {
+		dbAccess.linkTransactionToEvent(transactionId, eventId);
+	}
+	
 	/**
 	 * Removes a transaction entry from the database and updates the affected tables
 	 * @param theEntry The entry to remove
@@ -225,6 +229,9 @@ public class BudgetDataSource {
 		return false;
 	}
 	
+	public void removeEvent(long id) {
+		dbAccess.removeEvent(id);
+	}
 	/**
 	 * Do a payment on an installment
 	 * @param installment - The installment to pay off

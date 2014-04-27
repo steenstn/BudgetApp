@@ -24,17 +24,19 @@ import budgetapp.util.money.MoneyFactory;
 import budgetapp.viewholders.EventViewHolder;
 import budgetapp.viewholders.InstallmentViewHolder;
 import budgetapp.viewholders.ViewHolder;
+import budgetapp.views.InstallmentsView.ViewListener;
 
 public class EventsView extends LinearLayout implements IBudgetObserver{
 
 	private Button createEventButton;
 	private BudgetAdapter listAdapter;
 	private ListView eventListView;
+	private ViewListener viewListener;
 	
 	public static interface ViewListener
 	{
 		public void showEventDialog();
-		//public void listViewLongClick(InstallmentViewHolder theEntry);
+		public void listViewLongClick(EventViewHolder listItem);
 		//public void listViewClick(InstallmentViewHolder listItem);
 	}
 	
@@ -50,6 +52,10 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 		model.addObserver(this);
 	}
 	
+
+	public void setViewListener(ViewListener viewListener) {
+		this.viewListener = viewListener;
+	}
 	
 	@Override
 	public void update() {
@@ -79,6 +85,18 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 				Event event = new Event(0, "yeah", "2013-01-10", "2013-02-02", "comment", 3);
 				model.addEvent(event);
 			}
+		});
+    	
+    	eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View view,int position, long arg)
+			{
+				EventViewHolder listItem = (EventViewHolder)eventListView.getItemAtPosition(position);
+				viewListener.listViewLongClick(listItem);					 
+			     
+				return true;
+			}
+			
 		});
     }
     	

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 public class Event {
 	
@@ -35,6 +37,13 @@ public class Event {
 		this.entries = entries;
 	}
 
+	public Money getTotalCost() {
+		Money sum = MoneyFactory.createMoney();
+		for(BudgetEntry entry : entries) {
+			sum = sum.add(entry.getValue());
+		}
+		return sum;
+	}
 	public String getName() {
 		return name;
 	}
