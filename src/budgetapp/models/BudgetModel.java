@@ -253,8 +253,17 @@ public class BudgetModel {
 		return datasource.getIdFromEventName(eventName);
 	}
 	
-	public void addTransactionToEvent(long transactionId, long eventId) {
+	public Event getLinkedEventFromTransactionId(long id) {
+		return datasource.getLinkedEventFromTransactionId(id);
+	}
+	
+	public void linkTransactionToEvent(long transactionId, long eventId) {
+		datasource.removeTransactionFromEvents(transactionId);
 		datasource.addTransactionToEvent(transactionId, eventId);
+	}
+	
+	public void removeTransactionFromEvents(long transactionId) {
+		datasource.removeTransactionFromEvents(transactionId);
 	}
 	
 	public void editInstallment(long id, Installment newInstallment)

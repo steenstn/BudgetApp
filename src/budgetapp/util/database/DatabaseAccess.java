@@ -158,7 +158,7 @@ public class DatabaseAccess {
 		database.delete(BudgetDatabase.TABLE_EVENTS, BudgetDatabase.COLUMN_ID + " = " + id, null);
 	}
 	
-	public void linkTransactionToEvent(long transactionId, long eventId) {
+	public void addTransactionToEvent(long transactionId, long eventId) {
 		ContentValues values = new ContentValues();
 		values.put(BudgetDatabase.COLUMN_EVENT_ID,eventId);
 		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID,transactionId);
@@ -171,6 +171,10 @@ public class DatabaseAccess {
 			database.insert(BudgetDatabase.TABLE_EVENT_TRANSACTION, null,values);
 		}
 		cursor.close();
+	}
+	
+	public void removeTransactionFromEvent(long transactionId) {
+		database.delete(BudgetDatabase.TABLE_EVENT_TRANSACTION, BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
 	}
 	
 	public long getIdOfActiveEvent() {
@@ -198,6 +202,20 @@ public class DatabaseAccess {
 			return id;
 		}
 		cursor.close();
+		return -1;
+	}
+	
+	public long getEventIdFromTransactionId(long transactionId) {
+		Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_EVENT_ID
+						+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + " where "
+						+ BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
+		
+		if(cursor.getCount() != 0) {
+			cursor.moveToFirst();
+			long eventId = cursor.getLong(0);
+			cursor.close();
+			return eventId;
+		}
 		return -1;
 	}
 	

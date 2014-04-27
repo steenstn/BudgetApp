@@ -75,11 +75,20 @@ public class BudgetDataSource {
 	}
 	
 	public void addTransactionToEvent(long transactionId, long eventId) {
-		dbAccess.linkTransactionToEvent(transactionId, eventId);
+		dbAccess.addTransactionToEvent(transactionId, eventId);
+	}
+	
+	public void removeTransactionFromEvents(long transactionId) {
+		dbAccess.removeTransactionFromEvent(transactionId);
 	}
 	
 	public long getIdFromEventName(String eventName) {
 		return dbAccess.getIdFromEventName(eventName);
+	}
+	
+	public Event getLinkedEventFromTransactionId(long id) {
+		long eventId = dbAccess.getEventIdFromTransactionId(id);
+		return dbAccess.getEvent(eventId);
 	}
 	
 	/**

@@ -31,6 +31,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 
 	Spinner eventSpinner;
 	StatsActivity activity;
+	BudgetEntry theEntry;
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		// Get the layout inflater
@@ -39,7 +40,7 @@ public class EditTransactionDialogFragment extends DialogFragment {
 		final View view = inflater.inflate(R.layout.dialog_edit_transaction,
 				null);
 
-		final BudgetEntry theEntry = getArguments().getParcelable("entry");
+		theEntry = getArguments().getParcelable("entry");
 		builder.setView(view);
 		TextView date = (TextView) view
 				.findViewById(R.id.dialog_edit_transaction_date_textview);
@@ -119,8 +120,12 @@ public class EditTransactionDialogFragment extends DialogFragment {
 						if(eventSpinner.getSelectedItemPosition() != 0) {
 							String eventName = eventSpinner.getSelectedItem().toString();
 							long eventId = activity.getModel().getIdFromEventName(eventName);
-							activity.getModel().addTransactionToEvent(newId, eventId);
+							activity.getModel().linkTransactionToEvent(newId, eventId);
 						}
+						else {
+							activity.getModel().removeTransactionFromEvents(newId);
+						}
+						
 						Toast.makeText(view.getContext(),
 								"Successfully edited transaction",
 								Toast.LENGTH_LONG).show();
@@ -157,5 +162,14 @@ public class EditTransactionDialogFragment extends DialogFragment {
 		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		 // Apply the adapter to the spinner
 		 eventSpinner.setAdapter(adapter);
+		 
+		 int selectedEventIndex = 0;
+		 for(int i = 1; i < eventNames.size(); i++) {
+			Event linkedEvent = activity.getModel().getLinkedEventFromTransactionId(theEntry.getId());
+			if(eventNames.get(i).equalsIgnoreCase(linkedEvent.getName())) {
+				selectedEventIndex = i;
+			}
+		 }
+		 eventSpinner.setSelection(selectedEventIndex);
 	}
 }
