@@ -85,16 +85,7 @@ public class InstallmentsView extends LinearLayout implements IBudgetObserver{
         totalDailyPaymentsTextView.setText("Total daily payments: " + new Money(totalDailyPayments));
         
 	}
-	/*
-	private void setUpCheckBoxListener(CheckBox checkBox) {
-		ViewHolder.getCheckBox().isChecked();
-		checkBox.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				System.out.println("aiufhwuei");
-			}});
-	}*/
 	@Override
     protected void onFinishInflate()
     {

@@ -211,6 +211,10 @@ public class MainActivity extends FragmentActivity {
             	intent = new Intent(this,StatsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.menu_events:
+            	intent = new Intent(this,EventsActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.menu_installments:
             	intent = new Intent(this,InstallmentsActivity.class);
             	startActivity(intent);
