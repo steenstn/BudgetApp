@@ -3,6 +3,7 @@ package budgetapp.util.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import budgetapp.util.Event;
 import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
@@ -523,6 +524,18 @@ public class DatabaseAccess {
 		return insertId;
 	}
 	
+	public long addEvent(Event event) {
+		ContentValues values = new ContentValues();
+		values.put(BudgetDatabase.COLUMN_NAME, event.getName());
+		values.put(BudgetDatabase.COLUMN_START_DATE, event.getStartDate());
+		values.put(BudgetDatabase.COLUMN_END_DATE, event.getEndDate());
+		values.put(BudgetDatabase.COLUMN_COMMENT, event.getComment());
+		values.put(BudgetDatabase.COLUMN_FLAGS, event.getFlags());
+
+		long insertId = database.insert(BudgetDatabase.TABLE_EVENTS, null, values);
+		return insertId;
+	}
+	
 	/**
 	 * Adds a link from the daily payment of the installment to a dayflow entry
 	 * @param installmentId - The id of the installment
@@ -730,6 +743,25 @@ public class DatabaseAccess {
 		database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, BudgetDatabase.COLUMN_ID + " > 0", null);
 	}
 	
+	public List<Event> getEvents() {
+		List<Event> events = new ArrayList<Event>();
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS, null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
+			Event event = new Event(cursor.getLong(0),
+							cursor.getString(1),
+							cursor.getString(2),
+							cursor.getString(3),
+							cursor.getString(4),
+							cursor.getInt(5));
+			cursor.moveToNext();
+			events.add(event);
+		}
+		
+		return events;
+	}
 	public List<Installment> getInstallments()
 	{
 		List<Installment> entries = new ArrayList<Installment>();

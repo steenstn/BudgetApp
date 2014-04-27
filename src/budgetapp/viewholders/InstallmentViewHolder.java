@@ -4,12 +4,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import budgetapp.util.Installment;
 
-
-/**
- * ViewHolder for displaying info about an Installment
- * @author Steen
- *
- */
 public class InstallmentViewHolder extends ViewHolder4 {
 	
     private Installment entry;
@@ -52,7 +46,6 @@ public class InstallmentViewHolder extends ViewHolder4 {
 		this.leftTextView = (TextView)getFirstView();
 		this.centerTextView = (TextView)getSecondView();
 		this.rightTextView = (TextView)getThirdView();
-		//this.installmentActiveCheckBox = (CheckBox)getFourthView();
 		leftTextView.setText(getEntry().getCategory());
 		centerTextView.setText(""+getEntry().getRemainingValue().makePositive() + "/"
 				+ getEntry().getTotalValue().makePositive());
@@ -60,14 +53,12 @@ public class InstallmentViewHolder extends ViewHolder4 {
 		double daysLeft = (getEntry().getRemainingValue().divide(getEntry().getDailyPayment())).get();
 		int numDaysLeft = (int) Math.ceil(daysLeft);
 		rightTextView.setText(""+numDaysLeft);
-		//this.installmentActiveCheckBox.setChecked(!entry.isPaused());
 	}
 	
 	@Override
 	public void recycle(IViewHolder tempEntry) {
 		setEntry(((InstallmentViewHolder) tempEntry).getEntry());
 		setTitle(((InstallmentViewHolder) tempEntry).getTitle());
-		//this.installmentActiveCheckBox = ((InstallmentViewHolder)tempEntry).getCheckBox();
 	}
 	
 	@Override

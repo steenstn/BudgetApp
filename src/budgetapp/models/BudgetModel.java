@@ -12,6 +12,7 @@ import android.content.Context;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Event;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.TransactionQueue;
@@ -211,6 +212,17 @@ public class BudgetModel {
 			return false;
 	}
 	
+	public boolean addEvent(Event event) {
+		boolean result = datasource.createEvent(event);
+		
+		if(result == true) {
+			stateChanged = true;
+			notifyObservers();
+			return true;
+		}
+		return false;
+	}
+	
 	public void editInstallment(long id, Installment newInstallment)
 	{
 		datasource.editInstallment(id, newInstallment);
@@ -235,6 +247,10 @@ public class BudgetModel {
 	public List<Installment> getInstallments()
 	{
 		return datasource.getInstallments();
+	}
+	
+	public List<Event> getEvents() {
+		return datasource.getEvents();
 	}
 	
 	public Installment getInstallment(long id)

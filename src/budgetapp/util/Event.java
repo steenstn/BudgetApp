@@ -1,5 +1,6 @@
 package budgetapp.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import budgetapp.util.entries.BudgetEntry;
@@ -21,6 +22,7 @@ public class Event {
 		this.endDate = endDate;
 		this.comment = comment;
 		this.flags = flags;
+		entries = new ArrayList<BudgetEntry>();
 	}
 	
 	public Event(long id, String name, String startDate, String endDate, String comment, int flags, List<BudgetEntry> entries) {

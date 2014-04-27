@@ -16,18 +16,24 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Event;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
+import budgetapp.viewholders.EventViewHolder;
 import budgetapp.viewholders.InstallmentViewHolder;
 import budgetapp.viewholders.ViewHolder;
 
 public class EventsView extends LinearLayout implements IBudgetObserver{
 
+	private Button createEventButton;
+	private BudgetAdapter listAdapter;
+	private ListView eventListView;
+	
 	public static interface ViewListener
 	{
-		//public void showInstallmentDialog();
+		public void showEventDialog();
 		//public void listViewLongClick(InstallmentViewHolder theEntry);
 		//public void listViewClick(InstallmentViewHolder listItem);
 	}
@@ -47,6 +53,14 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 	
 	@Override
 	public void update() {
+
+		List<Event> allEvents = model.getEvents();
+		listAdapter = new BudgetAdapter(this.getContext(),R.layout.listitem_event); 
+		for(Event e : allEvents) {
+			listAdapter.add(new EventViewHolder(e));
+		}
+		
+		eventListView.setAdapter(listAdapter);
 		
 	}
 
@@ -54,6 +68,18 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
     protected void onFinishInflate()
     {
     	super.onFinishInflate();
+    	
+    	createEventButton = (Button)findViewById(R.id.buttonAddEvent);
+    	eventListView = (ListView)findViewById(R.id.listViewEvents);
+    	
+    	createEventButton.setOnClickListener(new View.OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+				//viewListener.showInstallmentDialog();
+				Event event = new Event(0, "yeah", "2013-01-10", "2013-02-02", "comment", 3);
+				model.addEvent(event);
+			}
+		});
     }
     	
 }

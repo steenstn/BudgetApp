@@ -11,6 +11,7 @@ package budgetapp.util.database;
 import java.util.List;
 
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Event;
 import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
@@ -216,6 +217,14 @@ public class BudgetDataSource {
 		
 	}
 	
+	public boolean createEvent(Event event) {
+		long result = dbAccess.addEvent(event);
+		if(result != -1) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Do a payment on an installment
 	 * @param installment - The installment to pay off
@@ -369,6 +378,12 @@ public class BudgetDataSource {
 		List<Installment> result;
 		result = dbAccess.getInstallments();
 		
+		return result;
+	}
+	
+	public List<Event> getEvents() {
+		List<Event> result;
+		result = dbAccess.getEvents();
 		return result;
 	}
 	
