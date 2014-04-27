@@ -163,7 +163,14 @@ public class DatabaseAccess {
 		values.put(BudgetDatabase.COLUMN_EVENT_ID,eventId);
 		values.put(BudgetDatabase.COLUMN_TRANSACTION_ID,transactionId);
 		
-		database.insert(BudgetDatabase.TABLE_EVENT_TRANSACTION, null,values);
+		Cursor cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENT_TRANSACTION
+						+ " where " + BudgetDatabase.COLUMN_EVENT_ID + " = " + eventId + " and "
+						+ BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
+		
+		if(cursor.getCount() == 0) {
+			database.insert(BudgetDatabase.TABLE_EVENT_TRANSACTION, null,values);
+		}
+		cursor.close();
 	}
 	
 	public long getIdOfActiveEvent() {
@@ -176,6 +183,21 @@ public class DatabaseAccess {
 			cursor.close();
 			return id;
 		}
+		cursor.close();
+		return -1;
+	}
+	
+	public long getIdFromEventName(String eventName) {
+		Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from "
+						+ BudgetDatabase.TABLE_EVENTS + " where " + BudgetDatabase.COLUMN_NAME + " = '" + eventName + "'" , null);
+		
+		if(cursor.getCount() != 0) {
+			cursor.moveToFirst();
+			long id = cursor.getLong(0);
+			cursor.close();
+			return id;
+		}
+		cursor.close();
 		return -1;
 	}
 	

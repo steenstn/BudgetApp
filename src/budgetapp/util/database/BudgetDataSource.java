@@ -78,6 +78,10 @@ public class BudgetDataSource {
 		dbAccess.linkTransactionToEvent(transactionId, eventId);
 	}
 	
+	public long getIdFromEventName(String eventName) {
+		return dbAccess.getIdFromEventName(eventName);
+	}
+	
 	/**
 	 * Removes a transaction entry from the database and updates the affected tables
 	 * @param theEntry The entry to remove

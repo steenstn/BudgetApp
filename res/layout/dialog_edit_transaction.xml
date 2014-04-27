@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="5dip">
     <TextView 
         android:id="@+id/dialog_edit_transaction_date_textview"
         android:layout_width="match_parent"
@@ -35,6 +36,13 @@
         android:layout_marginBottom="4dp"
         android:inputType="textCapSentences"
         android:hint="Enter comment" />
+    <Spinner 
+        android:id="@+id/dialog_edit_transaction_event_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dip"
+        android:layout_marginBottom="4dip"
+        />
     <CheckBox 
         android:id="@+id/dialog_edit_transaction_delete_transaction_checkbox"
         

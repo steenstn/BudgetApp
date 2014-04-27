@@ -24,22 +24,15 @@ public class StatsActivity extends FragmentActivity{
 	private StatsView theView;
 	private BudgetModel model;
 	
-	/**
-	 * Removes an entry from the model
-	 * @param entry - The BudgetEntry to remove
-	 */
-	public void removeTransactionEntry(BudgetEntry entry)
-	{
+	public void removeTransactionEntry(BudgetEntry entry) {
 		model.removeTransaction(entry);
 	}
 	
-	/**
-	 * Edits an entry
-	 * @param oldEntry - The entry to edit
-	 * @param newEntry - The entry to replace the old with
-	 */
-	public void editTransactionEntry(long id, BudgetEntry newEntry)
-	{
+	public BudgetModel getModel() {
+		return model;
+	}
+	
+	public void editTransactionEntry(long id, BudgetEntry newEntry) {
 		model.editTransaction(id, newEntry);
 	}
 	

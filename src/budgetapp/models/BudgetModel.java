@@ -249,6 +249,14 @@ public class BudgetModel {
 		return getEvent(getIdOfActiveEvent());
 	}
 	
+	public long getIdFromEventName(String eventName) {
+		return datasource.getIdFromEventName(eventName);
+	}
+	
+	public void addTransactionToEvent(long transactionId, long eventId) {
+		datasource.addTransactionToEvent(transactionId, eventId);
+	}
+	
 	public void editInstallment(long id, Installment newInstallment)
 	{
 		datasource.editInstallment(id, newInstallment);

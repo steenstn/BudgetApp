@@ -184,7 +184,7 @@ public class MainActivity extends FragmentActivity {
 	    	else {
 	    		model.queueTransaction(entry);
 	    	}
-	    		
+	    	
 	    	processQueue();
 	    	EditText resultText = (EditText)findViewById(R.id.editTextSubtract);
 	    	resultText.setText("");

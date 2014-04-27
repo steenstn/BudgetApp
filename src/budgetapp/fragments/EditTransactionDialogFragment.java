@@ -4,8 +4,12 @@ package budgetapp.fragments;
  * Dialog Fragment for adding a new category
  * 
  */
+import java.util.ArrayList;
+import java.util.List;
+
 import budgetapp.activities.StatsActivity;
 import budgetapp.main.R;
+import budgetapp.util.Event;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
@@ -15,14 +19,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 
 public class EditTransactionDialogFragment extends DialogFragment {
 
+	Spinner eventSpinner;
+	StatsActivity activity;
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		// Get the layout inflater
@@ -51,8 +59,13 @@ public class EditTransactionDialogFragment extends DialogFragment {
 
 		final CheckBox checkBox = (CheckBox) view
 				.findViewById(R.id.dialog_edit_transaction_delete_transaction_checkbox);
+		
+		eventSpinner = (Spinner) view
+				.findViewById(R.id.dialog_edit_transaction_event_spinner);
 
-		final StatsActivity activity = ((StatsActivity) getActivity());
+		activity = ((StatsActivity) getActivity());
+		
+		setUpSpinner();
 		// Add action buttons
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -103,7 +116,11 @@ public class EditTransactionDialogFragment extends DialogFragment {
 								newFlags, newComment);
 
 						activity.editTransactionEntry(theEntry.getId(), newEntry);
-
+						if(eventSpinner.getSelectedItemPosition() != 0) {
+							String eventName = eventSpinner.getSelectedItem().toString();
+							long eventId = activity.getModel().getIdFromEventName(eventName);
+							activity.getModel().addTransactionToEvent(newId, eventId);
+						}
 						Toast.makeText(view.getContext(),
 								"Successfully edited transaction",
 								Toast.LENGTH_LONG).show();
@@ -123,5 +140,22 @@ public class EditTransactionDialogFragment extends DialogFragment {
 			}
 		});
 		return builder.create();
+	}
+	
+	private void setUpSpinner() {
+		List<Event> events = activity.getModel().getEvents();
+
+		ArrayList<String> eventNames = new ArrayList<String>();
+		for(Event e : events) {
+			eventNames.add(e.getName());
+		}
+
+		eventNames.add(0,"No event");
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(eventSpinner.getContext(), android.R.layout.simple_spinner_item, eventNames);
+		   
+	     // Specify the layout to use when the list of choices appears
+		 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		 // Apply the adapter to the spinner
+		 eventSpinner.setAdapter(adapter);
 	}
 }
