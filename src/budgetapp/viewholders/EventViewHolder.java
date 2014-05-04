@@ -22,8 +22,12 @@ public class EventViewHolder extends ViewHolder4 {
 		leftTextView = (TextView)getFirstView();
 		centerTextView = (TextView)getSecondView();
 		rightTextView = (TextView)getThirdView();
-		leftTextView.setText(event.isActive() + "\n" + event.getName() + " " + event.getTotalCost().makePositive());
-		centerTextView.setText(event.getStartDate() + " - " + event.getEndDate());
+		leftTextView.setText(event.getName() + " - " + event.getTotalCost().makePositive());
+		String startDate = event.getStartDate().substring(0, 10);
+		String endDate = event.getEndDate().substring(0, 10);
+		String resultingDateString = startDate.equalsIgnoreCase(endDate) ? startDate : startDate + " - " + endDate;
+		
+		centerTextView.setText(resultingDateString);
 		rightTextView.setText(event.getComment());
 		
 	}

@@ -82,8 +82,6 @@ public class EventsView extends LinearLayout implements IBudgetObserver{
 			@Override
 			public void onClick(View v) {
 				viewListener.showEventDialog();
-				//Event event = new Event(0, "yeah", "2013/01/10", "2013/02/02", "comment", 3);
-				//model.addEvent(event);
 			}
 		});
     	
