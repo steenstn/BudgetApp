@@ -2,6 +2,8 @@ package budgetapp.activities;
 
 import budgetapp.fragments.AddEventDialogFragment;
 import budgetapp.fragments.AddInstallmentDialogFragment;
+import budgetapp.fragments.RemoveCategoryDialogFragment;
+import budgetapp.fragments.RemoveEventDialogFragment;
 import budgetapp.fragments.RemoveInstallmentDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
@@ -46,6 +48,10 @@ public class EventsActivity extends FragmentActivity {
 		model.editEvent(id, newEvent);
 	}
 	
+	public void removeEvent(long id) {
+		model.removeEvent(id);
+	}
+	
 	private EventsView.ViewListener viewListener = new EventsView.ViewListener() {
 
 		@Override
@@ -56,8 +62,14 @@ public class EventsActivity extends FragmentActivity {
 
 		@Override
 		public void listViewLongClick(EventViewHolder listItem) {
-			long id = listItem.getEvent().getId();
-			model.removeEvent(id);
+			Event event = listItem.getEvent();
+			Bundle bundle = new Bundle();
+			bundle.putString("chosenEvent", event.getName());
+			bundle.putLong("eventId", event.getId());
+			DialogFragment newFragment = new RemoveEventDialogFragment();
+			newFragment.setArguments(bundle);
+        	newFragment.show(EventsActivity.this.getSupportFragmentManager(), "remove_event");
+        	
 		}
 
 		@Override
