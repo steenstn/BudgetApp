@@ -13,12 +13,6 @@ import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
 import budgetapp.util.money.MoneyFactory;
 
-/***
- * DatabaseAccess. The class responsible for communicating with the database. Used by DatabaseSource
- * 
- * @author Steen
- * 
- */
 public class DatabaseAccess {
 
     private SQLiteDatabase database;
@@ -47,48 +41,27 @@ public class DatabaseAccess {
         database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_DAYTOTAL);
     }
 
-    /**
-     * Adds a category to the category table in the database
-     * 
-     * @param theCategory
-     *            - Name of the category to add
-     * @return - If the insert was successful
-     */
     public boolean addCategory(String theCategory) {
         ContentValues values = new ContentValues();
         String fixedCategory = theCategory.replaceAll("['\"]", "\'");
         values.put(BudgetDatabase.COLUMN_CATEGORY, fixedCategory);
         long insertID = database.insert(BudgetDatabase.TABLE_CATEGORY_NAMES, null, values);
 
-        if (insertID == -1)
-            return false;
-        else
-            return true;
+        return insertID != -1;
     }
 
-    /**
-     * Removes a category from the category table in the database
-     * 
-     * @param theCategory
-     *            - Name of the category to delete
-     * @return - If the deletion was successful
-     */
     public boolean removeCategory(String theCategory) {
         return database.delete(BudgetDatabase.TABLE_CATEGORY_NAMES, BudgetDatabase.COLUMN_CATEGORY + " = " + "\""
                 + theCategory + "\"", null) > 0;
     }
 
     public boolean setFlags(long id, int flags) {
-
         ContentValues values = new ContentValues();
         values.put(BudgetDatabase.COLUMN_FLAGS, flags);
         int result = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id,
             null);
 
-        if (result == 1) {
-            return true;
-        } else
-            return false;
+        return result == 1;
     }
 
     /**
@@ -135,8 +108,9 @@ public class DatabaseAccess {
             BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
                 .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4));
             return entry;
-        } else
+        } else {
             return new BudgetEntry();
+        }
     }
 
     /**
@@ -150,10 +124,7 @@ public class DatabaseAccess {
         int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(),
             null);
 
-        if (res != 0) {
-            return true;
-        }
-        return false;
+        return res != 0;
     }
 
     public void removeEvent(long id) {
@@ -232,8 +203,6 @@ public class DatabaseAccess {
      * @return - If the adding was successful
      */
     public boolean updateDaySum(BudgetEntry theEntry, BudgetEntry newEntry) {
-        // COLUMN_DATE
-        // COLUMN_VALUE
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_DAYSUM
                 + " where " + BudgetDatabase.COLUMN_DATE + "=" + "\"" + theEntry.getDate().substring(0, 10) + "\"",
@@ -244,8 +213,7 @@ public class DatabaseAccess {
         if (newEntry != null) {
             newValue = (newEntry.getValue().get() - theEntry.getValue().get());
         }
-        if (cursor.getCount() <= 0) // No entry yet this day, create a new entry
-        {
+        if (cursor.getCount() <= 0) {
             ContentValues values = new ContentValues();
 
             // Put in the values
@@ -306,21 +274,18 @@ public class DatabaseAccess {
                 + BudgetDatabase.TABLE_DAYTOTAL + " where " + BudgetDatabase.COLUMN_DATE + "=" + "\""
                 + theEntry.getDate().substring(0, 10) + "\"", null);
         double newValue = theEntry.getValue().get();
-        if (cursor.getCount() <= 0) // No entry for today, search for last entry
-        {
+        if (cursor.getCount() <= 0) { // No entry for today, search for last entry
             ContentValues values = new ContentValues();
             Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from "
                     + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc limit 1", null);
-            if (yesterdayCursor.getCount() <= 0) // No yesterday, create new entry from incoming entry
-            {
+            if (yesterdayCursor.getCount() <= 0) { // No yesterday, create new entry from incoming entry
 
                 values.put(BudgetDatabase.COLUMN_DATE, theEntry.getDate().substring(0, 10)); // Don't use the hours and
                                                                                              // minutes in the daysum
                 values.put(BudgetDatabase.COLUMN_VALUE, newValue);
                 database.insert(BudgetDatabase.TABLE_DAYTOTAL, null, values);
                 cursor.close();
-            } else // Yesterday exists, create new entry with yesterdays total + new total
-            {
+            } else { // Yesterday exists, create new entry with yesterdays total + new total
                 yesterdayCursor.moveToFirst();
                 double yesterdayValue = yesterdayCursor.getDouble(0);
                 values.put(BudgetDatabase.COLUMN_DATE, theEntry.getDate().substring(0, 10)); // Don't use the hours and
@@ -330,8 +295,7 @@ public class DatabaseAccess {
                 cursor.close();
             }
             return true;
-        } else // There is an entry for today, add to it
-        {
+        } else { // There is an entry for today, add to it
             cursor.moveToFirst();
             double total = cursor.getDouble(0);
             long theId = cursor.getLong(1);
@@ -407,10 +371,7 @@ public class DatabaseAccess {
 
         int res = database.update(BudgetDatabase.TABLE_INSTALLMENTS, values, BudgetDatabase.COLUMN_ID + " = " + id,
             null);
-        if (res != 0)
-            return true;
-        else
-            return false;
+        return res != 0;
     }
 
     public boolean updateEvent(long id, String newName, String newStartDate, String newEndDate, String newComment,
@@ -423,10 +384,7 @@ public class DatabaseAccess {
         values.put(BudgetDatabase.COLUMN_FLAGS, newFlags);
 
         int res = database.update(BudgetDatabase.TABLE_EVENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
-        if (res != 0)
-            return true;
-        else
-            return false;
+        return res != 0;
     }
 
     /**
