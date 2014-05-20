@@ -100,18 +100,23 @@ public class StatsView
 
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
         entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
-        // Set up the composite
-        while (entryIndex < entries.size()) {
-            entry = entries.get(entryIndex);
+        //entries = model.getTransactionsFromEvent(model.getIdOfActiveEvent());
+		// Set up the composite
+        while(entryIndex<entries.size())
+        {
+        	entry = entries.get(entryIndex);
 
-            String year = entry.getYear();
-            if (years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year)) {
-                years.add(new CompositeStats(year));
-                yearIndex++;
-            }
-            years.get(yearIndex).addEntry(entry, CompositeStats.MONTH);
+        	String year = entry.getYear();
+        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
+        	{
+	        	//Add a year
+	        	years.add(new CompositeStats(year));
+	        	yearIndex++;
+        	}
+        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
+        	
+        	entryIndex++;
 
-            entryIndex++;
         }
     }
 
