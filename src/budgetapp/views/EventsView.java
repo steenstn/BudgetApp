@@ -27,9 +27,6 @@ public class EventsView
 
     public static interface ViewListener {
         public void showEventDialog();
-
-        public void listViewLongClick(EventViewHolder listItem);
-
         public void listViewClick(EventViewHolder listItem);
     }
 
@@ -78,17 +75,7 @@ public class EventsView
                 viewListener.showEventDialog();
             }
         });
-
-        eventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long arg) {
-                EventViewHolder listItem = (EventViewHolder) eventListView.getItemAtPosition(position);
-                viewListener.listViewLongClick(listItem);
-
-                return true;
-            }
-        });
-
+        
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
