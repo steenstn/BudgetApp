@@ -320,6 +320,10 @@ public class BudgetModel {
 		return datasource.getSomeTransactions(n, orderBy);
 	}
 	
+	public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+		return datasource.getTransactionsFromEvent(eventId);
+	}
+	
 	public List<DayEntry> getSomeDays(int n, String orderBy)
 	{
 		return datasource.getSomeDays(n, orderBy);

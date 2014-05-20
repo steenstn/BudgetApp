@@ -683,8 +683,7 @@ public class DatabaseAccess {
 	 * @param mode Ascending/descending by id
 	 * @return n number of transactions
 	 */
-	public List<BudgetEntry> getTransactions(int n,String mode)
-	{
+	public List<BudgetEntry> getTransactions(int n,String mode)	{
 		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
 		Cursor cursor;
 		if(n<=0) // Get all entries
@@ -692,9 +691,7 @@ public class DatabaseAccess {
 		else 
 			cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode + " limit 0,"+n,null);
 		cursor.moveToFirst();
-		while(!cursor.isAfterLast())
-		{
-			
+		while(!cursor.isAfterLast()) {
 			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
 			entries.add(entry);
 			cursor.moveToNext();
@@ -703,8 +700,25 @@ public class DatabaseAccess {
 		return entries;
 	}
 	
-	public BudgetEntry getTransaction(long id)
-	{
+	public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+		Cursor cursor;
+		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW
+							+ " where " + BudgetDatabase.COLUMN_ID + " in " 
+							+ "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID
+							+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + ")", null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
+			BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+			entries.add(entry);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return entries;
+	}
+	
+	public BudgetEntry getTransaction(long id) {
 		Cursor cursor;
 		cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id,null);
 		if(cursor.getCount()==1) {

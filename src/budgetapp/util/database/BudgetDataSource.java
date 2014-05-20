@@ -349,6 +349,12 @@ public class BudgetDataSource {
 		return result;
 	}
 	
+	public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+		List<BudgetEntry> result;
+		result = dbAccess.getTransactionsFromEvent(eventId);
+		return result;
+	}
+	
 	/**
 	 * Gets all categories, sorted by total value
 	 * @return ArrayList containging all CategoryEntries

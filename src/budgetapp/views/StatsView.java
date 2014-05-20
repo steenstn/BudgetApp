@@ -102,6 +102,7 @@ public class StatsView extends LinearLayout implements IBudgetObserver{
         
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
         entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
+        //entries = model.getTransactionsFromEvent(model.getIdOfActiveEvent());
 		// Set up the composite
         while(entryIndex<entries.size())
         {
