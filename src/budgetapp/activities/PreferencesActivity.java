@@ -35,11 +35,11 @@ public class PreferencesActivity
     @Override
     protected void onResume() {
         super.onResume();
-        EditTextPreference dailyBudgetPreference = (EditTextPreference) findPreference("dailyBudget");
+  /*      EditTextPreference dailyBudgetPreference = (EditTextPreference) findPreference("dailyBudget");
         String tempText = (String) dailyBudgetPreference.getTitle();
         tempText += " (" + model.getDailyBudget() + ")";
         dailyBudgetPreference.setTitle(tempText);
-
+*/
     }
 
     @SuppressWarnings("deprecation")
@@ -63,6 +63,7 @@ public class PreferencesActivity
             public boolean onPreferenceClick(Preference arg0) {
                 model = new BudgetModel(getBaseContext());
                 model.clearAutocompleteValues();
+                Toast.makeText(getBaseContext(), "Auto-complete values cleared", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

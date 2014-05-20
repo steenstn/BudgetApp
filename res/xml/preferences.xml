@@ -2,7 +2,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" >
- 
+
+    <PreferenceCategory android:title="Money">
+        <PreferenceScreen
+                android:title="Daily budget"
+                android:summary="Set the budget to be added daily"
+                android:key="dailyBudget">
+        </PreferenceScreen>
+        <PreferenceScreen
+                android:title="Currencies"
+                android:summary="Manage currencies"
+                android:key="currencies">
+        </PreferenceScreen>
+        
+    </PreferenceCategory>
     <PreferenceCategory android:title="Categories" >
         <PreferenceScreen
                 android:title="Manage categories"
