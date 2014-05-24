@@ -423,5 +423,11 @@ public class BudgetDataSource {
         return dbAccess.getNegativeTransactions();
     }
 
+    public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+    	List<BudgetEntry> result;
+    	result = dbAccess.getTransactionsFromEvent(eventId);
+    	return result;
+    }
+
 
 }

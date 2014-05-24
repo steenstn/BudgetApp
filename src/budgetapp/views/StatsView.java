@@ -44,6 +44,7 @@ public class StatsView
 
     private int selectedYear = 0;
     private int selectedMonth = 0;
+    private long eventId = -1;
 
     private String selectedCategory = getResources().getString(R.string.all_categories);
     private ArrayList<CompositeStats> years;
@@ -69,6 +70,10 @@ public class StatsView
     public void setModel(BudgetModel model) {
         this.model = model;
         this.model.addObserver(this);
+    }
+    
+    public void setEventId(long id){
+    	this.eventId = id;
     }
 
     public void setSelectedYear(int value) {
@@ -99,8 +104,13 @@ public class StatsView
         int yearIndex = -1;
 
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
-        entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
-        //entries = model.getTransactionsFromEvent(model.getIdOfActiveEvent());
+        if(eventId == -1) {
+        	entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
+        } else {
+        	entries = model.getTransactionsFromEvent(eventId);
+        }
+        
+        
 		// Set up the composite
         while(entryIndex<entries.size())
         {

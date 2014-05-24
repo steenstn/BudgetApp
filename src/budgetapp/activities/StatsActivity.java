@@ -43,6 +43,8 @@ public class StatsActivity extends FragmentActivity{
 
         theView.setModel(this.model);
         setContentView(theView);
+        long eventId = getIntent().getLongExtra("eventId", -1);
+        theView.setEventId(eventId);
         
         theView.setViewListener(viewListener);
         theView.update();

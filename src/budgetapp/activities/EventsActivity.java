@@ -1,5 +1,6 @@
 package budgetapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -112,7 +113,10 @@ public class EventsActivity
 
         @Override
         public void listViewClick(EventViewHolder listItem) {
-            
+        	Intent intent = new Intent(getBaseContext(), StatsActivity.class);
+        	Event event = listItem.getEvent();
+        	intent.putExtra("eventId", event.getId());
+            startActivity(intent);
         }
 
     };

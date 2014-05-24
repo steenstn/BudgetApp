@@ -170,7 +170,7 @@ public class MainActivity
                 theCategory, theComment);
 
             ToggleButton eventButton = (ToggleButton) findViewById(R.id.toggleButtonEvent);
-            if (eventButton.isChecked()) {
+            if (eventButton.getVisibility() == Button.VISIBLE && eventButton.isChecked()) {
                 long id = model.getIdOfActiveEvent();
                 model.queueTransaction(entry, id);
                 Toast.makeText(eventButton.getContext(),

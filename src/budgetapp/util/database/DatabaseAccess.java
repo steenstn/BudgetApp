@@ -883,4 +883,21 @@ public class DatabaseAccess {
         cursor.close();
         return entries;
     }
+
+	public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+ 	Cursor cursor;
+ 	cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW
+		+ " where " + BudgetDatabase.COLUMN_ID + " in " 
++ "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID
+ 	+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + ")", null);
+ 	cursor.moveToFirst();
+ 	while(!cursor.isAfterLast()) {
+	BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+ 	entries.add(entry);
+ 	cursor.moveToNext();
+ 	}
+ 	cursor.close();
+ return entries;
+	}
 }
