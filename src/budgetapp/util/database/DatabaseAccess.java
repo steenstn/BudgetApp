@@ -890,7 +890,7 @@ public class DatabaseAccess {
  	cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW
 		+ " where " + BudgetDatabase.COLUMN_ID + " in " 
 + "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID
- 	+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + ")", null);
+ 	+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + ") order by " + BudgetDatabase.COLUMN_ID + " desc", null);
  	cursor.moveToFirst();
  	while(!cursor.isAfterLast()) {
 	BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
