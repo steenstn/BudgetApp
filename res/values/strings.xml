@@ -24,13 +24,12 @@
         multiple days and are meant to be used for e.g. rent, a new TV, etc. The
         installments are paid off every day until the whole transaction is done. Longpress 
         an installment to delete it.</string>
-    <string name="versionName">Vishwakarma</string>
-    <string name="versionNameExplanation">Vishwakarma is the God of architecture in the Hindu faith.</string>
+    <string name="events_info_text">Events are used to group categories together for a specific event 
+        e.g. trips or vacation. While an event is active all made transactions will be logged to the event.</string>
+    <string name="versionName">Globetrotter</string>
+    <string name="versionNameExplanation">Hello there!</string>
     <string name="whats_new">
-        - Added option to pause paying of installments\n
-    	- Fixed bug where the graph would sometimes jump around when zooming\n
-    	- Fixed bug causing unnecessary processing of installments\n
-    	- Behind the scenes architectural improvements
+        - Events
 	</string>
 	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">
