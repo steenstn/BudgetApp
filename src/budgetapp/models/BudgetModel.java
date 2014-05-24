@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
@@ -44,7 +46,6 @@ public class BudgetModel {
         Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
         Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
         dailyBudget = MoneyFactory.convertDoubleToMoney(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
-
         backup = new BudgetBackup(context);
         transactions = new ArrayList<TransactionCommand>();
         observers = new ArrayList<IBudgetObserver>();
@@ -119,7 +120,7 @@ public class BudgetModel {
     }
 
     public Money getDailyBudget() {
-        return dailyBudget;
+    	return dailyBudget;
     }
 
     public List<String> getCategoryNames() {

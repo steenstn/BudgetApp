@@ -5,11 +5,6 @@
 
     <PreferenceCategory android:title="Money">
         <PreferenceScreen
-                android:title="Daily budget"
-                android:summary="Set the budget to be added daily"
-                android:key="dailyBudget">
-        </PreferenceScreen>
-        <PreferenceScreen
                 android:title="Currencies"
                 android:summary="Manage currencies"
                 android:key="currencies">

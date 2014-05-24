@@ -27,7 +27,7 @@ public class PreferencesActivity
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
-
+        model = new BudgetModel(this);
         setUpListeners();
 
     }
@@ -35,11 +35,6 @@ public class PreferencesActivity
     @Override
     protected void onResume() {
         super.onResume();
-  /*      EditTextPreference dailyBudgetPreference = (EditTextPreference) findPreference("dailyBudget");
-        String tempText = (String) dailyBudgetPreference.getTitle();
-        tempText += " (" + model.getDailyBudget() + ")";
-        dailyBudgetPreference.setTitle(tempText);
-*/
     }
 
     @SuppressWarnings("deprecation")
