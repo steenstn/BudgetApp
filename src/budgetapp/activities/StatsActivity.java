@@ -5,6 +5,7 @@ import budgetapp.fragments.EditTransactionDialogFragment;
 import budgetapp.fragments.PieChartFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.Event;
 import budgetapp.util.entries.BudgetEntry;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,6 +45,13 @@ public class StatsActivity extends FragmentActivity{
         theView.setModel(this.model);
         setContentView(theView);
         long eventId = getIntent().getLongExtra("eventId", -1);
+        
+        if(eventId != -1) {
+        	Event activeEvent = model.getEvent(eventId);
+        	String eventName = activeEvent.getName();
+        	this.setTitle(this.getTitle() + " - " + eventName);
+        }
+        
         theView.setEventId(eventId);
         
         theView.setViewListener(viewListener);
