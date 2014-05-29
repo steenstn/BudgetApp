@@ -50,7 +50,7 @@ public class MainActivity
     public String getChosenCategory() {
         return chosenCategory;
     }
-
+    
     public void setChosenCategory(String c) {
         chosenCategory = c;
     }

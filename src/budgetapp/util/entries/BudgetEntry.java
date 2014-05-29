@@ -89,7 +89,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		in.readStringArray(data);
 		
 		setId(Long.parseLong(data[0]));
-		//this.setValue(new Money(Double.parseDouble(data[1]) / Money.getExchangeRate()));
 		this.setValue(MoneyFactory.convertDoubleToMoney(Double.parseDouble(data[1])));
 		this.date=data[2];
 		this.category=data[3];
@@ -147,7 +146,6 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 		result.setComment(this.getComment());
 		result.setFlags(this.getFlags());
 		return result;
-		
 	}
 	
 	public String getDate(){
@@ -193,9 +191,5 @@ public class BudgetEntry extends DatabaseEntry implements Parcelable{
 			return comment;
 		else
 			return "";
-	}
-	@Override
-	public String toString(){
-		return "ID: " + getId() + " val: "+ this.getValue() + " date: " + date + " cat: " + category + " flags: " + getFlags();
 	}
 }

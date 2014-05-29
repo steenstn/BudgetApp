@@ -38,8 +38,10 @@ public class BudgetModel {
     private TransactionQueue transactionQueue;
     private BudgetConfig config;
     private BudgetBackup backup;
+    private Context context;
 
     public BudgetModel(Context context) {
+    	this.context = context;
         datasource = new BudgetDataSource(context);
         config = new BudgetConfig(context);
         Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
@@ -462,5 +464,6 @@ public class BudgetModel {
         }
 
     }
+
 
 }
