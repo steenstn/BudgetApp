@@ -137,8 +137,8 @@ public class BudgetDataSource {
             newEvent.getComment(), newEvent.getFlags());
     }
 
-    public long getIdOfActiveEvent() {
-        return dbAccess.getIdOfActiveEvent();
+    public List<Long> getIdsOfActiveEvents() {
+        return dbAccess.getIdsOfActiveEvents();
     }
 
     /**
@@ -336,6 +336,10 @@ public class BudgetDataSource {
 
     public Event getEvent(long id) {
         return dbAccess.getEvent(id);
+    }
+    
+    public List<Event> getActiveEvents() {
+    	return dbAccess.getActiveEvents();
     }
 
     public List<Installment> getUnpaidInstallments() {

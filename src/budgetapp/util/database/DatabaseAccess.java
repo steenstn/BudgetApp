@@ -151,18 +151,22 @@ public class DatabaseAccess {
                 + transactionId, null);
     }
 
-    public long getIdOfActiveEvent() {
+    public List<Long> getIdsOfActiveEvents() {
         Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_EVENTS
                 + " where " + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
 
         if (cursor.getCount() != 0) {
+        	List<Long> ids = new ArrayList<Long>();
             cursor.moveToFirst();
-            long id = cursor.getLong(0);
+            while(!cursor.isAfterLast()) {
+            	ids.add(cursor.getLong(0));
+            	cursor.moveToNext();
+            }
             cursor.close();
-            return id;
+            return ids;
         }
         cursor.close();
-        return -1;
+        return new ArrayList<Long>();
     }
 
     public long getIdFromEventName(String eventName) {
@@ -772,6 +776,26 @@ public class DatabaseAccess {
         List<Event> events = new ArrayList<Event>();
         Cursor cursor;
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
+
+            Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                cursor.getString(4), cursor.getInt(5), entries);
+            cursor.moveToNext();
+
+            events.add(event);
+        }
+        cursor.close();
+        return events;
+    }
+    
+    public List<Event> getActiveEvents() {
+        List<Event> events = new ArrayList<Event>();
+        Cursor cursor;
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + 
+        		" where " + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

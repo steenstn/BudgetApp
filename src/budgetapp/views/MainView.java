@@ -145,12 +145,12 @@ public class MainView
         }
 
         ToggleButton eventButton = (ToggleButton) findViewById(R.id.toggleButtonEvent);
-        if (model.getIdOfActiveEvent() != -1) {
+        if (model.getIdsOfActiveEvents().size() != 0) {
             eventButton.setVisibility(View.VISIBLE);
-            Event event = model.getEvent(model.getIdOfActiveEvent());
-            eventButton.setText(event.getName());
-            eventButton.setTextOff(event.getName());
-            eventButton.setTextOn(event.getName());
+            
+            eventButton.setText("Event");
+            eventButton.setTextOff("Event");
+            eventButton.setTextOn("Event");
 
         } else {
             eventButton.setVisibility(View.GONE);

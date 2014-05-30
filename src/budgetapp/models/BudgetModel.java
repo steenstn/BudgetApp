@@ -61,10 +61,10 @@ public class BudgetModel {
         transactions.add(new TransactionCommand(datasource, entry));
     }
 
-    public void queueTransaction(BudgetEntry entry, long eventId) {
+    public void queueTransaction(BudgetEntry entry, List<Long> eventIds) {
         queueAddDailyBudget();
-        transactionQueue.queueItem(new TransactionCommand(datasource, entry, eventId));
-        transactions.add(new TransactionCommand(datasource, entry, eventId));
+        transactionQueue.queueItem(new TransactionCommand(datasource, entry, eventIds));
+        transactions.add(new TransactionCommand(datasource, entry, eventIds));
     }
 
     public void removeTransaction(BudgetEntry entry) {
@@ -206,12 +206,12 @@ public class BudgetModel {
         notifyObservers();
     }
 
-    public long getIdOfActiveEvent() {
-        return datasource.getIdOfActiveEvent();
+    public List<Long> getIdsOfActiveEvents() {
+        return datasource.getIdsOfActiveEvents();
     }
 
-    public Event getActiveEvent() {
-        return getEvent(getIdOfActiveEvent());
+    public List<Event> getActiveEvents() {
+        return datasource.getActiveEvents();
     }
 
     public long getIdFromEventName(String eventName) {

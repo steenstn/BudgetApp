@@ -1,5 +1,7 @@
 package budgetapp.util.commands;
 
+import java.util.List;
+
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 
@@ -15,33 +17,27 @@ import budgetapp.util.entries.BudgetEntry;
 public class TransactionCommand extends Command {
 
 	private BudgetEntry entry;
-	private long eventId;
-	private boolean linkedToEvent;
+	private List<Long> eventIds;
 	
 	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry)
 	{
 		executed = false;
-		linkedToEvent = false;
 		datasource = theSource;
 		entry = theEntry;
 	}
 	
-	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry, long eventId)
+	public TransactionCommand(BudgetDataSource theSource,BudgetEntry theEntry, List<Long> eventIds)
 	{
 		executed = false;
-		linkedToEvent = true;
 		datasource = theSource;
 		entry = theEntry;
-		this.eventId = eventId;
+		this.eventIds = eventIds;
 	}
 	
 	public BudgetEntry getEntry() {
 		return entry;
 	}
 	
-	public void setEventId(long id) {
-		this.eventId = id;
-	}
 	/**
 	 * Creates a new transaction entry in the database and sets its id. The id is created
 	 * within the database
@@ -50,8 +46,10 @@ public class TransactionCommand extends Command {
 	{
 		BudgetEntry temp = datasource.createTransactionEntry(entry);
 		entry.setId(temp.getId());
-		if(linkedToEvent) {
-			datasource.addTransactionToEvent(entry.getId(), eventId);
+		if(eventIds != null) {
+			for(Long id : eventIds) {
+				datasource.addTransactionToEvent(entry.getId(), id.longValue());
+			}
 		}
 		executed = true;
 	}

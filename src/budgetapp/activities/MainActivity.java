@@ -27,6 +27,7 @@ import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.Event;
 import budgetapp.util.Installment;
 import budgetapp.util.commands.Command;
 import budgetapp.util.commands.PayOffInstallmentCommand;
@@ -171,10 +172,14 @@ public class MainActivity
 
             ToggleButton eventButton = (ToggleButton) findViewById(R.id.toggleButtonEvent);
             if (eventButton.getVisibility() == Button.VISIBLE && eventButton.isChecked()) {
-                long id = model.getIdOfActiveEvent();
-                model.queueTransaction(entry, id);
+                List<Long> ids = model.getIdsOfActiveEvents();
+                model.queueTransaction(entry, ids);
+                String allEvents = "";
+                for(Event e : model.getActiveEvents()) {
+                	allEvents += e.getName() + ", ";
+                }
                 Toast.makeText(eventButton.getContext(),
-                    entry.getValue() + " logged under " + model.getActiveEvent().getName(), Toast.LENGTH_SHORT).show();
+                    entry.getValue() + " logged under " + allEvents, Toast.LENGTH_SHORT).show();
             } else {
                 model.queueTransaction(entry);
             }
