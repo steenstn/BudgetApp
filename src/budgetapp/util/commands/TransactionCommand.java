@@ -46,7 +46,7 @@ public class TransactionCommand extends Command {
 	{
 		BudgetEntry temp = datasource.createTransactionEntry(entry);
 		entry.setId(temp.getId());
-		if(eventIds != null) {
+		if(eventIds != null && eventIds.size() != 0) {
 			for(Long id : eventIds) {
 				datasource.addTransactionToEvent(entry.getId(), id.longValue());
 			}

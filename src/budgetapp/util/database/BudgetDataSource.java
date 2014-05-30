@@ -37,13 +37,11 @@ public class BudgetDataSource {
         dbAccess = new DatabaseAccess(database);
     }
 
-    /**
-     * Creates a transaction entry and updates the affected tables.
+    /** Creates a transaction entry and updates the affected tables.
      * 
      * @param theEntry
      *            The entry to add
-     * @return The entry that was added
-     */
+     * @return The entry that was added */
     public BudgetEntry createTransactionEntry(BudgetEntry theEntry) {
         BudgetEntry workingEntry = theEntry.clone();
 
@@ -64,7 +62,7 @@ public class BudgetDataSource {
     }
 
     public void removeTransactionFromEvents(long transactionId) {
-        dbAccess.removeTransactionFromEvent(transactionId);
+        dbAccess.removeTransactionFromEvents(transactionId);
     }
 
     public long getIdFromEventName(String eventName) {
@@ -76,19 +74,18 @@ public class BudgetDataSource {
         return dbAccess.getEvent(eventId);
     }
 
-    /**
-     * Removes a transaction entry from the database and updates the affected tables
+    /** Removes a transaction entry from the database and updates the affected tables
      * 
      * @param theEntry
      *            The entry to remove
-     * @return true if the removal was successful
-     */
+     * @return true if the removal was successful */
     public boolean removeTransactionEntry(BudgetEntry theEntry) {
         // Get the entry from the database, it may have been edited
         BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
         boolean result = dbAccess.removeEntry(theEntry);
 
         if (result == true) {
+            removeTransactionFromEvents(workingEntry.getId());
             switch (workingEntry.getFlags()) {
             case DatabaseEntry.NORMAL_TRANSACTION:
                 removeFromCategory(workingEntry.getCategory(), workingEntry.getValue().get() * -1);
@@ -104,7 +101,6 @@ public class BudgetDataSource {
                 addToDayTotal(workingEntry);
                 dbAccess.removeInstallmentPayments(workingEntry.getId());
                 break;
-
             }
         }
         return result;
@@ -141,12 +137,10 @@ public class BudgetDataSource {
         return dbAccess.getIdsOfActiveEvents();
     }
 
-    /**
-     * Edit transaction and add the value to today's daily flow
+    /** Edit transaction and add the value to today's daily flow
      * 
      * @param oldEntry
-     * @param newEntry
-     */
+     * @param newEntry */
     public void editTransactionEntryToday(long id, BudgetEntry newEntry, String date) {
         BudgetEntry workingEntry = newEntry.clone();
         // Add the exchange rate to the entry
@@ -174,12 +168,10 @@ public class BudgetDataSource {
         return result;
     }
 
-    /**
-     * Creates a transaction in the database, an installment and links them together
+    /** Creates a transaction in the database, an installment and links them together
      * 
      * @param installment
-     * @return
-     */
+     * @return */
     public boolean createInstallment(Installment installment) {
         Money dailyPayment = installment.getDailyPayment();
 
@@ -210,14 +202,12 @@ public class BudgetDataSource {
         dbAccess.removeEvent(id);
     }
 
-    /**
-     * Do a payment on an installment
+    /** Do a payment on an installment
      * 
      * @param installment
      *            - The installment to pay off
      * @param dateToEdit
-     *            - The date to change daily flow for
-     */
+     *            - The date to change daily flow for */
     public Money payOffInstallment(Installment installment, String dateToEdit) {
         Installment dbInstallment = dbAccess.getInstallment(installment.getId());
         if (dbInstallment.getId() == -1 || dbInstallment.isPaidOff() || dbInstallment.isPaused())
@@ -249,13 +239,11 @@ public class BudgetDataSource {
         }
     }
 
-    /**
-     * Gets all transactions in the database ordered by id
+    /** Gets all transactions in the database ordered by id
      * 
      * @param orderBy
      *            - BudgetDatbase.ASCENDING/BudgetDatabase.DESCENDING
-     * @return An ArrayList of all entries
-     */
+     * @return An ArrayList of all entries */
     public List<BudgetEntry> getAllTransactions(String orderBy) {
         return dbAccess.getTransactions(0, orderBy);
     }
@@ -264,41 +252,35 @@ public class BudgetDataSource {
         return dbAccess.getTransaction(id);
     }
 
-    /**
-     * Gets n number of DayEntries from daily cash flow table sorted by id
+    /** Gets n number of DayEntries from daily cash flow table sorted by id
      * 
      * @param n
      *            - Number of transactions to fetch. Fetches all if n <= 0
      * @param orderBy
      *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
-     * @return An ArrayList of the entries
-     */
+     * @return An ArrayList of the entries */
     public List<DayEntry> getSomeDays(int n, String orderBy) {
         return dbAccess.getDaySum(n, orderBy);
     }
 
-    /**
-     * Gets n number of DayEntries from day total table sorted by id
+    /** Gets n number of DayEntries from day total table sorted by id
      * 
      * @param n
      *            - Number of transactions to get. Gets all if n <= 0
      * @param orderBy
      *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
-     * @return An ArrayList of the entries
-     */
+     * @return An ArrayList of the entries */
     public List<DayEntry> getSomeDaysTotal(int n, String orderBy) {
         return dbAccess.getDayTotal(n, orderBy);
     }
 
-    /**
-     * Gets n number of transactions. Returns all transactions if n <= 0
+    /** Gets n number of transactions. Returns all transactions if n <= 0
      * 
      * @param n
      *            - Number of entries to get
      * @param orderBy
      *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
-     * @return An ArrayList of the entries
-     */
+     * @return An ArrayList of the entries */
     public List<BudgetEntry> getSomeTransactions(int n, String orderBy) {
         return dbAccess.getTransactions(n, orderBy);
     }
@@ -337,9 +319,9 @@ public class BudgetDataSource {
     public Event getEvent(long id) {
         return dbAccess.getEvent(id);
     }
-    
+
     public List<Event> getActiveEvents() {
-    	return dbAccess.getActiveEvents();
+        return dbAccess.getActiveEvents();
     }
 
     public List<Installment> getUnpaidInstallments() {
@@ -428,11 +410,9 @@ public class BudgetDataSource {
     }
 
     public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
-    	List<BudgetEntry> result;
-    	result = dbAccess.getTransactionsFromEvent(eventId);
-    	return result;
+        List<BudgetEntry> result;
+        result = dbAccess.getTransactionsFromEvent(eventId);
+        return result;
     }
-
-
 
 }

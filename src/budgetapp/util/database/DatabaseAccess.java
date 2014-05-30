@@ -64,13 +64,11 @@ public class DatabaseAccess {
         return result == 1;
     }
 
-    /**
-     * Adds a transaction entry to the cash flow table in the dataase
+    /** Adds a transaction entry to the cash flow table in the dataase
      * 
      * @param theEntry
      *            - The BudgetEntry to add
-     * @return - The added BudgetEntry, will have an id from the table
-     */
+     * @return - The added BudgetEntry, will have an id from the table */
     public BudgetEntry addEntry(BudgetEntry theEntry) {
         ContentValues values = new ContentValues();
         // Put in the values
@@ -92,13 +90,11 @@ public class DatabaseAccess {
         return entry;
     }
 
-    /**
-     * Gets a BudgetEntry from the cash flow table
+    /** Gets a BudgetEntry from the cash flow table
      * 
      * @param theId
      *            - Id of the entry to get
-     * @return - The resulting BudgetEntry or a new BudgetEntry() if not found
-     */
+     * @return - The resulting BudgetEntry or a new BudgetEntry() if not found */
     public BudgetEntry getEntry(long theId) {
         Cursor cursor;
         cursor = database.query(BudgetDatabase.TABLE_CASHFLOW, null, BudgetDatabase.COLUMN_ID + " = " + theId, null,
@@ -113,13 +109,11 @@ public class DatabaseAccess {
         }
     }
 
-    /**
-     * Removes an entry from the cash flow table
+    /** Removes an entry from the cash flow table
      * 
      * @param theEntry
      *            - The entry to delete
-     * @return - If the deletion was successful
-     */
+     * @return - If the deletion was successful */
     public boolean removeEntry(BudgetEntry theEntry) {
         int res = database.delete(BudgetDatabase.TABLE_CASHFLOW, BudgetDatabase.COLUMN_ID + " = " + theEntry.getId(),
             null);
@@ -146,7 +140,7 @@ public class DatabaseAccess {
         cursor.close();
     }
 
-    public void removeTransactionFromEvent(long transactionId) {
+    public void removeTransactionFromEvents(long transactionId) {
         database.delete(BudgetDatabase.TABLE_EVENT_TRANSACTION, BudgetDatabase.COLUMN_TRANSACTION_ID + " = "
                 + transactionId, null);
     }
@@ -156,11 +150,11 @@ public class DatabaseAccess {
                 + " where " + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
 
         if (cursor.getCount() != 0) {
-        	List<Long> ids = new ArrayList<Long>();
+            List<Long> ids = new ArrayList<Long>();
             cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
-            	ids.add(cursor.getLong(0));
-            	cursor.moveToNext();
+            while (!cursor.isAfterLast()) {
+                ids.add(cursor.getLong(0));
+                cursor.moveToNext();
             }
             cursor.close();
             return ids;
@@ -197,15 +191,13 @@ public class DatabaseAccess {
         return -1;
     }
 
-    /**
-     * Updates the daysum table
+    /** Updates the daysum table
      * 
      * @param theEntry
      *            - The entry to add
      * @param newEntry
      *            - Possible other entry. This means that an entry was edited
-     * @return - If the adding was successful
-     */
+     * @return - If the adding was successful */
     public boolean updateDaySum(BudgetEntry theEntry, BudgetEntry newEntry) {
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_DAYSUM
@@ -242,13 +234,11 @@ public class DatabaseAccess {
         return true;
     }
 
-    /**
-     * Gets the id for a dayflow entry depending on the date
+    /** Gets the id for a dayflow entry depending on the date
      * 
      * @param date
      *            - The date for the dayflow entry
-     * @return - The id
-     */
+     * @return - The id */
     public long getIdFromDayFlow(String date) {
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_DAYSUM
@@ -263,15 +253,13 @@ public class DatabaseAccess {
         }
     }
 
-    /**
-     * Updates the daytotal table, goes through all daytotal entries when updating
+    /** Updates the daytotal table, goes through all daytotal entries when updating
      * 
      * @param theEntry
      *            - The entry to add
      * @param newEntry
      *            - Possible second entry. This means that an entry was edited
-     * @return - If the updating was successful
-     */
+     * @return - If the updating was successful */
     public boolean updateDayTotal(BudgetEntry theEntry, BudgetEntry newEntry) {
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + ", " + BudgetDatabase.COLUMN_ID + " from "
@@ -321,28 +309,24 @@ public class DatabaseAccess {
 
     }
 
-    /**
-     * Adds a value to all entries in table daytotal that have an id > theId
+    /** Adds a value to all entries in table daytotal that have an id > theId
      * 
      * @param theValue
      *            - The value to add
      * @param theId
-     *            - The id
-     */
+     *            - The id */
     private void addValueToRemainingDays(double theValue, long theId) {
         database.execSQL("update " + BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = "
                 + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
     }
 
-    /**
-     * Updates a transaction entry in the cash flow table
+    /** Updates a transaction entry in the cash flow table
      * 
      * @param oldEntry
      *            - The entry to edit
      * @param newEntry
      *            - Entry containing the new values
-     * @return - If the editing was successful
-     */
+     * @return - If the editing was successful */
     public boolean updateTransaction(long id, BudgetEntry newEntry) {
         Cursor cursor;
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id, null);
@@ -391,14 +375,12 @@ public class DatabaseAccess {
         return res != 0;
     }
 
-    /**
-     * Add a value to a category in the category table
+    /** Add a value to a category in the category table
      * 
      * @param theCategory
      *            - The category to add to
      * @param value
-     *            - The value to add
-     */
+     *            - The value to add */
     public void addToCategory(String theCategory, double value) {
 
         Cursor cursor;
@@ -428,14 +410,12 @@ public class DatabaseAccess {
         cursor.close();
     }
 
-    /**
-     * Remove a value from the category table, also decreases the number of transactions by 1
+    /** Remove a value from the category table, also decreases the number of transactions by 1
      * 
      * @param theCategory
      *            - The category to remove from
      * @param value
-     *            - The value to remove
-     */
+     *            - The value to remove */
     public void removeFromCategory(String theCategory, double value) {
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_NUM + "," + BudgetDatabase.COLUMN_VALUE + " from "
@@ -462,11 +442,9 @@ public class DatabaseAccess {
 
     }
 
-    /**
-     * Removes all the daily payments from an installment from the linked dayflow entry
+    /** Removes all the daily payments from an installment from the linked dayflow entry
      * 
-     * @param transactionId
-     */
+     * @param transactionId */
     public void removeInstallmentPayments(long transactionId) {
         Cursor cursor;
         cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_INSTALLMENTS
@@ -508,12 +486,10 @@ public class DatabaseAccess {
         return entry;
     }
 
-    /**
-     * Adds a value to the autocomplete table, if the table is full, the oldest value is replaces, queue-style
+    /** Adds a value to the autocomplete table, if the table is full, the oldest value is replaces, queue-style
      * 
      * @param theValue
-     *            - The value to add
-     */
+     *            - The value to add */
     public void addAutocompleteValue(double theValue, String theCategory) {
         Cursor cursor;
         // See if value already exists
@@ -573,8 +549,7 @@ public class DatabaseAccess {
         return insertId;
     }
 
-    /**
-     * Adds a link from the daily payment of the installment to a dayflow entry
+    /** Adds a link from the daily payment of the installment to a dayflow entry
      * 
      * @param installmentId
      *            - The id of the installment
@@ -582,8 +557,7 @@ public class DatabaseAccess {
      *            - The id of the dailyFlow entry
      * @param value
      *            - The value of the payment
-     * @return - The resulting id of the entry
-     */
+     * @return - The resulting id of the entry */
     public long addInstallmentPayment(long installmentId, long dailyFlowId, double value) {
         ContentValues values = new ContentValues();
         values.put(BudgetDatabase.COLUMN_INSTALLMENT_ID, installmentId);
@@ -623,15 +597,13 @@ public class DatabaseAccess {
         return values;
     }
 
-    /**
-     * Get n number of transactions. If n = 0, returns all transactions
+    /** Get n number of transactions. If n = 0, returns all transactions
      * 
      * @param n
      *            - Number of transactions
      * @param mode
      *            Ascending/descending by id
-     * @return n number of transactions
-     */
+     * @return n number of transactions */
     public List<BudgetEntry> getTransactions(int n, String mode) {
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
         Cursor cursor;
@@ -790,12 +762,12 @@ public class DatabaseAccess {
         cursor.close();
         return events;
     }
-    
+
     public List<Event> getActiveEvents() {
         List<Event> events = new ArrayList<Event>();
         Cursor cursor;
-        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + 
-        		" where " + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "
+                + BudgetDatabase.COLUMN_FLAGS + " = " + Event.EVENT_ACTIVE, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -908,20 +880,23 @@ public class DatabaseAccess {
         return entries;
     }
 
-	public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
-		List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
- 	Cursor cursor;
- 	cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW
-		+ " where " + BudgetDatabase.COLUMN_ID + " in " 
-+ "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID
- 	+ " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION + ") order by " + BudgetDatabase.COLUMN_ID + " desc", null);
- 	cursor.moveToFirst();
- 	while(!cursor.isAfterLast()) {
-	BudgetEntry entry =  new BudgetEntry(cursor.getLong(0),MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getString(5));
- 	entries.add(entry);
- 	cursor.moveToNext();
- 	}
- 	cursor.close();
- return entries;
-	}
+    public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
+        List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
+        Cursor cursor;
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where "
+                + BudgetDatabase.COLUMN_ID + " in " + "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID + " from "
+                + BudgetDatabase.TABLE_EVENT_TRANSACTION + " where " + BudgetDatabase.COLUMN_EVENT_ID + " = " + eventId
+                + ") order by " + BudgetDatabase.COLUMN_ID + " desc", null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
+                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
+
+            entries.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return entries;
+    }
 }
