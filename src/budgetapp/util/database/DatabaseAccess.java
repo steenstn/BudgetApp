@@ -84,7 +84,8 @@ public class DatabaseAccess {
                 + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
 
-        BudgetEntry entry = createBudgetEntryFromCursor(cursor);
+        BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),
+            cursor.getString(2), cursor.getString(3), cursor.getInt(4));
         cursor.close();
         return entry;
     }
@@ -645,16 +646,11 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         if (cursor.getCount() == 1) {
-
-            Installment installment = new Installment(cursor.getLong(0), cursor.getLong(1),
-                MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), MoneyFactory.convertDoubleToMoney(cursor
-                    .getDouble(3)), cursor.getString(4), MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
-                cursor.getString(7), cursor.getString(8));
-            installment.setFlags(cursor.getInt(5));
-
+            Installment installment = createInstallmentFromCursor(cursor);
             cursor.close();
             return installment;
         } else {
+            cursor.close();
             return new Installment(-1, -1, MoneyFactory.createMoney(), MoneyFactory.createMoney(), "ERROR",
                 MoneyFactory.createMoney(), "ERROR", "ERROR");
         }
@@ -750,6 +746,7 @@ public class DatabaseAccess {
         while (!cursor.isAfterLast()) {
             events.add(createEventFromCursor(cursor));
             cursor.moveToNext();
+
         }
         cursor.close();
         return events;
@@ -829,7 +826,6 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-
             entries.add(createInstallmentFromCursor(cursor));
             cursor.moveToNext();
         }
@@ -862,7 +858,6 @@ public class DatabaseAccess {
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {
-
             entries.add(createBudgetEntryFromCursor(cursor));
             cursor.moveToNext();
         }
