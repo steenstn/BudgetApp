@@ -901,6 +901,10 @@ public class DatabaseAccess {
     }
 
     public List<Event> getLinkedEventsFromTransactionId(long id) {
+        String debug = "select * from " + BudgetDatabase.TABLE_EVENTS + " where " + BudgetDatabase.COLUMN_ID + " in "
+                + "(select " + BudgetDatabase.COLUMN_EVENT_ID + " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION
+                + " where " + BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + id + ")";
+        System.out.println(debug);
         List<Event> events = new ArrayList<Event>();
         Cursor cursor;
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "
@@ -913,6 +917,7 @@ public class DatabaseAccess {
 
             Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getInt(5), entries);
+            events.add(event);
             cursor.moveToNext();
         }
         cursor.close();
