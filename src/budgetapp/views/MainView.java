@@ -22,7 +22,6 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.BudgetFunctions;
-import budgetapp.util.Event;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
@@ -147,10 +146,11 @@ public class MainView
         ToggleButton eventButton = (ToggleButton) findViewById(R.id.toggleButtonEvent);
         if (model.getIdsOfActiveEvents().size() != 0) {
             eventButton.setVisibility(View.VISIBLE);
-            
-            eventButton.setText("Event");
-            eventButton.setTextOff("Event");
-            eventButton.setTextOn("Event");
+
+            String eventButtonText = "Link to events";
+            eventButton.setText(eventButtonText);
+            eventButton.setTextOff(eventButtonText);
+            eventButton.setTextOn(eventButtonText);
 
         } else {
             eventButton.setVisibility(View.GONE);

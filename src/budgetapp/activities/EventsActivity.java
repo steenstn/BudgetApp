@@ -68,6 +68,17 @@ public class EventsActivity
         inflater.inflate(R.menu.context_menu_event, menu);
 
         menu.setHeaderTitle("Event options");
+
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        EventViewHolder clickedViewHolder = (EventViewHolder) ((ListView) v).getItemAtPosition(info.position);
+
+        MenuItem activationItem = menu.findItem(R.id.context_menu_activate_event);
+        if (clickedViewHolder.getEvent().isActive()) {
+            activationItem.setTitle("Deactivate event");
+        } else {
+            activationItem.setTitle("Activate event");
+        }
+
     }
 
     @Override
@@ -84,9 +95,18 @@ public class EventsActivity
         case R.id.context_menu_delete:
             showRemoveEventDialog(viewHolder);
             return true;
+        case R.id.context_menu_activate_event:
+            changeActivationStatus(viewHolder.getEvent());
+            return true;
         default:
             return super.onContextItemSelected(item);
         }
+    }
+
+    private void changeActivationStatus(Event event) {
+        Event newEvent = new Event(event);
+        newEvent.setActive(!newEvent.isActive());
+        model.editEvent(event.getId(), newEvent);
     }
 
     private void showEditEventDialog(EventViewHolder listItem) {

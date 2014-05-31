@@ -51,7 +51,7 @@ public class MainActivity
     public String getChosenCategory() {
         return chosenCategory;
     }
-    
+
     public void setChosenCategory(String c) {
         chosenCategory = c;
     }
@@ -175,11 +175,12 @@ public class MainActivity
                 List<Long> ids = model.getIdsOfActiveEvents();
                 model.queueTransaction(entry, ids);
                 String allEvents = "";
-                for(Event e : model.getActiveEvents()) {
-                	allEvents += e.getName() + ", ";
+                for (Event e : model.getActiveEvents()) {
+                    allEvents += ", " + e.getName();
                 }
-                Toast.makeText(eventButton.getContext(),
-                    entry.getValue() + " logged under " + allEvents, Toast.LENGTH_SHORT).show();
+                allEvents = allEvents.substring(2);
+                Toast.makeText(eventButton.getContext(), entry.getValue() + " linked to " + allEvents,
+                    Toast.LENGTH_LONG).show();
             } else {
                 model.queueTransaction(entry);
             }

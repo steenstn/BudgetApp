@@ -27,9 +27,10 @@ public class EventViewHolder
         rightTextView = (TextView) getThirdView();
         leftTextView.setText(event.getName() + " - " + event.getTotalCost().makePositive());
         if (event.isActive()) {
-            leftTextView.setShadowLayer(10, 0, 0, Color.rgb(105, 210, 231));
+            leftTextView.setShadowLayer(10, 0, 0, Color.rgb(135, 240, 255));
         } else {
             leftTextView.setTextColor(Color.LTGRAY);
+            leftTextView.setShadowLayer(0, 0, 0, Color.rgb(135, 240, 255));
         }
         //String startDate = event.getStartDate().substring(0, 10);
         //String endDate = event.getEndDate().substring(0, 10);

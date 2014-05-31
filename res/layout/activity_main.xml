@@ -63,7 +63,7 @@
             android:layout_marginRight="5dip"
             android:layout_marginLeft="20dip"
             android:checked="true"
-            android:text="Event" />
+            android:text="Link to events" />
 	      
 	</LinearLayout>
 	<LinearLayout
