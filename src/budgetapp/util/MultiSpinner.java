@@ -1,5 +1,10 @@
 package budgetapp.util;
 
+/*
+ * Original class from Destil at Stack Overflow
+ * http://stackoverflow.com/questions/5015686/android-spinner-with-multiple-choice
+ */
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -32,12 +37,21 @@ public class MultiSpinner
         super(arg0, arg1, arg2);
     }
 
-    public void setSelected(int index, boolean value) {
-        selected[index] = value;
+    public List<String> getSelectedItems() {
+        List<String> selectedItems = new ArrayList<String>();
+        for (int i = 0; i < selected.length; i++) {
+            if (selected[i]) {
+                selectedItems.add(items.get(i));
+            }
+        }
+        return selectedItems;
     }
 
-    public String getEventName(int index) {
-        return items.get(index);
+    public void setChecked(String itemName, boolean checked) {
+        int itemIndex = items.indexOf(itemName);
+        if (itemIndex != -1) {
+            selected[itemIndex] = checked;
+        }
     }
 
     @Override
@@ -98,7 +112,7 @@ public class MultiSpinner
 
         selected = new boolean[items.size()];
         for (int i = 0; i < selected.length; i++)
-            selected[i] = true;
+            selected[i] = false;
 
         // all text on the spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,

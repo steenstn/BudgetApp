@@ -34,6 +34,7 @@ public class EditTransactionDialogFragment
     MultiSpinner eventSpinner;
     StatsActivity activity;
     BudgetEntry theEntry;
+    List<String> activeEventNames;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -111,10 +112,12 @@ public class EditTransactionDialogFragment
                             newDate, newCategory, newFlags, newComment);
 
                         activity.editTransactionEntry(theEntry.getId(), newEntry);
-                        if (eventSpinner.getSelectedItemPosition() != 0) {
-                            String eventName = eventSpinner.getSelectedItem().toString();
-                            long eventId = activity.getModel().getIdFromEventName(eventName);
-                            activity.getModel().linkTransactionToEvent(newId, eventId);
+
+                        if (activeEventNames.size() != 0) {
+                            for (String eventName : activeEventNames) {
+                                long eventId = activity.getModel().getIdFromEventName(eventName);
+                                activity.getModel().linkTransactionToEvent(newId, eventId);
+                            }
                         } else {
                             activity.getModel().removeTransactionFromEvents(newId);
                         }
@@ -144,21 +147,26 @@ public class EditTransactionDialogFragment
             eventNames.add(e.getName());
         }
 
-        eventNames.add(0, "No event");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(eventSpinner.getContext(),
             android.R.layout.simple_spinner_item, eventNames);
 
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
+
         eventSpinner.setItems(eventNames, "aw yeah", new MultiSpinnerListener() {
 
             @Override
             public void onItemsSelected(boolean[] selected) {
-                System.out.println("aouihoeihgoiegh");
-
+                activeEventNames = eventSpinner.getSelectedItems();
             }
         });
+
+        List<Event> linkedEvents = activity.getModel().getLinkedEventsFromTransactionId(theEntry.getId());
+        System.out.println("sisze" + linkedEvents.size());
+        for (Event event : linkedEvents) {
+            eventSpinner.setChecked(event.getName(), true);
+        }
+
+        //eventSpinner.setSelected(1, false);
         // eventSpinner.setAdapter(adapter);
         /*
                 int selectedEventIndex = 0;

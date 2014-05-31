@@ -221,7 +221,6 @@ public class BudgetModel {
     }
 
     public void linkTransactionToEvent(long transactionId, long eventId) {
-        datasource.removeTransactionFromEvents(transactionId);
         datasource.addTransactionToEvent(transactionId, eventId);
     }
 
