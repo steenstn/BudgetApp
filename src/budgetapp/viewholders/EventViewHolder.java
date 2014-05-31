@@ -1,5 +1,6 @@
 package budgetapp.viewholders;
 
+import android.graphics.Color;
 import android.widget.TextView;
 import budgetapp.util.Event;
 
@@ -25,12 +26,17 @@ public class EventViewHolder
         centerTextView = (TextView) getSecondView();
         rightTextView = (TextView) getThirdView();
         leftTextView.setText(event.getName() + " - " + event.getTotalCost().makePositive());
-        String startDate = event.getStartDate().substring(0, 10);
-        String endDate = event.getEndDate().substring(0, 10);
-        String resultingDateString = startDate.equalsIgnoreCase(endDate) ? startDate : startDate + " - " + endDate;
+        if (event.isActive()) {
+            leftTextView.setShadowLayer(10, 0, 0, Color.rgb(105, 210, 231));
+        } else {
+            leftTextView.setTextColor(Color.LTGRAY);
+        }
+        //String startDate = event.getStartDate().substring(0, 10);
+        //String endDate = event.getEndDate().substring(0, 10);
+        //String resultingDateString = startDate.equalsIgnoreCase(endDate) ? startDate : startDate + " - " + endDate;
 
-        centerTextView.setText(resultingDateString);
-        rightTextView.setText(event.getComment() + " numEntries: " + event.getEntries().size());
+        centerTextView.setText("Entries: " + event.getEntries().size()/* + "\n" + resultingDateString*/);
+        rightTextView.setText(event.getComment());
 
     }
 
