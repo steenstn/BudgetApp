@@ -3,12 +3,6 @@ package budgetapp.viewholders;
 import android.view.View;
 import budgetapp.main.R;
 
-/**
- * Abstract class for ViewHolders
- * 
- * @author Steen
- * 
- */
 public abstract class ViewHolder4
     implements IViewHolder {
 
