@@ -6,8 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
@@ -41,7 +39,7 @@ public class BudgetModel {
     private Context context;
 
     public BudgetModel(Context context) {
-    	this.context = context;
+        this.context = context;
         datasource = new BudgetDataSource(context);
         config = new BudgetConfig(context);
         Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
@@ -122,7 +120,7 @@ public class BudgetModel {
     }
 
     public Money getDailyBudget() {
-    	return dailyBudget;
+        return dailyBudget;
     }
 
     public List<String> getCategoryNames() {
@@ -218,8 +216,8 @@ public class BudgetModel {
         return datasource.getIdFromEventName(eventName);
     }
 
-    public Event getLinkedEventFromTransactionId(long id) {
-        return datasource.getLinkedEventFromTransactionId(id);
+    public List<Event> getLinkedEventsFromTransactionId(long id) {
+        return datasource.getLinkedEventsFromTransactionId(id);
     }
 
     public void linkTransactionToEvent(long transactionId, long eventId) {
@@ -276,9 +274,9 @@ public class BudgetModel {
     public List<BudgetEntry> getSomeTransactions(int n, String orderBy) {
         return datasource.getSomeTransactions(n, orderBy);
     }
-    
+
     public List<BudgetEntry> getTransactionsFromEvent(long eventId) {
-    	return datasource.getTransactionsFromEvent(eventId);
+        return datasource.getTransactionsFromEvent(eventId);
     }
 
     public List<DayEntry> getSomeDays(int n, String orderBy) {
@@ -464,6 +462,5 @@ public class BudgetModel {
         }
 
     }
-
 
 }

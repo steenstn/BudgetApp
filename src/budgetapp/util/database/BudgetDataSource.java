@@ -69,9 +69,11 @@ public class BudgetDataSource {
         return dbAccess.getIdFromEventName(eventName);
     }
 
-    public Event getLinkedEventFromTransactionId(long id) {
-        long eventId = dbAccess.getEventIdFromTransactionId(id);
+    public List<Event> getLinkedEventsFromTransactionId(long id) {
+        /*long eventId = dbAccess.getEventIdFromTransactionId(id);
         return dbAccess.getEvent(eventId);
+        */
+        return dbAccess.getLinkedEventsFromTransactionId(id);
     }
 
     /** Removes a transaction entry from the database and updates the affected tables

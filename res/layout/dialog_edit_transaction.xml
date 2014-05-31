@@ -36,7 +36,7 @@
         android:layout_marginBottom="4dp"
         android:inputType="textCapSentences"
         android:hint="Enter comment" />
-    <Spinner 
+    <budgetapp.util.MultiSpinner 
         android:id="@+id/dialog_edit_transaction_event_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
