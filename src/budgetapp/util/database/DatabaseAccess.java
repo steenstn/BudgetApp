@@ -866,10 +866,6 @@ public class DatabaseAccess {
     }
 
     public List<Event> getLinkedEventsFromTransactionId(long id) {
-        String debug = "select * from " + BudgetDatabase.TABLE_EVENTS + " where " + BudgetDatabase.COLUMN_ID + " in "
-                + "(select " + BudgetDatabase.COLUMN_EVENT_ID + " from " + BudgetDatabase.TABLE_EVENT_TRANSACTION
-                + " where " + BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + id + ")";
-        System.out.println(debug);
         List<Event> events = new ArrayList<Event>();
         Cursor cursor;
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "

@@ -154,10 +154,9 @@ public class EditTransactionDialogFragment
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        eventSpinner.setItems(eventNames, "aw yeah");
+        eventSpinner.setItems(eventNames);
 
         if (linkedEvents == null) {
-            System.out.println("Getting linked events");
             linkedEvents = activity.getModel().getLinkedEventsFromTransactionId(theEntry.getId());
         }
         for (Event event : linkedEvents) {

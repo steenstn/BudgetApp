@@ -1,9 +1,9 @@
 package budgetapp.util;
 
 /*
- * Original class from Destil at Stack Overflow
- * http://stackoverflow.com/questions/5015686/android-spinner-with-multiple-choice
- */
+* Original class from Destil at Stack Overflow
+* http://stackoverflow.com/questions/5015686/android-spinner-with-multiple-choice
+*/
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class MultiSpinner
     private List<String> items;
     private boolean[] selected;
     private boolean[] selectedOnStart;
-    private String defaultText;
+    private String defaultText = "Linked events";
 
     public MultiSpinner(Context context) {
         super(context);
@@ -41,7 +41,6 @@ public class MultiSpinner
         List<String> selectedItems = new ArrayList<String>();
         for (int i = 0; i < selected.length; i++) {
             if (selected[i]) {
-                System.out.println(i + " true adding " + items.get(i));
                 selectedItems.add(items.get(i));
             }
         }
@@ -58,40 +57,14 @@ public class MultiSpinner
 
     @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-        System.out.println("onClick");
         if (isChecked)
             selected[which] = true;
         else
             selected[which] = false;
     }
 
-    private String createSpinnerText() {
-        System.out.println("createSpinnerText");
-        StringBuffer spinnerBuffer = new StringBuffer();
-        boolean someUnselected = false;
-        for (int i = 0; i < items.size(); i++) {
-            if (selected[i] == true) {
-                spinnerBuffer.append(items.get(i));
-                spinnerBuffer.append(", ");
-            } else {
-                someUnselected = true;
-            }
-        }
-        String spinnerText;
-        if (someUnselected) {
-            spinnerText = spinnerBuffer.toString();
-            if (spinnerText.length() > 2)
-                spinnerText = spinnerText.substring(0, spinnerText.length() - 2);
-        } else {
-            spinnerText = defaultText;
-        }
-
-        return spinnerText;
-    }
-
     @Override
     public boolean performClick() {
-        System.out.println("performClick");
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMultiChoiceItems(items.toArray(new CharSequence[items.size()]), selected, this);
 
@@ -99,7 +72,6 @@ public class MultiSpinner
 
             @Override
             public void onCancel(DialogInterface dialog) {
-                System.out.println("GOT CANCELLED YO");
                 for (int i = 0; i < selected.length; i++) {
                     selected[i] = selectedOnStart[i];
                 }
@@ -113,16 +85,14 @@ public class MultiSpinner
                 for (int i = 0; i < selected.length; i++) {
                     selectedOnStart[i] = selected[i];
                 }
-                String spinnerText = createSpinnerText();
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                    android.R.layout.simple_spinner_item, new String[] { spinnerText });
+                    android.R.layout.simple_spinner_item, new String[] { defaultText });
                 setAdapter(adapter);
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("GOT CANCELCLICEKD YO");
                 for (int i = 0; i < selected.length; i++) {
                     selected[i] = selectedOnStart[i];
                 }
@@ -133,10 +103,8 @@ public class MultiSpinner
         return true;
     }
 
-    public void setItems(List<String> items, String allText) {
-        System.out.println("setItems");
+    public void setItems(List<String> items) {
         this.items = items;
-        this.defaultText = allText;
 
         selected = new boolean[items.size()];
         selectedOnStart = new boolean[items.size()];
@@ -146,9 +114,8 @@ public class MultiSpinner
             selectedOnStart[i] = false;
         }
 
-        // all text on the spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
-            new String[] { createSpinnerText() });
+            new String[] { defaultText });
         setAdapter(adapter);
     }
 

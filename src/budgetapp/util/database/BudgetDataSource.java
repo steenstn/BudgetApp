@@ -70,9 +70,6 @@ public class BudgetDataSource {
     }
 
     public List<Event> getLinkedEventsFromTransactionId(long id) {
-        /*long eventId = dbAccess.getEventIdFromTransactionId(id);
-        return dbAccess.getEvent(eventId);
-        */
         return dbAccess.getLinkedEventsFromTransactionId(id);
     }
 
