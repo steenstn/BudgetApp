@@ -32,7 +32,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:checked="true"
-        android:text="Active" />"
+        android:text="Active" />
     
     
 

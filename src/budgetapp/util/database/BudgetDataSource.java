@@ -193,8 +193,12 @@ public class BudgetDataSource {
     }
 
     public boolean createEvent(Event event) {
-        long result = dbAccess.addEvent(event);
-        return result != -1;
+        Event eventDuplicate = dbAccess.getEvent(event.getName());
+        if (eventDuplicate.getId() == -1) {
+            long result = dbAccess.addEvent(event);
+            return result != -1;
+        }
+        return false;
     }
 
     public void removeEvent(long id) {

@@ -28,6 +28,7 @@ public class EventViewHolder
         leftTextView.setText(event.getName() + " - " + event.getTotalCost().makePositive());
         if (event.isActive()) {
             leftTextView.setShadowLayer(10, 0, 0, Color.rgb(135, 240, 255));
+            leftTextView.setTextColor(Color.WHITE);
         } else {
             leftTextView.setTextColor(Color.LTGRAY);
             leftTextView.setShadowLayer(0, 0, 0, Color.rgb(135, 240, 255));

@@ -335,9 +335,9 @@ public class DatabaseAccess {
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();
             ContentValues values = new ContentValues();
-            values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory());
+            values.put(BudgetDatabase.COLUMN_CATEGORY, newEntry.getCategory().replaceAll("['\"]", "\'"));
             values.put(BudgetDatabase.COLUMN_VALUE, newEntry.getValue().get());
-            values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment());
+            values.put(BudgetDatabase.COLUMN_COMMENT, newEntry.getComment().replaceAll("['\"]", "\'"));
             int res = database.update(BudgetDatabase.TABLE_CASHFLOW, values, BudgetDatabase.COLUMN_ID + " = " + id,
                 null);
 
@@ -366,10 +366,10 @@ public class DatabaseAccess {
     public boolean updateEvent(long id, String newName, String newStartDate, String newEndDate, String newComment,
             int newFlags) {
         ContentValues values = new ContentValues();
-        values.put(BudgetDatabase.COLUMN_NAME, newName);
+        values.put(BudgetDatabase.COLUMN_NAME, newName.replaceAll("['\"]", "\'"));
         values.put(BudgetDatabase.COLUMN_START_DATE, newStartDate);
         values.put(BudgetDatabase.COLUMN_END_DATE, newEndDate);
-        values.put(BudgetDatabase.COLUMN_COMMENT, newComment);
+        values.put(BudgetDatabase.COLUMN_COMMENT, newComment.replaceAll("['\"]", "\'"));
         values.put(BudgetDatabase.COLUMN_FLAGS, newFlags);
 
         int res = database.update(BudgetDatabase.TABLE_EVENTS, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
@@ -476,7 +476,7 @@ public class DatabaseAccess {
 
     public CategoryEntry addEntry(CategoryEntry theEntry) {
         ContentValues values = new ContentValues();
-        values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory());
+        values.put(BudgetDatabase.COLUMN_CATEGORY, theEntry.getCategory().replaceAll("['\"]", "\'"));
         long insertId = database.insert(BudgetDatabase.TABLE_CATEGORIES, null, values);
 
         Cursor cursor = database.query(BudgetDatabase.TABLE_CATEGORIES, allColumnsCategories, BudgetDatabase.COLUMN_ID
@@ -540,10 +540,10 @@ public class DatabaseAccess {
 
     public long addEvent(Event event) {
         ContentValues values = new ContentValues();
-        values.put(BudgetDatabase.COLUMN_NAME, event.getName());
+        values.put(BudgetDatabase.COLUMN_NAME, event.getName().replaceAll("['\"]", "\'"));
         values.put(BudgetDatabase.COLUMN_START_DATE, event.getStartDate());
         values.put(BudgetDatabase.COLUMN_END_DATE, event.getEndDate());
-        values.put(BudgetDatabase.COLUMN_COMMENT, event.getComment());
+        values.put(BudgetDatabase.COLUMN_COMMENT, event.getComment().replaceAll("['\"]", "\'"));
         values.put(BudgetDatabase.COLUMN_FLAGS, event.getFlags());
 
         long insertId = database.insert(BudgetDatabase.TABLE_EVENTS, null, values);
@@ -902,5 +902,19 @@ public class DatabaseAccess {
             cursor.getString(7), cursor.getString(8));
         installment.setFlags(cursor.getInt(5));
         return installment;
+    }
+
+    public Event getEvent(String name) {
+        Cursor cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "
+                + BudgetDatabase.COLUMN_NAME + " = " + "'" + name.replaceAll("['\"]", "\'") + "'", null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() == 1) {
+            Event event = createEventFromCursor(cursor);
+            cursor.close();
+            return event;
+        }
+        cursor.close();
+        return new Event();
     }
 }
