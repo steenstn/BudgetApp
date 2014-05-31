@@ -84,8 +84,7 @@ public class DatabaseAccess {
                 + " = " + insertId, null, null, null, null);
         cursor.moveToFirst();
 
-        BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),
-            cursor.getString(2), cursor.getString(3), cursor.getInt(4));
+        BudgetEntry entry = createBudgetEntryFromCursor(cursor);
         cursor.close();
         return entry;
     }
@@ -101,10 +100,11 @@ public class DatabaseAccess {
             null, null, null);
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();
-            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
-                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4));
+            BudgetEntry entry = createBudgetEntryFromCursor(cursor);
+            cursor.close();
             return entry;
         } else {
+            cursor.close();
             return new BudgetEntry();
         }
     }
@@ -617,9 +617,7 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
-                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
-            entries.add(entry);
+            entries.add(createBudgetEntryFromCursor(cursor));
             cursor.moveToNext();
         }
         cursor.close();
@@ -631,8 +629,7 @@ public class DatabaseAccess {
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where _id = " + id, null);
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();
-            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
-                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
+            BudgetEntry entry = createBudgetEntryFromCursor(cursor);
             cursor.close();
             return entry;
         }
@@ -751,13 +748,8 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
-
-            Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                cursor.getString(4), cursor.getInt(5), entries);
+            events.add(createEventFromCursor(cursor));
             cursor.moveToNext();
-
-            events.add(event);
         }
         cursor.close();
         return events;
@@ -771,13 +763,8 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
-
-            Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                cursor.getString(4), cursor.getInt(5), entries);
+            events.add(createEventFromCursor(cursor));
             cursor.moveToNext();
-
-            events.add(event);
         }
         cursor.close();
         return events;
@@ -789,12 +776,11 @@ public class DatabaseAccess {
         cursor.moveToFirst();
 
         if (cursor.getCount() == 1) {
-            List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
-
-            Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                cursor.getString(4), cursor.getInt(5), entries);
+            Event event = createEventFromCursor(cursor);
+            cursor.close();
             return event;
         }
+        cursor.close();
         return new Event();
     }
 
@@ -825,14 +811,7 @@ public class DatabaseAccess {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-
-            Installment installment = new Installment(cursor.getLong(0), cursor.getLong(1),
-                MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), MoneyFactory.convertDoubleToMoney(cursor
-                    .getDouble(3)), cursor.getString(4), MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
-                cursor.getString(7), cursor.getString(8));
-            installment.setFlags(cursor.getInt(5));
-
-            entries.add(installment);
+            entries.add(createInstallmentFromCursor(cursor));
             cursor.moveToNext();
         }
         cursor.close();
@@ -851,12 +830,7 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
 
-            Installment installment = new Installment(cursor.getLong(0), cursor.getLong(1),
-                MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), MoneyFactory.convertDoubleToMoney(cursor
-                    .getDouble(3)), cursor.getString(4), MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
-                cursor.getString(7), cursor.getString(8));
-            installment.setFlags(cursor.getInt(5));
-            entries.add(installment);
+            entries.add(createInstallmentFromCursor(cursor));
             cursor.moveToNext();
         }
         cursor.close();
@@ -870,9 +844,7 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
         while (!cursor.isAfterLast()) {
-            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
-                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
-            entries.add(entry);
+            entries.add(createBudgetEntryFromCursor(cursor));
             cursor.moveToNext();
         }
 
@@ -890,10 +862,8 @@ public class DatabaseAccess {
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {
-            BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor
-                .getDouble(1)), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
 
-            entries.add(entry);
+            entries.add(createBudgetEntryFromCursor(cursor));
             cursor.moveToNext();
         }
         cursor.close();
@@ -913,14 +883,33 @@ public class DatabaseAccess {
                 + id + ")", null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
-
-            Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-                cursor.getString(4), cursor.getInt(5), entries);
-            events.add(event);
+            events.add(createEventFromCursor(cursor));
             cursor.moveToNext();
         }
         cursor.close();
         return events;
+    }
+
+    private Event createEventFromCursor(Cursor cursor) {
+        List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
+
+        Event event = new Event(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+            cursor.getString(4), cursor.getInt(5), entries);
+        return event;
+    }
+
+    private BudgetEntry createBudgetEntryFromCursor(Cursor cursor) {
+        BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),
+            cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
+        return entry;
+    }
+
+    private Installment createInstallmentFromCursor(Cursor cursor) {
+        Installment installment = new Installment(cursor.getLong(0), cursor.getLong(1),
+            MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), MoneyFactory.convertDoubleToMoney(cursor
+                .getDouble(3)), cursor.getString(4), MoneyFactory.convertDoubleToMoney(cursor.getDouble(6)),
+            cursor.getString(7), cursor.getString(8));
+        installment.setFlags(cursor.getInt(5));
+        return installment;
     }
 }
