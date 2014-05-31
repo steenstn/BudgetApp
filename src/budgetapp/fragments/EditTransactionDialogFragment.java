@@ -23,7 +23,6 @@ import budgetapp.activities.StatsActivity;
 import budgetapp.main.R;
 import budgetapp.util.Event;
 import budgetapp.util.MultiSpinner;
-import budgetapp.util.MultiSpinner.MultiSpinnerListener;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
@@ -35,6 +34,7 @@ public class EditTransactionDialogFragment
     StatsActivity activity;
     BudgetEntry theEntry;
     List<String> activeEventNames;
+    List<Event> linkedEvents;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -111,9 +111,9 @@ public class EditTransactionDialogFragment
                         BudgetEntry newEntry = new BudgetEntry(newId, MoneyFactory.createMoneyFromNewDouble(newValue),
                             newDate, newCategory, newFlags, newComment);
 
-                        activity.editTransactionEntry(theEntry.getId(), newEntry);
-
+                        activeEventNames = eventSpinner.getSelectedItems();
                         if (activeEventNames.size() != 0) {
+                            activity.getModel().removeTransactionFromEvents(newId);
                             for (String eventName : activeEventNames) {
                                 long eventId = activity.getModel().getIdFromEventName(eventName);
                                 activity.getModel().linkTransactionToEvent(newId, eventId);
@@ -121,6 +121,8 @@ public class EditTransactionDialogFragment
                         } else {
                             activity.getModel().removeTransactionFromEvents(newId);
                         }
+
+                        activity.editTransactionEntry(theEntry.getId(), newEntry);
 
                         Toast.makeText(view.getContext(), "Successfully edited transaction", Toast.LENGTH_LONG).show();
 
@@ -152,30 +154,15 @@ public class EditTransactionDialogFragment
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        eventSpinner.setItems(eventNames, "aw yeah", new MultiSpinnerListener() {
+        eventSpinner.setItems(eventNames, "aw yeah");
 
-            @Override
-            public void onItemsSelected(boolean[] selected) {
-                activeEventNames = eventSpinner.getSelectedItems();
-            }
-        });
-
-        List<Event> linkedEvents = activity.getModel().getLinkedEventsFromTransactionId(theEntry.getId());
-        System.out.println("sisze" + linkedEvents.size());
+        if (linkedEvents == null) {
+            System.out.println("Getting linked events");
+            linkedEvents = activity.getModel().getLinkedEventsFromTransactionId(theEntry.getId());
+        }
         for (Event event : linkedEvents) {
             eventSpinner.setChecked(event.getName(), true);
         }
 
-        //eventSpinner.setSelected(1, false);
-        // eventSpinner.setAdapter(adapter);
-        /*
-                int selectedEventIndex = 0;
-                for (int i = 1; i < eventNames.size(); i++) {
-                    Event linkedEvent = activity.getModel().getLinkedEventFromTransactionId(theEntry.getId());
-                    if (eventNames.get(i).equalsIgnoreCase(linkedEvent.getName())) {
-                        selectedEventIndex = i;
-                    }
-                }
-                eventSpinner.setSelection(selectedEventIndex);*/
     }
 }
