@@ -9,7 +9,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import budgetapp.fragments.AddEventDialogFragment;
@@ -35,9 +34,14 @@ public class EventsActivity
         setContentView(view);
         model = new BudgetModel(this);
         view.setModel(model);
-        view.update();
 
         registerForContextMenu(view.getEventListView());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        view.update();
     }
 
     public BudgetModel getModel() {
@@ -59,26 +63,26 @@ public class EventsActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.context_menu_event, menu);
-        
+
         menu.setHeaderTitle("Event options");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        
+
         ListView eventList = view.getEventListView();
         EventViewHolder viewHolder = (EventViewHolder) eventList.getItemAtPosition(info.position);
-        
+
         switch (item.getItemId()) {
         case R.id.context_menu_edit:
             showEditEventDialog(viewHolder);
             return true;
         case R.id.context_menu_delete:
-        	showRemoveEventDialog(viewHolder);
+            showRemoveEventDialog(viewHolder);
             return true;
         default:
             return super.onContextItemSelected(item);
@@ -86,13 +90,14 @@ public class EventsActivity
     }
 
     private void showEditEventDialog(EventViewHolder listItem) {
-    	long eventId = listItem.getEvent().getId();
+        long eventId = listItem.getEvent().getId();
         Bundle bundle = new Bundle();
         bundle.putLong("id", eventId);
         DialogFragment newFragment = new AddEventDialogFragment();
         newFragment.setArguments(bundle);
         newFragment.show(getSupportFragmentManager(), "edit_event");
     }
+
     private void showRemoveEventDialog(EventViewHolder listItem) {
         Event event = listItem.getEvent();
         Bundle bundle = new Bundle();
@@ -113,9 +118,9 @@ public class EventsActivity
 
         @Override
         public void listViewClick(EventViewHolder listItem) {
-        	Intent intent = new Intent(getBaseContext(), StatsActivity.class);
-        	Event event = listItem.getEvent();
-        	intent.putExtra("eventId", event.getId());
+            Intent intent = new Intent(getBaseContext(), StatsActivity.class);
+            Event event = listItem.getEvent();
+            intent.putExtra("eventId", event.getId());
             startActivity(intent);
         }
 

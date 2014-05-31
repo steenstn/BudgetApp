@@ -24,13 +24,13 @@ public class EventsView
     private BudgetAdapter listAdapter;
     private ListView eventListView;
     private ViewListener viewListener;
+    private BudgetModel model;
 
     public static interface ViewListener {
         public void showEventDialog();
+
         public void listViewClick(EventViewHolder listItem);
     }
-
-    private BudgetModel model;
 
     public EventsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,7 +38,7 @@ public class EventsView
 
     public void setModel(BudgetModel model) {
         this.model = model;
-        model.addObserver(this);
+        this.model.addObserver(this);
     }
 
     public ListView getEventListView() {
@@ -51,15 +51,12 @@ public class EventsView
 
     @Override
     public void update() {
-
         List<Event> allEvents = model.getEvents();
         listAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_event);
         for (Event e : allEvents) {
             listAdapter.add(new EventViewHolder(e));
         }
-
         eventListView.setAdapter(listAdapter);
-
     }
 
     @Override
@@ -75,14 +72,13 @@ public class EventsView
                 viewListener.showEventDialog();
             }
         });
-        
+
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 EventViewHolder listItem = (EventViewHolder) eventListView.getItemAtPosition(position);
                 viewListener.listViewClick(listItem);
-
             }
 
         });
