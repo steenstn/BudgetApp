@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Currency;
 import budgetapp.util.Event;
 import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
@@ -201,6 +202,11 @@ public class BudgetDataSource {
         return false;
     }
 
+    public boolean createCurrency(Currency currency) {
+        long result = dbAccess.addCurrency(currency);
+        return result != -1;
+    }
+
     public void removeEvent(long id) {
         dbAccess.removeEvent(id);
     }
@@ -325,6 +331,10 @@ public class BudgetDataSource {
 
     public List<Event> getActiveEvents() {
         return dbAccess.getActiveEvents();
+    }
+
+    public List<Currency> getCurrencies() {
+        return dbAccess.getCurrencies();
     }
 
     public List<Installment> getUnpaidInstallments() {

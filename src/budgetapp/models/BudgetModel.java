@@ -9,6 +9,7 @@ import android.content.Context;
 import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Currency;
 import budgetapp.util.Event;
 import budgetapp.util.IBudgetObserver;
 import budgetapp.util.Installment;
@@ -192,6 +193,17 @@ public class BudgetModel {
         return false;
     }
 
+    public boolean addCurrency(Currency currency) {
+        boolean result = datasource.createCurrency(currency);
+
+        if (result == true) {
+            stateChanged = true;
+            notifyObservers();
+            return true;
+        }
+        return false;
+    }
+
     public void editEvent(long id, Event newEvent) {
         datasource.editEvent(id, newEvent);
         stateChanged = true;
@@ -256,6 +268,10 @@ public class BudgetModel {
 
     public Event getEvent(long id) {
         return datasource.getEvent(id);
+    }
+
+    public List<Currency> getCurrencies() {
+        return datasource.getCurrencies();
     }
 
     public Installment getInstallment(long id) {

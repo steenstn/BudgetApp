@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import budgetapp.util.Currency;
 import budgetapp.util.Event;
 import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
@@ -550,6 +551,17 @@ public class DatabaseAccess {
         return insertId;
     }
 
+    public long addCurrency(Currency currency) {
+        ContentValues values = new ContentValues();
+        values.put(BudgetDatabase.COLUMN_CURRENCY_SYMBOL, currency.getSymbol().replaceAll("['\"]", "\'"));
+        values.put(BudgetDatabase.COLUMN_CURRENCY_EXCHANGE_RATE, currency.getExchangeRate());
+        values.put(BudgetDatabase.COLUMN_FLAGS, currency.getFlags());
+
+        long insertId = database.insert(BudgetDatabase.TABLE_CURRENCIES, null, values);
+        return insertId;
+
+    }
+
     /** Adds a link from the daily payment of the installment to a dayflow entry
      * 
      * @param installmentId
@@ -752,6 +764,19 @@ public class DatabaseAccess {
         return events;
     }
 
+    public List<Currency> getCurrencies() {
+        List<Currency> currencies = new ArrayList<Currency>();
+        Cursor cursor;
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CURRENCIES, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            currencies.add(createCurrencyFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return currencies;
+    }
+
     public List<Event> getActiveEvents() {
         List<Event> events = new ArrayList<Event>();
         Cursor cursor;
@@ -881,6 +906,20 @@ public class DatabaseAccess {
         return events;
     }
 
+    public Event getEvent(String name) {
+        Cursor cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "
+                + BudgetDatabase.COLUMN_NAME + " = " + "'" + name.replaceAll("['\"]", "\'") + "'", null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() == 1) {
+            Event event = createEventFromCursor(cursor);
+            cursor.close();
+            return event;
+        }
+        cursor.close();
+        return new Event();
+    }
+
     private Event createEventFromCursor(Cursor cursor) {
         List<BudgetEntry> entries = getEntriesForEvent(cursor.getLong(0));
 
@@ -904,17 +943,9 @@ public class DatabaseAccess {
         return installment;
     }
 
-    public Event getEvent(String name) {
-        Cursor cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_EVENTS + " where "
-                + BudgetDatabase.COLUMN_NAME + " = " + "'" + name.replaceAll("['\"]", "\'") + "'", null);
-        cursor.moveToFirst();
-
-        if (cursor.getCount() == 1) {
-            Event event = createEventFromCursor(cursor);
-            cursor.close();
-            return event;
-        }
-        cursor.close();
-        return new Event();
+    private Currency createCurrencyFromCursor(Cursor cursor) {
+        Currency currency = new Currency(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getInt(3));
+        return currency;
     }
+
 }

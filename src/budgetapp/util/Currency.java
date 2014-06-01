@@ -48,6 +48,10 @@ public class Currency {
         this.symbol = symbol;
     }
 
+    public int getFlags() {
+        return flags;
+    }
+
     public long getId() {
         return id;
     }

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.Currency;
 
 public class CurrenciesActivity
     extends FragmentActivity {
@@ -38,10 +39,10 @@ public class CurrenciesActivity
 
     public void updateList() {
         currenciesList = (ListView) findViewById(R.id.currenciesListView);
-        List<String> categories = (model.getCategoryNames());
-        String temp[] = new String[categories.size()];
-        for (int i = 0; i < categories.size(); i++) {
-            temp[i] = categories.get(i);
+        List<Currency> currencies = (model.getCurrencies());
+        String temp[] = new String[currencies.size()];
+        for (int i = 0; i < currencies.size(); i++) {
+            temp[i] = currencies.get(i).getSymbol();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
