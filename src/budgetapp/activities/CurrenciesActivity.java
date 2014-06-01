@@ -105,7 +105,7 @@ public class CurrenciesActivity
                 Money.after = currency.showSymbolAfter();
                 model.saveConfig();
                 Toast.makeText(getBaseContext(),
-                    "Active currency: " + Money.getCurrency() + " Exchange rate: " + Money.getExchangeRate(),
+                    "Set active currency to: " + Money.getCurrency() + "\nExchange rate: " + Money.getExchangeRate(),
                     Toast.LENGTH_LONG).show();
             }
         });

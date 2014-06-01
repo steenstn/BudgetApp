@@ -89,18 +89,19 @@ public class ChoosePriceFragment
         theList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long arg) {
-                if (position != adapter.getCount() - 1) {
-                    Object listItem = theList.getItemAtPosition(position);
-                    ((MainActivity) getActivity()).setChosenCategory(category);
-                    DialogFragment newFragment = new OtherCategoryDialogFragment();
-                    //((MainActivity)getActivity())
-                    newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(), "other_category");
-                    ChoosePriceFragment.this.getDialog().cancel();
-                }
+
+                Object listItem = theList.getItemAtPosition(position);
+                String valueWithoutCurrency = listItem.toString();
+                valueWithoutCurrency = valueWithoutCurrency.replaceAll(Money.getCurrency(), "");
+                valueWithoutCurrency = valueWithoutCurrency.replaceAll(",", ".");
+                ((MainActivity) getActivity()).setChosenCategory(category);
+                DialogFragment newFragment = new OtherCategoryDialogFragment();
+                ((MainActivity) getActivity()).setEnteredValue(valueWithoutCurrency);
+                newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(), "other_category");
+                ChoosePriceFragment.this.getDialog().cancel();
 
                 return true;
             }
         });
     }
-
 }

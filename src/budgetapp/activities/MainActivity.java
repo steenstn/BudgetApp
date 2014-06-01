@@ -200,6 +200,11 @@ public class MainActivity
         return result;
     }
 
+    public void setEnteredValue(String value) {
+        EditText resultText = (EditText) findViewById(R.id.editTextSubtract);
+        resultText.setText(value);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
