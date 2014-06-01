@@ -27,6 +27,8 @@
         an installment to delete it.</string>
     <string name="events_info_text">Events are used to group categories together for a specific event 
         e.g. trips or vacation. When events are active, all made transactions will be linked to them.</string>
+        <string name="currencies_info_text">Press the button to create a new currency. Tap a currency to set it as the active one.
+             Longpress a currency to edit or delete it.</string>
     <string name="versionName">Odysseus</string>
     <string name="versionNameExplanation">Odysseus was a legendary Greek king of Ithaca and a hero of Homer\'s epic poem the Odyssey. 
          He is most famous for the ten eventful years he took to return home after the decade-long Trojan War.</string>

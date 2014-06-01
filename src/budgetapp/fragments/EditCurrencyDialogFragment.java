@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import budgetapp.activities.CurrenciesActivity;
 import budgetapp.main.R;
+import budgetapp.util.Currency;
 import budgetapp.util.money.Money;
 
 public class EditCurrencyDialogFragment
@@ -42,7 +43,27 @@ public class EditCurrencyDialogFragment
 
             @Override
             public void onClick(DialogInterface dialog, int id) {
+
                 EditText temp = (EditText) view.findViewById(R.id.edit_currency_currency);
+                String symbol = temp.getText().toString();
+
+                double exchangeRate = 1;
+                try {
+                    temp = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
+                    double value = Double.parseDouble(temp.getText().toString());
+                    if (value > 0) {
+                        exchangeRate = value;
+                    }
+                } catch (NumberFormatException e) {
+                    exchangeRate = 1;
+                }
+
+                boolean showSymbolAfter = checkBox.isChecked();
+                int flags = showSymbolAfter ? Currency.SHOW_SYMBOL_AFTER : 0;
+                Currency newCurrency = new Currency(symbol, exchangeRate, flags);
+
+                ((CurrenciesActivity) getActivity()).saveCurrency(newCurrency);
+                /*EditText temp = (EditText) view.findViewById(R.id.edit_currency_currency);
                 Money.setCurrency(temp.getText().toString());
                 Money.after = checkBox.isChecked();
 
@@ -54,8 +75,9 @@ public class EditCurrencyDialogFragment
                         Money.setExchangeRate(value);
                 } catch (NumberFormatException e) {
 
-                }
-                ((CurrenciesActivity) getActivity()).saveConfig();
+                }*/
+
+                //((CurrenciesActivity) getActivity()).saveConfig();
                 //  ((CurrenciesActivity) getActivity()).updateView();
 
             }

@@ -8,19 +8,24 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BudgetAdapter;
 import budgetapp.util.Currency;
+import budgetapp.util.IBudgetObserver;
+import budgetapp.util.money.Money;
+import budgetapp.viewholders.CurrencyViewHolder;
 
 public class CurrenciesActivity
-    extends FragmentActivity {
+    extends FragmentActivity
+    implements IBudgetObserver {
 
-    ListView currenciesList;
-    BudgetModel model;
+    private ListView currenciesList;
+    private BudgetModel model;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,9 +33,13 @@ public class CurrenciesActivity
         setContentView(R.layout.activity_currencies);
 
         model = new BudgetModel(this);
-
+        model.addObserver(this);
         updateList();
         setUpListeners();
+    }
+
+    public void saveCurrency(Currency currency) {
+        model.addCurrency(currency);
     }
 
     public void saveConfig() {
@@ -40,15 +49,11 @@ public class CurrenciesActivity
     public void updateList() {
         currenciesList = (ListView) findViewById(R.id.currenciesListView);
         List<Currency> currencies = (model.getCurrencies());
-        String temp[] = new String[currencies.size()];
-        for (int i = 0; i < currencies.size(); i++) {
-            temp[i] = currencies.get(i).getSymbol();
+        BudgetAdapter listAdapter = new BudgetAdapter(this.getBaseContext(), R.layout.listitem_currency);
+        for (Currency c : currencies) {
+            listAdapter.add(new CurrencyViewHolder(c));
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-            android.R.id.text1, temp);
-
-        currenciesList.setAdapter(adapter);
+        currenciesList.setAdapter(listAdapter);
     }
 
     private void setUpListeners() {
@@ -56,14 +61,13 @@ public class CurrenciesActivity
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
 
-                /*Object item = currenciesList.getItemAtPosition(position);
-                String theCategory = item.toString();
-                Bundle bundle = new Bundle();
-                bundle.putString("chosenCurrency", theCategory);*/
-                DialogFragment newFragment = new EditCurrencyDialogFragment();
-                //newFragment.setArguments(bundle);
-                newFragment.show(CurrenciesActivity.this.getSupportFragmentManager(), "edit_currency");
-
+                Currency currency = ((CurrencyViewHolder) currenciesList.getItemAtPosition(position)).getCurrency();
+                Money.setCurrency(currency.getSymbol());
+                Money.setExchangeRate(currency.getExchangeRate());
+                Money.after = currency.showSymbolAfter();
+                Toast.makeText(getBaseContext(),
+                    "Active currency: " + Money.getCurrency() + " Exchange rate: " + Money.getExchangeRate(),
+                    Toast.LENGTH_LONG).show();
             }
         });
 
@@ -81,5 +85,10 @@ public class CurrenciesActivity
 
         });
 
+    }
+
+    @Override
+    public void update() {
+        updateList();
     }
 }

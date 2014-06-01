@@ -5,8 +5,8 @@
 
     <PreferenceCategory android:title="Money">
         <PreferenceScreen
-                android:title="Currencies"
-                android:summary="Manage currencies"
+                android:title="Manage currencies"
+                android:summary="Select active currency, add/remove currencies"
                 android:key="currencies">
         </PreferenceScreen>
         

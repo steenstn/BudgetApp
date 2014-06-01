@@ -16,6 +16,10 @@ public class Currency {
         this.flags = flags;
     }
 
+    public Currency(String symbol, double exchangeRate, int flags) {
+        this(-1, symbol, exchangeRate, flags);
+    }
+
     public boolean isActive() {
         return (flags & CURRENCY_ACTIVE) == CURRENCY_ACTIVE;
     }

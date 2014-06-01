@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <TextView
+	        android:id="@+id/textViewCurrenciesInfo"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="5dip"
+	        android:text="@string/currencies_info_text" />
+    
 	<ListView 
 		android:id="@+id/currenciesListView"
 		android:layout_width="fill_parent"
