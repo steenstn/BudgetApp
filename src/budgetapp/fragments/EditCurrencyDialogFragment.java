@@ -19,30 +19,30 @@ import budgetapp.util.Currency;
 
 public class EditCurrencyDialogFragment
     extends DialogFragment {
-    private CheckBox checkBox;
+    private CheckBox symbolAftercheckBox;
+    private EditText symbolEditText;
+    private EditText exchangeRateEditText;
     private String mode;
     private long currencyId = -1;
     private View view;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        // Inflate and set the layout for the dialog
         view = inflater.inflate(R.layout.dialog_edit_currency, null);
+
+        symbolEditText = (EditText) view.findViewById(R.id.edit_currency_currency);
+        exchangeRateEditText = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
+        symbolAftercheckBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
+
         mode = this.getTag();
         if (mode.equalsIgnoreCase("edit_currency")) {
             Bundle bundle = this.getArguments();
             currencyId = bundle.getLong("id", -1);
 
-            EditText edit = (EditText) view.findViewById(R.id.edit_currency_currency);
-            edit.setText(bundle.getString("symbol"));
-
-            edit = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
-            edit.setText("" + bundle.getDouble("exchangeRate"));
-
-            checkBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
-            checkBox.setChecked(bundle.getBoolean("symbolAfter"));
+            symbolEditText.setText(bundle.getString("symbol"));
+            exchangeRateEditText.setText("" + bundle.getDouble("exchangeRate"));
+            symbolAftercheckBox.setChecked(bundle.getBoolean("symbolAfter"));
         }
         builder.setView(view);
 
@@ -68,11 +68,14 @@ public class EditCurrencyDialogFragment
     }
 
     public void editCurrency() {
-        Bundle bundle = this.getArguments();
-
-        String symbol = bundle.getString("symbol");
-        double exchangeRate = bundle.getDouble("exchangeRate");
-        int flags = bundle.getBoolean("symbolAfter") ? Currency.SHOW_SYMBOL_AFTER : 0;
+        String symbol = symbolEditText.getText().toString();
+        double exchangeRate = 1.0;
+        try {
+            exchangeRate = Double.parseDouble(exchangeRateEditText.getText().toString());
+        } catch (NumberFormatException e) {
+            exchangeRate = 1.0;
+        }
+        int flags = symbolAftercheckBox.isChecked() ? Currency.SHOW_SYMBOL_AFTER : 0;
 
         Currency newCurrency = new Currency(symbol, exchangeRate, flags);
 
@@ -95,8 +98,8 @@ public class EditCurrencyDialogFragment
             exchangeRate = 1;
         }
 
-        checkBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
-        boolean showSymbolAfter = checkBox.isChecked();
+        symbolAftercheckBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
+        boolean showSymbolAfter = symbolAftercheckBox.isChecked();
         int flags = showSymbolAfter ? Currency.SHOW_SYMBOL_AFTER : 0;
         Currency newCurrency = new Currency(symbol, exchangeRate, flags);
 
