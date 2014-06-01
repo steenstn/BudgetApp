@@ -112,6 +112,7 @@ public class OtherCategoryDialogFragment
         }
 
         currencySpinner.setAdapter(adapter);
+        currencySpinner.setSelection(findActiveCurrency());
 
         currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -127,6 +128,15 @@ public class OtherCategoryDialogFragment
 
             }
         });
+    }
+
+    private int findActiveCurrency() {
+        for (int i = 0; i < currencies.size(); i++) {
+            if (currencies.get(i).getSymbol().contains(Money.getCurrency())) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
