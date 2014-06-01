@@ -34,6 +34,8 @@
          He is most famous for the ten eventful years he took to return home after the decade-long Trojan War.</string>
     <string name="whats_new">
         - Events. Log transactions under one or more events to keep track of costs for e.g. trips.
+        - Improved currency functionality. Currencies can now be saved and easier switched between.
+        - Fixed bug in long pressing of prices
 	</string>
 	<string name="about_info">Made by Alexander Steen\n\n</string>
     <string-array name="months_array">

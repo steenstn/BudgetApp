@@ -6,6 +6,13 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.3 (Odysseus)
+- Events. Log transactions to one or more events
+- Improved currency functionality. Currencies can now be saved in the database
+- When adding a transaction with a comment, another currency can now be used for that transaction
+- Fixed bug where longpressing the last price in the price list would not work
+- Fixed bug where longpressing a price to be able to add comment didn't work as expected
+
 v3.2 (Vishwakarma)
 - Added option to pause payment of installments
 - Fixed bug that caused unnecessary processing of installments, speeding up app start
