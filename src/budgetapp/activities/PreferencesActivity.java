@@ -39,6 +39,17 @@ public class PreferencesActivity
     @SuppressWarnings("deprecation")
     private void setUpListeners() {
 
+        PreferenceScreen currencies = (PreferenceScreen) findPreference("currencies");
+        currencies.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PreferencesActivity.this, CurrenciesActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
         PreferenceScreen categories = (PreferenceScreen) findPreference("manageCategories");
         categories.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 

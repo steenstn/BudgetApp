@@ -12,6 +12,7 @@
     <string name="title_activity_stats">Statistics</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_categories">Manage categories</string>
+    <string name="title_activity_currencies">Manage currencies</string>
     <string name="title_activity_backup">Backup</string>
     <string name="title_activity_installments">Installments</string>
     <string name="title_activity_events">Events</string>

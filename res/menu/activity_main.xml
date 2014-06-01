@@ -15,12 +15,6 @@
         android:title="@string/menu_setdailybudget"
         />
     <item 
-        android:id="@+id/menu_editcurrency"
-        android:orderInCategory="95"
-        android:showAsAction="never"
-        android:title="@string/menu_editcurrency"
-        />
-    <item 
         android:id="@+id/menu_statistics"
         android:orderInCategory="100"
         android:showAsAction="never"
