@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import budgetapp.activities.MainActivity;
+import budgetapp.activities.CurrenciesActivity;
 import budgetapp.main.R;
 import budgetapp.util.money.Money;
 
@@ -55,8 +55,8 @@ public class EditCurrencyDialogFragment
                 } catch (NumberFormatException e) {
 
                 }
-                ((MainActivity) getActivity()).saveConfig();
-                ((MainActivity) getActivity()).updateView();
+                ((CurrenciesActivity) getActivity()).saveConfig();
+                //  ((CurrenciesActivity) getActivity()).updateView();
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -30,7 +30,10 @@ public class CurrenciesActivity
 
         updateList();
         setUpListeners();
+    }
 
+    public void saveConfig() {
+        model.saveConfig();
     }
 
     public void updateList() {
