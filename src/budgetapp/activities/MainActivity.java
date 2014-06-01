@@ -23,7 +23,6 @@ import android.widget.ToggleButton;
 import budgetapp.fragments.ChooseCategoryFragment;
 import budgetapp.fragments.ChoosePriceFragment;
 import budgetapp.fragments.DailyBudgetFragment;
-import budgetapp.fragments.EditCurrencyDialogFragment;
 import budgetapp.fragments.OtherCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
@@ -212,10 +211,6 @@ public class MainActivity
         case R.id.menu_setdailybudget:
             newFragment = new DailyBudgetFragment();
             newFragment.show(getSupportFragmentManager(), "set_dailybudget");
-            return true;
-        case R.id.menu_editcurrency:
-            newFragment = new EditCurrencyDialogFragment();
-            newFragment.show(getSupportFragmentManager(), "edit_currency");
             return true;
         case R.id.menu_statistics:
             intent = new Intent(this, StatsActivity.class);
