@@ -274,6 +274,16 @@ public class BudgetModel {
         return datasource.getCurrencies();
     }
 
+    public Currency getCurrency(long id) {
+        return datasource.getCurrency(id);
+    }
+
+    public void removeCurrency(long id) {
+        datasource.removeCurrency(id);
+        stateChanged = true;
+        notifyObservers();
+    }
+
     public Installment getInstallment(long id) {
         return datasource.getInstallment(id);
     }

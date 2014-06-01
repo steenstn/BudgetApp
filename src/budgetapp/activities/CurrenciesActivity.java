@@ -5,9 +5,14 @@ import java.util.List;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -34,8 +39,41 @@ public class CurrenciesActivity
 
         model = new BudgetModel(this);
         model.addObserver(this);
+        addCurrencyIfNoOneExist();
         updateList();
         setUpListeners();
+
+        registerForContextMenu(currenciesList);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu_currency, menu);
+
+        menu.setHeaderTitle("Currency options");
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+
+        CurrencyViewHolder viewHolder = (CurrencyViewHolder) currenciesList.getItemAtPosition(info.position);
+
+        switch (item.getItemId()) {
+        case R.id.context_menu_edit:
+            //showEditEventDialog(viewHolder);
+            return true;
+        case R.id.context_menu_delete:
+            //showRemoveEventDialog(viewHolder);
+            model.removeCurrency(viewHolder.getCurrency().getId());
+            return true;
+        default:
+            return super.onContextItemSelected(item);
+        }
     }
 
     public void saveCurrency(Currency currency) {
@@ -65,6 +103,7 @@ public class CurrenciesActivity
                 Money.setCurrency(currency.getSymbol());
                 Money.setExchangeRate(currency.getExchangeRate());
                 Money.after = currency.showSymbolAfter();
+                model.saveConfig();
                 Toast.makeText(getBaseContext(),
                     "Active currency: " + Money.getCurrency() + " Exchange rate: " + Money.getExchangeRate(),
                     Toast.LENGTH_LONG).show();
@@ -77,10 +116,8 @@ public class CurrenciesActivity
 
             @Override
             public void onClick(View arg0) {
-
                 DialogFragment newFragment = new EditCurrencyDialogFragment();
                 newFragment.show(CurrenciesActivity.this.getSupportFragmentManager(), "add_currency");
-
             }
 
         });
@@ -90,5 +127,13 @@ public class CurrenciesActivity
     @Override
     public void update() {
         updateList();
+    }
+
+    private void addCurrencyIfNoOneExist() {
+        if (model.getCurrencies().size() == 0) {
+            int flags = Money.after ? Currency.SHOW_SYMBOL_AFTER : 0;
+            Currency initialCurrency = new Currency(Money.getCurrency(), Money.getExchangeRate(), flags);
+            model.addCurrency(initialCurrency);
+        }
     }
 }

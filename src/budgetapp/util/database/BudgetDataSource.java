@@ -337,6 +337,14 @@ public class BudgetDataSource {
         return dbAccess.getCurrencies();
     }
 
+    public Currency getCurrency(long id) {
+        return dbAccess.getCurrency(id);
+    }
+
+    public void removeCurrency(long id) {
+        dbAccess.removeCurrency(id);
+    }
+
     public List<Installment> getUnpaidInstallments() {
         return dbAccess.getUnpaidInstallments();
     }

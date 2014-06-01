@@ -127,6 +127,10 @@ public class DatabaseAccess {
         database.delete(BudgetDatabase.TABLE_EVENTS, BudgetDatabase.COLUMN_ID + " = " + id, null);
     }
 
+    public void removeCurrency(long id) {
+        database.delete(BudgetDatabase.TABLE_CURRENCIES, BudgetDatabase.COLUMN_ID + " = " + id, null);
+    }
+
     public void addTransactionToEvent(long transactionId, long eventId) {
         ContentValues values = new ContentValues();
         values.put(BudgetDatabase.COLUMN_EVENT_ID, eventId);
@@ -775,6 +779,21 @@ public class DatabaseAccess {
         }
         cursor.close();
         return currencies;
+    }
+
+    public Currency getCurrency(long id) {
+        Cursor cursor;
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CURRENCIES + " where "
+                + BudgetDatabase.COLUMN_ID + " = " + id, null);
+
+        if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
+            Currency currency = createCurrencyFromCursor(cursor);
+            cursor.close();
+            return currency;
+        }
+        cursor.close();
+        return new Currency();
     }
 
     public List<Event> getActiveEvents() {

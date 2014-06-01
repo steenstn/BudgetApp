@@ -20,6 +20,10 @@ public class Currency {
         this(-1, symbol, exchangeRate, flags);
     }
 
+    public Currency() {
+        this(-1, "", 0.0, 0);
+    }
+
     public boolean isActive() {
         return (flags & CURRENCY_ACTIVE) == CURRENCY_ACTIVE;
     }
