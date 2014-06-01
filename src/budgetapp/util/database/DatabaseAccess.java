@@ -381,6 +381,16 @@ public class DatabaseAccess {
         return res != 0;
     }
 
+    public void updateCurrency(long id, Currency newCurrency) {
+        ContentValues values = new ContentValues();
+        values.put(BudgetDatabase.COLUMN_CURRENCY_SYMBOL, newCurrency.getSymbol());
+        values.put(BudgetDatabase.COLUMN_CURRENCY_EXCHANGE_RATE, newCurrency.getExchangeRate());
+        values.put(BudgetDatabase.COLUMN_FLAGS, newCurrency.getFlags());
+
+        database.update(BudgetDatabase.TABLE_CURRENCIES, values, BudgetDatabase.COLUMN_ID + " = " + id, null);
+
+    }
+
     /** Add a value to a category in the category table
      * 
      * @param theCategory

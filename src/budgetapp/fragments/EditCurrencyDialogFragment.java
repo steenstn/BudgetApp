@@ -16,69 +16,46 @@ import android.widget.EditText;
 import budgetapp.activities.CurrenciesActivity;
 import budgetapp.main.R;
 import budgetapp.util.Currency;
-import budgetapp.util.money.Money;
 
 public class EditCurrencyDialogFragment
     extends DialogFragment {
-    CheckBox checkBox;
+    private CheckBox checkBox;
+    private String mode;
+    private long currencyId = -1;
+    private View view;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // Inflate and set the layout for the dialog
-        final View view = inflater.inflate(R.layout.dialog_edit_currency, null);
+        view = inflater.inflate(R.layout.dialog_edit_currency, null);
+        mode = this.getTag();
+        if (mode.equalsIgnoreCase("edit_currency")) {
+            Bundle bundle = this.getArguments();
+            currencyId = bundle.getLong("id", -1);
 
-        EditText edit = (EditText) view.findViewById(R.id.edit_currency_currency);
-        edit.setText(Money.getCurrency());
+            EditText edit = (EditText) view.findViewById(R.id.edit_currency_currency);
+            edit.setText(bundle.getString("symbol"));
 
-        edit = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
-        edit.setText("" + Money.getExchangeRate());
-        checkBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
-        checkBox.setChecked(Money.after);
+            edit = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
+            edit.setText("" + bundle.getDouble("exchangeRate"));
+
+            checkBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
+            checkBox.setChecked(bundle.getBoolean("symbolAfter"));
+        }
         builder.setView(view);
 
-        // Add action buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int id) {
 
-                EditText temp = (EditText) view.findViewById(R.id.edit_currency_currency);
-                String symbol = temp.getText().toString();
-
-                double exchangeRate = 1;
-                try {
-                    temp = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
-                    double value = Double.parseDouble(temp.getText().toString());
-                    if (value > 0) {
-                        exchangeRate = value;
-                    }
-                } catch (NumberFormatException e) {
-                    exchangeRate = 1;
+                if (mode.equalsIgnoreCase("edit_currency")) {
+                    editCurrency();
+                } else if (mode.equalsIgnoreCase("add_currency")) {
+                    addCurrency();
                 }
-
-                boolean showSymbolAfter = checkBox.isChecked();
-                int flags = showSymbolAfter ? Currency.SHOW_SYMBOL_AFTER : 0;
-                Currency newCurrency = new Currency(symbol, exchangeRate, flags);
-
-                ((CurrenciesActivity) getActivity()).saveCurrency(newCurrency);
-                /*EditText temp = (EditText) view.findViewById(R.id.edit_currency_currency);
-                Money.setCurrency(temp.getText().toString());
-                Money.after = checkBox.isChecked();
-
-                temp = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
-
-                try {
-                    double value = Double.parseDouble(temp.getText().toString());
-                    if (value > 0)
-                        Money.setExchangeRate(value);
-                } catch (NumberFormatException e) {
-
-                }*/
-
-                //((CurrenciesActivity) getActivity()).saveConfig();
-                //  ((CurrenciesActivity) getActivity()).updateView();
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -88,5 +65,41 @@ public class EditCurrencyDialogFragment
         });
 
         return builder.create();
+    }
+
+    public void editCurrency() {
+        Bundle bundle = this.getArguments();
+
+        String symbol = bundle.getString("symbol");
+        double exchangeRate = bundle.getDouble("exchangeRate");
+        int flags = bundle.getBoolean("symbolAfter") ? Currency.SHOW_SYMBOL_AFTER : 0;
+
+        Currency newCurrency = new Currency(symbol, exchangeRate, flags);
+
+        ((CurrenciesActivity) getActivity()).editCurrency(currencyId, newCurrency);
+    }
+
+    public void addCurrency() {
+
+        EditText temp = (EditText) view.findViewById(R.id.edit_currency_currency);
+        String symbol = temp.getText().toString();
+
+        double exchangeRate = 1;
+        try {
+            temp = (EditText) view.findViewById(R.id.edit_currency_exchangerate);
+            double value = Double.parseDouble(temp.getText().toString());
+            if (value > 0) {
+                exchangeRate = value;
+            }
+        } catch (NumberFormatException e) {
+            exchangeRate = 1;
+        }
+
+        checkBox = (CheckBox) view.findViewById(R.id.edit_currency_after_checkbox);
+        boolean showSymbolAfter = checkBox.isChecked();
+        int flags = showSymbolAfter ? Currency.SHOW_SYMBOL_AFTER : 0;
+        Currency newCurrency = new Currency(symbol, exchangeRate, flags);
+
+        ((CurrenciesActivity) getActivity()).saveCurrency(newCurrency);
     }
 }

@@ -128,6 +128,10 @@ public class BudgetDataSource {
             newInstallment.getDateLastPaid(), newInstallment.getFlags());
     }
 
+    public void editCurrency(long id, Currency newCurrency) {
+        dbAccess.updateCurrency(id, newCurrency);
+    }
+
     public void editEvent(long id, Event newEvent) {
         dbAccess.updateEvent(id, newEvent.getName(), newEvent.getStartDate(), newEvent.getEndDate(),
             newEvent.getComment(), newEvent.getFlags());

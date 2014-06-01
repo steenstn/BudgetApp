@@ -31,6 +31,8 @@ public class CurrenciesActivity
 
     private ListView currenciesList;
     private BudgetModel model;
+    private int selectedCurrencyIndex;
+    private List<Currency> currencies;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class CurrenciesActivity
 
         switch (item.getItemId()) {
         case R.id.context_menu_edit:
-            //showEditEventDialog(viewHolder);
+            showEditCurrencyDialog(viewHolder);
             return true;
         case R.id.context_menu_delete:
             //showRemoveEventDialog(viewHolder);
@@ -76,6 +78,22 @@ public class CurrenciesActivity
         }
     }
 
+    private void showEditCurrencyDialog(CurrencyViewHolder viewHolder) {
+        long currencyId = viewHolder.getCurrency().getId();
+        String currencySymbol = viewHolder.getCurrency().getSymbol();
+        double currencyExchangeRate = viewHolder.getCurrency().getExchangeRate();
+        boolean currencySymbolAfter = viewHolder.getCurrency().showSymbolAfter();
+
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", currencyId);
+        bundle.putString("symbol", currencySymbol);
+        bundle.putDouble("exchangeRate", currencyExchangeRate);
+        bundle.putBoolean("symbolAfter", currencySymbolAfter);
+        DialogFragment newFragment = new EditCurrencyDialogFragment();
+        newFragment.setArguments(bundle);
+        newFragment.show(getSupportFragmentManager(), "edit_currency");
+    }
+
     public void saveCurrency(Currency currency) {
         model.addCurrency(currency);
     }
@@ -84,9 +102,13 @@ public class CurrenciesActivity
         model.saveConfig();
     }
 
+    public void editCurrency(long id, Currency newCurrency) {
+        model.editCurrency(id, newCurrency);
+    }
+
     public void updateList() {
         currenciesList = (ListView) findViewById(R.id.currenciesListView);
-        List<Currency> currencies = (model.getCurrencies());
+        currencies = (model.getCurrencies());
         BudgetAdapter listAdapter = new BudgetAdapter(this.getBaseContext(), R.layout.listitem_currency);
         for (Currency c : currencies) {
             listAdapter.add(new CurrencyViewHolder(c));

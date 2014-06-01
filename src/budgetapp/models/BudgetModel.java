@@ -78,6 +78,12 @@ public class BudgetModel {
         notifyObservers();
     }
 
+    public void editCurrency(long id, Currency newCurrency) {
+        datasource.editCurrency(id, newCurrency);
+        stateChanged = true;
+        notifyObservers();
+    }
+
     public void undoLatestTransaction() {
         if (transactions.size() > 0) {
             transactions.get(transactions.size() - 1).unexecute();
