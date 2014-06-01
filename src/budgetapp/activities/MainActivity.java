@@ -178,8 +178,9 @@ public class MainActivity
                     allEvents += ", " + e.getName();
                 }
                 allEvents = allEvents.substring(2);
-                Toast.makeText(eventButton.getContext(), entry.getValue() + " linked to " + allEvents,
-                    Toast.LENGTH_LONG).show();
+                Toast
+                    .makeText(eventButton.getContext(), "Transaction linked to " + allEvents, Toast.LENGTH_SHORT)
+                    .show();
             } else {
                 model.queueTransaction(entry);
             }
