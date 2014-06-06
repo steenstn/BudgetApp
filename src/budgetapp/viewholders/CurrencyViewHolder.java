@@ -10,7 +10,6 @@ public class CurrencyViewHolder
     private Currency currency;
     private TextView leftTextView;
     private TextView centerTextView;
-    private TextView rightTextView;
 
     public CurrencyViewHolder(Currency currency) {
         this.currency = currency;
@@ -24,7 +23,7 @@ public class CurrencyViewHolder
     public void populateViews() {
         leftTextView = (TextView) getFirstView();
         centerTextView = (TextView) getSecondView();
-        rightTextView = (TextView) getThirdView();
+
         leftTextView.setText(currency.getSymbol());
         if (currency.isActive()) {
             leftTextView.setShadowLayer(10, 0, 0, Color.rgb(135, 240, 255));
@@ -33,7 +32,7 @@ public class CurrencyViewHolder
             leftTextView.setTextColor(Color.LTGRAY);
             leftTextView.setShadowLayer(0, 0, 0, Color.rgb(135, 240, 255));
         }
-        centerTextView.setText("Exchange rate: " + currency.getExchangeRate()/* + "\n" + resultingDateString*/);
+        centerTextView.setText("Exchange rate: " + currency.getExchangeRate());
 
     }
 

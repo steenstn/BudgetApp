@@ -243,7 +243,6 @@ public class MainActivity
         }
     }
 
-    // Set up a ViewListener for the MainView
     private MainView.ViewListener viewListener = new MainView.ViewListener() {
 
         @Override

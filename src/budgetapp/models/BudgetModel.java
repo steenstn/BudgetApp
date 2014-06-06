@@ -29,7 +29,6 @@ public class BudgetModel {
     private BudgetDataSource datasource;
     private Money dailyBudget;
 
-    // List of transactions that have been done. Enables undo
     private ArrayList<TransactionCommand> transactions;
 
     private ArrayList<IBudgetObserver> observers;
@@ -37,10 +36,8 @@ public class BudgetModel {
     private TransactionQueue transactionQueue;
     private BudgetConfig config;
     private BudgetBackup backup;
-    private Context context;
 
     public BudgetModel(Context context) {
-        this.context = context;
         datasource = new BudgetDataSource(context);
         config = new BudgetConfig(context);
         Money.after = config.getBooleanValue(BudgetConfig.Fields.printCurrencyAfter);
@@ -118,8 +115,9 @@ public class BudgetModel {
         List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
         if (dayTotal.size() == 1) {
             return new Money(dayTotal.get(0).getValue());
-        } else
+        } else {
             return MoneyFactory.createMoney();
+        }
     }
 
     public int getQueueSize() {

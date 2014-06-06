@@ -8,11 +8,6 @@ import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.MoneyFactory;
 
-/**
- * ViewHolder for displaying info about a transaction in the Statistics view
- * @author Steen
- *
- */
 public class StatEntryViewHolder
     extends ViewHolder {
 
@@ -92,7 +87,6 @@ public class StatEntryViewHolder
             TextView centerTextView = (TextView) getSecondView();
             centerTextView.setText("" + getEntry().getValue());
 
-            // Add a star after the category if this entry has a comment
             TextView rightTextView = (TextView) getThirdView();
             rightTextView
                 .setText(getEntry().getCategory() + (getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));

@@ -31,7 +31,6 @@ public class CurrenciesActivity
 
     private ListView currenciesList;
     private BudgetModel model;
-    private int selectedCurrencyIndex;
     private List<Currency> currencies;
 
     @Override
@@ -70,7 +69,6 @@ public class CurrenciesActivity
             showEditCurrencyDialog(viewHolder);
             return true;
         case R.id.context_menu_delete:
-            //showRemoveEventDialog(viewHolder);
             model.removeCurrency(viewHolder.getCurrency().getId());
             return true;
         default:
@@ -89,6 +87,7 @@ public class CurrenciesActivity
         bundle.putString("symbol", currencySymbol);
         bundle.putDouble("exchangeRate", currencyExchangeRate);
         bundle.putBoolean("symbolAfter", currencySymbolAfter);
+
         DialogFragment newFragment = new EditCurrencyDialogFragment();
         newFragment.setArguments(bundle);
         newFragment.show(getSupportFragmentManager(), "edit_currency");

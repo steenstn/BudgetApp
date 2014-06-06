@@ -24,13 +24,13 @@ public class TransactionViewHolder
     public void populateViews() {
         TextView leftTextView = (TextView) getFirstView();
         leftTextView.setText(entry.getDate() + ":  " + entry.getValue());
-        //getLeftTextView().setText(entry.getDate() + ":  " + entry.getValue());
+
         TextView centerTextView = (TextView) getSecondView();
         centerTextView.setText("");
-        //getCenterTextView().setText("");
+
         TextView rightTextView = (TextView) getThirdView();
         rightTextView.setText(entry.getCategory());
-        //getRightTextView().setText(entry.getCategory());
+
     }
 
     @Override
