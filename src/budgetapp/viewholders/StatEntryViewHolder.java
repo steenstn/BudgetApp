@@ -3,6 +3,7 @@ package budgetapp.viewholders;
 import java.text.ParseException;
 import java.util.Locale;
 
+import android.widget.TextView;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.MoneyFactory;
@@ -13,7 +14,7 @@ import budgetapp.util.money.MoneyFactory;
  *
  */
 public class StatEntryViewHolder
-    extends ViewHolder {
+    extends ViewHolder4 {
 
     private BudgetEntry entry;
     private Type flag;
@@ -85,16 +86,26 @@ public class StatEntryViewHolder
                 e.printStackTrace();
             }
             String outputDateString = dateString.substring(0, 1).toUpperCase(Locale.US) + dateString.substring(1);
-            getLeftTextView().setText(outputDateString);
-            getCenterTextView().setText("" + getEntry().getValue());
+            TextView leftTextView = (TextView) getFirstView();
+            leftTextView.setText(outputDateString);
+
+            TextView centerTextView = (TextView) getSecondView();
+            centerTextView.setText("" + getEntry().getValue());
+
             // Add a star after the category if this entry has a comment
-            getRightTextView().setText(
-                getEntry().getCategory() + (getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));
+            TextView rightTextView = (TextView) getThirdView();
+            rightTextView
+                .setText(getEntry().getCategory() + (getEntry().getComment().equalsIgnoreCase("") ? "" : " *"));
 
         } else {
-            getLeftTextView().setText(getTitle());
-            getCenterTextView().setText("");
-            getRightTextView().setText("");
+            TextView leftTextView = (TextView) getFirstView();
+            leftTextView.setText(getTitle());
+
+            TextView centerTextView = (TextView) getSecondView();
+            centerTextView.setText("");
+
+            TextView rightTextView = (TextView) getThirdView();
+            rightTextView.setText("");
         }
     }
 

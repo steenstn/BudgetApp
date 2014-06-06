@@ -1,9 +1,10 @@
 package budgetapp.viewholders;
 
+import android.widget.TextView;
 import budgetapp.util.entries.CategoryEntry;
 
 public class CategoryStatsViewHolder
-    extends ViewHolder {
+    extends ViewHolder4 {
 
     private CategoryEntry entry;
 
@@ -25,9 +26,14 @@ public class CategoryStatsViewHolder
 
     @Override
     public void populateViews() {
-        getLeftTextView().setText(getEntry().getCategory());
-        getCenterTextView().setText("" + getEntry().getNum());
-        getRightTextView().setText("" + getEntry().getValue());
+        TextView leftTextView = (TextView) getFirstView();
+        leftTextView.setText(getEntry().getCategory());
+
+        TextView centerTextView = (TextView) getSecondView();
+        centerTextView.setText("" + getEntry().getNum());
+
+        TextView rightTextView = (TextView) getThirdView();
+        rightTextView.setText("" + getEntry().getValue());
     }
 
     @Override

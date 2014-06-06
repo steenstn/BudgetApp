@@ -13,7 +13,7 @@
     android:gravity="left" >
     
 		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/listLeftTextView"
+	    android:id="@+id/listFirstView"
 	    android:layout_width="0dip"
 	    android:layout_height="wrap_content"
 	    android:padding="0dip"
@@ -23,7 +23,7 @@
 	    </TextView>
 	    
 	    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/listCenterTextView"
+	    android:id="@+id/listSecondView"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:padding="0dip"
@@ -35,7 +35,7 @@
 	    </TextView>
 	    
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/listRightTextView"
+	    android:id="@+id/listThirdView"
 	    android:layout_width="0dip"
 	    android:layout_height="wrap_content"
 	    android:padding="0dip"

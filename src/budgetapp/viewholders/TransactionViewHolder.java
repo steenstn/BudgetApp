@@ -1,9 +1,10 @@
 package budgetapp.viewholders;
 
+import android.widget.TextView;
 import budgetapp.util.entries.BudgetEntry;
 
 public class TransactionViewHolder
-    extends ViewHolder {
+    extends ViewHolder4 {
 
     private BudgetEntry entry;
 
@@ -21,9 +22,15 @@ public class TransactionViewHolder
 
     @Override
     public void populateViews() {
-        getLeftTextView().setText(entry.getDate() + ":  " + entry.getValue());
-        getCenterTextView().setText("");
-        getRightTextView().setText(entry.getCategory());
+        TextView leftTextView = (TextView) getFirstView();
+        leftTextView.setText(entry.getDate() + ":  " + entry.getValue());
+        //getLeftTextView().setText(entry.getDate() + ":  " + entry.getValue());
+        TextView centerTextView = (TextView) getSecondView();
+        centerTextView.setText("");
+        //getCenterTextView().setText("");
+        TextView rightTextView = (TextView) getThirdView();
+        rightTextView.setText(entry.getCategory());
+        //getRightTextView().setText(entry.getCategory());
     }
 
     @Override
