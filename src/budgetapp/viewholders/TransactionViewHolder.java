@@ -4,7 +4,7 @@ import android.widget.TextView;
 import budgetapp.util.entries.BudgetEntry;
 
 public class TransactionViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private BudgetEntry entry;
 

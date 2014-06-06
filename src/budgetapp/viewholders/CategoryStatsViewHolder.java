@@ -4,7 +4,7 @@ import android.widget.TextView;
 import budgetapp.util.entries.CategoryEntry;
 
 public class CategoryStatsViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private CategoryEntry entry;
 

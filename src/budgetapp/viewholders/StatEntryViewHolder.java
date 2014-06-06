@@ -14,7 +14,7 @@ import budgetapp.util.money.MoneyFactory;
  *
  */
 public class StatEntryViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private BudgetEntry entry;
     private Type flag;

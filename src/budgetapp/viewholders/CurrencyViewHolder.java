@@ -5,7 +5,7 @@ import android.widget.TextView;
 import budgetapp.util.Currency;
 
 public class CurrencyViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private Currency currency;
     private TextView leftTextView;

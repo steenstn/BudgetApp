@@ -5,7 +5,7 @@ import android.widget.TextView;
 import budgetapp.util.Event;
 
 public class EventViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private Event event;
     private TextView leftTextView;

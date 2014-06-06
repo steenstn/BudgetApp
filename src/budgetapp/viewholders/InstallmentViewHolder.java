@@ -6,7 +6,7 @@ import android.widget.TextView;
 import budgetapp.util.Installment;
 
 public class InstallmentViewHolder
-    extends ViewHolder4 {
+    extends ViewHolder {
 
     private Installment entry;
     private String title;
