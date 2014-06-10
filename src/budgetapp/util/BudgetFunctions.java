@@ -9,11 +9,6 @@ import budgetapp.util.entries.DatabaseEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
-/**
- * Class containing functions used throughout the application
- * @author Steen
- *
- */
 public class BudgetFunctions {
 
     //These variables are used in testing to be able to mock dates
@@ -24,51 +19,46 @@ public class BudgetFunctions {
 
     }
 
-    /**
-     * Returns the lowest value of a and b
-     * @param a - First int to compare
-     * @param b - Second int to compare
-     * @return - The lowest value of a and b
-     */
     public static int min(int a, int b) {
-        if (a < b)
+        if (a < b) {
             return a;
+        }
         return b;
     }
 
     public static double min(double a, double b) {
-
-        if (a < b)
+        if (a < b) {
             return a;
+        }
         return b;
     }
 
     public static Money min(Money a, Money b) {
-
-        if (a.smallerThan(b))
+        if (a.smallerThan(b)) {
             return a;
+        }
         return b;
     }
 
     public static double max(double a, double b) {
-
-        if (a > b)
+        if (a > b) {
             return a;
+        }
         return b;
     }
 
     public static Money max(Money a, Money b) {
-
-        if (a.biggerThan(b))
+        if (a.biggerThan(b)) {
             return a;
+        }
         return b;
     }
 
     public static boolean almostEquals(double a, double b) {
-        if (Math.abs(a - b) < 0.00001)
+        if (Math.abs(a - b) < 0.00001) {
             return true;
-        else
-            return false;
+        }
+        return false;
     }
 
     /**
@@ -157,8 +147,9 @@ public class BudgetFunctions {
      * @return - The weighted mean
      */
     public static Money getWeightedMean(List<? extends DatabaseEntry> theEntries, int n) {
-        if (theEntries.size() < 2) // Just 0 or 1 entries, no derivative yet
+        if (theEntries.size() < 2) {// Just 0 or 1 entries, no derivative yet
             return MoneyFactory.createMoney();
+        }
         int i = 0;
 
         double totalWeight = 0;
