@@ -51,13 +51,13 @@ public class BudgetModel {
         stateChanged = true;
     }
 
-    public void queueTransaction(BudgetEntry entry) {
+    public synchronized void queueTransaction(BudgetEntry entry) {
         queueAddDailyBudget();
         transactionQueue.queueItem(new TransactionCommand(datasource, entry));
         transactions.add(new TransactionCommand(datasource, entry));
     }
 
-    public void queueTransaction(BudgetEntry entry, List<Long> eventIds) {
+    public synchronized void queueTransaction(BudgetEntry entry, List<Long> eventIds) {
         queueAddDailyBudget();
         transactionQueue.queueItem(new TransactionCommand(datasource, entry, eventIds));
         transactions.add(new TransactionCommand(datasource, entry, eventIds));
@@ -316,7 +316,7 @@ public class BudgetModel {
         return datasource.getSomeDaysTotal(n, orderBy);
     }
 
-    public int queueAddDailyBudget() {
+    public synchronized int queueAddDailyBudget() {
         List<DayEntry> lastDay = datasource.getSomeDays(1, BudgetDataSource.DESCENDING);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -357,7 +357,6 @@ public class BudgetModel {
             Calendar tempDate = Calendar.getInstance();
             BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),
                 "Income");
-            System.out.println("queuing daily budget");
             transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 
             daysAdded = 1;
@@ -373,7 +372,7 @@ public class BudgetModel {
         datasource.markInstallmentAsPaused(id, false);
     }
 
-    public void queuePayOffInstallments() {
+    public synchronized void queuePayOffInstallments() {
         List<Installment> installments = datasource.getUnpaidInstallments();
 
         SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
