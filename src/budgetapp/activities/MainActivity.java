@@ -44,6 +44,7 @@ public class MainActivity
     private MainView view;
     private BudgetModel model;
     private SharedPreferences settings;
+
     public Money dailyFlow = MoneyFactory.createMoney();
     private ProcessQueueTask processQueueTask;
 
@@ -107,6 +108,7 @@ public class MainActivity
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("onResume called");
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         model.queueAddDailyBudget();
         model.queuePayOffInstallments();
@@ -123,8 +125,10 @@ public class MainActivity
     }
 
     public void processQueue() {
+
         if (model.getRemainingItemsInQueue() > 0) {
             if (processQueueTask == null || processQueueTask.getStatus() != AsyncTask.Status.RUNNING) {
+                System.out.println("Starting processing of queue");
                 processQueueTask = new ProcessQueueTask();
                 processQueueTask.execute();
             }
@@ -341,6 +345,7 @@ public class MainActivity
                 Toast.makeText(editText.getContext(), "Cash flow since last time: " + cashFlow.toString(),
                     Toast.LENGTH_LONG).show();
             }
+            System.out.println("Queue processed");
         }
 
     }

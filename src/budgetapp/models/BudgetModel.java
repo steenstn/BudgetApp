@@ -28,8 +28,9 @@ public class BudgetModel {
 
     private BudgetDataSource datasource;
     private Money dailyBudget;
-
     private ArrayList<TransactionCommand> transactions;
+    private String dateDailyBudgetLastQueued = "1990/01/01";
+    private String dateInstallmentsLastQueued = "1990/01/01";
 
     private ArrayList<IBudgetObserver> observers;
     private boolean stateChanged;
@@ -317,13 +318,21 @@ public class BudgetModel {
     }
 
     public synchronized int queueAddDailyBudget() {
+        SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+        if (isQueued(dateDailyBudgetLastQueued)) {
+            return 0;
+        }
+        Calendar nextDay = Calendar.getInstance();
+        nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0, 0);
+        nextDay.add(Calendar.DAY_OF_MONTH, 1);
+
         List<DayEntry> lastDay = datasource.getSomeDays(1, BudgetDataSource.DESCENDING);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
         int daysAdded = 0;
         if (!lastDay.isEmpty()) {
-            SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 
             String lastDayString = lastDay.get(0).getDate();
             Calendar lastDayCalendar = Calendar.getInstance();
@@ -337,31 +346,49 @@ public class BudgetModel {
                                                            // transactions
 
             // Step up to the day before tomorrow
-            Calendar nextDay = Calendar.getInstance();
-            nextDay.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0, 0);
-            nextDay.add(Calendar.DAY_OF_MONTH, 1);
+
             Calendar tempDate = (Calendar) lastDayCalendar.clone();
 
             while (tempDate.before(nextDay)) {
                 if (!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime()))) {
                     BudgetEntry entry = new BudgetEntry(new Money(dailyBudget), dateFormat.format(tempDate.getTime()),
                         "Income");
+                    System.out.println("Queueing daily budget");
                     transactionQueue.queueItem(new TransactionCommand(datasource, entry));
 
                     daysAdded++;
                 }
                 tempDate.add(Calendar.DAY_OF_MONTH, 1);
             }
-
+            tempDate.add(Calendar.DAY_OF_MONTH, -1);
+            dateDailyBudgetLastQueued = dateFormat.format(tempDate.getTime());
         } else { // Add a transaction of 0
             Calendar tempDate = Calendar.getInstance();
             BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),
                 "Income");
             transactionQueue.queueItem(new TransactionCommand(datasource, entry));
-
+            tempDate.add(Calendar.DAY_OF_MONTH, -1);
+            dateDailyBudgetLastQueued = dateFormat.format(tempDate.getTime());
             daysAdded = 1;
         }
         return daysAdded;
+    }
+
+    private boolean isQueued(String compareString) {
+        Calendar today = Calendar.getInstance();
+        today.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0, 0);
+
+        Calendar lastDayQueuedCalender = Calendar.getInstance();
+        lastDayQueuedCalender
+            .set(Integer.parseInt(compareString.substring(0, 4)), Integer.parseInt(compareString.substring(5, 7)) - 1,
+                Integer.parseInt(compareString.substring(8, 10)), 0, 0);
+
+        SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
+        if (compareFormat.format(today.getTime()).equalsIgnoreCase(
+            compareFormat.format(lastDayQueuedCalender.getTime()))) {
+            return true;
+        }
+        return false;
     }
 
     public void pauseInstallment(long id) {
