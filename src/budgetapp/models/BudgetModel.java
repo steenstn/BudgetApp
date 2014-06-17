@@ -318,9 +318,7 @@ public class BudgetModel {
     }
 
     public synchronized int queueAddDailyBudget() {
-        SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
-
-        if (isQueued(dateDailyBudgetLastQueued)) {
+        if (isDateStringEqualToToday(dateDailyBudgetLastQueued)) {
             return 0;
         }
         Calendar nextDay = Calendar.getInstance();
@@ -345,9 +343,8 @@ public class BudgetModel {
             lastDayCalendar.add(Calendar.DAY_OF_MONTH, 1); // We want to start counting from the first day without
                                                            // transactions
 
-            // Step up to the day before tomorrow
-
             Calendar tempDate = (Calendar) lastDayCalendar.clone();
+            SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
 
             while (tempDate.before(nextDay)) {
                 if (!compareFormat.format(tempDate.getTime()).equalsIgnoreCase(compareFormat.format(nextDay.getTime()))) {
@@ -374,7 +371,7 @@ public class BudgetModel {
         return daysAdded;
     }
 
-    private boolean isQueued(String compareString) {
+    private boolean isDateStringEqualToToday(String compareString) {
         Calendar today = Calendar.getInstance();
         today.set(BudgetFunctions.getYear(), BudgetFunctions.getMonth(), BudgetFunctions.getDay(), 0, 0);
 
