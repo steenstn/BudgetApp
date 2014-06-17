@@ -280,7 +280,8 @@ public class BudgetDatabase
         case 14: // Coming from 3.1.1 (6 in dev console)
             db.execSQL(DATABASE_CREATE_TABLE_EVENTS);
             db.execSQL(DATABASE_CREATE_TABLE_EVENT_TRANSACTION);
-        case 15: // Coming from 3.2 (7 in dev console)
+        case 15: // Coming from 3.2 (7/8 in dev console)
+            db.execSQL("drop table if exists " + TABLE_CURRENCIES);
             db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
         }
 

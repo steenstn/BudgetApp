@@ -6,6 +6,9 @@ The recognised world leading budget application paradigm
 Changelog
 =========
 
+v3.3.1
+- Hotfix. The currencies table was present for some old versions of MrCashManager which would crash the app upon db upgrade
+
 v3.3 (Odysseus)
 - Events. Log transactions to one or more events
 - Improved currency functionality. Currencies can now be saved in the database

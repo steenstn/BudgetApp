@@ -33,6 +33,9 @@
     <string name="versionNameExplanation">Odysseus was a legendary Greek king of Ithaca and a hero of Homer\'s epic poem the Odyssey. 
          He is most famous for the ten eventful years he took to return home after the decade-long Trojan War.</string>
     <string name="whats_new">
+        3.3.1:\n
+        - Fixed bug where app would not start for some users\n
+        3.3:\n
         - Events. Log transactions under one or more events to keep track of costs for e.g. trips.\n
         - Improved currency functionality. Currencies can now be saved and easier switched between as well as used on the fly.\n
         - Fixed bug in long pressing of prices\n
