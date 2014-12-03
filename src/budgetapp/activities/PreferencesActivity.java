@@ -2,6 +2,7 @@ package budgetapp.activities;
 
 import java.util.List;
 
+import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -124,6 +125,19 @@ public class PreferencesActivity
                 return true;
             }
         });
+        PreferenceScreen backup = (PreferenceScreen) findPreference("triggerBackup");
+        backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                System.out.println("Backing up!");
+                BackupManager bm = new BackupManager(PreferencesActivity.this);
+
+                bm.dataChanged();
+                return true;
+            }
+        });
+
         /*
          * PreferenceScreen backup = (PreferenceScreen) findPreference("manageBackup");
          * 

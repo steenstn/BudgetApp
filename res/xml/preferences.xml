@@ -58,23 +58,16 @@
             android:title="About"
             android:summary="" />
     </PreferenceCategory>
-    <!-- 
+    
     <PreferenceCategory android:title="Backup" >
-        <EditTextPreference
-            android:key="backupFolder"
-            android:title="Backup file"
-            android:summary="/sdcard/mrcashbackup.txt"
-            />
             
         <PreferenceScreen
-            android:key="manageBackup"
-            android:title="Backup..."
-            android:summary="Backup database, read backup file" >
+            android:key="triggerBackup"
+            android:title="Backup database"
+            android:summary="Trigger a backup of the database" >
         </PreferenceScreen>
         
  
     </PreferenceCategory>
-
-     -->
  
 </PreferenceScreen>

@@ -4,7 +4,8 @@
     android:versionCode="9"
     android:versionName="3.4-SNAPSHOT" >
 
-
+	<meta-data android:name="com.google.android.backup.api_key" 
+	    android:value="AEdPqrEAAAAIHdtQqRAzS5mnIjQv62yALKmw3YGZRaMteeDwTw" />
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
@@ -15,7 +16,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:backupAgent="budgetapp.main.util.backup.MrBackupAgentManager" >
         
         <activity
             android:name="budgetapp.activities.MainActivity"
