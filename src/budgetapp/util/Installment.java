@@ -1,5 +1,8 @@
 package budgetapp.util;
 
+import static budgetapp.util.FlagHandler.isFlagSet;
+import static budgetapp.util.FlagHandler.setFlag;
+import static budgetapp.util.FlagHandler.unsetFlag;
 import budgetapp.util.money.Money;
 
 public class Installment {
@@ -56,26 +59,26 @@ public class Installment {
     }
 
     public boolean isPaidOff() {
-        return (flags & INSTALLMENT_PAID) == INSTALLMENT_PAID;
+        return isFlagSet(flags, INSTALLMENT_PAID);
     }
 
     public boolean isPaused() {
-        return (flags & INSTALLMENT_PAUSED) == INSTALLMENT_PAUSED;
+        return isFlagSet(flags, INSTALLMENT_PAUSED);
     }
 
     public void setPaidOff(boolean value) {
         if (value) {
-            flags = flags | INSTALLMENT_PAID;
+            flags = setFlag(flags, INSTALLMENT_PAID);
         } else {
-            flags = flags & (flags ^ INSTALLMENT_PAID);
+            flags = unsetFlag(flags, INSTALLMENT_PAID);
         }
     }
 
     public void setPaused(boolean value) {
         if (value) {
-            flags = flags | INSTALLMENT_PAUSED;
+            flags = setFlag(flags, INSTALLMENT_PAUSED);
         } else {
-            flags = flags & (flags ^ INSTALLMENT_PAUSED);
+            flags = unsetFlag(flags, INSTALLMENT_PAUSED);
         }
     }
 

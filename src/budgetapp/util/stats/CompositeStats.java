@@ -28,15 +28,13 @@ public class CompositeStats
     public void addEntry(BudgetEntry theEntry, int mode) {
         boolean added = false;
         for (int i = 0; i < children.size(); i++) {
-            if (children.get(i).getName().equalsIgnoreCase(theEntry.getMonth())) // Add the entry to the month
-            {
+            if (children.get(i).getName().equalsIgnoreCase(theEntry.getMonth())) { // Add the entry to the month
                 children.get(i).addEntry(theEntry);
                 added = true;
 
             }
         }
-        if (!added) // Month not yet added, add it
-        {
+        if (!added) { // Month not yet added, add it
             children.add(new Stats(theEntry.getMonth()));
             children.get(children.size() - 1).addEntry(theEntry);
         }

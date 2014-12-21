@@ -25,26 +25,26 @@ public class Currency {
     }
 
     public boolean isActive() {
-        return (flags & CURRENCY_ACTIVE) == CURRENCY_ACTIVE;
+        return FlagHandler.isFlagSet(flags, CURRENCY_ACTIVE);
     }
 
     public void setActive(boolean value) {
         if (value) {
-            flags = flags | CURRENCY_ACTIVE;
+            flags = FlagHandler.setFlag(flags, CURRENCY_ACTIVE);
         } else {
-            flags = flags & (flags ^ CURRENCY_ACTIVE);
+            flags = FlagHandler.unsetFlag(flags, CURRENCY_ACTIVE);
         }
     }
 
     public boolean showSymbolAfter() {
-        return (flags & SHOW_SYMBOL_AFTER) == SHOW_SYMBOL_AFTER;
+        return FlagHandler.isFlagSet(flags, SHOW_SYMBOL_AFTER);
     }
 
     public void setShowSymbolAfter(boolean value) {
         if (value) {
-            flags = flags | SHOW_SYMBOL_AFTER;
+            flags = FlagHandler.setFlag(flags, SHOW_SYMBOL_AFTER);
         } else {
-            flags = flags & (flags ^ SHOW_SYMBOL_AFTER);
+            flags = FlagHandler.unsetFlag(flags, SHOW_SYMBOL_AFTER);
         }
     }
 

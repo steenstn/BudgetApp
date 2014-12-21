@@ -1,5 +1,9 @@
 package budgetapp.util;
 
+import static budgetapp.util.FlagHandler.isFlagSet;
+import static budgetapp.util.FlagHandler.setFlag;
+import static budgetapp.util.FlagHandler.unsetFlag;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,14 +70,14 @@ public class Event {
     }
 
     public boolean isActive() {
-        return (flags & EVENT_ACTIVE) == EVENT_ACTIVE;
+        return isFlagSet(flags, EVENT_ACTIVE);
     }
 
     public void setActive(boolean value) {
         if (value) {
-            flags = flags | EVENT_ACTIVE;
+            flags = setFlag(flags, EVENT_ACTIVE);
         } else {
-            flags = flags & (flags ^ EVENT_ACTIVE);
+            flags = unsetFlag(flags, EVENT_ACTIVE);
         }
     }
 

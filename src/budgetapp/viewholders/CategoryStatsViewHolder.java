@@ -44,7 +44,6 @@ public class CategoryStatsViewHolder
     @Override
     public IViewHolder copy() {
         return new CategoryStatsViewHolder(this);
-
     }
 
 }
