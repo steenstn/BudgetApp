@@ -13,8 +13,8 @@ import budgetapp.main.R;
 public class AboutActivity
     extends FragmentActivity {
 
-    String version = "";
-    String versionName = "";
+    private String version = "";
+    private String versionName = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

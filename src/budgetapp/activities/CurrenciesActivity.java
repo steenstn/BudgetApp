@@ -64,14 +64,14 @@ public class CurrenciesActivity
 
         CurrencyViewHolder viewHolder = (CurrencyViewHolder) currenciesList.getItemAtPosition(info.position);
 
-        switch (item.getItemId()) {
-        case R.id.context_menu_edit:
+        int id = item.getItemId();
+        if (id == R.id.context_menu_edit) {
             showEditCurrencyDialog(viewHolder);
             return true;
-        case R.id.context_menu_delete:
+        } else if (id == R.id.context_menu_delete) {
             model.removeCurrency(viewHolder.getCurrency().getId());
             return true;
-        default:
+        } else {
             return super.onContextItemSelected(item);
         }
     }

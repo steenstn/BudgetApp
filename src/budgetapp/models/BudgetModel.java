@@ -175,6 +175,13 @@ public class BudgetModel {
         }
     }
 
+    public void readdCategories(List<String> categories) {
+        for (String c : categories) {
+            removeCategory(c);
+            addCategory(c);
+        }
+    }
+
     public boolean addInstallment(Installment installment) {
         boolean result = datasource.createInstallment(installment);
 

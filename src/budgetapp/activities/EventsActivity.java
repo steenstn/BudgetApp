@@ -88,17 +88,17 @@ public class EventsActivity
         ListView eventList = view.getEventListView();
         EventViewHolder viewHolder = (EventViewHolder) eventList.getItemAtPosition(info.position);
 
-        switch (item.getItemId()) {
-        case R.id.context_menu_edit:
+        int itemId = item.getItemId();
+        if (itemId == R.id.context_menu_edit) {
             showEditEventDialog(viewHolder);
             return true;
-        case R.id.context_menu_delete:
+        } else if (itemId == R.id.context_menu_delete) {
             showRemoveEventDialog(viewHolder);
             return true;
-        case R.id.context_menu_activate_event:
+        } else if (itemId == R.id.context_menu_activate_event) {
             changeActivationStatus(viewHolder.getEvent());
             return true;
-        default:
+        } else {
             return super.onContextItemSelected(item);
         }
     }

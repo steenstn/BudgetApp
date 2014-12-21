@@ -3,6 +3,7 @@
 	<name>BudgetApp</name>
 	<comment></comment>
 	<projects>
+		<project>library</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

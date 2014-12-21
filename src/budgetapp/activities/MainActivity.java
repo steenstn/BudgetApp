@@ -214,35 +214,35 @@ public class MainActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         DialogFragment newFragment;
-        switch (item.getItemId()) {
-        case R.id.menu_undo:
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_undo) {
             model.undoLatestTransaction();
             return true;
-        case R.id.menu_setdailybudget:
+        } else if (itemId == R.id.menu_setdailybudget) {
             newFragment = new DailyBudgetFragment();
             newFragment.show(getSupportFragmentManager(), "set_dailybudget");
             return true;
-        case R.id.menu_statistics:
+        } else if (itemId == R.id.menu_statistics) {
             intent = new Intent(this, StatsActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_events:
+        } else if (itemId == R.id.menu_events) {
             intent = new Intent(this, EventsActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_installments:
+        } else if (itemId == R.id.menu_installments) {
             intent = new Intent(this, InstallmentsActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_showgraph:
+        } else if (itemId == R.id.menu_showgraph) {
             intent = new Intent(this, GraphActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_preferences:
+        } else if (itemId == R.id.menu_preferences) {
             intent = new Intent(this, PreferencesActivity.class);
             startActivity(intent);
             return true;
-        default:
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }

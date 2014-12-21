@@ -1,5 +1,6 @@
 package budgetapp.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
@@ -10,17 +11,19 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.fragments.RemoveCategoryDialogFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 
+import com.mobeta.android.dslv.DragSortListView;
+
 public class CategoriesActivity
     extends FragmentActivity {
 
-    ListView categoryList;
-    BudgetModel model;
+    private DragSortListView categoryList;
+    private ArrayAdapter<String> adapter;
+    private BudgetModel model;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,15 +37,10 @@ public class CategoriesActivity
     }
 
     public void updateList() {
-        categoryList = (ListView) findViewById(R.id.categoryListView);
+        categoryList = (DragSortListView) findViewById(R.id.categoryListView);
         List<String> categories = (model.getCategoryNames());
-        String temp[] = new String[categories.size()];
-        for (int i = 0; i < categories.size(); i++) {
-            temp[i] = categories.get(i);
-        }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-            android.R.id.text1, temp);
+        adapter = new ArrayAdapter<String>(this, R.layout.listitem_draggable, android.R.id.text1, categories);
 
         categoryList.setAdapter(adapter);
     }
@@ -81,6 +79,24 @@ public class CategoriesActivity
                 newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "add_category");
             }
 
+        });
+
+        categoryList.setDropListener(new DragSortListView.DropListener() {
+            @Override
+            public void drop(int from, int to) {
+                if (from != to) {
+                    String item = adapter.getItem(from);
+
+                    adapter.remove(item);
+                    adapter.insert(item, to);
+
+                    List<String> categories = new ArrayList<String>();
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        categories.add(adapter.getItem(i));
+                    }
+                    model.readdCategories(categories);
+                }
+            }
         });
 
     }

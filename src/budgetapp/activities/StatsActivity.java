@@ -71,16 +71,17 @@ public class StatsActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         DialogFragment newFragment;
-        switch (item.getItemId()) {
-        case R.id.menu_show_linegraph:
+
+        int id = item.getItemId();
+        if (id == R.id.menu_show_linegraph) {
             intent = new Intent(this, GraphActivity.class);
             startActivity(intent);
             return true;
-        case R.id.menu_show_piechart:
+        } else if (id == R.id.menu_show_piechart) {
             newFragment = new PieChartFragment();
             newFragment.show(getSupportFragmentManager(), "show_piechart");
             return true;
-        default:
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }
