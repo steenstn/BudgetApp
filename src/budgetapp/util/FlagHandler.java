@@ -2,6 +2,9 @@ package budgetapp.util;
 
 public class FlagHandler {
 
+    private FlagHandler() {
+    }
+
     public static int setFlag(int currentFlags, int flagToSet) {
         return currentFlags | flagToSet;
     }
