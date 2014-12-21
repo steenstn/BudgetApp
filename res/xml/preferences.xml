@@ -14,7 +14,7 @@
     <PreferenceCategory android:title="Categories" >
         <PreferenceScreen
                 android:title="Manage categories"
-                android:summary="Add/remove categories"
+                android:summary="Add, remove or sort categories"
                 android:key="manageCategories">
         </PreferenceScreen>
         <CheckBoxPreference
