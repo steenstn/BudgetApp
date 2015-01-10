@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -108,7 +109,7 @@ public class MainActivity
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("onResume called");
+
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         model.queueAddDailyBudget();
         model.queuePayOffInstallments();
@@ -345,7 +346,12 @@ public class MainActivity
                 Toast.makeText(editText.getContext(), "Cash flow since last time: " + cashFlow.toString(),
                     Toast.LENGTH_LONG).show();
             }
-            System.out.println("Queue processed");
+
+            if (settings.getBoolean("enableBackup", false)) {
+                BackupManager backupManager = new BackupManager(editText.getContext());
+                backupManager.dataChanged();
+                System.out.println("Backup requested");
+            }
         }
 
     }

@@ -4,20 +4,20 @@
     android:versionCode="9"
     android:versionName="3.4-SNAPSHOT" >
 
-	<meta-data android:name="com.google.android.backup.api_key" 
-	    android:value="AEdPqrEAAAAIHdtQqRAzS5mnIjQv62yALKmw3YGZRaMteeDwTw" />
+	
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
-	<!--  uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /  -->
-    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:backupAgent="budgetapp.main.util.backup.MrBackupAgentManager" >
+        android:backupAgent="budgetapp.util.backup.MrBackupAgentManager" >
+        
+        <meta-data android:name="com.google.android.backup.api_key" 
+            android:value="AEdPqrEAAAAIHdtQqRAzS5mnIjQv62yALKmw3YGZRaMteeDwTw" />
         
         <activity
             android:name="budgetapp.activities.MainActivity"

@@ -53,11 +53,12 @@
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Backup" >
-        <PreferenceScreen
-            android:key="triggerBackup"
-            android:title="Backup database"
-            android:summary="Trigger a backup of the database" >
-        </PreferenceScreen>
+        <CheckBoxPreference
+            android:title="Automatic Google Cloud backup"
+            android:summary="Note: Requires that cloud backup is enabled in the phone's settings"
+            android:key="enableBackup"
+            android:defaultValue="true"
+             />
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Other">
