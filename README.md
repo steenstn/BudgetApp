@@ -7,7 +7,9 @@ Changelog
 =========
 
 v3.4 (Mnemosyne)
+- Database is can now be backed up with Google Cloud backup
 - Categories can now be sorted
+- Fixed bug where daily income would be queued twice for some users
 
 v3.3.1
 - Hotfix. The currencies table was present for some old versions of MrCashManager which would crash the app upon db upgrade
