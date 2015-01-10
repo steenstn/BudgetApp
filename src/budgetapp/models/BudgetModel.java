@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
-import budgetapp.util.BudgetBackup;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
@@ -36,7 +35,6 @@ public class BudgetModel {
     private boolean stateChanged;
     private TransactionQueue transactionQueue;
     private BudgetConfig config;
-    private BudgetBackup backup;
 
     public BudgetModel(Context context) {
         datasource = new BudgetDataSource(context);
@@ -45,7 +43,6 @@ public class BudgetModel {
         Money.setCurrency(config.getStringValue(BudgetConfig.Fields.currency));
         Money.setExchangeRate(config.getDoubleValue(BudgetConfig.Fields.exchangeRate));
         dailyBudget = MoneyFactory.convertDoubleToMoney(config.getDoubleValue(BudgetConfig.Fields.dailyBudget));
-        backup = new BudgetBackup(context);
         transactions = new ArrayList<TransactionCommand>();
         observers = new ArrayList<IBudgetObserver>();
         transactionQueue = new TransactionQueue();
@@ -456,49 +453,6 @@ public class BudgetModel {
         config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);
         config.writeValue(BudgetConfig.Fields.exchangeRate, Money.getExchangeRate());
         config.saveToFile();
-    }
-
-    public boolean saveBackup(String filename) throws Exception {
-        ArrayList<BudgetEntry> entries = (ArrayList<BudgetEntry>) getSomeTransactions(0, "desc");
-        if (backup.writeBackupFile(entries, filename)) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    public boolean readAndMergeBackup(String filename) throws Exception {
-        ArrayList<BudgetEntry> backupList = backup.readBackupFile(filename);
-
-        if (backupList.isEmpty() || backupList == null) {
-            return false;
-        }
-        // Save current entries
-        List<BudgetEntry> currentList = new ArrayList<BudgetEntry>();
-        currentList = datasource.getAllTransactions("asc");
-
-        // Merge the two lists, sorting them
-        currentList.addAll(backupList);
-        // Sort the list
-        for (int i = 0; i < currentList.size() - 1; i++) {
-            for (int j = i + 1; j < currentList.size(); j++) {
-                if (currentList.get(i).getDate().compareTo(currentList.get(j).getDate()) > 0) {
-                    BudgetEntry temp = new BudgetEntry(currentList.get(i));
-                    currentList.set(i, new BudgetEntry(currentList.get(j)));
-                    currentList.set(j, new BudgetEntry(temp));
-                }
-            }
-        }
-        // Reset all the transaction tables
-        datasource.resetTransactionTables();
-        // Add all transactions again
-        for (int i = 0; i < currentList.size(); i++) {
-            datasource.createTransactionEntry(currentList.get(i));
-        }
-
-        return true;
-
     }
 
     public void clearDatabaseInstance() {
