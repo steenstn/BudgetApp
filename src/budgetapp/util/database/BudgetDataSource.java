@@ -3,8 +3,10 @@ package budgetapp.util.database;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
 import budgetapp.util.Event;
@@ -23,8 +25,10 @@ public class BudgetDataSource {
     private static DatabaseAccess dbAccess;
     public static final String ASCENDING = "asc";
     public static final String DESCENDING = "desc";
+    private Context context;
 
     public BudgetDataSource(Context context) {
+        this.context = context;
         dbHelper = BudgetDatabase.getInstance(context);
         open();
     }
@@ -302,12 +306,22 @@ public class BudgetDataSource {
         return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_VALUE);
     }
 
+    public List<CategoryEntry> getCategoriesSortedByName() {
+        return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_CATEGORY);
+    }
+
     public List<CategoryEntry> getCategoriesSortedByNum() {
         return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
     }
 
     public List<String> getCategoryNames() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean autoSortCategories = settings.getBoolean("autoSortCategories", false);
+        if (autoSortCategories) {
+            return dbAccess.getCategoryNamesSorted();
+        }
         return dbAccess.getCategoryNames();
+
     }
 
     public List<Double> getAutocompleteValues() {

@@ -759,6 +759,22 @@ public class DatabaseAccess {
         return entries;
     }
 
+    public List<String> getCategoryNamesSorted() {
+        List<String> entries = new ArrayList<String>();
+
+        Cursor cursor;
+        cursor = database
+            .rawQuery("select " + BudgetDatabase.COLUMN_CATEGORY + " from " + BudgetDatabase.TABLE_CATEGORY_NAMES
+                    + " order by UPPER(" + BudgetDatabase.COLUMN_CATEGORY + ")", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            entries.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return entries;
+    }
+
     public void clearAutocompleteValues() {
         database.delete(BudgetDatabase.TABLE_AUTOCOMPLETE_VALUES, BudgetDatabase.COLUMN_ID + " > 0", null);
     }

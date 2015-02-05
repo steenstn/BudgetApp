@@ -71,9 +71,9 @@ public class StatsView
         this.model = model;
         this.model.addObserver(this);
     }
-    
-    public void setEventId(long id){
-    	this.eventId = id;
+
+    public void setEventId(long id) {
+        this.eventId = id;
     }
 
     public void setSelectedYear(int value) {
@@ -104,28 +104,25 @@ public class StatsView
         int yearIndex = -1;
 
         List<BudgetEntry> entries = new ArrayList<BudgetEntry>();
-        if(eventId == -1) {
-        	entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
+        if (eventId == -1) {
+            entries = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
         } else {
-        	entries = model.getTransactionsFromEvent(eventId);
+            entries = model.getTransactionsFromEvent(eventId);
         }
-        
-        
-		// Set up the composite
-        while(entryIndex<entries.size())
-        {
-        	entry = entries.get(entryIndex);
 
-        	String year = entry.getYear();
-        	if(years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year))
-        	{
-	        	//Add a year
-	        	years.add(new CompositeStats(year));
-	        	yearIndex++;
-        	}
-        	years.get(yearIndex).addEntry(entry,CompositeStats.MONTH);
-        	
-        	entryIndex++;
+        // Set up the composite
+        while (entryIndex < entries.size()) {
+            entry = entries.get(entryIndex);
+
+            String year = entry.getYear();
+            if (years.isEmpty() || !years.get(yearIndex).getName().equalsIgnoreCase(year)) {
+                //Add a year
+                years.add(new CompositeStats(year));
+                yearIndex++;
+            }
+            years.get(yearIndex).addEntry(entry, CompositeStats.MONTH);
+
+            entryIndex++;
 
         }
     }
@@ -322,7 +319,7 @@ public class StatsView
      */
     private void updateCategorySpinner() {
         List<CategoryEntry> categories = new ArrayList<CategoryEntry>();
-        categories = model.getCategoriesSortedByValue();
+        categories = model.getCategoriesSortedByName();
 
         List<String> categoryNames = new ArrayList<String>();
         for (int i = 0; i < categories.size(); i++)

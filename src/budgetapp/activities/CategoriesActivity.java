@@ -53,21 +53,6 @@ public class CategoriesActivity
         return model.removeCategory(category);
     }
 
-    public void sortAlphabetically(View v) {
-        List<String> categories = (model.getCategoryNames());
-        for (int i = 0; i < categories.size() - 1; i++) {
-            for (int j = i + 1; j < categories.size(); j++) {
-                if (categories.get(i).compareToIgnoreCase(categories.get(j)) > 0) {
-                    String temp = categories.get(i);
-                    categories.set(i, categories.get(j));
-                    categories.set(j, temp);
-                }
-            }
-        }
-        model.readdCategories(categories);
-        updateList();
-    }
-
     private void setUpListeners() {
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

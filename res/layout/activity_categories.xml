@@ -26,26 +26,12 @@
         dslv:use_default_controller="true" />
 
     <!--dslv:drag_handle_id="@drawable/drag" -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="5dip"
-    android:orientation="horizontal">
 		<Button 
 		    android:id="@+id/addCategoryBtn"
 		    android:text="Add category"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_marginLeft="20dip"
+		    android:layout_marginBottom="5dip"
 		    android:layout_gravity="center"/>
-		
-		<Button 
-		    android:id="@+id/sortCategoriesBtn"
-		    android:text="Sort alphabetically"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center"
-		    android:onClick="sortAlphabetically"/>
         
-    </LinearLayout>
 </LinearLayout>

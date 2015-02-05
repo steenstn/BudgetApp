@@ -17,14 +17,19 @@
                 android:summary="Add, remove or sort categories"
                 android:key="manageCategories">
         </PreferenceScreen>
+        <CheckBoxPreference 
+            android:title="Sort alphabetically"
+            android:summary="Automatically sort categories"
+            android:key="autoSortCategories"
+            android:defaultValue="true"/>
+        
         <CheckBoxPreference
             android:title="Auto-add 'Other' categories"
             android:summary="Automatically add categories added using 'Other...' to category list"
             android:key="autoAddOther"
             android:defaultValue="true"
-            >
+            />
             
-        </CheckBoxPreference>
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Autocomplete">
@@ -54,7 +59,7 @@
     
     <PreferenceCategory android:title="Backup" >
         <CheckBoxPreference
-            android:title="Automatic Google Cloud backup"
+            android:title="Auto Google Cloud backup"
             android:summary="Note: Requires that cloud backup is enabled in the phone's settings"
             android:key="enableBackup"
             android:defaultValue="true"

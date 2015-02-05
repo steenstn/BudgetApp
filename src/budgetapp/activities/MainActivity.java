@@ -102,6 +102,7 @@ public class MainActivity
 
         setContentView(view);
         view.setModel(model);
+
         view.update();
 
     }

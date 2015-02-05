@@ -448,6 +448,10 @@ public class BudgetModel {
         return datasource.getCategoriesSortedByValue();
     }
 
+    public List<CategoryEntry> getCategoriesSortedByName() {
+        return datasource.getCategoriesSortedByName();
+    }
+
     public void saveConfig() {
         config.writeValue(BudgetConfig.Fields.currency, Money.getCurrency());
         config.writeValue(BudgetConfig.Fields.printCurrencyAfter, Money.after);

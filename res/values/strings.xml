@@ -34,7 +34,9 @@
          A Titanide, or Titaness, she was the daughter of Uranus and Gaia, and the mother of the nine Muses by Zeus.</string>
     <string name="whats_new">
         3.4:\n
-        Categories can now be sorted\n
+        - Backup of database with Google Cloud Backup\n
+        - Categories can now be sorted\n
+        - Fixed bug where multiple daily incomes would be added for some users\n
         3.3.1:\n
         - Fixed bug where app would not start for some users\n
         3.3:\n
