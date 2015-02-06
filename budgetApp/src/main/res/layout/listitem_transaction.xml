@@ -12,30 +12,29 @@
     android:layout_margin="0dip"
     android:gravity="left" >
     
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		<TextView
 	    android:id="@+id/listFirstView"
 	    android:layout_width="0dip"
 	    android:layout_height="wrap_content"
 	    android:padding="0dip"
 	    android:layout_marginRight="6dip"
 	    android:textSize="7pt" 
-	    android:layout_weight="3">
+	    android:layout_weight="2">
 	    </TextView>
 	    
-	    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	    <TextView
 	    android:id="@+id/listSecondView"
-	    android:layout_width="0dip"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:padding="0dip"
 	    android:paddingStart="0dip"
     	android:paddingEnd="0dip"
 	    android:layout_margin="0dip"
 	    android:textSize="7pt" 
-	    android:layout_weight="3"
 	    android:gravity="left">
 	    </TextView>
 	    
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
 	    android:id="@+id/listThirdView"
 	    android:layout_width="0dip"
 	    android:layout_height="wrap_content"
@@ -44,7 +43,7 @@
     	android:paddingEnd="0dip"
 	    android:layout_margin="0dip"
 	    android:textSize="7pt" 
-	    android:layout_weight="3"
+	    android:layout_weight="1"
 	    android:gravity="left" >
     	</TextView>
 	    	

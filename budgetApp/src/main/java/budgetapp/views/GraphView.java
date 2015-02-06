@@ -18,7 +18,7 @@ import android.widget.ImageView;
 public class GraphView extends ImageView implements OnTouchListener, OnScaleGestureListener{
 	
 	private static final int INVALID_POINTER_ID = -1;
-	// The ‘active pointer’ is the one currently moving our object.
+	// The active pointer is the one currently moving our object.
 	private int mActivePointerId = INVALID_POINTER_ID;
 
 	GraphActivity host;

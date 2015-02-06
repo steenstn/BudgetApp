@@ -13,7 +13,7 @@
         android:id="@+id/listTableRow"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
-			<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+			<TextView
 		    android:id="@+id/listFirstView"
 		    android:layout_width="0dip"
 		    android:layout_height="match_parent"
@@ -23,7 +23,7 @@
 		    android:layout_weight="3">
 		    </TextView>
 		    
-		    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		    <TextView
 		    android:id="@+id/listSecondView"
 		    android:layout_width="0dip"
 		    android:layout_height="match_parent"
@@ -34,7 +34,7 @@
 		    android:gravity="center" >
 		    </TextView>
 		    
-	        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	        <TextView
 		    android:id="@+id/listThirdView"
 		    android:layout_width="0dip"
 		    android:layout_height="match_parent"
