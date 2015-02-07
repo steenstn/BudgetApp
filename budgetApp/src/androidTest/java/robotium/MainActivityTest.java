@@ -18,11 +18,9 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super(MainActivity.class);
     }
 
-    public void setUp() throws Exception {
-
+    public void setUp() {
         solo = new Solo(getInstrumentation(), getActivity());
         solo.unlockScreen();
-        
         m = new MainActivityMethods(solo);
     }
 
@@ -32,6 +30,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         double budgetAfter = m.getCurrentBudget();
 
         assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
+    }
+
+    public void testFavButt() {
+        m.makeTransactionWithChooseCategoryButton(1, "Groceries");
+
     }
 
     @Override

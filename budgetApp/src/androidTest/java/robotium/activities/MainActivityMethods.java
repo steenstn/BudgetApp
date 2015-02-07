@@ -12,6 +12,7 @@ import budgetapp.main.R;
 public class MainActivityMethods {
 
     private Solo solo;
+    public enum FavButt {LEFT, CENTER, RIGHT}
 
     public MainActivityMethods(Solo solo) {
         this.solo = solo;
@@ -22,17 +23,21 @@ public class MainActivityMethods {
         return Double.parseDouble(currentBudget.getText().toString().replace("kr", "").replace("−", "-"));
     }
     public void makeTransactionWithChooseCategoryButton(double amount, String category) {
-        AutoCompleteTextView edit = (AutoCompleteTextView)solo.getView(R.id.editTextSubtract);
-        solo.enterText(edit, ""+amount);
+        enterValueInEditTextSubtract(amount);
         solo.clickOnView(solo.getView(R.id.button_choose_category));
         ListView categories = (ListView)solo.getView(R.id.dialog_choose_category_listview);
 
         solo.clickInList(findIndexOfCategory(categories, category));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void enterValueInEditTextSubtract(double amount) {
+        AutoCompleteTextView edit = (AutoCompleteTextView)solo.getView(R.id.editTextSubtract);
+        solo.enterText(edit, ""+amount);
     }
 
     private int findIndexOfCategory(ListView listView, String category) {
