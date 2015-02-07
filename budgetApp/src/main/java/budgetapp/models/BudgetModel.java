@@ -402,7 +402,10 @@ public class BudgetModel {
 
     public synchronized void queuePayOffInstallments() {
         List<Installment> installments = datasource.getUnpaidInstallments();
-
+        if (isDateStringEqualToToday(dateInstallmentsLastQueued)) {
+            return;
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         SimpleDateFormat compareFormat = new SimpleDateFormat("yyyy/MM/dd");
         for (int i = 0; i < installments.size(); i++) {
             if (installments.get(i).isPaused()) {
@@ -433,6 +436,7 @@ public class BudgetModel {
                 if (!tempDateString.equalsIgnoreCase(compareFormat.format(nextDay.getTime()))) {
                     transactionQueue.queueItem(new PayOffInstallmentCommand(datasource, installments.get(i),
                         tempDateString));
+                    dateInstallmentsLastQueued = dateFormat.format(tempDate.getTime());
                 }
                 tempDate.add(Calendar.DAY_OF_MONTH, 1);
             }
