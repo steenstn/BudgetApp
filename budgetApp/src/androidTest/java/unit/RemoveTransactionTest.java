@@ -25,10 +25,12 @@ public class RemoveTransactionTest extends AndroidTestCase{
 	{
 		BudgetFunctions.TESTING = true;
 		mockContext = new RenamingDelegatingContext(getContext(), getContext(), prefix);
-		
-		model = new BudgetModel(mockContext);
-		
-		BudgetFunctions.theDate = startDate;
+
+        model = new BudgetModel(mockContext);
+        model.clearDatabaseInstance();
+        model = new BudgetModel(mockContext);
+
+        BudgetFunctions.theDate = startDate;
 		Money.setExchangeRate(1.0);
 		model.setDailyBudget(MoneyFactory.createMoney());
 		

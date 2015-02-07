@@ -1,16 +1,20 @@
 package robotium.activities;
 
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.robotium.solo.Solo;
 
+import java.util.logging.Logger;
+
 import budgetapp.main.R;
 
 public class MainActivityMethods {
 
+    Logger LOG = Logger.getLogger("MainActivityMethods");
     private Solo solo;
     public enum FavButt {LEFT, CENTER, RIGHT}
 
@@ -20,6 +24,7 @@ public class MainActivityMethods {
 
     public double getCurrentBudget() {
         TextView currentBudget = (TextView)solo.getView(R.id.textViewCurrentBudget);
+        LOG.info("Current budget: " + currentBudget.getText());
         return Double.parseDouble(currentBudget.getText().toString().replace("kr", "").replace("−", "-"));
     }
     public void makeTransactionWithChooseCategoryButton(double amount, String category) {
@@ -38,6 +43,7 @@ public class MainActivityMethods {
     private void enterValueInEditTextSubtract(double amount) {
         AutoCompleteTextView edit = (AutoCompleteTextView)solo.getView(R.id.editTextSubtract);
         solo.enterText(edit, ""+amount);
+        LOG.info("Entered " + amount + " into subtractEditText");
     }
 
     private int findIndexOfCategory(ListView listView, String category) {
@@ -49,5 +55,26 @@ public class MainActivityMethods {
             }
         }
         throw new RuntimeException("Could not find category " + category + " in category list");
+    }
+
+    public String makeTransactionWithFavButt(double amount, FavButt favButt) {
+        enterValueInEditTextSubtract(amount);
+        Button resultingButton = null;
+        switch(favButt) {
+            case LEFT:
+                resultingButton = (Button)solo.getView(R.id.topCategoryButton2);
+                break;
+            case CENTER:
+                resultingButton = (Button)solo.getView(R.id.topCategoryButton1);
+                break;
+            case RIGHT:
+                resultingButton = (Button)solo.getView(R.id.topCategoryButton3);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid " + favButt);
+        }
+        LOG.info("Pressing on FavButt " + resultingButton.getId() + "(" + resultingButton.getText() + ")");
+        solo.clickOnView(resultingButton);
+        return resultingButton.getText().toString();
     }
 }
