@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+
+sourceSets {
+    unitTest {
+        java.srcDir file('src/main/java/tests')
+    }
+}
 android {
     compileSdkVersion 17
     buildToolsVersion "20.0.0"
@@ -15,10 +21,28 @@ android {
             //runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+
     }
+
 }
 
+configurations {
+    unitTestCompile.extendsFrom runtime
+    unitTestRuntime.extendsFrom unitTestCompile
+}
+
+task unitTest(type:Test, dependsOn: assemble) {
+    description = "run unit tests"
+    testClassesDir = project.sourceSets.unitTest.output.classesDir
+    classpath = project.sourceSets.unitTest.runtimeClasspath
+}
+
+build.dependsOn unitTest
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile project(':library')
+    unitTestCompile files("$project.buildDir/classes/debug")
+    unitTestCompile 'junit:junit:4.11'
+    unitTestCompile 'org.robolectric:robolectric:2.1.1'
+    unitTestCompile 'com.google.android:android:4.0.1.2'
 }
