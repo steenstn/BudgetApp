@@ -51,12 +51,18 @@ public class BudgetModel {
 
     public synchronized void queueTransaction(BudgetEntry entry) {
         queueAddDailyBudget();
+        if(entry.getCategory().equalsIgnoreCase("")) {
+            return;
+        }
         transactionQueue.queueItem(new TransactionCommand(datasource, entry));
         transactions.add(new TransactionCommand(datasource, entry));
     }
 
     public synchronized void queueTransaction(BudgetEntry entry, List<Long> eventIds) {
         queueAddDailyBudget();
+        if(entry.getCategory().equalsIgnoreCase("")) {
+            return;
+        }
         transactionQueue.queueItem(new TransactionCommand(datasource, entry, eventIds));
         transactions.add(new TransactionCommand(datasource, entry, eventIds));
     }
