@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
@@ -7,7 +7,7 @@ import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
-import tests.functions.HelperFunctions;
+import unit.HelperFunctions;
 
 public class DailyBudgetTest
     extends AndroidTestCase {

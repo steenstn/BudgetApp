@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import android.os.Parcel;
 import android.os.Parcelable;

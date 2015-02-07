@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;

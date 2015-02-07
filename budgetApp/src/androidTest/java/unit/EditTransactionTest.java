@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import budgetapp.util.BudgetFunctions;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
-import tests.functions.HelperFunctions;
+import unit.HelperFunctions;
 
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;

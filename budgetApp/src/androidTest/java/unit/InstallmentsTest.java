@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import java.util.List;
 
@@ -11,7 +11,6 @@ import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.DayEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
-import tests.functions.HelperFunctions;
 
 public class InstallmentsTest
     extends AndroidTestCase {

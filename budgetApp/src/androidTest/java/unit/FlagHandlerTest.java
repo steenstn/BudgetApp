@@ -1,4 +1,4 @@
-package tests.unit;
+package unit;
 
 import static budgetapp.util.FlagHandler.isFlagSet;
 import static budgetapp.util.FlagHandler.setFlag;

@@ -1,10 +1,12 @@
+
 apply plugin: 'com.android.application'
 
 
 sourceSets {
-    unitTest {
-        java.srcDir file('src/main/java/tests')
-    }
+   /* unitTest {
+        unitTest.setRoot('src/test')
+        //java.srcDir file('src/main/java/tests')
+    }*/
 }
 android {
     compileSdkVersion 17
@@ -25,25 +27,25 @@ android {
     }
 
 }
-
+/*
 configurations {
     unitTestCompile.extendsFrom runtime
     unitTestRuntime.extendsFrom unitTestCompile
-}
-
+}*/
+/*
 task unitTest(type:Test, dependsOn: assemble) {
     description = "run unit tests"
     testClassesDir = project.sourceSets.unitTest.output.classesDir
     classpath = project.sourceSets.unitTest.runtimeClasspath
-}
+}*/
 
-build.dependsOn unitTest
+//build.dependsOn unitTest
 dependencies {
+
     compile 'com.android.support:support-v4:+'
     compile project(':library')
-    unitTestCompile files("$project.buildDir/intermediates/classes/debug")
-    unitTestCompile 'junit:junit:4.11'
-    unitTestCompile 'org.robolectric:robolectric:2.1.1'
-    unitTestCompile 'com.google.android:android:4.0.1.2'
-    unitTestCompile 'com.google.android:android-test:4.1.1.4'
+    //unitTestCompile files("$project.buildDir/intermediates/classes/debug")
+    //unitTestCompile 'junit:junit:4.11'
+    //unitTestCompile 'com.google.android:android:4.0.1.2'
+   // unitTestCompile 'com.google.android:android-test:4.1.1.4'
 }

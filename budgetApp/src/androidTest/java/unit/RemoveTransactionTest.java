@@ -1,15 +1,15 @@
-package tests.unit;
+package unit;
 
 import java.util.List;
 
 import budgetapp.models.BudgetModel;
-import budgetapp.util.entries.*;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Installment;
 import budgetapp.util.database.BudgetDataSource;
+import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.entries.DayEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
-import tests.functions.HelperFunctions;
 
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
