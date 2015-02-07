@@ -55,10 +55,7 @@ public class BudgetFunctions {
     }
 
     public static boolean almostEquals(double a, double b) {
-        if (Math.abs(a - b) < 0.00001) {
-            return true;
-        }
-        return false;
+        return Math.abs(a - b) < 0.00001;
     }
 
     /**
@@ -66,13 +63,12 @@ public class BudgetFunctions {
      * @return - Todays date in "yyyy/MM/dd HH:mm"
      */
     public static String getDateString() {
-        if (TESTING == true) {
+        if (TESTING) {
             return theDate;
         } else {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
             Calendar cal = Calendar.getInstance();
-            String dateString = dateFormat.format(cal.getTime());
-            return dateString;
+            return dateFormat.format(cal.getTime());
         }
     }
 
@@ -172,8 +168,7 @@ public class BudgetFunctions {
      */
     private static Money weight(int n, Money d) {
         double weight = Math.exp(-0.5 * (double) n);
-        Money res = d.multiply(weight);
-        return res;
+        return d.multiply(weight);
     }
 
 }
