@@ -149,7 +149,7 @@ public class BudgetModel {
     public boolean addCategory(String category) {
         if (!category.equalsIgnoreCase("")) {
             boolean result = datasource.addCategory(category);
-            if (result == true) {
+            if (result) {
                 stateChanged = true;
                 notifyObservers();
                 return true;
@@ -163,7 +163,7 @@ public class BudgetModel {
 
     public boolean removeCategory(String category) {
         boolean result = datasource.removeCategory(category);
-        if (result == true) {
+        if (result) {
             stateChanged = true;
             notifyObservers();
             return true;
@@ -442,6 +442,10 @@ public class BudgetModel {
 
     public List<CategoryEntry> getCategoriesSortedByNum() {
         return datasource.getCategoriesSortedByNum();
+    }
+
+    public List<CategoryEntry> getCategoriesSortedByNumDesc() {
+        return datasource.getCategoriesSortedByNumDesc();
     }
 
     public List<CategoryEntry> getCategoriesSortedByValue() {

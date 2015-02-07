@@ -27,6 +27,9 @@ import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.favbuttz.FavButt;
+import budgetapp.util.favbuttz.strategies.IFavButtStrategy;
+import budgetapp.util.favbuttz.strategies.PopularCategoryStrategy;
 import budgetapp.util.money.Money;
 import budgetapp.viewholders.TransactionViewHolder;
 
@@ -117,31 +120,19 @@ public class MainView
      * Update the favButtz to show top categories
      */
     private void updateButtons() {
-        int numButtons = 3;
-        ArrayList<Button> theButtons = new ArrayList<Button>();
-        theButtons.add((Button) findViewById(R.id.topCategoryButton1));
-        theButtons.add((Button) findViewById(R.id.topCategoryButton2));
-        theButtons.add((Button) findViewById(R.id.topCategoryButton3));
-        List<CategoryEntry> categories = model.getCategoriesSortedByNum();
-        // Remove categories with positive total
-        int i;
-        for (i = 0; i < categories.size(); i++) {
-            if (categories.get(i).getValue().get() > 0 || categories.get(i).getNum() < 2) {
-                categories.remove(i);
-                i--;
-            }
-        }
-        int index = categories.size() - 1; // Start at the last entry
+        Button leftButton = (Button) findViewById(R.id.topCategoryButton2);
+        Button centerButton = (Button) findViewById(R.id.topCategoryButton1);
+        Button rightButton = (Button) findViewById(R.id.topCategoryButton3);
 
-        for (i = 0; i < BudgetFunctions.min(numButtons, categories.size()); i++) {
-            theButtons.get(i).setText(categories.get(index).getCategory());
-            theButtons.get(i).setVisibility(View.VISIBLE);
-            index--;
-        }
 
-        for (; i < numButtons; i++) {
-            theButtons.get(i).setVisibility(View.GONE);
-        }
+        List<CategoryEntry> categories = model.getCategoriesSortedByNumDesc();
+        IFavButtStrategy leftStrategy = new PopularCategoryStrategy(categories, 1);
+        IFavButtStrategy centerStrategy = new PopularCategoryStrategy(categories);
+        IFavButtStrategy rightStrategy = new PopularCategoryStrategy(categories, 2);
+
+        leftButton.setText(leftStrategy.getCategory());
+        centerButton.setText(centerStrategy.getCategory());
+        rightButton.setText(rightStrategy.getCategory());
 
         ToggleButton eventButton = (ToggleButton) findViewById(R.id.toggleButtonEvent);
         if (model.getIdsOfActiveEvents().size() != 0) {
@@ -155,7 +146,6 @@ public class MainView
         } else {
             eventButton.setVisibility(View.GONE);
         }
-
     }
 
     private void updateLog() {

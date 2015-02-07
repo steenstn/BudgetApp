@@ -1,5 +1,6 @@
 package budgetapp.util.database;
 
+import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -146,8 +147,7 @@ public class BudgetDataSource {
     }
 
     /** Edit transaction and add the value to today's daily flow
-     * 
-     * @param oldEntry
+     *
      * @param newEntry */
     public void editTransactionEntryToday(long id, BudgetEntry newEntry, String date) {
         BudgetEntry workingEntry = newEntry.clone();
@@ -312,6 +312,12 @@ public class BudgetDataSource {
 
     public List<CategoryEntry> getCategoriesSortedByNum() {
         return dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
+    }
+
+    public List<CategoryEntry> getCategoriesSortedByNumDesc() {
+        List<CategoryEntry> categories = dbAccess.getCategories(null, null, null, null, BudgetDatabase.COLUMN_NUM);
+        Collections.reverse(categories);
+        return categories;
     }
 
     public List<String> getCategoryNames() {
