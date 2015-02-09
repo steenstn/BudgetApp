@@ -17,6 +17,7 @@ public class MainActivityMethods {
     Logger LOG = Logger.getLogger("MainActivityMethods");
     private Solo solo;
     public enum FavButt {LEFT, CENTER, RIGHT}
+    private final int waitTime = 2000;
 
     public MainActivityMethods(Solo solo) {
         this.solo = solo;
@@ -33,11 +34,7 @@ public class MainActivityMethods {
         ListView categories = (ListView)solo.getView(R.id.dialog_choose_category_listview);
 
         solo.clickInList(findIndexOfCategory(categories, category));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        wait(waitTime);
     }
 
     private void enterValueInEditTextSubtract(double amount) {
@@ -75,6 +72,15 @@ public class MainActivityMethods {
         }
         LOG.info("Pressing on FavButt " + resultingButton.getId() + "(" + resultingButton.getText() + ")");
         solo.clickOnView(resultingButton);
+        wait(waitTime);
         return resultingButton.getText().toString();
+    }
+
+    private void wait(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
