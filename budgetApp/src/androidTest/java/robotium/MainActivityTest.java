@@ -25,11 +25,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     }
 
     public void testAddTransaction() {
-     /*   double budgetBefore = m.getCurrentBudget();
+        double budgetBefore = m.getCurrentBudget();
         m.makeTransactionWithChooseCategoryButton(1, "Entertainment");
         double budgetAfter = m.getCurrentBudget();
 
-        assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);*/
+        assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
     }
 
     public void testFavButt() {
