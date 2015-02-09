@@ -26,10 +26,13 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     public void testAddTransaction() {
         double budgetBefore = m.getCurrentBudget();
+        String dailyCashFlowBefore = m.getDailyCashflowTextView().getText().toString();
         m.makeTransactionWithChooseCategoryButton(1, "Entertainment");
         double budgetAfter = m.getCurrentBudget();
+        String dailyCashFlowAfter = m.getDailyCashflowTextView().getText().toString();
 
         assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
+        assertFalse("Daily cash flow was not updated after transaction", dailyCashFlowBefore.equals(dailyCashFlowAfter));
     }
 
     public void testFavButt() {

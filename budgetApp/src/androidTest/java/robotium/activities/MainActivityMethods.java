@@ -28,6 +28,10 @@ public class MainActivityMethods {
         LOG.info("Current budget: " + currentBudget.getText());
         return Double.parseDouble(currentBudget.getText().toString().replace("kr", "").replace("−", "-"));
     }
+
+    public TextView getDailyCashflowTextView() {
+        return (TextView)solo.getView(R.id.textViewDailyCashFlow);
+    }
     public void makeTransactionWithChooseCategoryButton(double amount, String category) {
         enterValueInEditTextSubtract(amount);
         solo.clickOnView(solo.getView(R.id.button_choose_category));
