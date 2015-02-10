@@ -35,14 +35,28 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         assertFalse("Daily cash flow was not updated after transaction", dailyCashFlowBefore.equals(dailyCashFlowAfter));
     }
 
-    public void testFavButt() {
+    public void testFavButtLeft() {
+        double budgetBefore = m.getCurrentBudget();
+        m.makeTransactionWithFavButt(1, MainActivityMethods.FavButt.LEFT);
+
+        double budgetAfter = m.getCurrentBudget();
+        assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
+    }
+
+    public void testFavButtCenter() {
         double budgetBefore = m.getCurrentBudget();
         m.makeTransactionWithFavButt(1, MainActivityMethods.FavButt.CENTER);
 
         double budgetAfter = m.getCurrentBudget();
-
         assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
+    }
 
+    public void testFavButtRight() {
+        double budgetBefore = m.getCurrentBudget();
+        m.makeTransactionWithFavButt(1, MainActivityMethods.FavButt.RIGHT);
+
+        double budgetAfter = m.getCurrentBudget();
+        assertEquals("Current budget was not updated after making a transaction", budgetBefore - 1, budgetAfter);
     }
 
     @Override
