@@ -1,13 +1,39 @@
 
 apply plugin: 'com.android.application'
-
 apply plugin: 'jacoco'
 
 sourceSets {
-   /* unitTest {
-        unitTest.setRoot('src/test')
-        //java.srcDir file('src/main/java/tests')
-    }*/
+}
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+def coverageSourceDirs = [
+        '/src/main/java'
+]
+task jacocoTestReport(type:JacocoReport, dependsOn: "connectedAndroidTest") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports"
+
+    classDirectories = fileTree(
+            dir: '../app/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('../app/build/jacoco/testDebug.exec')
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
 }
 android {
     compileSdkVersion 17
@@ -23,58 +49,16 @@ android {
         release {
             //runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            debuggable true
+            testCoverageEnabled = true
         }
 
     }
-    jacoco {
-        version "0.7.1.201405082137"
-    }
 }
-def coverageSourceDirs = [
-        'src/main/java',
-]
-task jacocoTestReport(type: JacocoReport, dependsOn: "connectedAndroidTest") {
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports after running tests."
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-    classDirectories = fileTree(
-            dir: './build/intermediates/classes/debug',
-            excludes: ['**/R*.class',
-                       '**/*$InjectAdapter.class',
-                       '**/*$ModuleAdapter.class',
-                       '**/*$ViewInjector*.class'
-            ])
-    sourceDirectories = files(coverageSourceDirs)
-    executionData = files("$buildDir/jacoco/testDebug.exec")
-    // Bit hacky but fixes https://code.google.com/p/android/issues/detail?id=69174.
-    // We iterate through the compiled .class tree and rename $$ to $.
-    doFirst {
-        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
-            if (file.name.contains('$$')) {
-                file.renameTo(file.path.replace('$$', '$'))
-            }
-        }
-    }
-}
+
 repositories {
     mavenCentral()
 }
-/*
-configurations {
-    unitTestCompile.extendsFrom runtime
-    unitTestRuntime.extendsFrom unitTestCompile
-}*/
-/*
-task unitTest(type:Test, dependsOn: assemble) {
-    description = "run unit tests"
-    testClassesDir = project.sourceSets.unitTest.output.classesDir
-    classpath = project.sourceSets.unitTest.runtimeClasspath
-}*/
-
-//build.dependsOn unitTest
 dependencies {
     compile 'com.jayway.android.robotium:robotium-solo:5.2.1'
     compile 'com.android.support:support-v4:+'

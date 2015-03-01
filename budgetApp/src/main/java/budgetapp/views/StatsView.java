@@ -170,10 +170,16 @@ public class StatsView
         List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.DESCENDING);
 
         categoryAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_category_stats);
-        Money sum = MoneyFactory.createMoney();
+        Money income = MoneyFactory.createMoney();
+        Money expenses = MoneyFactory.createMoney();
         for (int i = 0; i < categoryStats.size(); i++) {
             categoryAdapter.add(new CategoryStatsViewHolder(categoryStats.get(i)));
-            sum = sum.add(categoryStats.get(i).getValue());
+            Money value = categoryStats.get(i).getValue();
+            if(value.smallerThan(MoneyFactory.createMoney())) {
+                expenses = expenses.add(value);
+            } else {
+                income = income.add(value);
+            }
         }
         categoryStatsList.setAdapter(categoryAdapter);
 
@@ -186,8 +192,9 @@ public class StatsView
             Money dayDerivative = BudgetFunctions.getMean(dayFlow, 30);
             middleTextView.append("" + dayDerivative + "\n");
         }
-
-        middleTextView.append("Total cash flow (" + monthSpinner.getSelectedItem().toString() + "): " + sum);
+        middleTextView.append("Total income (" + monthSpinner.getSelectedItem().toString() + "): " + income + "\n");
+        middleTextView.append("Total expenses (" + monthSpinner.getSelectedItem().toString() + "): " + expenses + "\n");
+        middleTextView.append("Total cash flow (" + monthSpinner.getSelectedItem().toString() + "): " + income.add(expenses));
     }
 
     /**
