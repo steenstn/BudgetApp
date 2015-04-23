@@ -34,6 +34,11 @@ public class PopularCategoryStrategy implements IFavButtStrategy {
         return "";
     }
 
+    @Override
+    public String getDescription() {
+        return "Gives back the most popular category";
+    }
+
     private void removeCategoriesWithPositiveValues(List<CategoryEntry> categories) {
         for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).getValue().get() >= 0) {

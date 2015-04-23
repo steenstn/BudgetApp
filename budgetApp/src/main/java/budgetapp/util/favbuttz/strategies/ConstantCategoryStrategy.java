@@ -11,4 +11,9 @@ public class ConstantCategoryStrategy implements IFavButtStrategy {
     public String getCategory() {
         return category;
     }
+
+    @Override
+    public String getDescription() {
+        return "Always gives back the same category";
+    }
 }
