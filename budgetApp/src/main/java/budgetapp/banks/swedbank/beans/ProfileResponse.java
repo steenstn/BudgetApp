@@ -1,4 +1,4 @@
-package budgetapp.banks.beans.swedbank;
+package budgetapp.banks.swedbank.beans;
 
 
 import java.util.ArrayList;
