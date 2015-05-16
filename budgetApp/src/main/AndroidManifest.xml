@@ -8,7 +8,7 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -96,6 +96,15 @@
         <activity
             android:name="budgetapp.activities.EventsActivity"
             android:label="@string/title_activity_events"
+            android:parentActivityName="budgetapp.activities.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="budgetapp.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name="budgetapp.activities.BankActivity"
+            android:label="Banks"
             android:parentActivityName="budgetapp.activities.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data

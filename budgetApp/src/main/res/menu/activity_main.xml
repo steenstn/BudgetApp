@@ -6,7 +6,12 @@
         android:showAsAction="never"
         android:title="@string/menu_undo"
         />
-    
+    <item
+        android:id="@+id/menu_banks"
+        android:orderInCategory="51"
+        android:showAsAction="never"
+        android:title="Banks"
+        />
     
     <item 
         android:id="@+id/menu_setdailybudget"

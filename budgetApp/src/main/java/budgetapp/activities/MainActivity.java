@@ -244,6 +244,10 @@ public class MainActivity
             intent = new Intent(this, PreferencesActivity.class);
             startActivity(intent);
             return true;
+        } else if(itemId == R.id.menu_banks) {
+            intent = new Intent(this, BankActivity.class);
+            startActivity(intent);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }

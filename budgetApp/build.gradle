@@ -62,6 +62,10 @@ repositories {
 dependencies {
     compile 'com.jayway.android.robotium:robotium-solo:5.2.1'
     compile 'com.android.support:support-v4:+'
+    compile 'org.apache.commons:commons-lang3:3.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.1.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.1.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.1.0'
     compile project(':library')
     //unitTestCompile files("$project.buildDir/intermediates/classes/debug")
     //unitTestCompile 'junit:junit:4.11'
