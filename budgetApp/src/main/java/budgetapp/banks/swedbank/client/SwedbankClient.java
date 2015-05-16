@@ -95,6 +95,7 @@ public class SwedbankClient {
         }
         return printResult(response);
     }
+
     private String getAuth() {
         String uuid = UUID.randomUUID().toString();
         String auth = "HithYAGrzi8fu73j:" + uuid;
@@ -115,7 +116,6 @@ public class SwedbankClient {
     }
 
     private JSONObject printResult(HttpResponse response) throws IllegalStateException, IOException, JSONException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
         String output = "";
         JSONObject json = null;

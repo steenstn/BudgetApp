@@ -66,6 +66,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.1.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.1.0'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.1.0'
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
     compile project(':library')
     //unitTestCompile files("$project.buildDir/intermediates/classes/debug")
     //unitTestCompile 'junit:junit:4.11'

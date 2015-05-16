@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import budgetapp.banks.BankTransaction;
+import budgetapp.banks.BankTransactionsResponse;
+import budgetapp.banks.swedbank.SwedbankService;
 import budgetapp.banks.swedbank.beans.OverviewResponse;
 import budgetapp.banks.swedbank.beans.ProfileResponse;
 import budgetapp.banks.swedbank.beans.Transaction;
@@ -27,8 +30,7 @@ import budgetapp.main.R;
 
 public class BankActivity extends FragmentActivity {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private SwedbankClient client = new SwedbankClient();
+    private SwedbankService swedbankService = new SwedbankService();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,47 +47,12 @@ public class BankActivity extends FragmentActivity {
     }
 
     private class JsonTask
-            extends AsyncTask<String, Void, List<Transaction>> {
-
+            extends AsyncTask<String, Void, List<BankTransaction>> {
 
         @Override
-        protected List<Transaction> doInBackground(String... params) {
-
-            String personalCode = "/identification/personalcode";
-            String profile = "/profile/";
-            String authString = params[0];
-            String birthDate = authString.split("\\s+")[0];
-            String password = authString.split("\\s+")[1];
-            try {
-
-                StringEntity s = new StringEntity(
-                        "{\"userId\": \""+birthDate+"\", \"useEasyLogin\": false, \"password\": \""+password + "\", \"generateEasyLoginId\": false}");
-
-                client.post(personalCode, s);
-
-                JSONObject prof = client.get(profile);
-                ProfileResponse profil = mapper.readValue(prof.toString(), ProfileResponse.class);
-
-                client.post(profile + profil.getBanks().get(0).getPrivateProfile().getId(), new StringEntity(""));
-
-                JSONObject accounts = client.get("/engagement/overview");
-                OverviewResponse or = mapper.readValue(accounts.toString(), OverviewResponse.class);
-
-                String accountId = or.getTransactionAccounts().get(0).getId();
-
-                JSONObject res = client.get("/engagement/transactions/" + accountId);
-                TransactionsResponse t = mapper.readValue(res.toString(), TransactionsResponse.class);
-
-                client.shutdown();
-                return t.getTransactions();
-            } catch (MalformedURLException e) {return null;
-
-            } catch (IOException e) {return null;
-            } catch (IllegalStateException e) {
-                return null;
-            } catch (JSONException e) {
-                return null;
-            }
+        protected List<BankTransaction> doInBackground(String... params) {
+            BankTransactionsResponse response = swedbankService.getTransactions(params[0]);
+            return response.getTransactions();
         }
 
         @Override
@@ -97,14 +64,14 @@ public class BankActivity extends FragmentActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Transaction> params) {
+        protected void onPostExecute(List<BankTransaction> params) {
             TextView tv = (TextView)findViewById(R.id.textViewBank);
             if(params == null) {
                 tv.setText("It done fucked up");
                 return;
             }
             StringBuilder sb = new StringBuilder();
-            for(Transaction t : params) {
+            for(BankTransaction t : params) {
                 sb.append(t.getDate()).append(":\t").append(t.getAmount()).append("\t").append(t.getDescription()).append("\n");
             }
             tv.setText(sb.toString());
