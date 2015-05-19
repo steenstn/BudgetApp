@@ -12,6 +12,9 @@ public class BankTransaction {
         this.description = description;
     }
 
+    public BankTransaction clone() {
+        return new BankTransaction(date, amount, description);
+    }
     public String getDate() {
         return date;
     }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import budgetapp.banks.BankErrorResponse;
@@ -32,10 +33,9 @@ public class SwedbankService implements BankService{
 
         String personalCode = "/identification/personalcode";
         String profile = "/profile/";
-        String birthDate = authString.split("\\s+")[0];
-        String password = authString.split("\\s+")[1];
         try {
-
+            String birthDate = authString.split("\\s+")[0];
+            String password = authString.split("\\s+")[1];
             StringEntity s = new StringEntity(
                     "{\"userId\": \""+birthDate+"\", \"useEasyLogin\": false, \"password\": \""+password + "\", \"generateEasyLoginId\": false}");
 
@@ -55,15 +55,14 @@ public class SwedbankService implements BankService{
             TransactionsResponse t = mapper.readValue(res.toString(), TransactionsResponse.class);
 
             client.shutdown();
-            Optional<BankErrorResponse> wee = Optional.absent();
+            Optional<String> wee = Optional.absent();
             return new BankTransactionsResponse(wee, convertTransactions(t.getTransactions()));
-        } catch (MalformedURLException e) {return null;
-
-        } catch (IOException e) {return null;
-        } catch (IllegalStateException e) {
-            return null;
-        } catch (JSONException e) {
-            return null;
+        } catch (Exception e) {
+            Optional<String> error = Optional.of(e.getMessage());
+            return new BankTransactionsResponse(error, new ArrayList<BankTransaction>());
+        }
+        finally {
+            client.shutdown();
         }
     }
 

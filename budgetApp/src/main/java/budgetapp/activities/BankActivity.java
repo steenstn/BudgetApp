@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,10 @@ import budgetapp.banks.swedbank.beans.Transaction;
 import budgetapp.banks.swedbank.beans.TransactionsResponse;
 import budgetapp.banks.swedbank.client.SwedbankClient;
 import budgetapp.main.R;
+import budgetapp.util.BudgetAdapter;
+import budgetapp.util.Event;
+import budgetapp.viewholders.BankTransactionViewHolder;
+import budgetapp.viewholders.EventViewHolder;
 
 public class BankActivity extends FragmentActivity {
 
@@ -47,12 +52,12 @@ public class BankActivity extends FragmentActivity {
     }
 
     private class JsonTask
-            extends AsyncTask<String, Void, List<BankTransaction>> {
+            extends AsyncTask<String, Void, BankTransactionsResponse> {
 
         @Override
-        protected List<BankTransaction> doInBackground(String... params) {
+        protected BankTransactionsResponse doInBackground(String... params) {
             BankTransactionsResponse response = swedbankService.getTransactions(params[0]);
-            return response.getTransactions();
+            return response;
         }
 
         @Override
@@ -64,17 +69,28 @@ public class BankActivity extends FragmentActivity {
         }
 
         @Override
-        protected void onPostExecute(List<BankTransaction> params) {
+        protected void onPostExecute(BankTransactionsResponse params) {
             TextView tv = (TextView)findViewById(R.id.textViewBank);
             if(params == null) {
                 tv.setText("It done fucked up");
                 return;
             }
-            StringBuilder sb = new StringBuilder();
-            for(BankTransaction t : params) {
+            if(params.getErrorResponse().isPresent()) {
+                tv.setText(params.getErrorResponse().get());
+                return;
+            }
+
+            BudgetAdapter listAdapter = new BudgetAdapter(getApplicationContext(), R.layout.listitem_banktransaction);
+            for (BankTransaction t : params.getTransactions()) {
+                listAdapter.add(new BankTransactionViewHolder(t));
+            }
+            ListView transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
+            transactionsListView.setAdapter(listAdapter);
+           /* StringBuilder sb = new StringBuilder();
+            for(BankTransaction t : params.getTransactions()) {
                 sb.append(t.getDate()).append(":\t").append(t.getAmount()).append("\t").append(t.getDescription()).append("\n");
             }
-            tv.setText(sb.toString());
+            tv.setText(sb.toString());*/
         }
 
 
