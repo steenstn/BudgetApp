@@ -13,15 +13,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import budgetapp.banks.BankConnectionException;
 import budgetapp.banks.BankErrorResponse;
+import budgetapp.banks.BankHttpResponse;
 import budgetapp.banks.BankService;
 import budgetapp.banks.BankTransaction;
 import budgetapp.banks.BankTransactionsResponse;
 import budgetapp.banks.swedbank.beans.OverviewResponse;
+import budgetapp.banks.swedbank.beans.PersonalCodeResponse;
 import budgetapp.banks.swedbank.beans.ProfileResponse;
 import budgetapp.banks.swedbank.beans.Transaction;
 import budgetapp.banks.swedbank.beans.TransactionsResponse;
 import budgetapp.banks.swedbank.client.SwedbankClient;
+import budgetapp.util.money.Money;
+import budgetapp.util.money.MoneyFactory;
 
 public class SwedbankService implements BankService{
 
@@ -33,34 +38,37 @@ public class SwedbankService implements BankService{
 
         String personalCode = "/identification/personalcode";
         String profile = "/profile/";
+        String birthDate;
+        String password;
+
         try {
-            String birthDate = authString.split("\\s+")[0];
-            String password = authString.split("\\s+")[1];
+            birthDate = authString.split("\\s+")[0];
+            password = authString.split("\\s+")[1];
             StringEntity s = new StringEntity(
                     "{\"userId\": \""+birthDate+"\", \"useEasyLogin\": false, \"password\": \""+password + "\", \"generateEasyLoginId\": false}");
 
             client.post(personalCode, s);
 
-            JSONObject prof = client.get(profile);
-            ProfileResponse profil = mapper.readValue(prof.toString(), ProfileResponse.class);
+            BankHttpResponse prof = client.get(profile);
+            ProfileResponse profil = parseOrThrowException(prof, ProfileResponse.class);
 
             client.post(profile + profil.getBanks().get(0).getPrivateProfile().getId(), new StringEntity(""));
 
-            JSONObject accounts = client.get("/engagement/overview");
-            OverviewResponse or = mapper.readValue(accounts.toString(), OverviewResponse.class);
+            BankHttpResponse accounts = client.get("/engagement/overview");
+            OverviewResponse or = parseOrThrowException(accounts, OverviewResponse.class);
 
             String accountId = or.getTransactionAccounts().get(0).getId();
 
-            JSONObject res = client.get("/engagement/transactions/" + accountId);
-            TransactionsResponse t = mapper.readValue(res.toString(), TransactionsResponse.class);
+            BankHttpResponse res = client.get("/engagement/transactions/" + accountId);
+            TransactionsResponse t = parseOrThrowException(res, TransactionsResponse.class);
 
             client.shutdown();
             Optional<String> wee = Optional.absent();
             return new BankTransactionsResponse(wee, convertTransactions(t.getTransactions()));
         } catch (Exception e) {
-            Optional<String> error = Optional.of(e.getMessage());
-            return new BankTransactionsResponse(error, new ArrayList<BankTransaction>());
-        } finally {
+             Optional<String> error = Optional.of(e.getMessage());
+             return new BankTransactionsResponse(error, new ArrayList<BankTransaction>());
+         } finally {
             client.shutdown();
         }
     }
@@ -68,8 +76,25 @@ public class SwedbankService implements BankService{
     private List<BankTransaction> convertTransactions(List<Transaction> transactions) {
         List<BankTransaction> convertedTransactions = new ArrayList<BankTransaction>();
         for(Transaction t : transactions) {
-            convertedTransactions.add(new BankTransaction(t.getDate(), t.getAmount(), t.getDescription()));
+            Money m = MoneyFactory.createMoneyFromNewDouble(parseAmountString(t.getAmount()));
+            convertedTransactions.add(new BankTransaction(t.getDate(), m, t.getDescription()));
         }
         return convertedTransactions;
+    }
+
+    private double parseAmountString(String amount) {
+        return Double.parseDouble(amount.replaceAll("\\s+", "").replaceAll(",",".").trim());
+    }
+
+    private <T>  T parseOrThrowException(BankHttpResponse response, Class<T> responseType) {
+        System.out.println("Parsing to " + responseType.getSimpleName());
+        if(response.getStatus() != 200) {
+            throw new BankConnectionException("Call not successful: " + response.getBody());
+        }
+        try {
+            return mapper.readValue(response.getBody(), responseType);
+        } catch (IOException e) {
+            throw new BankConnectionException("Something went wrong: " + response.getBody());
+        }
     }
 }

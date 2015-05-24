@@ -1,12 +1,14 @@
 package budgetapp.banks;
 
+import budgetapp.util.money.Money;
+
 public class BankTransaction {
 
     private String date;
-    private String amount;
+    private Money amount;
     private String description;
 
-    public BankTransaction(String date, String amount, String description) {
+    public BankTransaction(String date, Money amount, String description) {
         this.date = date;
         this.amount = amount;
         this.description = description;
@@ -19,7 +21,7 @@ public class BankTransaction {
         return date;
     }
 
-    public String getAmount() {
+    public Money getAmount() {
         return amount;
     }
 

@@ -2,8 +2,6 @@ package budgetapp.banks.swedbank.client;
 
 import android.util.Base64;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -15,8 +13,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,8 +20,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-public class SwedbankClient {
+import budgetapp.banks.BankHttpResponse;
 
+public class SwedbankClient {
     private CookieStore cookieStore;
     private String baseUrl = "https://auth.api.swedbank.se/TDE_DAP_Portal_REST_WEB/api/v2";
     private DefaultHttpClient httpClient;
@@ -39,15 +36,16 @@ public class SwedbankClient {
     public void shutdown() {
         httpClient.getConnectionManager().shutdown();
     }
-    public JSONObject post(String endPoint, HttpEntity entity) throws IOException, JSONException {
+    public BankHttpResponse post(String endPoint, HttpEntity entity) throws IOException {
         HttpPost postRequest = createPostRequest(endPoint, entity);
         return call(postRequest);
     }
 
-    public JSONObject get(String endPoint) throws IOException, JSONException {
+    public BankHttpResponse get(String endPoint) throws IOException {
         HttpGet getRequest = createGetRequest(endPoint);
         return call(getRequest);
     }
+
     private HttpPost createPostRequest(String urlEndPoint, HttpEntity entity) {
         String dsId = dsId();
         HttpPost request = new HttpPost(baseUrl + urlEndPoint + dsIdUrl(dsId));
@@ -79,8 +77,7 @@ public class SwedbankClient {
         cs.addCookie(cookie);
     }
 
-    private JSONObject call(HttpUriRequest request) throws IOException,
-            IllegalStateException, JSONException {
+    private BankHttpResponse call(HttpUriRequest request) throws IOException {
         System.out.println("Calling headers");
         for (Header h : request.getAllHeaders()) {
             System.out.println(h.getName() + " " + h.getValue());
@@ -93,7 +90,8 @@ public class SwedbankClient {
         for (Header h : response.getAllHeaders()) {
             System.out.println(h);
         }
-        return printResult(response);
+        String responseBody = parseResponse(response);
+        return new BankHttpResponse(response.getStatusLine().getStatusCode(), responseBody);
     }
 
     private String getAuth() {
@@ -115,15 +113,16 @@ public class SwedbankClient {
                 + RandomStringUtils.randomAlphabetic(4).toUpperCase();
     }
 
-    private JSONObject printResult(HttpResponse response) throws IllegalStateException, IOException, JSONException {
+    private String parseResponse(HttpResponse response) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
         String output = "";
         StringBuilder sb = new StringBuilder();
         System.out.println("Output from Server .... \n");
+        System.out.println("Status: " + response.getStatusLine().getStatusCode());
         while ((output = br.readLine()) != null) {
             System.out.println(output);
             sb.append(output).append("\n");
         }
-        return new JSONObject(sb.toString());
+        return sb.toString();
     }
 }

@@ -286,6 +286,10 @@ public class MainActivity
         @Override
         public void chooseCategory() {
             DialogFragment newFragment = new ChooseCategoryFragment();
+            Bundle categoriesBunduru = new Bundle();
+            List<String> categories = getCategoryNames();
+            categoriesBunduru.putStringArray("categories", getCategoryNames().toArray(new String[categories.size()]));
+            newFragment.setArguments(categoriesBunduru);
             newFragment.show(getSupportFragmentManager(), "choose_category");
         }
     };

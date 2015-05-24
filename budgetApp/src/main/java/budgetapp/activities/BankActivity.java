@@ -2,7 +2,10 @@ package budgetapp.activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -10,10 +13,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import budgetapp.banks.BankTransaction;
 import budgetapp.banks.BankTransactionsResponse;
 import budgetapp.banks.swedbank.SwedbankService;
+import budgetapp.fragments.ChooseCategoryBankTransactionFragment;
 import budgetapp.main.R;
+import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.viewholders.BankTransactionViewHolder;
 
@@ -21,22 +28,32 @@ public class BankActivity extends FragmentActivity {
 
     private SwedbankService swedbankService = new SwedbankService();
     private ListView transactionsListView;
+    private BudgetModel model;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_banks);
+        model = new BudgetModel(getApplicationContext());
 
         transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
+        setUpListeners();
     }
 
     private void setUpListeners() {
         transactionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                DialogFragment newFragment = new ChooseCategoryBankTransactionFragment();
+                Bundle categoryBunduru = new Bundle();
+                List<String> categories = model.getCategoryNames();
+                categoryBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
+                newFragment.setArguments(categoryBunduru);
+                newFragment.show(getSupportFragmentManager(), "choose_category");
             }
         });
     }
+
 
     public void doIt(View v) {
         EditText e = (EditText)findViewById(R.id.editTextBank);
