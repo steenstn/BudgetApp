@@ -60,8 +60,7 @@ public class SwedbankService implements BankService{
         } catch (Exception e) {
             Optional<String> error = Optional.of(e.getMessage());
             return new BankTransactionsResponse(error, new ArrayList<BankTransaction>());
-        }
-        finally {
+        } finally {
             client.shutdown();
         }
     }

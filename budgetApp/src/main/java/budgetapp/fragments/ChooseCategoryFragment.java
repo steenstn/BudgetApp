@@ -78,12 +78,10 @@ public class ChooseCategoryFragment extends DialogFragment {
 				if(position!=adapter.getCount()-1)
 				{
 					String enteredValue = ((MainActivity)getActivity()).getEnteredValue();
-					if(enteredValue.equalsIgnoreCase(""))
-					{
+					if(enteredValue.equalsIgnoreCase("")) {
 						String category = listItem.toString();
 						List<Double> prices = ((MainActivity)getActivity()).getAutoCompleteValues(category);
-						if(prices.size()!=0)
-						{
+						if(prices.size()!=0) {
 					    	 
 							Bundle bundle = new Bundle();
 					    	bundle.putString("category",category);
@@ -96,8 +94,7 @@ public class ChooseCategoryFragment extends DialogFragment {
 						}
 				    	
 					}
-					else
-					{
+					else {
 						((MainActivity)getActivity()).subtractFromBudget(enteredValue, listItem.toString(),null);
 						ChooseCategoryFragment.this.getDialog().cancel();
 					}
@@ -115,8 +112,7 @@ public class ChooseCategoryFragment extends DialogFragment {
 		{
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long arg) {
-				if(position!=adapter.getCount()-1)
-			    {   
+				if(position!=adapter.getCount()-1) {
 					Object listItem = theList.getItemAtPosition(position);
 					((MainActivity)getActivity()).setChosenCategory(listItem.toString());
 					DialogFragment newFragment = new OtherCategoryDialogFragment();

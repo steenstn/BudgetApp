@@ -72,11 +72,11 @@ public class SwedbankClient {
     }
 
     private static void addCookie(CookieStore cs, String dsId) {
-        BasicClientCookie cookie2 = new BasicClientCookie("dsid", dsId);
-        cookie2.setDomain(".api.swedbank.se");
-        cookie2.setPath("/");
-        cookie2.setVersion(0);
-        cs.addCookie(cookie2);
+        BasicClientCookie cookie = new BasicClientCookie("dsid", dsId);
+        cookie.setDomain(".api.swedbank.se");
+        cookie.setPath("/");
+        cookie.setVersion(0);
+        cs.addCookie(cookie);
     }
 
     private JSONObject call(HttpUriRequest request) throws IOException,
@@ -118,7 +118,6 @@ public class SwedbankClient {
     private JSONObject printResult(HttpResponse response) throws IllegalStateException, IOException, JSONException {
         BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
         String output = "";
-        JSONObject json = null;
         StringBuilder sb = new StringBuilder();
         System.out.println("Output from Server .... \n");
         while ((output = br.readLine()) != null) {

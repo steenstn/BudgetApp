@@ -21,8 +21,8 @@ public class BankTransactionViewHolder extends ViewHolder {
         TextView centerTextView = (TextView) getSecondView();
         centerTextView.setText(transaction.getDescription());
 
-        Button rightButton = (Button) getThirdView();
-        rightButton.setText("lol");
+        TextView rightButton = (TextView) getThirdView();
+        rightButton.setText("");
     }
 
     @Override
