@@ -694,18 +694,17 @@ public class DatabaseAccess {
         Cursor cursor;
         if(n <= 0) {
             cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
-                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYSUM
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_CASHFLOW
                     + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
         } else {
             cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
-                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYSUM
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_CASHFLOW
                     + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
         }
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             DayEntry entry = new DayEntry(cursor.getString(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)));
-            /*DayEntry entry = new DayEntry(cursor.getLong(0), cursor.getString(1),
-                    MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), cursor.getInt(3));*/
+            
             entries.add(entry);
             cursor.moveToNext();
         }
@@ -713,51 +712,27 @@ public class DatabaseAccess {
         return entries;
     }
 
-    public List<DayEntry> getDaySum(int n, String mode) {
+    public List<DayEntry> getDayTotalCalculated(int n, String mode) {
         List<DayEntry> entries = new ArrayList<DayEntry>();
-
         Cursor cursor;
-        if (n <= 0) {// Get all entries
-
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
+        if(n <= 0) {
+            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYTOTAL
+                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
         } else {
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode
-                    + " limit 0," + n, null);
+            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYTOTAL
+                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
         }
-
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            DayEntry entry = new DayEntry(cursor.getLong(0), cursor.getString(1),
-                MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), cursor.getInt(3));
+            DayEntry entry = new DayEntry(cursor.getString(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)));
             entries.add(entry);
             cursor.moveToNext();
         }
-        cursor.close();
         return entries;
     }
 
-    public List<DayEntry> getDayTotal(int n, String mode) {
-        List<DayEntry> entries = new ArrayList<DayEntry>();
-
-        Cursor cursor;
-        if (n <= 0) {
-            cursor = database
-                .rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id " + mode, null);
-        } else {
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYTOTAL + " order by _id " + mode
-                    + " limit 0," + n, null);
-        }
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            DayEntry entry = new DayEntry(cursor.getLong(0), cursor.getString(1),
-                MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), cursor.getInt(3));
-            entries.add(entry);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return entries;
-    }
 
     public List<CategoryEntry> getCategories(String selection, String[] selectionArgs, String groupBy, String having,
             String orderBy) {

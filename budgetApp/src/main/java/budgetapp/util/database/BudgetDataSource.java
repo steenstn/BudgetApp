@@ -292,7 +292,7 @@ public class BudgetDataSource {
      *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
      * @return An ArrayList of the entries */
     public List<DayEntry> getSomeDaysTotal(int n, String orderBy) {
-        return dbAccess.getDayTotal(n, orderBy);
+        return dbAccess.getDayTotalCalculated(n, orderBy);
     }
 
     /** Gets n number of transactions. Returns all transactions if n <= 0
