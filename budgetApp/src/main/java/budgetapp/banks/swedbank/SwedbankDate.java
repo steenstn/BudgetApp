@@ -9,6 +9,6 @@ public class SwedbankDate extends BankDate {
 
     @Override
     public String toString() {
-        return "";
+        return dateString.replaceAll("-","/") + " 00:00";
     }
 }
