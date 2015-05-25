@@ -18,7 +18,8 @@ public class AddTransactionTest extends AndroidTestCase{
 	BudgetModel model;
 	RenamingDelegatingContext mockContext;
 	String prefix = "test";
-	String startDate = "2012/01/01 00:00";
+    String dateForInitialTransaction = "2012/01/01 00:00";
+	String startDate = "2012/01/02 00:00";
 	
 	public void setUp()
 	{
@@ -29,12 +30,13 @@ public class AddTransactionTest extends AndroidTestCase{
 		model.clearDatabaseInstance();
         model = new BudgetModel(mockContext);
 
-		BudgetFunctions.theDate = startDate;
+		BudgetFunctions.theDate = dateForInitialTransaction;
 		Money.setExchangeRate(1.0);
 		model.setDailyBudget(MoneyFactory.createMoney());
 		
 		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
 		model.processWholeQueue();
+        BudgetFunctions.theDate = startDate;
 		assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
 		assertEquals("Incorrect startDate", startDate, BudgetFunctions.theDate);
 	
@@ -92,6 +94,31 @@ public class AddTransactionTest extends AndroidTestCase{
 		assertEquals("Value of entry not correct after adding transaction", value * exchangeRate, entry.getValue().get());
 		assertEquals("Value of current budget not correct", value * exchangeRate, model.getCurrentBudget().get());
 	}
+
+    public void testDateSorting() {
+        String[] expectedSortedDates = {
+                "2016/11/12 16:23",
+                "2016/10/13 18:28",
+                "2015/12/23 20:51",
+                "2015/11/12 16:23",
+                "2015/10/12 16:23"
+        };
+
+        for(int i = 0; i < expectedSortedDates.length; i++) {
+            model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(i+1), expectedSortedDates[i], "number " + i));
+        }
+
+        model.processWholeQueue();
+
+        List<BudgetEntry> transactions = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
+        for(int i = 0; i < expectedSortedDates.length; i++) {
+            BudgetEntry b = transactions.get(i);
+            assertEquals("Entry " + i+ " had wrong date. Found " + b.getCategory(), expectedSortedDates[i], b.getDate());
+        }
+
+        BudgetEntry lastTransaction = transactions.get(transactions.size()-1);
+        assertEquals("Incorrect date for start transaction", dateForInitialTransaction, lastTransaction.getDate());
+    }
 
 	public void tearDown()
 	{

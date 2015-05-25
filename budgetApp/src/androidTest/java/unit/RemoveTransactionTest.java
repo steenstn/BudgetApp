@@ -19,7 +19,7 @@ public class RemoveTransactionTest extends AndroidTestCase{
 	BudgetModel model;
 	RenamingDelegatingContext mockContext;
 	String prefix = "test";
-	String startDate = "2012/01/01 00:00";
+	String startDate = "2012/01/02 00:00";
 	
 	public void setUp()
 	{
