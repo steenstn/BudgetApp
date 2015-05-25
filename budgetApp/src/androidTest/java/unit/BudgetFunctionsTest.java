@@ -57,7 +57,7 @@ public class BudgetFunctionsTest
 
     public void testGetDateAsIntegers() {
         BudgetFunctions.TESTING = true;
-        BudgetFunctions.theDate = "2012/01/01 00:00"
+        BudgetFunctions.theDate = "2012/01/01 00:00";
         assertEquals(2012, BudgetFunctions.getYear());
         assertEquals(0, BudgetFunctions.getMonth());
         assertEquals(1, BudgetFunctions.getDay());
