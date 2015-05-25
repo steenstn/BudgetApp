@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
 import budgetapp.viewholders.BankTransactionViewHolder;
 import budgetapp.views.BankView;
 import budgetapp.views.MainView;
@@ -50,6 +52,11 @@ public class BankActivity extends FragmentActivity {
         transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
     }
 
+    public void addTransaction(BudgetEntry entry) {
+        model.queueTransaction(entry);
+        model.processQueueItem();
+        Toast.makeText(this, "Added", Toast.LENGTH_LONG).show();
+    }
     private BankView.ViewListener viewListener = new BankView.ViewListener() {
         @Override
         public void transactionListItemClicked(BankTransactionViewHolder transaction) {
@@ -57,7 +64,12 @@ public class BankActivity extends FragmentActivity {
             Bundle transactionBunduru = new Bundle();
             List<String> categories = model.getCategoryNames();
             transactionBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
+            BankTransaction bt = transaction.getTransaction();
+
+            BudgetEntry entry = new BudgetEntry(bt.getAmount(), bt.getDate(), "", bt.getDescription());
+            transactionBunduru.putParcelable("entry", entry);
             newFragment.setArguments(transactionBunduru);
+
 
             newFragment.show(getSupportFragmentManager(), "choose_category");
         }

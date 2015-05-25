@@ -7,19 +7,24 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import budgetapp.activities.BankActivity;
 import budgetapp.main.R;
+import budgetapp.util.entries.BudgetEntry;
 
 public class ChooseCategoryBankTransactionFragment extends DialogFragment {
 
     private ListView categoryList;
     private String[] categories;
+    private BudgetEntry entry;
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         categories = getArguments().getStringArray("categories");
+        entry = getArguments().getParcelable("entry");
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_choose_category, null);
 
@@ -33,6 +38,7 @@ public class ChooseCategoryBankTransactionFragment extends DialogFragment {
             }
         });
         updateCategories();
+        setUpListeners();
         return builder.create();
     }
 
@@ -49,5 +55,17 @@ public class ChooseCategoryBankTransactionFragment extends DialogFragment {
                 android.R.layout.simple_list_item_1, android.R.id.text1, temp);
 
         categoryList.setAdapter(adapter);
+    }
+
+    private void setUpListeners() {
+        categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String category = (String)categoryList.getItemAtPosition(position);
+                entry.setCategory(category);
+                ((BankActivity)getActivity()).addTransaction(entry);
+                ChooseCategoryBankTransactionFragment.this.getDialog().cancel();
+            }
+        });
     }
 }

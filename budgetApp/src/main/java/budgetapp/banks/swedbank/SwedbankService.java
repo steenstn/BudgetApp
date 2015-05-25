@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ import budgetapp.banks.swedbank.beans.ProfileResponse;
 import budgetapp.banks.swedbank.beans.Transaction;
 import budgetapp.banks.swedbank.beans.TransactionsResponse;
 import budgetapp.banks.swedbank.client.SwedbankClient;
+import budgetapp.util.BudgetFunctions;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
@@ -32,6 +34,7 @@ public class SwedbankService implements BankService{
 
     private SwedbankClient client = new SwedbankClient();
     private ObjectMapper mapper = new ObjectMapper();
+    private static final String swedbankDateFormat = "yyyy-MM-dd";
 
     @Override
     public BankTransactionsResponse getTransactions(String authString) {
@@ -76,11 +79,12 @@ public class SwedbankService implements BankService{
         }
     }
 
-    private List<BankTransaction> convertTransactions(List<Transaction> transactions) {
+    private List<BankTransaction> convertTransactions(List<Transaction> transactions) throws ParseException {
         List<BankTransaction> convertedTransactions = new ArrayList<BankTransaction>();
         for(Transaction t : transactions) {
             Money m = MoneyFactory.createMoneyFromNewDouble(parseAmountString(t.getAmount()));
-            convertedTransactions.add(new BankTransaction(t.getDate(), m, t.getDescription()));
+            String convertedDate = BudgetFunctions.timeStampConverter(swedbankDateFormat, t.getDate(), "yyyy/MM/dd") + " 00:00";
+            convertedTransactions.add(new BankTransaction(convertedDate, m, t.getDescription()));
         }
         return convertedTransactions;
     }
