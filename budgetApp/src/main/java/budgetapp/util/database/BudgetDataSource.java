@@ -56,7 +56,7 @@ public class BudgetDataSource {
             addToAutocompleteValues(result.getValue().get(), workingEntry.getCategory());
 
             addToCategory(workingEntry.getCategory(), workingEntry.getValue().get());
-            addToDaySum(workingEntry);
+
             addToDayTotal(workingEntry);
         }
         return result;
@@ -93,19 +93,19 @@ public class BudgetDataSource {
         BudgetEntry workingEntry = dbAccess.getEntry(theEntry.getId());
         boolean result = dbAccess.removeEntry(theEntry);
 
-        if (result == true) {
+        if (result) {
             removeTransactionFromEvents(workingEntry.getId());
             switch (workingEntry.getFlags()) {
             case DatabaseEntry.NORMAL_TRANSACTION:
                 removeFromCategory(workingEntry.getCategory(), workingEntry.getValue().get() * -1);
-                // Update daysum and daytotal by adding the negative value that was added
+                // Update daytotal by adding the negative value that was added
                 workingEntry.setValue(workingEntry.getValue().multiply(-1));
-                addToDaySum(workingEntry);
+
                 addToDayTotal(workingEntry);
                 break;
             case DatabaseEntry.INSTALLMENT_TRANSACTION:
                 removeFromCategory(workingEntry.getCategory(), workingEntry.getValue().get() * -1);
-                // Update daysum and daytotal by adding the negative value that was added
+                // Update daytotal by adding the negative value that was added
                 workingEntry.setValue(workingEntry.getValue().multiply(-1));
                 addToDayTotal(workingEntry);
                 dbAccess.removeInstallmentPayments(workingEntry.getId());
@@ -127,7 +127,6 @@ public class BudgetDataSource {
         }
 
         if (oldEntry.getValue().get() != workingEntry.getValue().get()) {
-            updateDaySum(oldEntry, workingEntry);
             updateDayTotal(oldEntry, workingEntry);
         }
     }
@@ -171,7 +170,7 @@ public class BudgetDataSource {
 
             BudgetEntry oldEntryClone = oldEntry.clone();
             oldEntryClone.setDate(date);
-            updateDaySum(oldEntryClone, workingEntry);
+
         }
     }
 
@@ -429,16 +428,8 @@ public class BudgetDataSource {
         dbAccess.removeFromCategory(theCategory, value);
     }
 
-    private void updateDaySum(BudgetEntry oldEntry, BudgetEntry newEntry) {
-        //dbAccess.updateDaySum(oldEntry, newEntry);
-    }
-
     private void updateDayTotal(BudgetEntry oldEntry, BudgetEntry newEntry) {
         dbAccess.updateDayTotal(oldEntry, newEntry);
-    }
-
-    private void addToDaySum(BudgetEntry theEntry) {
-        //dbAccess.updateDaySum(theEntry, null);
     }
 
     private void addToDayTotal(BudgetEntry theEntry) {
