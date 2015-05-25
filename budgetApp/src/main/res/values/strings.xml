@@ -29,10 +29,14 @@
         e.g. trips or vacation. When events are active, all made transactions will be linked to them.</string>
         <string name="currencies_info_text">Press the button to create a new currency. Tap a currency to set it as the active one.
              Longpress a currency to edit or delete it.</string>
-    <string name="versionName">Mnemosyne</string>
-    <string name="versionNameExplanation">Mnemosyne was the personification of memory in Greek mythology.
-         A Titanide, or Titaness, she was the daughter of Uranus and Gaia, and the mother of the nine Muses by Zeus.</string>
+    <string name="versionName">Hermes</string>
+    <string name="versionNameExplanation">Hermes is an Olympian god in Greek religion and mythology, son of Zeus and the Pleiad Maia.
+        Messenger of the gods.</string>
     <string name="whats_new">
+        3.5:\n
+        - App can now fetch transactions from Swedbank\n
+        - Total expenses now shown in statistics view\n
+        - Fixed bug where installments could be paid double for some users\n
         3.4:\n
         - Backup of database with Google Cloud Backup\n
         - Categories can now be sorted\n
