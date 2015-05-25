@@ -21,8 +21,7 @@ public class EditTransactionTest extends AndroidTestCase{
     String initalDate = "2022/01/01 00:00";
 	String startDate = "2022/01/01 00:01";
 	
-	public void setUp()
-	{
+	public void setUp() {
 		BudgetFunctions.TESTING = true;
 		mockContext = new RenamingDelegatingContext(getContext(), getContext(), prefix);
 

@@ -198,48 +198,6 @@ public class DatabaseAccess {
         return -1;
     }
 
-    /** Updates the daysum table
-     * 
-     * @param theEntry
-     *            - The entry to add
-     * @param newEntry
-     *            - Possible other entry. This means that an entry was edited
-     * @return - If the adding was successful */
-    public boolean updateDaySum(BudgetEntry theEntry, BudgetEntry newEntry) {
-        Cursor cursor;
-        cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_DAYSUM
-                + " where " + BudgetDatabase.COLUMN_DATE + "=" + "\"" + theEntry.getDate().substring(0, 10) + "\"",
-            null);
-
-        // If two entries was sent in, the new value should be newValue - oldValue to get the correct result
-        double newValue = theEntry.getValue().get();
-        if (newEntry != null) {
-            newValue = (newEntry.getValue().get() - theEntry.getValue().get());
-        }
-        if (cursor.getCount() <= 0) {
-            ContentValues values = new ContentValues();
-
-            // Put in the values
-            values.put(BudgetDatabase.COLUMN_DATE, theEntry.getDate().substring(0, 10)); // Don't use the hours and
-                                                                                         // minutes in the daysum
-            values.put(BudgetDatabase.COLUMN_VALUE, newValue);
-
-            database.insert(BudgetDatabase.TABLE_DAYSUM, null, values);
-            cursor.close();
-            return true;
-        }
-        // There exists an entry for this day, update it.
-        cursor.moveToFirst();
-        double total = cursor.getDouble(0);
-        total += newValue;
-        ContentValues values = new ContentValues();
-        values.put(BudgetDatabase.COLUMN_VALUE, total);
-
-        database.update(BudgetDatabase.TABLE_DAYSUM, values, BudgetDatabase.COLUMN_DATE + " = \""
-                + theEntry.getDate().substring(0, 10) + "\"", null);
-        cursor.close();
-        return true;
-    }
 
     /** Gets the id for a dayflow entry depending on the date
      * 
@@ -704,7 +662,7 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             DayEntry entry = new DayEntry(cursor.getString(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)));
-            
+
             entries.add(entry);
             cursor.moveToNext();
         }

@@ -231,9 +231,9 @@ public class BudgetDataSource {
      *            - The date to change daily flow for */
     public Money payOffInstallment(Installment installment, String dateToEdit) {
         Installment dbInstallment = dbAccess.getInstallment(installment.getId());
-        if (dbInstallment.getId() == -1 || dbInstallment.isPaidOff() || dbInstallment.isPaused())
+        if (dbInstallment.getId() == -1 || dbInstallment.isPaidOff() || dbInstallment.isPaused()) {
             return MoneyFactory.createMoney();
-
+        }
         Money dailyPay = dbInstallment.getDailyPayment();
 
         Money remainingValue = dbInstallment.getRemainingValue();
@@ -430,7 +430,7 @@ public class BudgetDataSource {
     }
 
     private void updateDaySum(BudgetEntry oldEntry, BudgetEntry newEntry) {
-        dbAccess.updateDaySum(oldEntry, newEntry);
+        //dbAccess.updateDaySum(oldEntry, newEntry);
     }
 
     private void updateDayTotal(BudgetEntry oldEntry, BudgetEntry newEntry) {
@@ -438,7 +438,7 @@ public class BudgetDataSource {
     }
 
     private void addToDaySum(BudgetEntry theEntry) {
-        dbAccess.updateDaySum(theEntry, null);
+        //dbAccess.updateDaySum(theEntry, null);
     }
 
     private void addToDayTotal(BudgetEntry theEntry) {
