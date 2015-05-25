@@ -188,7 +188,7 @@ public class BudgetModel {
     public boolean addInstallment(Installment installment) {
         boolean result = datasource.createInstallment(installment);
 
-        if (result == true) {
+        if (result) {
             stateChanged = true;
             notifyObservers();
             return true;
@@ -200,7 +200,7 @@ public class BudgetModel {
     public boolean addEvent(Event event) {
         boolean result = datasource.createEvent(event);
 
-        if (result == true) {
+        if (result) {
             stateChanged = true;
             notifyObservers();
             return true;
@@ -211,7 +211,7 @@ public class BudgetModel {
     public boolean addCurrency(Currency currency) {
         boolean result = datasource.createCurrency(currency);
 
-        if (result == true) {
+        if (result) {
             stateChanged = true;
             notifyObservers();
             return true;

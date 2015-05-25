@@ -24,37 +24,44 @@ import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.viewholders.BankTransactionViewHolder;
+import budgetapp.views.BankView;
+import budgetapp.views.MainView;
 
 public class BankActivity extends FragmentActivity {
 
     private SwedbankService swedbankService = new SwedbankService();
     private ListView transactionsListView;
+    private BankView view;
     private BudgetModel model;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_banks);
+        //setContentView(R.layout.activity_banks);
+        view = (BankView) View.inflate(this, R.layout.activity_banks, null);
+        view.setViewListener(viewListener);
         model = new BudgetModel(getApplicationContext());
 
+        model = new BudgetModel(this);
+
+        setContentView(view);
+        view.setModel(model);
+
         transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
-        setUpListeners();
     }
 
-    private void setUpListeners() {
-        transactionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DialogFragment newFragment = new ChooseCategoryBankTransactionFragment();
-                Bundle transactionBunduru = new Bundle();
-                List<String> categories = model.getCategoryNames();
-                transactionBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
-                newFragment.setArguments(transactionBunduru);
+    private BankView.ViewListener viewListener = new BankView.ViewListener() {
+        @Override
+        public void transactionListItemClicked(BankTransactionViewHolder transaction) {
+            DialogFragment newFragment = new ChooseCategoryBankTransactionFragment();
+            Bundle transactionBunduru = new Bundle();
+            List<String> categories = model.getCategoryNames();
+            transactionBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
+            newFragment.setArguments(transactionBunduru);
 
-                newFragment.show(getSupportFragmentManager(), "choose_category");
-            }
-        });
-    }
+            newFragment.show(getSupportFragmentManager(), "choose_category");
+        }
+    };
 
 
     public void doIt(View v) {

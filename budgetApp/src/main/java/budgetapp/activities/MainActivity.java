@@ -40,13 +40,11 @@ import budgetapp.views.MainView;
 public class MainActivity
     extends FragmentActivity {
 
-    public ArrayList<String> allCategories = new ArrayList<String>();
     private String chosenCategory = "";
     private MainView view;
     private BudgetModel model;
     private SharedPreferences settings;
 
-    public Money dailyFlow = MoneyFactory.createMoney();
     private ProcessQueueTask processQueueTask;
 
     public String getChosenCategory() {
@@ -69,24 +67,12 @@ public class MainActivity
         return model.addCategory(category);
     }
 
-    public boolean removeCategory(String category) {
-        return model.removeCategory(category);
-    }
-
     public List<String> getCategoryNames() {
         return model.getCategoryNames();
     }
 
     public List<Double> getAutoCompleteValues(String category) {
         return model.getAutocompleteValues(category);
-    }
-
-    public void removeTransactionEntry(BudgetEntry entry) {
-        model.removeTransaction(entry);
-    }
-
-    public void editTransactionEntry(long id, BudgetEntry newEntry) {
-        model.editTransaction(id, newEntry);
     }
 
     public void updateView() {
@@ -135,10 +121,6 @@ public class MainActivity
                 processQueueTask.execute();
             }
         }
-    }
-
-    public void saveConfig() {
-        model.saveConfig();
     }
 
     @Override
