@@ -45,12 +45,11 @@ public class RemoveTransactionTest extends AndroidTestCase{
 	{
 		int numTransactions = 3;
 		double value = 100;
-		for(int i = 0; i < numTransactions; i++)
-		{
+		for(int i = 0; i < numTransactions; i++) {
 			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value), BudgetFunctions.getDateString(), "test"));
-			model.processWholeQueue();
 			addDays(1);
 		}
+        model.processWholeQueue();
 		assertEquals("Incorrect current budget after adding transactions", value * numTransactions, model.getCurrentBudget().get());
 		
 		List<BudgetEntry> transactions = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
@@ -81,12 +80,11 @@ public class RemoveTransactionTest extends AndroidTestCase{
 		double exchangeRate = 2;
 		Money.setExchangeRate(exchangeRate);
 		
-		for(int i = 0; i < numTransactions; i++)
-		{
+		for(int i = 0; i < numTransactions; i++) {
 			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value), BudgetFunctions.getDateString(), "test"));
-			model.processWholeQueue();
 			addDays(1);
 		}
+        model.processWholeQueue();
 		assertEquals("Incorrect current budget after adding transactions", value * exchangeRate * numTransactions, model.getCurrentBudget().get());
 		
 		List<BudgetEntry> transactions = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
@@ -105,12 +103,11 @@ public class RemoveTransactionTest extends AndroidTestCase{
 		double exchangeRate = .2;
 		Money.setExchangeRate(exchangeRate);
 		
-		for(int i = 0; i < numTransactions; i++)
-		{
+		for(int i = 0; i < numTransactions; i++) {
 			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(value), BudgetFunctions.getDateString(), "test"));
-			model.processWholeQueue();
 			addDays(1);
 		}
+        model.processWholeQueue();
 		assertEquals("Incorrect current budget after adding transactions", value * exchangeRate * numTransactions, model.getCurrentBudget().get());
 		
 		List<BudgetEntry> transactions = model.getSomeTransactions(0, BudgetDataSource.DESCENDING);
