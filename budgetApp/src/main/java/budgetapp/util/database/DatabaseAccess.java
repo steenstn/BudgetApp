@@ -31,18 +31,6 @@ public class DatabaseAccess {
 
     }
 
-    public void resetTransactionTables() {
-        database.execSQL("drop table " + BudgetDatabase.TABLE_CASHFLOW);
-        database.execSQL("drop table " + BudgetDatabase.TABLE_CATEGORIES);
-        database.execSQL("drop table " + BudgetDatabase.TABLE_DAYSUM);
-        database.execSQL("drop table " + BudgetDatabase.TABLE_DAYTOTAL);
-
-        database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_CASHFLOW);
-        database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_CATEGORIES);
-        database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_DAYSUM);
-        database.execSQL(BudgetDatabase.DATABASE_CREATE_TABLE_DAYTOTAL);
-    }
-
     public boolean addCategory(String theCategory) {
         ContentValues values = new ContentValues();
         String fixedCategory = theCategory.replaceAll("['\"]", "\'");
@@ -183,41 +171,6 @@ public class DatabaseAccess {
         cursor.close();
         return -1;
     }
-
-    public long getEventIdFromTransactionId(long transactionId) {
-        Cursor cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_EVENT_ID + " from "
-                + BudgetDatabase.TABLE_EVENT_TRANSACTION + " where " + BudgetDatabase.COLUMN_TRANSACTION_ID + " = "
-                + transactionId, null);
-
-        if (cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            long eventId = cursor.getLong(0);
-            cursor.close();
-            return eventId;
-        }
-        return -1;
-    }
-
-
-    /** Gets the id for a dayflow entry depending on the date
-     * 
-     * @param date
-     *            - The date for the dayflow entry
-     * @return - The id */
-    public long getIdFromDayFlow(String date) {
-        Cursor cursor;
-        cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_DAYSUM
-                + " where " + BudgetDatabase.COLUMN_DATE + "=" + "\"" + date.substring(0, 10) + "\"", null);
-        if (cursor.getCount() == 1) {
-            cursor.moveToFirst();
-            long id = cursor.getLong(0);
-            cursor.close();
-            return id;
-        } else {
-            return -1;
-        }
-    }
-
 
     /** Updates the daytotal table, goes through all daytotal entries when updating
      * 
@@ -416,36 +369,6 @@ public class DatabaseAccess {
 
     }
 
-    /** Removes all the daily payments from an installment from the linked dayflow entry
-     * 
-     * @param transactionId */
-    public void removeInstallmentPayments(long transactionId) {
-        Cursor cursor;
-        cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_ID + " from " + BudgetDatabase.TABLE_INSTALLMENTS
-                + " where " + BudgetDatabase.COLUMN_TRANSACTION_ID + " = " + transactionId, null);
-
-        if (cursor.getCount() != 0) {
-            System.out.println("Found installment");
-            cursor.moveToFirst();
-            long installmentId = cursor.getLong(0);
-
-            Cursor cursor2 = database.rawQuery("select " + BudgetDatabase.COLUMN_DAYFLOW_ID + ", "
-                    + BudgetDatabase.COLUMN_VALUE + " from " + BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID
-                    + " where " + BudgetDatabase.COLUMN_INSTALLMENT_ID + " = " + installmentId, null);
-
-            cursor2.moveToFirst();
-            while (!cursor2.isAfterLast()) {
-                long dayFlowId = cursor2.getLong(0);
-                double value = cursor2.getDouble(1);
-                database.execSQL("update " + BudgetDatabase.TABLE_DAYSUM + " set " + BudgetDatabase.COLUMN_VALUE
-                        + " = " + BudgetDatabase.COLUMN_VALUE + " - " + value + " where _id = " + dayFlowId);
-                cursor2.moveToNext();
-            }
-            cursor2.close();
-        }
-        cursor.close();
-
-    }
 
     public CategoryEntry addEntry(CategoryEntry theEntry) {
         ContentValues values = new ContentValues();
@@ -532,25 +455,6 @@ public class DatabaseAccess {
         long insertId = database.insert(BudgetDatabase.TABLE_CURRENCIES, null, values);
         return insertId;
 
-    }
-
-    /** Adds a link from the daily payment of the installment to a dayflow entry
-     * 
-     * @param installmentId
-     *            - The id of the installment
-     * @param dailyFlowId
-     *            - The id of the dailyFlow entry
-     * @param value
-     *            - The value of the payment
-     * @return - The resulting id of the entry */
-    public long addInstallmentPayment(long installmentId, long dailyFlowId, double value) {
-        ContentValues values = new ContentValues();
-        values.put(BudgetDatabase.COLUMN_INSTALLMENT_ID, installmentId);
-        values.put(BudgetDatabase.COLUMN_DAYFLOW_ID, dailyFlowId);
-        values.put(BudgetDatabase.COLUMN_VALUE, value);
-
-        long insertId = database.insert(BudgetDatabase.TABLE_INSTALLMENT_DAYFLOW_PAID, null, values);
-        return insertId;
     }
 
     public List<Double> getAutocompleteValues() {

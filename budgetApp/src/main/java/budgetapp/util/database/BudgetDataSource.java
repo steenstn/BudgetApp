@@ -108,7 +108,6 @@ public class BudgetDataSource {
                 // Update daytotal by adding the negative value that was added
                 workingEntry.setValue(workingEntry.getValue().multiply(-1));
                 addToDayTotal(workingEntry);
-                dbAccess.removeInstallmentPayments(workingEntry.getId());
                 break;
             }
         }
@@ -197,8 +196,8 @@ public class BudgetDataSource {
         installment.setTransactionId(initialPayment.getId());
 
         long result = dbAccess.addInstallment(installment);
-        long dailyFlowId = dbAccess.getIdFromDayFlow(initialPayment.getDate());
-        dbAccess.addInstallmentPayment(result, dailyFlowId, dailyPayment.get());
+        //long dailyFlowId = dbAccess.getIdFromDayFlow(initialPayment.getDate());
+        //dbAccess.addInstallmentPayment(result, dailyFlowId, dailyPayment.get());
 
         return result != -1;
 
@@ -249,7 +248,7 @@ public class BudgetDataSource {
             newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
             editTransactionEntryToday(oldEntry.getId(), newEntry, dateToEdit);
 
-            dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
+            //dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
 
             updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment
                 .getDailyPayment()
@@ -405,10 +404,6 @@ public class BudgetDataSource {
 
         boolean result = dbAccess.setFlags(id, flags);
         return result;
-    }
-
-    public void resetTransactionTables() {
-        dbAccess.resetTransactionTables();
     }
 
     public void clearAutocompleteValues() {

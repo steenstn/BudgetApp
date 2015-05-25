@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BudgetDatabase
     extends SQLiteOpenHelper {
 
+    private static final int DATABASE_VERSION = 16;
     // The table for cash flow
     // Basically a log for the transactions
     public static final String TABLE_CASHFLOW = "cashflow";
@@ -76,7 +77,6 @@ public class BudgetDatabase
     public static final String COLUMN_CURRENCY_EXCHANGE_RATE = "exchange_rate";
 
     private static final String DATABASE_NAME = "budget.db";
-    private static final int DATABASE_VERSION = 16;
 
     public static final String DATABASE_CREATE_TABLE_CATEGORY_NAMES = "create table " + TABLE_CATEGORY_NAMES + "("
             + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_CATEGORY + " text);";
