@@ -23,7 +23,7 @@ public class AddTransactionTest extends AndroidTestCase{
 	
 	public void setUp()
 	{
-		BudgetFunctions.TESTING = true;
+        BudgetFunctions.TESTING = true;
 		mockContext = new RenamingDelegatingContext(getContext(), getContext(), prefix);
 		
 		model = new BudgetModel(mockContext);
@@ -35,6 +35,7 @@ public class AddTransactionTest extends AndroidTestCase{
 		model.setDailyBudget(MoneyFactory.createMoney());
 		
 		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"initialTransaction"));
+
 		model.processWholeQueue();
         BudgetFunctions.theDate = startDate;
 		assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
@@ -55,7 +56,7 @@ public class AddTransactionTest extends AndroidTestCase{
 		List<BudgetEntry> transactions = model.getSomeTransactions(1, BudgetDataSource.DESCENDING);
 		entry = transactions.get(0);
 		
-//		assertEquals("Value of entry not correct after adding transaction. Found " + entry.getCategory() + " date " + entry.getDate(), value, entry.getValue().get());
+		assertEquals("Value of entry not correct after adding transaction. Found " + entry.getCategory() + " date " + entry.getDate(), value, entry.getValue().get());
 		assertEquals("Value of current budget not correct", value, model.getCurrentBudget().get());
 		assertTrue("Category not correct after adding transaction.", entry.getCategory().equalsIgnoreCase("test"));
 		assertTrue("Comment not correct after adding transaction.", entry.getComment().equalsIgnoreCase("comment"));
@@ -116,9 +117,7 @@ public class AddTransactionTest extends AndroidTestCase{
             assertEquals("Entry " + i+ " had wrong date. Found " + b.getCategory(), expectedSortedDates[i], b.getDate());
         }
 
-        BudgetEntry lastTransaction = descTransactions.get(descTransactions.size()-1);
-        assertEquals("Incorrect date for start transaction", dateForInitialTransaction, lastTransaction.getDate());
-    }
+     }
 
 	public void tearDown()
 	{

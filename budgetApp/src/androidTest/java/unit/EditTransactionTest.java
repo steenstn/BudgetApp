@@ -18,7 +18,8 @@ public class EditTransactionTest extends AndroidTestCase{
 	BudgetModel model;
 	RenamingDelegatingContext mockContext;
 	String prefix = "test";
-	String startDate = "2022/01/01 00:00";
+    String initalDate = "2022/01/01 00:00";
+	String startDate = "2022/01/01 00:01";
 	
 	public void setUp()
 	{
@@ -29,45 +30,42 @@ public class EditTransactionTest extends AndroidTestCase{
         model.clearDatabaseInstance();
         model = new BudgetModel(mockContext);
 
-        BudgetFunctions.theDate = startDate;
+        BudgetFunctions.theDate = initalDate;
 		Money.setExchangeRate(1.0);
 		model.setDailyBudget(MoneyFactory.createMoney());
 		
 		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
-		
+        BudgetFunctions.theDate = startDate;
 		assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
 		assertEquals("Incorrect startDate", startDate, BudgetFunctions.theDate);
 	
 	}
 	
-	public void testEditTransaction()
-	{
+	public void testEditTransaction() {
 		double originalValue = 100;
 		double newValue = 200;
 		int numDays = 5;
 		
 		double expectedValue = (numDays - 1) * originalValue + newValue;
 		
-		for(int i = 0; i < numDays; i++)
-		{
-			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(originalValue),startDate,"test"));
-			model.processWholeQueue();
+		for(int i = 0; i < numDays; i++) {
+			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(originalValue),BudgetFunctions.getDateString(),"test"));
 			addDays(1);
 		}
-		
+        model.processWholeQueue();
 		// Change value of the first transaction
 		List<BudgetEntry> entries = model.getSomeTransactions(1, BudgetDataSource.DESCENDING);
 		BudgetEntry entry = entries.get(0);
+        assertEquals("Incorrect value on transaction got" + entry.getDate(), originalValue, entry.getValue().get());
 		BudgetEntry newEntry = entry.clone();
 		
 		newEntry.setValue(MoneyFactory.createMoneyFromNewDouble(newValue));
 		
 		model.editTransaction(entry.getId(), newEntry);
+
+        BudgetEntry editedEntry = model.getTransaction(entry.getId());
 		
-		entries = model.getSomeTransactions(1, BudgetDataSource.DESCENDING);
-		entry = entries.get(0);
-		
-		assertEquals("Wrong value after changing exchange rate.", newValue,  entry.getValue().get());
+		assertEquals("Wrong value after editing transaction.", newValue,  editedEntry.getValue().get());
 		assertEquals("Current budget wrong after editing transaction", expectedValue, model.getCurrentBudget().get());
 	}
 	
@@ -81,13 +79,12 @@ public class EditTransactionTest extends AndroidTestCase{
 		double expectedValue = ((numDays - 1) * originalValue + newValue) * exchangeRate;
 		System.out.println("expected: " + expectedValue);
 		Money.setExchangeRate(exchangeRate);
-		for(int i = 0; i < numDays; i++)
-		{
-			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(originalValue),startDate,"test"));
-			model.processWholeQueue();
+		for(int i = 0; i < numDays; i++) {
+			model.queueTransaction(new BudgetEntry(MoneyFactory.createMoneyFromNewDouble(originalValue),BudgetFunctions.getDateString(),"test"));
+
 			addDays(1);
 		}
-		
+        model.processWholeQueue();
 		// Change value of the first transaction
 		List<BudgetEntry> entries = model.getSomeTransactions(1, BudgetDataSource.DESCENDING);
 		BudgetEntry entry = entries.get(0);
