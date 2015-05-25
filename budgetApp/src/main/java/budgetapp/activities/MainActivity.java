@@ -185,8 +185,7 @@ public class MainActivity
 
     public String getEnteredValue() {
         EditText resultText = (EditText) findViewById(R.id.editTextSubtract);
-        String result = resultText.getText().toString();
-        return result;
+        return resultText.getText().toString();
     }
 
     public void setEnteredValue(String value) {
