@@ -47,7 +47,10 @@ public class SwedbankService implements BankService{
             StringEntity s = new StringEntity(
                     "{\"userId\": \""+birthDate+"\", \"useEasyLogin\": false, \"password\": \""+password + "\", \"generateEasyLoginId\": false}");
 
-            client.post(personalCode, s);
+            BankHttpResponse loginResponse = client.post(personalCode, s);
+            if(loginResponse.getStatus() == 401) {
+                throw new BankConnectionException("Login for " + birthDate + " failed");
+            }
 
             BankHttpResponse prof = client.get(profile);
             ProfileResponse profil = parseOrThrowException(prof, ProfileResponse.class);

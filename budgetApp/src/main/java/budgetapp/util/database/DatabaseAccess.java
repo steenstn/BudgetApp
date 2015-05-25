@@ -327,9 +327,7 @@ public class DatabaseAccess {
     }
 
     /** Updates a transaction entry in the cash flow table
-     * 
-     * @param oldEntry
-     *            - The entry to edit
+     *
      * @param newEntry
      *            - Entry containing the new values
      * @return - If the editing was successful */
@@ -636,9 +634,9 @@ public class DatabaseAccess {
         Cursor cursor;
         if (n <= 0) {// Get all entries
             cursor = database
-                .rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode, null);
+                .rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
         } else {
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by _id " + mode
+            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode
                     + " limit 0," + n, null);
         }
 
@@ -924,7 +922,7 @@ public class DatabaseAccess {
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_CASHFLOW + " where "
                 + BudgetDatabase.COLUMN_ID + " in " + "(select " + BudgetDatabase.COLUMN_TRANSACTION_ID + " from "
                 + BudgetDatabase.TABLE_EVENT_TRANSACTION + " where " + BudgetDatabase.COLUMN_EVENT_ID + " = " + eventId
-                + ") order by " + BudgetDatabase.COLUMN_ID + " desc", null);
+                + ") order by " + BudgetDatabase.COLUMN_DATE + " desc", null);
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {

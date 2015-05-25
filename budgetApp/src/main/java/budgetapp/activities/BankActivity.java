@@ -22,6 +22,7 @@ import budgetapp.fragments.ChooseCategoryBankTransactionFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetAdapter;
+import budgetapp.util.entries.BudgetEntry;
 import budgetapp.viewholders.BankTransactionViewHolder;
 
 public class BankActivity extends FragmentActivity {
@@ -45,10 +46,11 @@ public class BankActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 DialogFragment newFragment = new ChooseCategoryBankTransactionFragment();
-                Bundle categoryBunduru = new Bundle();
+                Bundle transactionBunduru = new Bundle();
                 List<String> categories = model.getCategoryNames();
-                categoryBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
-                newFragment.setArguments(categoryBunduru);
+                transactionBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
+                newFragment.setArguments(transactionBunduru);
+
                 newFragment.show(getSupportFragmentManager(), "choose_category");
             }
         });
@@ -60,7 +62,6 @@ public class BankActivity extends FragmentActivity {
         Button b = (Button)v;
 
         new GetTransactionsTask().execute(e.getText().toString(), b.getText().toString());
-
     }
 
     private class GetTransactionsTask
@@ -76,7 +77,6 @@ public class BankActivity extends FragmentActivity {
             TextView t = (TextView)findViewById(R.id.textViewBank);
             EditText e = (EditText)findViewById(R.id.editTextBank);
             t.setText("Getting transactions for " + e.getText().toString().split("\\s+")[0] + "...");
-
         }
 
         @Override
@@ -90,7 +90,7 @@ public class BankActivity extends FragmentActivity {
                 tv.setText(params.getErrorResponse().get());
                 return;
             }
-            tv.setText("Transactions");
+            tv.setText("New transactions");
             BudgetAdapter listAdapter = new BudgetAdapter(getApplicationContext(), R.layout.listitem_banktransaction);
             for (BankTransaction t : params.getTransactions()) {
                 listAdapter.add(new BankTransactionViewHolder(t));
