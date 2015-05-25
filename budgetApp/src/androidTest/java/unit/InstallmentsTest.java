@@ -78,8 +78,12 @@ public class InstallmentsTest
 
         List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.ASCENDING);
 
-        for (int i = 0; i < dayFlow.size(); i++) {
-            assertEquals("Daily flow not correct for day " + dayFlow.get(i).getDate(), installmentDailyPayment, dayFlow
+        assertEquals("Daily flow not correct for day " + dayFlow.get(0).getDate(), -90.0, dayFlow
+                .get(0)
+                .getValue()
+                .get());
+        for (int i = 1; i < dayFlow.size(); i++) {
+            assertEquals("Daily flow not correct for day " + dayFlow.get(i).getDate(), 0.0, dayFlow
                 .get(i)
                 .getValue()
                 .get());
@@ -253,23 +257,6 @@ public class InstallmentsTest
             .getCurrentBudget()
             .get());
 
-        List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.ASCENDING);
-
-        int numDaysToPayOff = (int) Math.ceil(installmentTotalValue / installmentDailyPayment);
-        double expectedValue = installmentDailyPayment;
-
-        for (int i = 0; i < dayFlow.size(); i++) {
-            if (i < numDaysToPayOff) {
-                expectedValue = installmentDailyPayment;
-            } else {
-                expectedValue = 0;
-            }
-            assertEquals("Daily flow not correct for day " + dayFlow.get(i).getDate(), expectedValue, dayFlow
-                .get(i)
-                .getValue()
-                .get());
-        }
-
         List<Installment> installments = model.getInstallments();
         assertEquals("Installment not set as paid off", installments.get(0).isPaidOff(), true);
 
@@ -299,13 +286,6 @@ public class InstallmentsTest
         model.processWholeQueue();
         assertEquals("Incorrect current budget after paying of installments", numInstallments
                 * (installmentDailyPayment * numberOfDays + installmentDailyPayment), model.getCurrentBudget().get());
-
-        List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.ASCENDING);
-
-        for (int i = 0; i < dayFlow.size(); i++) {
-            assertEquals("Daily flow not correct for day " + dayFlow.get(i).getDate(), numInstallments
-                    * installmentDailyPayment, dayFlow.get(i).getValue().get());
-        }
 
     }
 
