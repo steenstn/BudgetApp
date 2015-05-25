@@ -75,6 +75,10 @@ public class BudgetDataSource {
         return dbAccess.getIdFromEventName(eventName);
     }
 
+    public Money getCurrentBudget() {
+        return dbAccess.getCurrentBudget();
+    }
+
     public List<Event> getLinkedEventsFromTransactionId(long id) {
         return dbAccess.getLinkedEventsFromTransactionId(id);
     }
@@ -277,7 +281,7 @@ public class BudgetDataSource {
      *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
      * @return An ArrayList of the entries */
     public List<DayEntry> getSomeDays(int n, String orderBy) {
-        return dbAccess.getDaySum(n, orderBy);
+        return dbAccess.getDaySumCalculated(n, orderBy);
     }
 
     /** Gets n number of DayEntries from day total table sorted by id

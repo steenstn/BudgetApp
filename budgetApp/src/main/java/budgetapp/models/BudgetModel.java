@@ -116,12 +116,13 @@ public class BudgetModel {
     }
 
     public Money getCurrentBudget() {
-        List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
+        return datasource.getCurrentBudget();
+       /* List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
         if (dayTotal.size() == 1) {
             return new Money(dayTotal.get(0).getValue());
         } else {
             return MoneyFactory.createMoney();
-        }
+        }*/
     }
 
     public int getQueueSize() {

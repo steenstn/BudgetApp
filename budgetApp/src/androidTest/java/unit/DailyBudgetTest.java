@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BudgetFunctions;
+import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
@@ -13,7 +14,8 @@ public class DailyBudgetTest
     extends AndroidTestCase {
 
     String prefix = "test";
-    String startDate = "2012/01/01 00:00";
+    String dateForInitialTransaction = "2022/01/01 00:00";
+    String startDate = "2022/01/01 00:01";
     RenamingDelegatingContext mockContext;
     BudgetModel model;
 
@@ -25,25 +27,19 @@ public class DailyBudgetTest
         model.clearDatabaseInstance();
         model = new BudgetModel(mockContext);
 
-        BudgetFunctions.theDate = startDate;
+        BudgetFunctions.theDate = dateForInitialTransaction;
         Money.setExchangeRate(1.0);
         model.setDailyBudget(MoneyFactory.createMoney());
 
         model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(), BudgetFunctions.getDateString(), "test"));
         model.processWholeQueue();
+        BudgetFunctions.theDate = startDate;
         assertEquals("Incorrect starting budget.", 0.0, model.getCurrentBudget().get());
         assertEquals("Incorrect startDate", startDate, BudgetFunctions.theDate);
 
     }
 
-    public void setUpTestCase() {
-    }
-
-    public void tearDownTestCase() {
-    }
-
     public void testDailyBudget() {
-        setUpTestCase();
 
         int numberOfDays = 8;
         double dailyBudget = 100;
@@ -52,14 +48,12 @@ public class DailyBudgetTest
         addDays(numberOfDays);
         model.queueAddDailyBudget();
         model.processWholeQueue();
-        assertEquals("Inncorrect budget after adding daily budget.", dailyBudget * numberOfDays, model
-            .getCurrentBudget()
-            .get());
-        tearDownTestCase();
+        assertEquals("Incorrect budget after adding daily budget.", dailyBudget * numberOfDays, model
+                .getCurrentBudget()
+                .get());
     }
 
     public void testDailyBudgetHighExchangeRate() {
-        setUpTestCase();
 
         int numberOfDays = 1;
         double dailyBudget = 100;
@@ -72,11 +66,9 @@ public class DailyBudgetTest
         model.processWholeQueue();
         assertEquals("Inncorrect budget after adding daily budget.",
             dailyBudget * numberOfDays * Money.getExchangeRate(), model.getCurrentBudget().get());
-        tearDownTestCase();
     }
 
     public void testDailyBudgetLowExchangeRate() {
-        setUpTestCase();
 
         int numberOfDays = 8;
         double dailyBudget = 100;
@@ -88,7 +80,6 @@ public class DailyBudgetTest
         model.processWholeQueue();
         assertEquals("Inncorrect budget after adding daily budget.",
             dailyBudget * numberOfDays * Money.getExchangeRate(), model.getCurrentBudget().get());
-        tearDownTestCase();
     }
 
     public void testMultipleQueuing() {

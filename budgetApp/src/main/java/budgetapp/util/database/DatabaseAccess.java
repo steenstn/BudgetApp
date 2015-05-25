@@ -12,6 +12,7 @@ import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.entries.CategoryEntry;
 import budgetapp.util.entries.DayEntry;
+import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 public class DatabaseAccess {
@@ -258,6 +259,7 @@ public class DatabaseAccess {
             return -1;
         }
     }
+
 
     /** Updates the daytotal table, goes through all daytotal entries when updating
      * 
@@ -680,14 +682,46 @@ public class DatabaseAccess {
         }
     }
 
+    public Money getCurrentBudget() {
+        Cursor cursor = database.rawQuery("select sum("+BudgetDatabase.COLUMN_VALUE+") total from " + BudgetDatabase.TABLE_CASHFLOW, null);
+        cursor.moveToFirst();
+        Money currentBudget = MoneyFactory.convertDoubleToMoney(cursor.getDouble(0));
+        return currentBudget;
+    }
+
+    public List<DayEntry> getDaySumCalculated(int n, String mode) {
+        List<DayEntry> entries = new ArrayList<DayEntry>();
+        Cursor cursor;
+        if(n <= 0) {
+            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYSUM
+                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
+        } else {
+            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
+                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYSUM
+                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
+        }
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            DayEntry entry = new DayEntry(cursor.getString(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)));
+            /*DayEntry entry = new DayEntry(cursor.getLong(0), cursor.getString(1),
+                    MoneyFactory.convertDoubleToMoney(cursor.getDouble(2)), cursor.getInt(3));*/
+            entries.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return entries;
+    }
+
     public List<DayEntry> getDaySum(int n, String mode) {
         List<DayEntry> entries = new ArrayList<DayEntry>();
 
         Cursor cursor;
         if (n <= 0) {// Get all entries
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id " + mode, null);
+
+            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
         } else {
-            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by _id " + mode
+            cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_DAYSUM + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode
                     + " limit 0," + n, null);
         }
 
