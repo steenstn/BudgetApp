@@ -166,7 +166,6 @@ public class StatsView
      * Calculates the mean derivative and prints the statistics for the categories
      */
     public void updateStats() {
-        List<DayEntry> days = model.getSomeDaysTotal(0, BudgetDataSource.DESCENDING);
         List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.DESCENDING);
 
         categoryAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_category_stats);
@@ -185,7 +184,7 @@ public class StatsView
 
         TextView middleTextView = (TextView) findViewById(R.id.textViewLogTopHead);
         middleTextView.setText("");
-        if (days.size() < 2) {
+        if (dayFlow.size() < 2) {
             middleTextView.append("Not enough days for mean cash flow.\n");
         } else {
             middleTextView.append("Mean cash flow (" + BudgetFunctions.min(30, dayFlow.size()) + ") days: ");
