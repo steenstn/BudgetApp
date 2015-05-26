@@ -56,8 +56,6 @@ public class BudgetDataSource {
             addToAutocompleteValues(result.getValue().get(), workingEntry.getCategory());
 
             addToCategory(workingEntry.getCategory(), workingEntry.getValue().get());
-
-            addToDayTotal(workingEntry);
         }
         return result;
 
@@ -98,16 +96,11 @@ public class BudgetDataSource {
             switch (workingEntry.getFlags()) {
             case DatabaseEntry.NORMAL_TRANSACTION:
                 removeFromCategory(workingEntry.getCategory(), workingEntry.getValue().get() * -1);
-                // Update daytotal by adding the negative value that was added
-                workingEntry.setValue(workingEntry.getValue().multiply(-1));
 
-                addToDayTotal(workingEntry);
                 break;
             case DatabaseEntry.INSTALLMENT_TRANSACTION:
                 removeFromCategory(workingEntry.getCategory(), workingEntry.getValue().get() * -1);
-                // Update daytotal by adding the negative value that was added
-                workingEntry.setValue(workingEntry.getValue().multiply(-1));
-                addToDayTotal(workingEntry);
+
                 break;
             }
         }
@@ -125,9 +118,6 @@ public class BudgetDataSource {
             addToCategory(workingEntry.getCategory(), oldEntry.getValue().get());
         }
 
-        if (oldEntry.getValue().get() != workingEntry.getValue().get()) {
-            updateDayTotal(oldEntry, workingEntry);
-        }
     }
 
     public void editInstallment(long id, Installment newInstallment) {
@@ -165,8 +155,6 @@ public class BudgetDataSource {
         }
 
         if (!oldEntry.getValue().equals(workingEntry.getValue())) {
-            updateDayTotal(oldEntry, workingEntry);
-
             BudgetEntry oldEntryClone = oldEntry.clone();
             oldEntryClone.setDate(date);
 
@@ -280,17 +268,6 @@ public class BudgetDataSource {
      * @return An ArrayList of the entries */
     public List<DayEntry> getSomeDays(int n, String orderBy) {
         return dbAccess.getDaySumCalculated(n, orderBy);
-    }
-
-    /** Gets n number of DayEntries from day total table sorted by id
-     * 
-     * @param n
-     *            - Number of transactions to get. Gets all if n <= 0
-     * @param orderBy
-     *            - BudgetDatabase.ASCENDING/BudgetDatabase.DESCENDING
-     * @return An ArrayList of the entries */
-    public List<DayEntry> getSomeDaysTotal(int n, String orderBy) {
-        return dbAccess.getDayTotalCalculated(n, orderBy);
     }
 
     /** Gets n number of transactions. Returns all transactions if n <= 0
@@ -421,14 +398,6 @@ public class BudgetDataSource {
 
     private void removeFromCategory(String theCategory, double value) {
         dbAccess.removeFromCategory(theCategory, value);
-    }
-
-    private void updateDayTotal(BudgetEntry oldEntry, BudgetEntry newEntry) {
-        dbAccess.updateDayTotal(oldEntry, newEntry);
-    }
-
-    private void addToDayTotal(BudgetEntry theEntry) {
-        dbAccess.updateDayTotal(theEntry, null);
     }
 
     private void updateTransaction(long id, BudgetEntry newEntry) {

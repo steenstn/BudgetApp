@@ -9,6 +9,7 @@ import budgetapp.models.BudgetModel;
 import budgetapp.util.database.BudgetDataSource;
 import budgetapp.util.entries.DayEntry;
 import budgetapp.util.graph.LineGraphRenderer;
+import budgetapp.util.money.MoneyFactory;
 import budgetapp.views.GraphView;
 
 public class GraphActivity
@@ -38,16 +39,21 @@ public class GraphActivity
         model = new BudgetModel(this);
         // datasource.open();
 
-        entries = model.getSomeDaysTotal(0, BudgetDataSource.ASCENDING);
+        entries = model.getSomeDays(0, BudgetDataSource.ASCENDING);
         x = new float[entries.size()];
         y = new float[entries.size()];
         values = new String[entries.size()];
         legends = new String[entries.size()];
 
-        for (int i = 0; i < entries.size(); i++) {
+        x[0] = 0;
+        y[0] = (float) entries.get(0).getValue().get();
+        values[0] = "" + entries.get(0).getValue();
+        legends[0] = entries.get(0).getDate();
+
+        for (int i = 1; i < entries.size(); i++) {
             x[i] = i;
-            y[i] = (float) entries.get(i).getValue().get();
-            values[i] = "" + entries.get(i).getValue();
+            y[i] = y[i-1] + (float) entries.get(i).getValue().get();
+            values[i] = "" + (MoneyFactory.convertDoubleToMoney(y[i]));
             legends[i] = entries.get(i).getDate();
         }
         lineGraph = new LineGraphRenderer(x, y, values, legends);

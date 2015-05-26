@@ -172,73 +172,6 @@ public class DatabaseAccess {
         return -1;
     }
 
-    /** Updates the daytotal table, goes through all daytotal entries when updating
-     * 
-     * @param theEntry
-     *            - The entry to add
-     * @param newEntry
-     *            - Possible second entry. This means that an entry was edited
-     * @return - If the updating was successful */
-    public boolean updateDayTotal(BudgetEntry theEntry, BudgetEntry newEntry) {
-        Cursor cursor;
-        cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + ", " + BudgetDatabase.COLUMN_ID + " from "
-                + BudgetDatabase.TABLE_DAYTOTAL + " where " + BudgetDatabase.COLUMN_DATE + "=" + "\""
-                + theEntry.getDate().substring(0, 10) + "\"", null);
-        double newValue = theEntry.getValue().get();
-        if (cursor.getCount() <= 0) { // No entry for today, search for last entry
-            ContentValues values = new ContentValues();
-            Cursor yesterdayCursor = database.rawQuery("select " + BudgetDatabase.COLUMN_VALUE + " from "
-                    + BudgetDatabase.TABLE_DAYTOTAL + " order by _id desc limit 1", null);
-            if (yesterdayCursor.getCount() <= 0) { // No yesterday, create new entry from incoming entry
-
-                values.put(BudgetDatabase.COLUMN_DATE, theEntry.getDate().substring(0, 10)); // Don't use the hours and
-                                                                                             // minutes in the daysum
-                values.put(BudgetDatabase.COLUMN_VALUE, newValue);
-                database.insert(BudgetDatabase.TABLE_DAYTOTAL, null, values);
-                cursor.close();
-            } else { // Yesterday exists, create new entry with yesterdays total + new total
-                yesterdayCursor.moveToFirst();
-                double yesterdayValue = yesterdayCursor.getDouble(0);
-                values.put(BudgetDatabase.COLUMN_DATE, theEntry.getDate().substring(0, 10)); // Don't use the hours and
-                                                                                             // minutes in the daysum
-                values.put(BudgetDatabase.COLUMN_VALUE, newValue + yesterdayValue);
-                database.insert(BudgetDatabase.TABLE_DAYTOTAL, null, values);
-                cursor.close();
-            }
-            return true;
-        } else { // There is an entry for today, add to it
-            cursor.moveToFirst();
-            double total = cursor.getDouble(0);
-            long theId = cursor.getLong(1);
-
-            // If two entries was sent in, the new value should be newValue - oldValue to get the correct result
-            if (newEntry != null) {
-                newValue = (newEntry.getValue().get() - theEntry.getValue().get());
-            }
-            total += newValue;
-            ContentValues values = new ContentValues();
-            values.put(BudgetDatabase.COLUMN_VALUE, total);
-            database.update(BudgetDatabase.TABLE_DAYTOTAL, values, BudgetDatabase.COLUMN_DATE + " = '"
-                    + theEntry.getDate().substring(0, 10) + "'", null);
-            cursor.close();
-            addValueToRemainingDays(newValue, theId);
-
-            return true;
-        }
-
-    }
-
-    /** Adds a value to all entries in table daytotal that have an id > theId
-     * 
-     * @param theValue
-     *            - The value to add
-     * @param theId
-     *            - The id */
-    private void addValueToRemainingDays(double theValue, long theId) {
-        database.execSQL("update " + BudgetDatabase.TABLE_DAYTOTAL + " set " + BudgetDatabase.COLUMN_VALUE + " = "
-                + BudgetDatabase.COLUMN_VALUE + " + " + theValue + " where _id > " + theId);
-    }
-
     /** Updates a transaction entry in the cash flow table
      *
      * @param newEntry
@@ -573,28 +506,6 @@ public class DatabaseAccess {
         cursor.close();
         return entries;
     }
-
-    public List<DayEntry> getDayTotalCalculated(int n, String mode) {
-        List<DayEntry> entries = new ArrayList<DayEntry>();
-        Cursor cursor;
-        if(n <= 0) {
-            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
-                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYTOTAL
-                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
-        } else {
-            cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
-                    + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_DAYTOTAL
-                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
-        }
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            DayEntry entry = new DayEntry(cursor.getString(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)));
-            entries.add(entry);
-            cursor.moveToNext();
-        }
-        return entries;
-    }
-
 
     public List<CategoryEntry> getCategories(String selection, String[] selectionArgs, String groupBy, String having,
             String orderBy) {

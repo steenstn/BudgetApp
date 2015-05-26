@@ -324,10 +324,6 @@ public class BudgetModel {
         return datasource.getSomeDays(n, orderBy);
     }
 
-    public List<DayEntry> getSomeDaysTotal(int n, String orderBy) {
-        return datasource.getSomeDaysTotal(n, orderBy);
-    }
-
     public synchronized int queueAddDailyBudget() {
         if (isDateStringEqualToToday(dateDailyBudgetLastQueued)) {
             return 0;
