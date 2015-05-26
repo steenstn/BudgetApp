@@ -117,12 +117,6 @@ public class BudgetModel {
 
     public Money getCurrentBudget() {
         return datasource.getCurrentBudget();
-       /* List<DayEntry> dayTotal = datasource.getSomeDaysTotal(1, BudgetDataSource.DESCENDING);
-        if (dayTotal.size() == 1) {
-            return new Money(dayTotal.get(0).getValue());
-        } else {
-            return MoneyFactory.createMoney();
-        }*/
     }
 
     public int getQueueSize() {
@@ -265,7 +259,7 @@ public class BudgetModel {
 
     public boolean removeInstallment(long id) {
         boolean result = datasource.markInstallmentAsPaid(id);
-        if (result == true) {
+        if (result) {
             stateChanged = true;
             notifyObservers();
             return true;
