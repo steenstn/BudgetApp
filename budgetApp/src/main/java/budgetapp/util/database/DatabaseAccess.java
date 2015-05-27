@@ -490,11 +490,11 @@ public class DatabaseAccess {
         if(n <= 0) {
             cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
                     + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_CASHFLOW
-                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
+                    + " group by substr(" + BudgetDatabase.COLUMN_DATE + ",1,10) order by " + BudgetDatabase.COLUMN_DATE + " " + mode, null);
         } else {
             cursor = database.rawQuery("select " + BudgetDatabase.COLUMN_DATE
                     + ", sum(" + BudgetDatabase.COLUMN_VALUE + ") from " + BudgetDatabase.TABLE_CASHFLOW
-                    + " group by " + BudgetDatabase.COLUMN_DATE + " order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
+                    + " group by substr(" + BudgetDatabase.COLUMN_DATE + ",1,10) order by " + BudgetDatabase.COLUMN_DATE + " " + mode + " limit 0," + n, null);
         }
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
