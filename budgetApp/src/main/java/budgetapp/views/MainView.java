@@ -167,7 +167,7 @@ public class MainView
         left = (TextView) findViewById(R.id.textViewDailyCashFlow);
         left.setText(Html.fromHtml("<b>Daily cash flow</b><br />"));
         for (int i = 0; i < days.size(); i++) {
-            left.append(days.get(i).getDate() + ": ");
+            left.append(days.get(i).getDate().substring(0,10) + ": ");
             left.append(days.get(i).getTotal() + "\n");
         }
 
