@@ -48,13 +48,13 @@ public class GraphActivity
         x[0] = 0;
         y[0] = (float) entries.get(0).getValue().get();
         values[0] = "" + entries.get(0).getValue();
-        legends[0] = entries.get(0).getDate();
+        legends[0] = entries.get(0).getDate().substring(0,10);
 
         for (int i = 1; i < entries.size(); i++) {
             x[i] = i;
             y[i] = y[i-1] + (float) entries.get(i).getValue().get();
             values[i] = "" + (MoneyFactory.convertDoubleToMoney(y[i]));
-            legends[i] = entries.get(i).getDate();
+            legends[i] = entries.get(i).getDate().substring(1,10);
         }
         lineGraph = new LineGraphRenderer(x, y, values, legends);
 
