@@ -92,9 +92,7 @@ public class BudgetDatabase
     public static final String DATABASE_CREATE_TABLE_DAYSUM = "create table " + TABLE_DAYSUM + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_DATE + " text, " + COLUMN_VALUE + " double not null, "
             + COLUMN_FLAGS + " integer);";
-    public static final String DATABASE_CREATE_TABLE_DAYTOTAL = "create table " + TABLE_DAYTOTAL + "(" + COLUMN_ID
-            + " integer primary key autoincrement, " + COLUMN_DATE + " text, " + COLUMN_VALUE + " double not null, "
-            + COLUMN_FLAGS + " integer);";
+
 
     public static final String DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES = "create table " + TABLE_AUTOCOMPLETE_VALUES
             + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_VALUE + " double, " + COLUMN_NUM
@@ -144,12 +142,10 @@ public class BudgetDatabase
         database.execSQL(DATABASE_CREATE_TABLE_CASHFLOW);
         database.execSQL(DATABASE_CREATE_TABLE_CATEGORIES);
         database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
-        database.execSQL(DATABASE_CREATE_TABLE_DAYTOTAL);
         database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
 
         database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
         database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
-        database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENT_DAYFLOW_PAID);
         database.execSQL(DATABASE_CREATE_TABLE_EVENTS);
         database.execSQL(DATABASE_CREATE_TABLE_EVENT_TRANSACTION);
         database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
@@ -169,105 +165,6 @@ public class BudgetDatabase
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Cursor cursor;
         switch (oldVersion) {
-        case 7: // Updating from 2.2
-            db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " ADD COLUMN " + COLUMN_COMMENT);
-        case 8: // Updating from 2.2, changing to doubles by creating new tables
-
-            ContentValues values;
-            db.execSQL("create table temp" + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_VALUE
-                    + " double, " + COLUMN_DATE + " text, " + COLUMN_CATEGORY + " text, " + COLUMN_FLAGS + " integer, "
-                    + COLUMN_COMMENT + " text);");
-
-            cursor = db.rawQuery("select * from " + TABLE_CASHFLOW, null);
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    values = new ContentValues();
-                    values.put(COLUMN_ID, cursor.getLong(0));
-                    values.put(COLUMN_VALUE, (double) (cursor.getInt(1)));
-                    values.put(COLUMN_DATE, cursor.getString(2));
-                    values.put(COLUMN_CATEGORY, cursor.getString(3));
-                    values.put(COLUMN_FLAGS, cursor.getInt(4));
-                    values.put(COLUMN_COMMENT, cursor.getString(5));
-                    db.insert("temp", null, values);
-
-                    cursor.moveToNext();
-                }
-
-            }
-            db.execSQL("drop table " + TABLE_CASHFLOW);
-            db.execSQL("ALTER TABLE temp RENAME TO " + TABLE_CASHFLOW);
-
-            // db.execSQL("ALTER TABLE " + TABLE_CASHFLOW + " MODIFY " +
-            // COLUMN_VALUE + " DOUBLE");
-            db.execSQL("create table temp" + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_CATEGORY
-                    + " text, " + COLUMN_NUM + " integer not null, " + COLUMN_VALUE + " double not null, "
-                    + COLUMN_FLAGS + " integer);");
-
-            cursor = db.rawQuery("select * from " + TABLE_CATEGORIES, null);
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    values = new ContentValues();
-                    values.put(COLUMN_ID, cursor.getLong(0));
-                    values.put(COLUMN_CATEGORY, cursor.getString(1));
-                    values.put(COLUMN_NUM, cursor.getInt(2));
-                    values.put(COLUMN_VALUE, (double) (cursor.getInt(3)));
-                    values.put(COLUMN_FLAGS, cursor.getInt(4));
-                    db.insert("temp", null, values);
-
-                    cursor.moveToNext();
-                }
-            }
-            db.execSQL("drop table " + TABLE_CATEGORIES);
-            db.execSQL("ALTER TABLE temp RENAME TO " + TABLE_CATEGORIES);
-
-            // db.execSQL("ALTER TABLE " + TABLE_CATEGORIES +
-            // " MODIFY total DOUBLE");
-
-            db.execSQL("create table temp" + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_DATE
-                    + " text, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);");
-
-            cursor = db.rawQuery("select * from " + TABLE_DAYSUM, null);
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    values = new ContentValues();
-                    values.put(COLUMN_ID, cursor.getLong(0));
-                    values.put(COLUMN_DATE, cursor.getString(1));
-                    values.put(COLUMN_VALUE, (double) (cursor.getInt(2)));
-                    values.put(COLUMN_FLAGS, cursor.getInt(3));
-                    db.insert("temp", null, values);
-
-                    cursor.moveToNext();
-                }
-            }
-            db.execSQL("drop table " + TABLE_DAYSUM);
-            db.execSQL("ALTER TABLE temp RENAME TO " + TABLE_DAYSUM);
-
-            // db.execSQL("ALTER TABLE " + TABLE_DAYSUM +
-            // " MODIFY total DOUBLE");
-
-            db.execSQL("create table temp" + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_DATE
-                    + " text, " + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);");
-
-            cursor = db.rawQuery("select * from " + TABLE_DAYTOTAL, null);
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    values = new ContentValues();
-                    values.put(COLUMN_ID, cursor.getLong(0));
-                    values.put(COLUMN_DATE, cursor.getString(1));
-                    values.put(COLUMN_VALUE, (double) (cursor.getInt(2)));
-                    values.put(COLUMN_FLAGS, cursor.getInt(3));
-                    db.insert("temp", null, values);
-
-                    cursor.moveToNext();
-                }
-            }
-            db.execSQL("drop table " + TABLE_DAYTOTAL);
-            db.execSQL("ALTER TABLE temp RENAME TO " + TABLE_DAYTOTAL);
-
         case 10:
             db.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
         case 11:
@@ -283,6 +180,7 @@ public class BudgetDatabase
         case 15: // Coming from 3.2 (7/8 in dev console)
             db.execSQL("drop table if exists " + TABLE_CURRENCIES);
             db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+        
         }
 
         System.out.println("Updated database from " + oldVersion + " to " + newVersion);
