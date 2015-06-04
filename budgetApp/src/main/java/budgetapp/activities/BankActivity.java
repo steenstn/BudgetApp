@@ -22,6 +22,7 @@ import budgetapp.banks.swedbank.SwedbankService;
 import budgetapp.fragments.ChooseCategoryBankTransactionFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
+import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.entries.BudgetEntry;
 import budgetapp.util.money.Money;
@@ -39,7 +40,7 @@ public class BankActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_banks);
+
         view = (BankView) View.inflate(this, R.layout.activity_banks, null);
         view.setViewListener(viewListener);
         model = new BudgetModel(getApplicationContext());
@@ -55,6 +56,8 @@ public class BankActivity extends FragmentActivity {
     public void addTransaction(BudgetEntry entry) {
         model.queueTransaction(entry);
         model.processQueueItem();
+        BankTransactionEntry bankTransaction = new BankTransactionEntry(entry.getDate(), entry.getValue(), entry.getCategory(), entry.getComment());
+        model.addBankTransaction(bankTransaction);
         Toast.makeText(this, "Added", Toast.LENGTH_LONG).show();
     }
     private BankView.ViewListener viewListener = new BankView.ViewListener() {
@@ -79,7 +82,6 @@ public class BankActivity extends FragmentActivity {
     public void doIt(View v) {
         EditText e = (EditText)findViewById(R.id.editTextBank);
         Button b = (Button)v;
-
         new GetTransactionsTask().execute(e.getText().toString(), b.getText().toString());
     }
 
@@ -111,8 +113,11 @@ public class BankActivity extends FragmentActivity {
             }
             tv.setText("New transactions");
             BudgetAdapter listAdapter = new BudgetAdapter(getApplicationContext(), R.layout.listitem_banktransaction);
-            for (BankTransaction t : params.getTransactions()) {
-                listAdapter.add(new BankTransactionViewHolder(t));
+            List<BankTransaction> newTransactions = params.getTransactions();
+            for (BankTransaction t : newTransactions) {
+                if(!model.isBankTransactionProcessed(t)) {
+                    listAdapter.add(new BankTransactionViewHolder(t));
+                }
             }
             transactionsListView.setAdapter(listAdapter);
 

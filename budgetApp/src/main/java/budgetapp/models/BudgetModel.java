@@ -1,13 +1,14 @@
 package budgetapp.models;
 
+import android.content.Context;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.content.Context;
-
-import budgetapp.util.BankTransaction;
+import budgetapp.banks.BankTransaction;
+import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
@@ -175,7 +176,7 @@ public class BudgetModel {
         }
     }
 
-    public boolean addBankTransaction(BankTransaction bankTransaction) {
+    public boolean addBankTransaction(BankTransactionEntry bankTransaction) {
         boolean result = datasource.addBankTransaction(bankTransaction);
         if (result) {
             stateChanged = true;
@@ -186,8 +187,12 @@ public class BudgetModel {
         }
     }
 
-    public List<BankTransaction> getBankTransactions() {
+    public List<BankTransactionEntry> getBankTransactions() {
         return datasource.getAllBankTransactions();
+    }
+
+    public boolean isBankTransactionProcessed(BankTransaction transaction) {
+        return datasource.isBankTransactionProcessed(transaction);
     }
 
     public void readdCategories(List<String> categories) {

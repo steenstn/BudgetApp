@@ -2,7 +2,7 @@ package budgetapp.util;
 
 import budgetapp.util.money.Money;
 
-public class BankTransaction {
+public class BankTransactionEntry {
 
     private final long id;
     private final String date;
@@ -11,11 +11,11 @@ public class BankTransaction {
     private final String category;
     private final int flags;
 
-    public BankTransaction(String date, Money amount, String category, String description) {
+    public BankTransactionEntry(String date, Money amount, String category, String description) {
         this(-1, date, amount, category, description, 0);
     }
 
-    public BankTransaction(long id, String date, Money amount, String category, String description,int flags) {
+    public BankTransactionEntry(long id, String date, Money amount, String category, String description, int flags) {
         this.id = id;
         this.date = date;
         this.amount = amount;
@@ -24,8 +24,8 @@ public class BankTransaction {
         this.flags = flags;
     }
 
-    public BankTransaction clone() {
-        return new BankTransaction(id, date, amount, category, description, flags);
+    public BankTransactionEntry clone() {
+        return new BankTransactionEntry(id, date, amount, category, description, flags);
     }
     public String getDate() {
         return date;

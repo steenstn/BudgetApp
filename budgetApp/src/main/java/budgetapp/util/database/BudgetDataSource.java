@@ -1,15 +1,16 @@
 package budgetapp.util.database;
 
-import java.util.Collections;
-import java.util.List;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
-import budgetapp.util.BankTransaction;
+import java.util.Collections;
+import java.util.List;
+
+import budgetapp.banks.BankTransaction;
+import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
 import budgetapp.util.Event;
@@ -362,11 +363,16 @@ public class BudgetDataSource {
         return dbAccess.addCategory(theCategory);
     }
 
-    public boolean addBankTransaction(BankTransaction bankTransaction) { return dbAccess.addBankTransaction(bankTransaction); }
+    public boolean addBankTransaction(BankTransactionEntry bankTransaction) { return dbAccess.addBankTransaction(bankTransaction); }
 
-    public List<BankTransaction> getAllBankTransactions() {
+    public List<BankTransactionEntry> getAllBankTransactions() {
         return dbAccess.getBankTransactions();
     }
+
+    public boolean isBankTransactionProcessed(BankTransaction bankTransaction) {
+        return dbAccess.isBankTransactionProcessed(bankTransaction);
+    }
+
     public boolean removeCategory(String theCategory) {
         return dbAccess.removeCategory(theCategory);
     }

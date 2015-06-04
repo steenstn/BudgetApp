@@ -7,7 +7,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import budgetapp.util.BankTransaction;
+import com.google.common.base.Optional;
+
+import budgetapp.banks.BankTransaction;
+import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.Currency;
 import budgetapp.util.Event;
 import budgetapp.util.Installment;
@@ -82,7 +85,7 @@ public class DatabaseAccess {
         return entry;
     }
 
-    public boolean addBankTransaction(BankTransaction bankTransaction) {
+    public boolean addBankTransaction(BankTransactionEntry bankTransaction) {
         ContentValues values = new ContentValues();
         values.put(BudgetDatabase.COLUMN_VALUE, bankTransaction.getAmount().get());
         values.put(BudgetDatabase.COLUMN_DATE, bankTransaction.getDate());
@@ -94,6 +97,8 @@ public class DatabaseAccess {
 
         return insertID != -1;
     }
+
+
 
     /** Gets a BudgetEntry from the cash flow table
      * 
@@ -553,8 +558,8 @@ public class DatabaseAccess {
         return entries;
     }
 
-    public List<BankTransaction> getBankTransactions() {
-        List<BankTransaction> transactions = new ArrayList<BankTransaction>();
+    public List<BankTransactionEntry> getBankTransactions() {
+        List<BankTransactionEntry> transactions = new ArrayList<BankTransactionEntry>();
         Cursor cursor;
         cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_BANK_TRANSACTIONS
         + " order by " + BudgetDatabase.COLUMN_DATE + " desc", null);
@@ -565,6 +570,19 @@ public class DatabaseAccess {
         }
         cursor.close();
         return transactions;
+    }
+
+    public boolean isBankTransactionProcessed(BankTransaction bankTransaction) {
+        String date = bankTransaction.getDate();
+        double value = bankTransaction.getAmount().get();
+        String description = bankTransaction.getDescription();
+
+        String query = "select * from " + BudgetDatabase.TABLE_BANK_TRANSACTIONS + " where "
+                + BudgetDatabase.COLUMN_DATE + " = '" + date + "' and " + BudgetDatabase.COLUMN_COMMENT + " = '"
+                + description + "' and abs(" + value + "-" + BudgetDatabase.COLUMN_VALUE + ") < 0.00001";
+        Cursor cursor;
+        cursor = database.rawQuery(query, null);
+        return cursor.getCount() > 0;
     }
 
     public List<String> getCategoryNamesSorted() {
@@ -799,8 +817,8 @@ public class DatabaseAccess {
         return new Currency(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getInt(3));
     }
 
-    private BankTransaction createBankTransactionFromCursor(Cursor cursor) {
-        return new BankTransaction(cursor.getLong(0), cursor.getString(1), Money.fromExistingDouble(cursor.getDouble(2)),
+    private BankTransactionEntry createBankTransactionFromCursor(Cursor cursor) {
+        return new BankTransactionEntry(cursor.getLong(0), cursor.getString(1), Money.fromExistingDouble(cursor.getDouble(2)),
                 cursor.getString(3), cursor.getString(4), cursor.getInt(5));
     }
 
