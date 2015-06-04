@@ -237,7 +237,7 @@ public class InstallmentsTest
     public void testInstallmentPayOffExtraDays() {
         //assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
         double installmentTotalValue = -5;
-        double installmentDailyPayment = -1;
+        double installmentDailyPayment = -2;
         double installmentAmountPaid = 0;
 
         int numberOfDays = 8;
@@ -265,7 +265,7 @@ public class InstallmentsTest
     public void testPositiveInstallment() {
         //assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
         double installmentTotalValue = 5;
-        double installmentDailyPayment = 1;
+        double installmentDailyPayment = 3;
         double installmentAmountPaid = 0;
 
         int numberOfDays = 8;

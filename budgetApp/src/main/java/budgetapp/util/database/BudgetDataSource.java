@@ -223,31 +223,30 @@ public class BudgetDataSource {
         if (dbInstallment.getId() == -1 || dbInstallment.isPaidOff() || dbInstallment.isPaused()) {
             return Money.zero();
         }
-        Money dailyPay = dbInstallment.getDailyPayment();
-
         Money remainingValue = dbInstallment.getRemainingValue();
-        /*if (remainingValue.makePositive().smallerThan(dailyPay.makePositive())) { // Don't pay too much
-            dailyPay = remainingValue;
-        }*/
-        dailyPay = dbInstallment.calculateDailyPayment();
-        // If the installment has gone positive or is small enough, mark it as paid
         if (remainingValue.makePositive().almostZero()) {
             markInstallmentAsPaid(dbInstallment.getId());
             return Money.zero();
-        } else {
-            BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
-            BudgetEntry newEntry = oldEntry.clone();
-            newEntry.setValue(new Money(oldEntry.getValue().add(new Money(dailyPay))));
-            editTransactionEntryToday(oldEntry.getId(), newEntry, dateToEdit);
-
-            //dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
-
-            updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment
-                .getDailyPayment()
-                .get(), BudgetFunctions.getDateString(), dbInstallment.getFlags());
-
-            return new Money(dailyPay);
         }
+
+        /*if (remainingValue.makePositive().smallerThan(dailyPay.makePositive())) { // Don't pay too much
+            dailyPay = remainingValue;
+        }*/
+        Money dailyPay = dbInstallment.calculateDailyPayment();
+
+        BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
+        BudgetEntry newEntry = oldEntry.clone();
+        newEntry.setValue(new Money(oldEntry.getValue().add(dailyPay)));
+        editTransactionEntryToday(oldEntry.getId(), newEntry, dateToEdit);
+
+        //dbAccess.addInstallmentPayment(installment.getId(), dbAccess.getIdFromDayFlow(dateToEdit), dailyPay.get());
+
+        updateInstallment(installment.getId(), dbInstallment.getTotalValue().get(), installment
+            .getDailyPayment()
+            .get(), BudgetFunctions.getDateString(), dbInstallment.getFlags());
+
+        return new Money(dailyPay);
+
     }
 
     /** Gets all transactions in the database ordered by id
