@@ -36,6 +36,8 @@ public class BankActivity extends FragmentActivity {
     private ListView transactionsListView;
     private BankView view;
     private BudgetModel model;
+    private long chosenTransactionId;
+    private BudgetAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,11 @@ public class BankActivity extends FragmentActivity {
         model.processQueueItem();
         BankTransactionEntry bankTransaction = new BankTransactionEntry(entry.getDate(), entry.getValue(), entry.getCategory(), entry.getComment());
         model.addBankTransaction(bankTransaction);
-        Toast.makeText(this, "Added", Toast.LENGTH_LONG).show();
+
+        Toast.makeText(this, "Added " + bankTransaction.getDescription() + " as " + bankTransaction.getCategory(), Toast.LENGTH_LONG).show();
+
     }
+
     private BankView.ViewListener viewListener = new BankView.ViewListener() {
         @Override
         public void transactionListItemClicked(BankTransactionViewHolder transaction) {
@@ -72,7 +77,6 @@ public class BankActivity extends FragmentActivity {
             BudgetEntry entry = new BudgetEntry(bt.getAmount(), bt.getDate(), "", bt.getDescription());
             transactionBunduru.putParcelable("entry", entry);
             newFragment.setArguments(transactionBunduru);
-
 
             newFragment.show(getSupportFragmentManager(), "choose_category");
         }
@@ -112,17 +116,17 @@ public class BankActivity extends FragmentActivity {
                 return;
             }
             tv.setText("New transactions");
-            BudgetAdapter listAdapter = new BudgetAdapter(getApplicationContext(), R.layout.listitem_banktransaction);
+            listAdapter = new BudgetAdapter(getApplicationContext(), R.layout.listitem_banktransaction);
             List<BankTransaction> newTransactions = params.getTransactions();
             for (BankTransaction t : newTransactions) {
                 if(!model.isBankTransactionProcessed(t)) {
                     listAdapter.add(new BankTransactionViewHolder(t));
                 }
             }
+
             transactionsListView.setAdapter(listAdapter);
 
         }
-
 
     }
 }
