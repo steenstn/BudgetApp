@@ -4,10 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,10 +22,8 @@ import budgetapp.models.BudgetModel;
 import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.BudgetAdapter;
 import budgetapp.util.entries.BudgetEntry;
-import budgetapp.util.money.Money;
 import budgetapp.viewholders.BankTransactionViewHolder;
 import budgetapp.views.BankView;
-import budgetapp.views.MainView;
 
 public class BankActivity extends FragmentActivity {
 
@@ -36,7 +31,7 @@ public class BankActivity extends FragmentActivity {
     private ListView transactionsListView;
     private BankView view;
     private BudgetModel model;
-    private long chosenTransactionId;
+    private int chosenTransactionPosition;
     private BudgetAdapter listAdapter;
 
     @Override
@@ -60,6 +55,9 @@ public class BankActivity extends FragmentActivity {
         model.processQueueItem();
         BankTransactionEntry bankTransaction = new BankTransactionEntry(entry.getDate(), entry.getValue(), entry.getCategory(), entry.getComment());
         model.addBankTransaction(bankTransaction);
+        listAdapter.remove(chosenTransactionPosition);
+
+        transactionsListView.setAdapter(listAdapter);
 
         Toast.makeText(this, "Added " + bankTransaction.getDescription() + " as " + bankTransaction.getCategory(), Toast.LENGTH_LONG).show();
 
@@ -67,13 +65,13 @@ public class BankActivity extends FragmentActivity {
 
     private BankView.ViewListener viewListener = new BankView.ViewListener() {
         @Override
-        public void transactionListItemClicked(BankTransactionViewHolder transaction) {
+        public void transactionListItemClicked(BankTransactionViewHolder transaction, int positionInList) {
             DialogFragment newFragment = new ChooseCategoryBankTransactionFragment();
             Bundle transactionBunduru = new Bundle();
             List<String> categories = model.getCategoryNames();
             transactionBunduru.putStringArray("categories", categories.toArray(new String[categories.size()]));
             BankTransaction bt = transaction.getTransaction();
-
+            chosenTransactionPosition = positionInList;
             BudgetEntry entry = new BudgetEntry(bt.getAmount(), bt.getDate(), "", bt.getDescription());
             transactionBunduru.putParcelable("entry", entry);
             newFragment.setArguments(transactionBunduru);

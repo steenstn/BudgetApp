@@ -19,7 +19,7 @@ public class BankView extends LinearLayout {
 
     public static interface ViewListener {
 
-        void transactionListItemClicked(BankTransactionViewHolder transaction);
+        void transactionListItemClicked(BankTransactionViewHolder transaction, int positionInList);
 
     }
 
@@ -39,7 +39,7 @@ public class BankView extends LinearLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BankTransactionViewHolder item = (BankTransactionViewHolder)transactionList.getItemAtPosition(position);
-                viewListener.transactionListItemClicked(item);
+                viewListener.transactionListItemClicked(item, position);
             }
         });
     }
