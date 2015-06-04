@@ -495,8 +495,7 @@ public class DatabaseAccess {
     public Money getCurrentBudget() {
         Cursor cursor = database.rawQuery("select sum("+BudgetDatabase.COLUMN_VALUE+") total from " + BudgetDatabase.TABLE_CASHFLOW, null);
         cursor.moveToFirst();
-        Money currentBudget = MoneyFactory.convertDoubleToMoney(cursor.getDouble(0));
-        return currentBudget;
+        return MoneyFactory.convertDoubleToMoney(cursor.getDouble(0));
     }
 
     public List<DayEntry> getDaySumCalculated(int n, String mode) {
@@ -552,6 +551,20 @@ public class DatabaseAccess {
         }
         cursor.close();
         return entries;
+    }
+
+    public List<BankTransaction> getBankTransactions() {
+        List<BankTransaction> transactions = new ArrayList<BankTransaction>();
+        Cursor cursor;
+        cursor = database.rawQuery("select * from " + BudgetDatabase.TABLE_BANK_TRANSACTIONS
+        + " order by " + BudgetDatabase.COLUMN_DATE + " desc", null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            transactions.add(createBankTransactionFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return transactions;
     }
 
     public List<String> getCategoryNamesSorted() {
@@ -769,9 +782,8 @@ public class DatabaseAccess {
     }
 
     private BudgetEntry createBudgetEntryFromCursor(Cursor cursor) {
-        BudgetEntry entry = new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),
+        return new BudgetEntry(cursor.getLong(0), MoneyFactory.convertDoubleToMoney(cursor.getDouble(1)),
             cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getString(5));
-        return entry;
     }
 
     private Installment createInstallmentFromCursor(Cursor cursor) {
@@ -784,8 +796,12 @@ public class DatabaseAccess {
     }
 
     private Currency createCurrencyFromCursor(Cursor cursor) {
-        Currency currency = new Currency(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getInt(3));
-        return currency;
+        return new Currency(cursor.getLong(0), cursor.getString(1), cursor.getDouble(2), cursor.getInt(3));
+    }
+
+    private BankTransaction createBankTransactionFromCursor(Cursor cursor) {
+        return new BankTransaction(cursor.getLong(0), cursor.getString(1), Money.fromExistingDouble(cursor.getDouble(2)),
+                cursor.getString(3), cursor.getString(4), cursor.getInt(5));
     }
 
 }

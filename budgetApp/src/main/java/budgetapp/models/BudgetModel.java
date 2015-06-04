@@ -186,6 +186,10 @@ public class BudgetModel {
         }
     }
 
+    public List<BankTransaction> getBankTransactions() {
+        return datasource.getAllBankTransactions();
+    }
+
     public void readdCategories(List<String> categories) {
         for (String c : categories) {
             removeCategory(c);

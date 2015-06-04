@@ -4,17 +4,19 @@ import budgetapp.util.money.Money;
 
 public class BankTransaction {
 
+    private final long id;
     private final String date;
     private final Money amount;
     private final String description;
     private final String category;
     private final int flags;
 
-    public BankTransaction(String date, Money amount, String description, String category) {
-        this(date, amount, description, category, 0);
+    public BankTransaction(String date, Money amount, String category, String description) {
+        this(-1, date, amount, category, description, 0);
     }
 
-    public BankTransaction(String date, Money amount, String description, String category, int flags) {
+    public BankTransaction(long id, String date, Money amount, String category, String description,int flags) {
+        this.id = id;
         this.date = date;
         this.amount = amount;
         this.description = description;
@@ -23,7 +25,7 @@ public class BankTransaction {
     }
 
     public BankTransaction clone() {
-        return new BankTransaction(date, amount, description, category, flags);
+        return new BankTransaction(id, date, amount, category, description, flags);
     }
     public String getDate() {
         return date;
@@ -41,6 +43,7 @@ public class BankTransaction {
         return category;
     }
 
+    public long getId() { return id; }
     public int getFlags() {
         return flags;
     }

@@ -364,6 +364,9 @@ public class BudgetDataSource {
 
     public boolean addBankTransaction(BankTransaction bankTransaction) { return dbAccess.addBankTransaction(bankTransaction); }
 
+    public List<BankTransaction> getAllBankTransactions() {
+        return dbAccess.getBankTransactions();
+    }
     public boolean removeCategory(String theCategory) {
         return dbAccess.removeCategory(theCategory);
     }
