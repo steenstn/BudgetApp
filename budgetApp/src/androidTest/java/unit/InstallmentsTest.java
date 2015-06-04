@@ -273,7 +273,7 @@ public class InstallmentsTest
         Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(installmentTotalValue),
                 MoneyFactory.createMoneyFromNewDouble(installmentDailyPayment), BudgetFunctions.getDateString(),
                 MoneyFactory.createMoneyFromNewDouble(installmentAmountPaid), "test", "testComment");
-
+        installment.setFlags(Installment.INSTALLMENT_POSITIVE);
         assertEquals("Could not add installment.", model.addInstallment(installment), true);
 
         addDays(numberOfDays);

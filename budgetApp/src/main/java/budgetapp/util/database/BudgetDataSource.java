@@ -226,11 +226,12 @@ public class BudgetDataSource {
         Money dailyPay = dbInstallment.getDailyPayment();
 
         Money remainingValue = dbInstallment.getRemainingValue();
-        if (remainingValue.makePositive().smallerThan(dailyPay.makePositive())) { // Don't pay too much
+        /*if (remainingValue.makePositive().smallerThan(dailyPay.makePositive())) { // Don't pay too much
             dailyPay = remainingValue;
-        }
+        }*/
+        dailyPay = dbInstallment.calculateDailyPayment();
         // If the installment has gone positive or is small enough, mark it as paid
-        if (remainingValue.biggerThanOrEquals(MoneyFactory.createMoney()) || remainingValue.makePositive().almostZero()) {
+        if (remainingValue.makePositive().almostZero()) {
             markInstallmentAsPaid(dbInstallment.getId());
             return Money.zero();
         } else {
