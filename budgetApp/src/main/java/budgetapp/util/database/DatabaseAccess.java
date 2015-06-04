@@ -1,13 +1,11 @@
 package budgetapp.util.database;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.common.base.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import budgetapp.banks.BankTransaction;
 import budgetapp.util.BankTransactionEntry;
