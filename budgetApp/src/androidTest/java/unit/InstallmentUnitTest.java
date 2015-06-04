@@ -14,8 +14,8 @@ public class InstallmentUnitTest extends TestCase {
     }
 
     public void testCalculateDailyPaymentNegativeInstallmentAlmostPaid() {
-        Installment installment = new Installment(Money.fromNewDouble(-100), Money.fromNewDouble(-1000),"1012/01/01 00:00", Money.zero(), "cat", "");
-        Money expectedDailyPayment = Money.fromNewDouble(-100);
+        Installment installment = new Installment(Money.fromNewDouble(-100), Money.fromNewDouble(-10),"1012/01/01 00:00", Money.fromNewDouble(-95), "cat", "");
+        Money expectedDailyPayment = Money.fromNewDouble(-5);
         assertEquals("Incorrect daily payment calculated", expectedDailyPayment.get(), installment.calculateDailyPayment().get());
     }
 
@@ -27,9 +27,9 @@ public class InstallmentUnitTest extends TestCase {
     }
 
     public void testCalculateDailyPaymentPositiveInstallmentAlmostPaidOff() {
-        Installment installment = new Installment(Money.fromNewDouble(100), Money.fromNewDouble(1000),"1012/01/01 00:00", Money.zero(), "cat", "");
+        Installment installment = new Installment(Money.fromNewDouble(100), Money.fromNewDouble(10),"1012/01/01 00:00", Money.fromNewDouble(95), "cat", "");
         installment.setFlags(Installment.INSTALLMENT_POSITIVE);
-        Money expectedDailyPayment = Money.fromNewDouble(100);
+        Money expectedDailyPayment = Money.fromNewDouble(5);
         assertEquals("Incorrect daily payment calculated", expectedDailyPayment.get(), installment.calculateDailyPayment().get());
     }
 

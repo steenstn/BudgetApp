@@ -84,11 +84,10 @@ public class Installment {
     }
 
     public Money calculateDailyPayment() {
+        Money remaining = totalValue.subtract(amountPaid);
         if(!FlagHandler.isFlagSet(flags, INSTALLMENT_POSITIVE)) {
-            Money remaining = totalValue.add(amountPaid);
             return BudgetFunctions.max(remaining, dailyPayment);
         } else {
-            Money remaining = totalValue.subtract(amountPaid);
             return BudgetFunctions.min(remaining, dailyPayment);
         }
     }
