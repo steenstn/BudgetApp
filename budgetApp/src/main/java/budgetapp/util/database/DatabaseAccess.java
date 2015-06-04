@@ -6,6 +6,8 @@ import java.util.List;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import budgetapp.util.BankTransaction;
 import budgetapp.util.Currency;
 import budgetapp.util.Event;
 import budgetapp.util.Installment;
@@ -78,6 +80,19 @@ public class DatabaseAccess {
             cursor.getString(2), cursor.getString(3), cursor.getInt(4));
         cursor.close();
         return entry;
+    }
+
+    public boolean addBankTransaction(BankTransaction bankTransaction) {
+        ContentValues values = new ContentValues();
+        values.put(BudgetDatabase.COLUMN_VALUE, bankTransaction.getAmount().get());
+        values.put(BudgetDatabase.COLUMN_DATE, bankTransaction.getDate());
+        values.put(BudgetDatabase.COLUMN_CATEGORY, bankTransaction.getCategory().replaceAll("['\"]", "\'"));
+        values.put(BudgetDatabase.COLUMN_COMMENT, bankTransaction.getDescription().replaceAll("['\"]", "\'"));
+        values.put(BudgetDatabase.COLUMN_FLAGS, bankTransaction.getFlags());
+
+        long insertID = database.insert(BudgetDatabase.TABLE_BANK_TRANSACTIONS, null, values);
+
+        return insertID != -1;
     }
 
     /** Gets a BudgetEntry from the cash flow table

@@ -13,36 +13,8 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
 
-public class AddTransactionTest extends AndroidTestCase{
-	
-	BudgetModel model;
-	RenamingDelegatingContext mockContext;
-	String prefix = "test";
-    String dateForInitialTransaction = "2022/01/01 00:00";
-	String startDate = "2022/01/01 00:01";
-	
-	public void setUp()
-	{
-        BudgetFunctions.TESTING = true;
-		mockContext = new RenamingDelegatingContext(getContext(), getContext(), prefix);
-		
-		model = new BudgetModel(mockContext);
-		model.clearDatabaseInstance();
-        model = new BudgetModel(mockContext);
+public class AddTransactionTest extends AbstractIntegrationTest{
 
-		BudgetFunctions.theDate = dateForInitialTransaction;
-		Money.setExchangeRate(1.0);
-		model.setDailyBudget(MoneyFactory.createMoney());
-		
-		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"initialTransaction"));
-
-		model.processWholeQueue();
-        BudgetFunctions.theDate = startDate;
-		assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
-		assertEquals("Incorrect startDate", startDate, BudgetFunctions.theDate);
-	
-	}
-	
 	public void testAddTransaction()
 	{
 		double value = 100;
@@ -119,15 +91,5 @@ public class AddTransactionTest extends AndroidTestCase{
 
      }
 
-	public void tearDown()
-	{
-		BudgetFunctions.TESTING = false;
-		model.clearDatabaseInstance();
-	}
-	
-	private void addDays(int n)
-	{
-		BudgetFunctions.theDate = HelperFunctions.addDays(BudgetFunctions.theDate, n);
-	}
 
 }

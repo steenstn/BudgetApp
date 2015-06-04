@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+
+import budgetapp.util.BankTransaction;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
 import budgetapp.util.Event;
@@ -359,6 +361,8 @@ public class BudgetDataSource {
     public boolean addCategory(String theCategory) {
         return dbAccess.addCategory(theCategory);
     }
+
+    public boolean addBankTransaction(BankTransaction bankTransaction) { return dbAccess.addBankTransaction(bankTransaction); }
 
     public boolean removeCategory(String theCategory) {
         return dbAccess.removeCategory(theCategory);

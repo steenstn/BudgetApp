@@ -20,6 +20,23 @@ public class Money {
         value = m.get();
     }
 
+    public static Money fromNewDouble(double d) {
+        return new Money(d);
+    }
+
+    public static Money zero() {
+        return new Money();
+    }
+
+    /**
+     * Use this when a double in the system (e.g. from database) should become a money
+     * @param d
+     * @return
+     */
+    public static Money fromExistingDouble(double d) {
+        return new Money(d / Money.getExchangeRate());
+    }
+
     public static void setCurrency(String c) {
         currency = c;
     }

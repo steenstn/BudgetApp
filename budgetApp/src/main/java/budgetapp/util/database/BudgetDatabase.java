@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BudgetDatabase
     extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
     // The table for cash flow
     // Basically a log for the transactions
     public static final String TABLE_CASHFLOW = "cashflow";
@@ -30,6 +30,8 @@ public class BudgetDatabase
     // The table with the different names for categories, used by the Spinner to
     // select categories
     public static final String TABLE_CATEGORY_NAMES = "categorynames";
+    public static final String TABLE_INSTALLMENTS = "installments";
+    public static final String TABLE_BANK_TRANSACTIONS = "banktransactions";
     // The table for transactions for cataegories
     // Keeps track of total number of transactions of a category
     // and the total money spent on a category
@@ -41,17 +43,11 @@ public class BudgetDatabase
     // public static final String COLUMN_TOTAL = "total"; // Total sum of money
     // spent on this category
 
-    // The table for cash flow in a day
-    public static final String TABLE_DAYSUM = "daysum";
-
-    // Total sum for a day
-    public static final String TABLE_DAYTOTAL = "daytotal";
 
     // COLUMN_ID
     // COLUMN_DATE
     // COLUMN_TOTAL
 
-    public static final String TABLE_INSTALLMENTS = "installments";
 
     public static final String COLUMN_TRANSACTION_ID = "transaction_id";
     public static final String COLUMN_DATE_LAST_PAID = "date_last_paid";
@@ -89,11 +85,6 @@ public class BudgetDatabase
             + " integer primary key autoincrement, " + COLUMN_CATEGORY + " text, " + COLUMN_NUM + " integer not null, "
             + COLUMN_VALUE + " double not null, " + COLUMN_FLAGS + " integer);";
 
-    public static final String DATABASE_CREATE_TABLE_DAYSUM = "create table " + TABLE_DAYSUM + "(" + COLUMN_ID
-            + " integer primary key autoincrement, " + COLUMN_DATE + " text, " + COLUMN_VALUE + " double not null, "
-            + COLUMN_FLAGS + " integer);";
-
-
     public static final String DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES = "create table " + TABLE_AUTOCOMPLETE_VALUES
             + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_VALUE + " double, " + COLUMN_NUM
             + " integer, " + COLUMN_CATEGORY + " text);";
@@ -119,6 +110,10 @@ public class BudgetDatabase
             + " integer primary key autoincrement, " + COLUMN_CURRENCY_SYMBOL + " text,"
             + COLUMN_CURRENCY_EXCHANGE_RATE + " double," + COLUMN_FLAGS + " integer);";
 
+    public static final String DATABASE_CREATE_TABLE_BANK_TRANSACTIONS = "create table " + TABLE_BANK_TRANSACTIONS + "(" + COLUMN_ID
+            + " integer primary key autoincrement, " + COLUMN_DATE + " text," + COLUMN_VALUE + " double,"
+            + COLUMN_CATEGORY + " text," + COLUMN_COMMENT + " text," + COLUMN_FLAGS + " integer);";
+
     private static BudgetDatabase instance;
 
     public static synchronized BudgetDatabase getInstance(Context context) {
@@ -141,14 +136,13 @@ public class BudgetDatabase
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE_TABLE_CASHFLOW);
         database.execSQL(DATABASE_CREATE_TABLE_CATEGORIES);
-        database.execSQL(DATABASE_CREATE_TABLE_DAYSUM);
         database.execSQL(DATABASE_CREATE_TABLE_CATEGORY_NAMES);
-
         database.execSQL(DATABASE_CREATE_TABLE_AUTOCOMPLETE_VALUES);
         database.execSQL(DATABASE_CREATE_TABLE_INSTALLMENTS);
         database.execSQL(DATABASE_CREATE_TABLE_EVENTS);
         database.execSQL(DATABASE_CREATE_TABLE_EVENT_TRANSACTION);
         database.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
+        database.execSQL(DATABASE_CREATE_TABLE_BANK_TRANSACTIONS);
 
         // Put in initial categories
         ContentValues values = new ContentValues();
@@ -180,7 +174,10 @@ public class BudgetDatabase
         case 15: // Coming from 3.2 (7/8 in dev console)
             db.execSQL("drop table if exists " + TABLE_CURRENCIES);
             db.execSQL(DATABASE_CREATE_TABLE_CURRENCIES);
-        
+        case 16: // Coming from 3.4 (9/10 in dev console)
+            db.execSQL("drop table if exists daysum");
+            db.execSQL("drop table if exists daytotal");
+            db.execSQL(DATABASE_CREATE_TABLE_BANK_TRANSACTIONS);
         }
 
         System.out.println("Updated database from " + oldVersion + " to " + newVersion);

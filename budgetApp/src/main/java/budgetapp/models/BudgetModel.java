@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+
+import budgetapp.util.BankTransaction;
 import budgetapp.util.BudgetConfig;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.Currency;
@@ -164,6 +166,17 @@ public class BudgetModel {
 
     public boolean removeCategory(String category) {
         boolean result = datasource.removeCategory(category);
+        if (result) {
+            stateChanged = true;
+            notifyObservers();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean addBankTransaction(BankTransaction bankTransaction) {
+        boolean result = datasource.addBankTransaction(bankTransaction);
         if (result) {
             stateChanged = true;
             notifyObservers();
