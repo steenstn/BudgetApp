@@ -262,6 +262,35 @@ public class InstallmentsTest
 
     }
 
+    public void testPositiveInstallment() {
+        //assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
+        double installmentTotalValue = 5;
+        double installmentDailyPayment = 1;
+        double installmentAmountPaid = 0;
+
+        int numberOfDays = 8;
+
+        Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(installmentTotalValue),
+                MoneyFactory.createMoneyFromNewDouble(installmentDailyPayment), BudgetFunctions.getDateString(),
+                MoneyFactory.createMoneyFromNewDouble(installmentAmountPaid), "test", "testComment");
+
+        assertEquals("Could not add installment.", model.addInstallment(installment), true);
+
+        addDays(numberOfDays);
+        assertEquals("Wrong number of days added.", model.queueAddDailyBudget(), numberOfDays);
+        model.queuePayOffInstallments();
+        model.processWholeQueue();
+
+        assertEquals("Incorrect current budget after paying of installments", installmentTotalValue, model
+                .getCurrentBudget()
+                .get());
+
+        List<Installment> installments = model.getInstallments();
+        assertEquals("Installment not set as paid off", installments.get(0).isPaidOff(), true);
+
+    }
+
+
     public void testMultipleInstallment() {
         assertEquals("Incorrect starting budget.", 0.0, model.getCurrentBudget().get());
         double installmentTotalValue = -100;

@@ -9,6 +9,7 @@ public class Installment {
 
     public static final int INSTALLMENT_PAID = 1;
     public static final int INSTALLMENT_PAUSED = 2;
+    public static final int INSTALLMENT_POSITIVE = 4;
     private long id;
     private long transactionId;
     private Money totalValue;
@@ -79,6 +80,16 @@ public class Installment {
             flags = setFlag(flags, INSTALLMENT_PAUSED);
         } else {
             flags = unsetFlag(flags, INSTALLMENT_PAUSED);
+        }
+    }
+
+    public Money calculateDailyPayment() {
+        if(!FlagHandler.isFlagSet(flags, INSTALLMENT_POSITIVE)) {
+            Money remaining = totalValue.add(amountPaid);
+            return BudgetFunctions.max(remaining, dailyPayment);
+        } else {
+            Money remaining = totalValue.subtract(amountPaid);
+            return BudgetFunctions.min(remaining, dailyPayment);
         }
     }
 

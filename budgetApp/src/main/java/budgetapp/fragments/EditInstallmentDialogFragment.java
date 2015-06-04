@@ -69,21 +69,21 @@ public class EditInstallmentDialogFragment
                         throw new Exception("Must add category");
 
                     double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
-                   /* if (totalValue <= 0)
+                    if (totalValue <= 0)
                         throw new Exception("Invalid total value");
 
                     totalValue *= -1;
-*/
+
                     double dailyPayment = Double.parseDouble(dailyPaymentEditText.getText().toString());
 
-                   /* if (dailyPayment <= 0)
+                    if (dailyPayment <= 0)
                         throw new Exception("Invalid daily payment");
 
                     dailyPayment *= -1;
 
                     if (dailyPayment < totalValue)
                         throw new Exception("daily payment larger than total value");
-*/
+
                     String comment = commentEditText.getText().toString();
                     boolean active = activeCheckBox.isChecked();
 

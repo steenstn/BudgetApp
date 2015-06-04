@@ -19,12 +19,16 @@ import java.util.List;
 import budgetapp.banks.BankTransaction;
 import budgetapp.banks.BankTransactionsResponse;
 import budgetapp.banks.swedbank.SwedbankService;
+import budgetapp.fragments.AddInstallmentDialogFragment;
 import budgetapp.fragments.ChooseCategoryBankTransactionFragment;
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 import budgetapp.util.BankTransactionEntry;
 import budgetapp.util.BudgetAdapter;
+import budgetapp.util.BudgetFunctions;
+import budgetapp.util.Installment;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
 import budgetapp.viewholders.BankTransactionViewHolder;
 import budgetapp.views.BankView;
 
@@ -59,6 +63,9 @@ public class BankActivity extends FragmentActivity {
         transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
     }
 
+    public BudgetModel getModel() {
+        return model;
+    }
     public void addTransaction(BudgetEntry entry) {
         model.queueTransaction(entry);
         model.processQueueItem();
@@ -86,6 +93,18 @@ public class BankActivity extends FragmentActivity {
             newFragment.setArguments(transactionBunduru);
 
             newFragment.show(getSupportFragmentManager(), "choose_category");
+        }
+
+        @Override
+        public void createInstallmentOfTransaction(BankTransactionViewHolder transaction, int positionInList) {
+            DialogFragment newFragment = new AddInstallmentDialogFragment();
+            Bundle transactionBunduru = new Bundle();
+            BankTransaction bt = transaction.getTransaction();
+            chosenTransactionPosition = positionInList;
+            transactionBunduru.putString("description", bt.getDescription());
+            transactionBunduru.putDouble("amount", bt.getAmount().get());
+            newFragment.setArguments(transactionBunduru);
+            newFragment.show(getSupportFragmentManager(), "add_installment");
         }
     };
 
@@ -140,5 +159,17 @@ public class BankActivity extends FragmentActivity {
 
         }
 
+    }
+
+    public boolean addInstallment(Money totalValue, Money dailyPayment, String category, String comment, boolean active) {
+        int flags = 0;
+        if (!active) {
+            flags = Installment.INSTALLMENT_PAUSED;
+        }
+        Installment installment = new Installment(totalValue, dailyPayment, BudgetFunctions.getDateString(),
+                totalValue.subtract(dailyPayment), category, comment);
+
+        installment.setFlags(flags);
+        return model.addInstallment(installment);
     }
 }

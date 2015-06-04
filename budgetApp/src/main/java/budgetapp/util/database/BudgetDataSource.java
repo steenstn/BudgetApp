@@ -221,7 +221,7 @@ public class BudgetDataSource {
     public Money payOffInstallment(Installment installment, String dateToEdit) {
         Installment dbInstallment = dbAccess.getInstallment(installment.getId());
         if (dbInstallment.getId() == -1 || dbInstallment.isPaidOff() || dbInstallment.isPaused()) {
-            return MoneyFactory.createMoney();
+            return Money.zero();
         }
         Money dailyPay = dbInstallment.getDailyPayment();
 
@@ -232,7 +232,7 @@ public class BudgetDataSource {
         // If the installment has gone positive or is small enough, mark it as paid
         if (remainingValue.biggerThanOrEquals(MoneyFactory.createMoney()) || remainingValue.makePositive().almostZero()) {
             markInstallmentAsPaid(dbInstallment.getId());
-            return MoneyFactory.createMoney();
+            return Money.zero();
         } else {
             BudgetEntry oldEntry = getTransaction(installment.getTransactionId());
             BudgetEntry newEntry = oldEntry.clone();
@@ -383,8 +383,7 @@ public class BudgetDataSource {
         temp.setPaidOff(true);
         int flags = temp.getFlags();
 
-        boolean result = dbAccess.setFlags(id, flags);
-        return result;
+        return dbAccess.setFlags(id, flags);
     }
 
     public boolean markInstallmentAsPaused(long id, boolean state) {
@@ -392,8 +391,7 @@ public class BudgetDataSource {
         temp.setPaused(state);
         int flags = temp.getFlags();
 
-        boolean result = dbAccess.setFlags(id, flags);
-        return result;
+        return dbAccess.setFlags(id, flags);
     }
 
     public void clearAutocompleteValues() {

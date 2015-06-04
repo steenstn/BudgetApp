@@ -20,6 +20,7 @@ public class BankView extends LinearLayout {
     public static interface ViewListener {
 
         void transactionListItemClicked(BankTransactionViewHolder transaction, int positionInList);
+        void createInstallmentOfTransaction(BankTransactionViewHolder transaction, int positionInList);
 
     }
 

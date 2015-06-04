@@ -1,16 +1,16 @@
 package budgetapp.fragments;
-/**
- * Dialog Fragment for adding a new category
- * 
- */
+
 
 import java.util.Calendar;
 import java.util.List;
 
+import budgetapp.activities.BankActivity;
 import budgetapp.activities.InstallmentsActivity;
 import budgetapp.main.R;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.money.MoneyFactory;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -39,10 +39,10 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	DatePicker datePicker;
 	Button getDateButton;
 	CheckBox activeCheckBox;
-	InstallmentsActivity activity;
+	Activity activity;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		activity = (InstallmentsActivity) getActivity();
+		activity = getActivity();
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 	    // Get the layout inflater
 	    LayoutInflater inflater = activity.getLayoutInflater();
@@ -50,8 +50,7 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 	    view = inflater.inflate(R.layout.dialog_add_installment, null);
 	 
 	    builder.setView(view);
-	    
-	   
+
 		
 	    // Add action buttons
     	builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -66,26 +65,30 @@ public class AddInstallmentDialogFragment extends DialogFragment {
     					throw new Exception("Must add category");
     				
     				double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
-    				/*if(totalValue <= 0)
+    				if(totalValue <= 0)
     					throw new Exception("Invalid total value");
     				
-    				totalValue *= -1;*/
+    				totalValue *= -1;
     				
     				double dailyPayment = Double.parseDouble(dailyPaymentEditText.getText().toString());
     				
-    				/*if(dailyPayment <= 0)
+    				if(dailyPayment <= 0)
     					throw new Exception("Invalid daily payment");
     				
-    				dailyPayment *= -1;*/
+    				dailyPayment *= -1;
     				
-    				/*if(dailyPayment < totalValue)
+    				if(dailyPayment < totalValue)
     					throw new Exception("daily payment larger than total value");
-    				*/
+
     				boolean active = activeCheckBox.isChecked();
     				String comment = commentEditText.getText().toString();
-    				activity.addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
-    						MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment, active);
-    				
+                    if(activity instanceof InstallmentsActivity) {
+                        ((InstallmentsActivity)activity).addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
+                                MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment, active);
+                    }else if(activity instanceof BankActivity) {
+                        ((BankActivity)activity).addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
+                                MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment, active);
+                    }
     			}
     			catch(Exception e) {
     				e.printStackTrace();
@@ -115,12 +118,30 @@ public class AddInstallmentDialogFragment extends DialogFragment {
 		activeCheckBox = (CheckBox)view.findViewById(R.id.activeCheckBox);
 		
 		setUpAutoCompleteValues();
-		setUpWatchers();		
+		setUpWatchers();
+        populateFields();
+
 	}
+
+    private void populateFields() {
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            String description = bundle.getString("description");
+            double amount = bundle.getDouble("amount", 0);
+
+            totalValueEditText.setText("" + amount);
+            commentEditText.setText(description);
+        }
+    }
 	
 	private void setUpAutoCompleteValues()
 	{
-		List<String> categories = activity.getModel().getCategoryNames();
+        List<String> categories = null;
+        if(activity instanceof InstallmentsActivity) {
+            categories = ((InstallmentsActivity)activity).getModel().getCategoryNames();
+        } else if(activity instanceof BankActivity) {
+            categories = ((BankActivity)activity).getModel().getCategoryNames();
+        }
 		// Get a reference to the AutoCompleteTextView in the layout
     	
 		
