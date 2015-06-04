@@ -31,6 +31,13 @@
             />
             
     </PreferenceCategory>
+    <PreferenceCategory android:title="Banks">
+        <CheckBoxPreference
+            android:title="Remember personal code"
+            android:summary="Remember personal code for logging in"
+            android:key="rememberPersonalCode"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
     
     <PreferenceCategory android:title="Autocomplete">
         <CheckBoxPreference

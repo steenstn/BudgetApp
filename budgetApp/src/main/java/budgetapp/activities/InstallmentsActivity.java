@@ -42,7 +42,7 @@ public class InstallmentsActivity
             totalValue.subtract(dailyPayment), category, comment);
 
         installment.setFlags(flags);
-        if (model.addInstallment(installment) == true) {
+        if (model.addInstallment(installment)) {
             return true;
         } else {
             return false;

@@ -60,36 +60,34 @@ public class AddInstallmentDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
     			
     			// Get all information an do error checking
-    			try
-    			{
+    			try {
     				String category = categoryEditText.getText().toString();
     				if(category.equalsIgnoreCase(""))
     					throw new Exception("Must add category");
     				
     				double totalValue = Double.parseDouble(totalValueEditText.getText().toString());
-    				if(totalValue <= 0)
+    				/*if(totalValue <= 0)
     					throw new Exception("Invalid total value");
     				
-    				totalValue *= -1;
+    				totalValue *= -1;*/
     				
     				double dailyPayment = Double.parseDouble(dailyPaymentEditText.getText().toString());
     				
-    				if(dailyPayment <= 0)
+    				/*if(dailyPayment <= 0)
     					throw new Exception("Invalid daily payment");
     				
-    				dailyPayment *= -1;
+    				dailyPayment *= -1;*/
     				
-    				if(dailyPayment < totalValue)
+    				/*if(dailyPayment < totalValue)
     					throw new Exception("daily payment larger than total value");
-    				
+    				*/
     				boolean active = activeCheckBox.isChecked();
     				String comment = commentEditText.getText().toString();
     				activity.addInstallment(MoneyFactory.createMoneyFromNewDouble(totalValue),
     						MoneyFactory.createMoneyFromNewDouble(dailyPayment), category, comment, active);
     				
     			}
-    			catch(Exception e)
-    			{
+    			catch(Exception e) {
     				e.printStackTrace();
     			}
         	  }

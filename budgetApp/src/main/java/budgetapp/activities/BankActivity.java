@@ -1,7 +1,10 @@
 package budgetapp.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -33,11 +36,11 @@ public class BankActivity extends FragmentActivity {
     private BudgetModel model;
     private int chosenTransactionPosition;
     private BudgetAdapter listAdapter;
+    private SharedPreferences settings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         view = (BankView) View.inflate(this, R.layout.activity_banks, null);
         view.setViewListener(viewListener);
         model = new BudgetModel(getApplicationContext());
@@ -46,6 +49,12 @@ public class BankActivity extends FragmentActivity {
 
         setContentView(view);
         view.setModel(model);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+        if(settings.getBoolean("rememberPersonalCode", false)) {
+            EditText e = (EditText)findViewById(R.id.editTextBank);
+            String personalCode = settings.getString("personalCode", "");
+            e.setText(personalCode);
+        }
 
         transactionsListView = (ListView) findViewById(R.id.listViewBankTransactions);
     }
@@ -55,8 +64,8 @@ public class BankActivity extends FragmentActivity {
         model.processQueueItem();
         BankTransactionEntry bankTransaction = new BankTransactionEntry(entry.getDate(), entry.getValue(), entry.getCategory(), entry.getComment());
         model.addBankTransaction(bankTransaction);
-        listAdapter.remove(chosenTransactionPosition);
 
+        listAdapter.remove(chosenTransactionPosition);
         transactionsListView.setAdapter(listAdapter);
 
         Toast.makeText(this, "Added " + bankTransaction.getDescription() + " as " + bankTransaction.getCategory(), Toast.LENGTH_LONG).show();
@@ -84,6 +93,11 @@ public class BankActivity extends FragmentActivity {
     public void doIt(View v) {
         EditText e = (EditText)findViewById(R.id.editTextBank);
         Button b = (Button)v;
+        SharedPreferences.Editor editor = settings.edit();
+        String savedPersonalCode = settings.getBoolean("rememberPersonalCode", false) ? e.getText().toString() : "";
+        editor.putString("personalCode", savedPersonalCode);
+        editor.commit();
+
         new GetTransactionsTask().execute(e.getText().toString(), b.getText().toString());
     }
 
