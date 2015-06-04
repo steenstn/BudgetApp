@@ -206,15 +206,11 @@ public class MoneyUnitTest extends InstrumentationTestCase {
         assertEquals("Changing positive not equal", 100.0, m2.makePositive().get());
     }
 
-    public void testMakePositiveExchangeRate() {
-        Money.setExchangeRate(2);
-        Money m1 = MoneyFactory.createMoneyFromNewDouble(-100);
-        assertEquals("Changing negative not equal", 100.0, m1.makePositive().get());
+    public void testAlmostZero() {
+        assertTrue(Money.zero().almostZero());
+        assertFalse(Money.fromNewDouble(-1).almostZero());
 
-        Money m2 = MoneyFactory.createMoneyFromNewDouble(100);
-        assertEquals("Changing positive not equal", 100.0, m2.makePositive().get());
     }
-
     public void testMakeNegative()
     {
         Money m1 = MoneyFactory.createMoneyFromNewDouble(100);

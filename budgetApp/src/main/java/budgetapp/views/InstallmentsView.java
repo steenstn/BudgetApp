@@ -68,7 +68,7 @@ public class InstallmentsView
 
         for (int i = 0; i < allInstallments.size(); i++) {
             Installment currentInstallment = allInstallments.get(i);
-            if (currentInstallment.getRemainingValue().biggerThan(MoneyFactory.createMoney())) {
+            if (currentInstallment.getRemainingValue().almostZero()) {
                 model.removeInstallment(currentInstallment.getId());
             } else if (!currentInstallment.isPaidOff()) {
                 InstallmentViewHolder viewHolder = new InstallmentViewHolder(currentInstallment);

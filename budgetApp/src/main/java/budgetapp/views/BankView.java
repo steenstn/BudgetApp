@@ -43,6 +43,14 @@ public class BankView extends LinearLayout {
                 viewListener.transactionListItemClicked(item, position);
             }
         });
+        transactionList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                BankTransactionViewHolder item = (BankTransactionViewHolder)transactionList.getItemAtPosition(position);
+                viewListener.createInstallmentOfTransaction(item, position);
+                return true;
+            }
+        });
     }
 
 

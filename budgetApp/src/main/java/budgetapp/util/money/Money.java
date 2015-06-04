@@ -114,7 +114,7 @@ public class Money {
     }
 
     public boolean almostZero() {
-        return value < 0.000001;
+        return Math.abs(value) < 0.000001;
     }
 
     /**
