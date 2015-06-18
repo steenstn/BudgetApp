@@ -1,0 +1,7 @@
+language: android
+android:
+    components:
+	- platform-tools
+	- tools
+	
+	- sys-img-x86-android-17
