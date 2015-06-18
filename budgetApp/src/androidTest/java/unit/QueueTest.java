@@ -26,9 +26,9 @@ public class QueueTest extends AndroidTestCase {
 
         BudgetFunctions.theDate = startDate;
 		Money.setExchangeRate(1.0);
-		model.setDailyBudget(MoneyFactory.createMoney());
+		model.setDailyBudget(Money.zero());
 		
-		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
+		model.queueTransaction(new BudgetEntry(Money.zero(),BudgetFunctions.getDateString(),"test"));
 		model.processWholeQueue();
 		assertEquals("Incorrect starting budget.", 0.0,model.getCurrentBudget().get());
 		assertEquals("Incorrect startDate", startDate, BudgetFunctions.theDate);
@@ -41,9 +41,9 @@ public class QueueTest extends AndroidTestCase {
 		model.clearDatabaseInstance();
 	}
 	public void testQueue() {
-		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
-		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
-		model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
+		model.queueTransaction(new BudgetEntry(Money.zero(),BudgetFunctions.getDateString(),"test"));
+		model.queueTransaction(new BudgetEntry(Money.zero(),BudgetFunctions.getDateString(),"test"));
+		model.queueTransaction(new BudgetEntry(Money.zero(),BudgetFunctions.getDateString(),"test"));
 		int remainingItems = model.getRemainingItemsInQueue();
 		assertEquals("Incorrect size", 5, model.getQueueSize());
 		assertEquals("Incorrect remaining items", 3, remainingItems);

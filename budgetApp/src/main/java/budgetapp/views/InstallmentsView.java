@@ -59,7 +59,7 @@ public class InstallmentsView
     @Override
     public void update() {
 
-        Money totalDailyPayments = MoneyFactory.createMoney();
+        Money totalDailyPayments = Money.zero();
         List<Installment> allInstallments = new ArrayList<Installment>();
 
         allInstallments = model.getInstallments();

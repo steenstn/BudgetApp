@@ -32,7 +32,7 @@ public class RemoveTransactionTest extends AndroidTestCase{
 
         BudgetFunctions.theDate = startDate;
 		Money.setExchangeRate(1.0);
-		model.setDailyBudget(MoneyFactory.createMoney());
+		model.setDailyBudget(Money.zero());
 		
 		//model.createTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"test"));
 		

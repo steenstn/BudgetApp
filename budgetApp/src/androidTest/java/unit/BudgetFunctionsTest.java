@@ -6,6 +6,7 @@ import java.util.List;
 import android.test.AndroidTestCase;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 public class BudgetFunctionsTest
@@ -75,7 +76,7 @@ public class BudgetFunctionsTest
         entry3.setValue(MoneyFactory.createMoneyFromNewDouble(30));
 
         entries.add(entry1);
-        assertEquals(MoneyFactory.createMoney().get(), BudgetFunctions.getMean(entries, 1).get());
+        assertEquals(Money.zero().get(), BudgetFunctions.getMean(entries, 1).get());
         entries.add(entry2);
         entries.add(entry3);
         assertEquals(entry2.getValue().get(), BudgetFunctions.getMean(entries, 3).get());

@@ -62,7 +62,7 @@ public class Event {
     }
 
     public Money getTotalCost() {
-        Money sum = MoneyFactory.createMoney();
+        Money sum = Money.zero();
         for (BudgetEntry entry : entries) {
             sum = sum.add(entry.getValue());
         }

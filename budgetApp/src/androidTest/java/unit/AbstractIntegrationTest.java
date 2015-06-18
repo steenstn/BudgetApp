@@ -27,9 +27,9 @@ public abstract class AbstractIntegrationTest extends AndroidTestCase {
 
         BudgetFunctions.theDate = dateForInitialTransaction;
         Money.setExchangeRate(1.0);
-        model.setDailyBudget(MoneyFactory.createMoney());
+        model.setDailyBudget(Money.zero());
 
-        model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(),BudgetFunctions.getDateString(),"initialTransaction"));
+        model.queueTransaction(new BudgetEntry(Money.zero(),BudgetFunctions.getDateString(),"initialTransaction"));
 
         model.processWholeQueue();
         BudgetFunctions.theDate = startDate;

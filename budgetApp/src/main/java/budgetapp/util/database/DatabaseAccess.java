@@ -490,8 +490,8 @@ public class DatabaseAccess {
             return installment;
         } else {
             cursor.close();
-            return new Installment(-1, -1, MoneyFactory.createMoney(), MoneyFactory.createMoney(), "ERROR",
-                MoneyFactory.createMoney(), "ERROR", "ERROR");
+            return new Installment(-1, -1, Money.zero(), Money.zero(), "ERROR",
+                Money.zero(), "ERROR", "ERROR");
         }
     }
 

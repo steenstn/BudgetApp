@@ -88,7 +88,7 @@ public class BudgetEntry
 
     public BudgetEntry() {
         setId(-1);
-        this.setValue(MoneyFactory.createMoney());
+        this.setValue(Money.zero());
         this.date = "";
         this.category = "";
         setFlags(0);

@@ -31,7 +31,7 @@ public class InstallmentsTest
         model = new BudgetModel(mockContext);
 
         Money.setExchangeRate(1.0);
-        model.setDailyBudget(MoneyFactory.createMoney());
+        model.setDailyBudget(Money.zero());
 
         assertTrue("Incorrect startDate", startDate.equalsIgnoreCase(BudgetFunctions.getDateString()));
         assertEquals("Incorrect starting budget.", 0.0, model.getCurrentBudget().get());
@@ -43,7 +43,7 @@ public class InstallmentsTest
         double dailyPayment = -10;
         Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(totalValue),
             MoneyFactory.createMoneyFromNewDouble(dailyPayment), BudgetFunctions.getDateString(),
-            MoneyFactory.createMoney(), "test", "testComment");
+            Money.zero(), "test", "testComment");
 
         assertEquals("Could not add installment.", model.addInstallment(installment), true);
         List<Installment> installments = model.getInstallments();
@@ -93,7 +93,7 @@ public class InstallmentsTest
 
     public void testInstallmentFlags() {
         Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(100),
-            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), MoneyFactory.createMoney(),
+            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), Money.zero(),
             "test", "testComment");
 
         installment.setPaidOff(true);
@@ -120,7 +120,7 @@ public class InstallmentsTest
 
     public void testTotalValue() {
         Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(100),
-            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), MoneyFactory.createMoney(),
+            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), Money.zero(),
             "test", "testComment");
 
         installment.setTotalValue(MoneyFactory.createMoneyFromNewDouble(2));
@@ -130,7 +130,7 @@ public class InstallmentsTest
 
     public void testSetDailyPayment() {
         Installment installment = new Installment(MoneyFactory.createMoneyFromNewDouble(100),
-            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), MoneyFactory.createMoney(),
+            MoneyFactory.createMoneyFromNewDouble(10), BudgetFunctions.getDateString(), Money.zero(),
             "test", "testComment");
 
         installment.setdailyPayment(MoneyFactory.createMoneyFromNewDouble(400));

@@ -30,14 +30,14 @@ public class CategoryEntry
         setId(id);
         this.category = category;
         this.numTransactions = 0;
-        this.value = MoneyFactory.createMoney();
+        this.value = Money.zero();
         setFlags(0);
     }
 
     public CategoryEntry(String category) {
         setId(0);
         this.category = category;
-        this.value = MoneyFactory.createMoney();
+        this.value = Money.zero();
         this.numTransactions = 0;
         setFlags(0);
     }

@@ -121,10 +121,10 @@ public class BudgetFunctions {
     public static Money getMean(List<? extends DatabaseEntry> theEntries, int n) {
 
         if (theEntries.size() < 2) // Just 0 or 1 entries, no derivative yet
-            return MoneyFactory.createMoney();
+            return Money.zero();
         int i = 0;
 
-        Money sum = MoneyFactory.createMoney();
+        Money sum = Money.zero();
 
         // Step through days, break if i reaches size or n
         while (i < theEntries.size() && i < n) {
@@ -144,12 +144,12 @@ public class BudgetFunctions {
      */
     public static Money getWeightedMean(List<? extends DatabaseEntry> theEntries, int n) {
         if (theEntries.size() < 2) {// Just 0 or 1 entries, no derivative yet
-            return MoneyFactory.createMoney();
+            return Money.zero();
         }
         int i = 0;
 
         double totalWeight = 0;
-        Money sum = MoneyFactory.createMoney();
+        Money sum = Money.zero();
         while (i < theEntries.size() && i < n) {
             totalWeight += Math.exp(-0.5 * (double) i);
 

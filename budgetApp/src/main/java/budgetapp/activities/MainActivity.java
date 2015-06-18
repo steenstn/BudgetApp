@@ -277,7 +277,7 @@ public class MainActivity
 
     private class ProcessQueueTask
         extends AsyncTask<Void, Void, Void> {
-        Money cashFlow = MoneyFactory.createMoney();
+        Money cashFlow = Money.zero();
         ProgressBar progressBar;
         boolean progressBarVisible = false;
 

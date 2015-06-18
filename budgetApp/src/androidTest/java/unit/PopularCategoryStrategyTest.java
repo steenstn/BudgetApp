@@ -32,7 +32,7 @@ public class PopularCategoryStrategyTest extends AndroidTestCase{
         model = new BudgetModel(mockContext);
 
         Money.setExchangeRate(1.0);
-        model.setDailyBudget(MoneyFactory.createMoney());
+        model.setDailyBudget(Money.zero());
 
         assertTrue("Incorrect startDate", startDate.equalsIgnoreCase(BudgetFunctions.getDateString()));
         assertEquals("Incorrect starting budget.", 0.0, model.getCurrentBudget().get());

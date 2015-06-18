@@ -384,7 +384,7 @@ public class BudgetModel {
             dateDailyBudgetLastQueued = dateFormat.format(tempDate.getTime());
         } else { // Add a transaction of 0
             Calendar tempDate = Calendar.getInstance();
-            BudgetEntry entry = new BudgetEntry(MoneyFactory.createMoney(), dateFormat.format(tempDate.getTime()),
+            BudgetEntry entry = new BudgetEntry(Money.zero(), dateFormat.format(tempDate.getTime()),
                 "Income");
             transactionQueue.queueItem(new TransactionCommand(datasource, entry));
             tempDate.add(Calendar.DAY_OF_MONTH, -1);

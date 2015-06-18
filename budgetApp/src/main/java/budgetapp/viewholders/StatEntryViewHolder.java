@@ -6,6 +6,7 @@ import java.util.Locale;
 import android.widget.TextView;
 import budgetapp.util.BudgetFunctions;
 import budgetapp.util.entries.BudgetEntry;
+import budgetapp.util.money.Money;
 import budgetapp.util.money.MoneyFactory;
 
 public class StatEntryViewHolder
@@ -34,7 +35,7 @@ public class StatEntryViewHolder
     }
 
     public StatEntryViewHolder(String theString, Type theType) {
-        this.entry = new BudgetEntry(-1, MoneyFactory.createMoney(), "", "");
+        this.entry = new BudgetEntry(-1, Money.zero(), "", "");
         this.title = theString;
         this.flag = theType;
     }

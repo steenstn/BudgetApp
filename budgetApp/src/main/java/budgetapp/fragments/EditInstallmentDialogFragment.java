@@ -94,7 +94,7 @@ public class EditInstallmentDialogFragment
                         comment);
                     Installment newInstallment = new Installment(MoneyFactory.createMoneyFromNewDouble(totalValue),
                         MoneyFactory.createMoneyFromNewDouble(dailyPayment), installment.getDateLastPaid(),
-                        MoneyFactory.createMoney(), "", "");
+                        Money.zero(), "", "");
                     newInstallment.setPaused(!active);
 
                     activity.getModel().editInstallment(installment.getId(), newInstallment);

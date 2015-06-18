@@ -229,7 +229,7 @@ public class MoneyUnitTest extends InstrumentationTestCase {
     }
 
     public void testEmptyMoney() {
-        Money m = MoneyFactory.createMoney();
+        Money m = Money.zero();
         assertEquals("Not zero",m.get(), 0.0);
     }
 

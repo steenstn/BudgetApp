@@ -11,10 +11,6 @@ public class MoneyFactory {
 		return new Money(d);
 	}
 	
-	public static Money createMoney() {
-		return new Money();
-	}
-	
 	/**
 	 * Use this when a double in the system (e.g. from database) should become a money
 	 * @param d

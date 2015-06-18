@@ -29,9 +29,9 @@ public class DailyBudgetTest
 
         BudgetFunctions.theDate = dateForInitialTransaction;
         Money.setExchangeRate(1.0);
-        model.setDailyBudget(MoneyFactory.createMoney());
+        model.setDailyBudget(Money.zero());
 
-        model.queueTransaction(new BudgetEntry(MoneyFactory.createMoney(), BudgetFunctions.getDateString(), "test"));
+        model.queueTransaction(new BudgetEntry(Money.zero(), BudgetFunctions.getDateString(), "test"));
         model.processWholeQueue();
         BudgetFunctions.theDate = startDate;
         assertEquals("Incorrect starting budget.", 0.0, model.getCurrentBudget().get());

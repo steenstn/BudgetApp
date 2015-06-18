@@ -169,12 +169,12 @@ public class StatsView
         List<DayEntry> dayFlow = model.getSomeDays(0, BudgetDataSource.DESCENDING);
 
         categoryAdapter = new BudgetAdapter(this.getContext(), R.layout.listitem_category_stats);
-        Money income = MoneyFactory.createMoney();
-        Money expenses = MoneyFactory.createMoney();
+        Money income = Money.zero();
+        Money expenses = Money.zero();
         for (int i = 0; i < categoryStats.size(); i++) {
             categoryAdapter.add(new CategoryStatsViewHolder(categoryStats.get(i)));
             Money value = categoryStats.get(i).getValue();
-            if(value.smallerThan(MoneyFactory.createMoney())) {
+            if(value.smallerThan(Money.zero())) {
                 expenses = expenses.add(value);
             } else {
                 income = income.add(value);
