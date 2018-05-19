@@ -3,25 +3,26 @@ package budgetapp.activities;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+
 import budgetapp.fragments.AddCategoryDialogFragment;
 import budgetapp.fragments.RemoveCategoryDialogFragment;
+
 import budgetapp.main.R;
 import budgetapp.models.BudgetModel;
 
-import com.mobeta.android.dslv.DragSortListView;
-
 public class CategoriesActivity
-    extends FragmentActivity {
+    extends Activity {
 
-    private DragSortListView categoryList;
+    private ListView categoryList;
     private ArrayAdapter<String> adapter;
     private BudgetModel model;
 
@@ -37,7 +38,7 @@ public class CategoriesActivity
     }
 
     public void updateList() {
-        categoryList = (DragSortListView) findViewById(R.id.categoryListView);
+        categoryList = (ListView) findViewById(R.id.categoryListView);
         List<String> categories = (model.getCategoryNames());
 
         adapter = new ArrayAdapter<String>(this, R.layout.listitem_draggable, android.R.id.text1, categories);
@@ -64,7 +65,7 @@ public class CategoriesActivity
                 bundle.putString("chosenCategory", theCategory);
                 DialogFragment newFragment = new RemoveCategoryDialogFragment();
                 newFragment.setArguments(bundle);
-                newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "remove_category");
+                //newFragment.show(CategoriesActivity.this.getFragmentManager(), "remove_category");
 
             }
         });
@@ -76,28 +77,12 @@ public class CategoriesActivity
             @Override
             public void onClick(View arg0) {
                 DialogFragment newFragment = new AddCategoryDialogFragment();
-                newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "add_category");
+           //     newFragment.show(CategoriesActivity.this.getSupportFragmentManager(), "add_category");
             }
 
         });
 
-        categoryList.setDropListener(new DragSortListView.DropListener() {
-            @Override
-            public void drop(int from, int to) {
-                if (from != to) {
-                    String item = adapter.getItem(from);
 
-                    adapter.remove(item);
-                    adapter.insert(item, to);
-
-                    List<String> categories = new ArrayList<String>();
-                    for (int i = 0; i < adapter.getCount(); i++) {
-                        categories.add(adapter.getItem(i));
-                    }
-                    model.readdCategories(categories);
-                }
-            }
-        });
 
     }
 }
