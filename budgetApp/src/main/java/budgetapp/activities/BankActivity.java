@@ -14,11 +14,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
+
 import java.util.List;
 
 import budgetapp.banks.BankTransaction;
 import budgetapp.banks.BankTransactionsResponse;
-import budgetapp.banks.swedbank.SwedbankService;
 import budgetapp.fragments.AddInstallmentDialogFragment;
 import budgetapp.fragments.ChooseCategoryBankTransactionFragment;
 import budgetapp.main.R;
@@ -34,7 +35,6 @@ import budgetapp.views.BankView;
 
 public class BankActivity extends FragmentActivity {
 
-    private SwedbankService swedbankService = new SwedbankService();
     private ListView transactionsListView;
     private BankView view;
     private BudgetModel model;
@@ -125,7 +125,7 @@ public class BankActivity extends FragmentActivity {
 
         @Override
         protected BankTransactionsResponse doInBackground(String... params) {
-            return swedbankService.getTransactions(params[0]);
+            return new BankTransactionsResponse(Optional.of(""), List.of());
         }
 
         @Override
